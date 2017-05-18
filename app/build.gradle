@@ -1,0 +1,184 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "https://maven.fabric.io/public" }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.21.7'
+    }
+}
+
+repositories {
+    jcenter()
+    maven { url 'https://maven.fabric.io/public' }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+def debugDrawerVersion = '0.7.0'
+
+ext {
+    appVersionMajor = 0
+    appVersionMinor = 0
+    appVersionPatch = 1
+
+    // The order is based on way the Play store works with multiple APKs. Remember, if a users
+    // device is compatible with more than one APK for an application the device will receive the
+    // version with the highest version code. This is why an armeabi build will be given a prefix
+    // of 1 as this build will also be able to run a armeabi-v7a device (2) and in some cases a x86
+    // device (8) due to a proprietary ARM translation layer called libhoudini.
+    archsCodes = ['armeabi': 1, 'armeabi-v7a': 2, 'arm64-v8a': 3, 'mips': 5, 'mips64': 6, 'x86': 8, 'x86_64': 9]
+
+    appVersionArchsMultiplier = 10000000
+    appVersionMajorMultiplier = 10000
+    appVersionMinorMultiplier = 100
+    appVersionPatchMultiplier = 1
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file(".configs/keystore.properties")
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+def fabricProperties = new Properties()
+def fabricPropertiesFile = rootProject.file(".configs/fabric.properties")
+fabricProperties.load(new FileInputStream(fabricPropertiesFile))
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        applicationId "com.ciandt.dragonfly.example"
+
+        minSdkVersion 19
+        targetSdkVersion 25
+
+        versionName "${appVersionMajor}.${appVersionMinor}.${appVersionPatch}"
+        versionCode appVersionMajor * appVersionMajorMultiplier + appVersionMinor * appVersionMinorMultiplier + appVersionPatch * appVersionPatchMultiplier
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        resConfigs "en"
+
+        buildConfigField 'int', 'LOG_LEVEL', '4' // DragonflyLogger.LOG_LEVEL_DEBUG = 4;
+
+        manifestPlaceholders = [
+            FABRIC_API_KEY: fabricProperties['apiKey']
+        ]
+    }
+
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+    buildTypes {
+        release {
+            debuggable false
+            minifyEnabled false
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+
+        debug {
+            debuggable true
+            minifyEnabled false
+            zipAlignEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    splits {
+        // Configures multiple APKs based on ABI.
+        abi {
+            // Enables building multiple APKs per ABI.
+            enable true
+
+            // By default all ABIs are included, so use reset() and include to specify.
+            // Resets the list of ABIs that Gradle should create APKs for to none.
+            reset()
+
+            // Specifies a list of ABIs that Gradle should create APKs for.
+            include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+
+            // Also generate a universal APK that includes all ABIs.
+            universalApk true
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile 'com.karumi:dexter:4.1.0'
+
+    testCompile 'junit:junit:4.12'
+
+    debugCompile "io.palaima.debugdrawer:debugdrawer:${debugDrawerVersion}"
+    releaseCompile "io.palaima.debugdrawer:debugdrawer-no-op:${debugDrawerVersion}"
+    debugCompile "io.palaima.debugdrawer:debugdrawer-view:${debugDrawerVersion}"
+    releaseCompile "io.palaima.debugdrawer:debugdrawer-view-no-op:${debugDrawerVersion}"
+    compile "io.palaima.debugdrawer:debugdrawer-commons:${debugDrawerVersion}"
+    compile "io.palaima.debugdrawer:debugdrawer-actions:${debugDrawerVersion}"
+    compile "io.palaima.debugdrawer:debugdrawer-okhttp3:${debugDrawerVersion}"
+    compile "io.palaima.debugdrawer:debugdrawer-glide:${debugDrawerVersion}"
+
+    compile 'com.facebook.stetho:stetho:1.5.0'
+
+    // Log
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
+
+    // UI
+    compile 'uk.co.chrisjenx:calligraphy:2.3.0'
+
+    // Helpers
+    compile 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+
+    // Dragonfly Library
+    compile project(":library")
+}
+
+android.applicationVariants.all { variant ->
+    // Assigns a different version code for each output APK other than the universal APK.
+    variant.outputs.each { output ->
+
+        // Stores the value of ext.archsCodes that is associated with the ABI for this variant.
+        // Determines the ABI for this variant and returns the mapped value.
+        def archVersionCode = project.ext.archsCodes.get(output.getFilter(com.android.build.OutputFile.ABI)) ?: 0
+
+        // Assigns the new version code to versionCodeOverride, which changes the version code
+        // for only the output APK, not for the variant itself. Skipping this step simply
+        // causes Gradle to use the value of variant.versionCode for the APK.
+        output.versionCodeOverride = archVersionCode * appVersionArchsMultiplier + variant.versionCode
+
+        // Add versionName + abiVersion on apk file
+        def version = variant.versionName + "-" + archVersionCode
+        def file = output.outputFile
+        output.outputFile = new File(file.parent, file.name.replace("app-", "app-" + version + "-"))
+    }
+}
+
+
+task setupFabric(type: Exec) {
+    commandLine 'sh', './scripts/setup_fabric.sh'
+}
+
+task setupCrashlytics(type: Exec) {
+    commandLine 'sh', './scripts/setup_crashlytics.sh'
+}
+
+preBuild.dependsOn(setupFabric, setupCrashlytics)
