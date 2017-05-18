@@ -169,6 +169,19 @@ android.applicationVariants.all { variant ->
         def version = variant.versionName + "-" + archVersionCode
         def file = output.outputFile
         output.outputFile = new File(file.parent, file.name.replace("app-", "app-" + version + "-"))
+
+        // If universal, set APK path for Fabric Beta
+        if (archVersionCode == 0) {
+            tasks.findAll {
+                it.name.startsWith("crashlyticsUploadDistribution${variant.name.capitalize()}")
+            }.each {
+                it.doFirst {
+                    ext.betaDistributionApkFilePath = output.outputFile.absolutePath
+                    ext.betaDistributionGroupAliases = "dragonfly-testers"
+                }
+            }
+
+        }
     }
 }
 
