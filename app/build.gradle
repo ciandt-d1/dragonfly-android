@@ -17,15 +17,12 @@ repositories {
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
+apply from: '../versions.gradle'
 apply from: '../sonarqube.gradle'
 
 def debugDrawerVersion = '0.7.0'
 
 ext {
-    appVersionMajor = 0
-    appVersionMinor = 0
-    appVersionPatch = 1
-
     // The order is based on way the Play store works with multiple APKs. Remember, if a users
     // device is compatible with more than one APK for an application the device will receive the
     // version with the highest version code. This is why an armeabi build will be given a prefix
@@ -203,3 +200,10 @@ task setupCrashlytics(type: Exec) {
 }
 
 preBuild.dependsOn(setupFabric, setupCrashlytics)
+
+// bumpVersion -Pmajor=X -Pminor=Y -Ppatch=Z
+task bumpVersion(type: Exec) {
+    if (project.hasProperty('major') && project.hasProperty('minor') && project.hasProperty('patch')) {
+        commandLine 'sh', "${projectDir}/scripts/bump_version.sh", major, minor, patch
+    }
+}
