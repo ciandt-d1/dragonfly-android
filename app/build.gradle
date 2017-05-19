@@ -17,6 +17,8 @@ repositories {
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
+apply from: '../sonarqube.gradle'
+
 def debugDrawerVersion = '0.7.0'
 
 ext {
@@ -35,6 +37,8 @@ ext {
     appVersionMajorMultiplier = 10000
     appVersionMinorMultiplier = 100
     appVersionPatchMultiplier = 1
+
+    SONAR_PROJECT_NAME = "Dragonfly Android example app"
 }
 
 def keystoreProperties = new Properties()
@@ -65,7 +69,7 @@ android {
         buildConfigField 'int', 'LOG_LEVEL', '4' // DragonflyLogger.LOG_LEVEL_DEBUG = 4;
 
         manifestPlaceholders = [
-            FABRIC_API_KEY: fabricProperties['apiKey']
+                FABRIC_API_KEY: fabricProperties['apiKey']
         ]
     }
 
