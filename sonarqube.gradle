@@ -38,8 +38,6 @@ sonarqube() {
         property "sonar.jacoco.itReportPath", fileTree(dir: project.projectDir, includes: ['**/*.ec'])
         property "sonar.java.test.libraries", libraries
 
-        property "sonar.profile", "Android Lint"
-
         property "sonar.login", sonarProperties['login']
         property "sonar.password", sonarProperties['password']
 
