@@ -6,7 +6,7 @@ ext {
     libVersionMinor = 0
     libVersionPatch = 1
 
-    SONAR_PROJECT_NAME = "Dragonfly Android library"
+    SONAR_PROJECT_NAME = "DragonflyAndroidLibrary"
 }
 
 android {

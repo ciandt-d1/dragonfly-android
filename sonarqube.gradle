@@ -6,7 +6,7 @@ sonarProperties.load(new FileInputStream(sonarPropertiesFile))
 
 ext {
     SONAR_HOST = sonarProperties['host']
-    SONAR_PROJECT_NAME = "Dragonfly Android"
+    SONAR_PROJECT_NAME = "DragonflyAndroid"
 }
 sonarqube() {
     //noinspection GroovyAssignabilityCheck
@@ -19,7 +19,7 @@ sonarqube() {
         //+ "${project.buildDir}/intermediates/exploded-aar/**/classes.jar"
 
         property "sonar.projectName", SONAR_PROJECT_NAME
-        property "sonar.projectKey", android.defaultConfig.applicationId + android.defaultConfig.versionName
+        property "sonar.projectKey", SONAR_PROJECT_NAME + "-" + android.defaultConfig.versionName
         property "sonar.sourceEncoding", "UTF-8"
 
         property "sonar.sources", "./src/main/"
