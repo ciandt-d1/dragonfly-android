@@ -38,7 +38,7 @@ ext {
     appVersionMinorMultiplier = 100
     appVersionPatchMultiplier = 1
 
-    SONAR_PROJECT_NAME = "Dragonfly Android example app"
+    SONAR_PROJECT_NAME = "DragonflyAndroidExampleApp"
 }
 
 def keystoreProperties = new Properties()
