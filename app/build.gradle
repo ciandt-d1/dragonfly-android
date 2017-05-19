@@ -73,6 +73,10 @@ android {
         ]
     }
 
+    lintOptions {
+        abortOnError false
+    }
+
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
