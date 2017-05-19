@@ -1,9 +1,12 @@
 apply plugin: 'com.android.library'
+apply from: '../sonarqube.gradle'
 
 ext {
     libVersionMajor = 0
     libVersionMinor = 0
     libVersionPatch = 1
+
+    SONAR_PROJECT_NAME = "Dragonfly Android library"
 }
 
 android {
