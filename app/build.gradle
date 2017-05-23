@@ -201,10 +201,3 @@ task setupCrashlytics(type: Exec) {
 }
 
 preBuild.dependsOn(setupFabric, setupCrashlytics)
-
-// bumpVersion -Pmajor=X -Pminor=Y -Ppatch=Z
-task bumpVersion(type: Exec) {
-    if (project.hasProperty('major') && project.hasProperty('minor') && project.hasProperty('patch')) {
-        commandLine 'sh', "${projectDir}/scripts/bump_version.sh", major, minor, patch
-    }
-}
