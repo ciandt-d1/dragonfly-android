@@ -1,6 +1,7 @@
 package com.ciandt.dragonfly.example;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -51,6 +52,14 @@ public class MainActivity extends BaseActivity {
 
         image = (ImageView) findViewById(R.id.image);
         image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.mug));
+        image.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, RealTimeActivity.class);
+                startActivity(intent);
+            }
+        });
 
         results = (TextView) findViewById(R.id.results);
 
