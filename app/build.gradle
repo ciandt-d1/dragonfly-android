@@ -15,6 +15,7 @@ repositories {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
 
 apply from: '../versions.gradle'
@@ -156,6 +157,8 @@ dependencies {
 
     // Dragonfly Library
     implementation project(":library")
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
 android.applicationVariants.all { variant ->
