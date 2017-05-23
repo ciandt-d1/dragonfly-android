@@ -121,60 +121,63 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-    compile 'com.karumi:dexter:4.1.0'
+    implementation 'com.android.support:appcompat-v7:25.3.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    implementation 'com.karumi:dexter:4.1.0'
 
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 
-    debugCompile "io.palaima.debugdrawer:debugdrawer:${debugDrawerVersion}"
-    releaseCompile "io.palaima.debugdrawer:debugdrawer-no-op:${debugDrawerVersion}"
-    debugCompile "io.palaima.debugdrawer:debugdrawer-view:${debugDrawerVersion}"
-    releaseCompile "io.palaima.debugdrawer:debugdrawer-view-no-op:${debugDrawerVersion}"
-    compile "io.palaima.debugdrawer:debugdrawer-commons:${debugDrawerVersion}"
-    compile "io.palaima.debugdrawer:debugdrawer-actions:${debugDrawerVersion}"
-    compile "io.palaima.debugdrawer:debugdrawer-okhttp3:${debugDrawerVersion}"
-    compile "io.palaima.debugdrawer:debugdrawer-glide:${debugDrawerVersion}"
+    debugImplementation "io.palaima.debugdrawer:debugdrawer:${debugDrawerVersion}"
+    releaseImplementation "io.palaima.debugdrawer:debugdrawer-no-op:${debugDrawerVersion}"
+    debugImplementation "io.palaima.debugdrawer:debugdrawer-view:${debugDrawerVersion}"
+    releaseImplementation "io.palaima.debugdrawer:debugdrawer-view-no-op:${debugDrawerVersion}"
+    implementation "io.palaima.debugdrawer:debugdrawer-commons:${debugDrawerVersion}"
+    implementation "io.palaima.debugdrawer:debugdrawer-actions:${debugDrawerVersion}"
+    implementation "io.palaima.debugdrawer:debugdrawer-okhttp3:${debugDrawerVersion}"
+    implementation "io.palaima.debugdrawer:debugdrawer-glide:${debugDrawerVersion}"
 
-    compile 'com.facebook.stetho:stetho:1.5.0'
+    implementation 'com.facebook.stetho:stetho:1.5.0'
 
     // Log
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
 
     // UI
-    compile 'uk.co.chrisjenx:calligraphy:2.3.0'
+    implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
 
     // Helpers
-    compile 'com.jakewharton:butterknife:8.5.1'
+    implementation 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
     // Dragonfly Library
-    compile project(":library")
+    implementation project(":library")
 }
 
 android.applicationVariants.all { variant ->
     // Assigns a different version code for each output APK other than the universal APK.
-    variant.outputs.each { output ->
+    variant.outputs.all { output ->
 
         // Stores the value of ext.archsCodes that is associated with the ABI for this variant.
         // Determines the ABI for this variant and returns the mapped value.
-        def archVersionCode = project.ext.archsCodes.get(output.getFilter(com.android.build.OutputFile.ABI)) ?: 0
+        def archCode = output.getFilter(com.android.build.OutputFile.ABI)
+        def archVersionCode = project.ext.archsCodes.get(archCode) ?: 0
 
         // Assigns the new version code to versionCodeOverride, which changes the version code
         // for only the output APK, not for the variant itself. Skipping this step simply
         // causes Gradle to use the value of variant.versionCode for the APK.
         output.versionCodeOverride = archVersionCode * appVersionArchsMultiplier + variant.versionCode
 
-        // Add versionName + abiVersion on apk file
-        def version = variant.versionName + "-" + archVersionCode
-        def file = output.outputFile
-        output.outputFile = new File(file.parent, file.name.replace("app-", "app-" + version + "-"))
+        // Change filename of apk file
+        if (archCode == null) {
+            archCode = "universal"
+        }
+        def filename = "app-${variant.versionName}-$archVersionCode-$archCode-${variant.name}.apk"
+        outputFileName = filename
 
         // If universal, set APK path for Fabric Beta
         if (archVersionCode == 0) {
