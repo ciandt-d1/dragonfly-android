@@ -16,7 +16,10 @@ public class FakeModelGenerator {
         model.setSize(getSize(id));
         model.setDescription(getDescription(id));
         model.setColors(getColors(id));
-        model.setReady(id.equals("1"));
+
+        if (id.equals("1")) {
+            model.setStatus(Model.STATUS_DOWNLOADED);
+        }
 
         return model;
     }

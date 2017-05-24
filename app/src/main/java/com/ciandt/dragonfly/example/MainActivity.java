@@ -1,6 +1,12 @@
 package com.ciandt.dragonfly.example;
 
+import com.ciandt.dragonfly.Dragonfly;
+import com.ciandt.dragonfly.Recognition;
+import com.ciandt.dragonfly.data.Model;
+
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -11,8 +17,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ciandt.dragonfly.Dragonfly;
-import com.ciandt.dragonfly.Recognition;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -24,7 +28,11 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import javax.annotation.Nonnull;
+
 public class MainActivity extends BaseActivity {
+
+    private static final String MODEL_BUNDLE = "MODEL_BUNDLE";
 
     private TextView info;
     private ImageView image;
@@ -133,4 +141,11 @@ public class MainActivity extends BaseActivity {
                     }
                 }).check();
     }
+
+    public static Intent create(@Nonnull Context context, @Nonnull Model model) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(MODEL_BUNDLE, model);
+        return intent;
+    }
+
 }
