@@ -123,18 +123,18 @@ android {
 }
 
 dependencies {
+
+    def supportLibraryVersion = '25.3.1'
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    implementation 'com.android.support:appcompat-v7:25.3.1'
-    implementation 'com.android.support:cardview-v7:25.3.1'
-    implementation 'com.android.support:recyclerview-v7:25.3.1'
 
-    implementation 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-    implementation 'com.karumi:dexter:4.1.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
-    testImplementation 'junit:junit:4.12'
+    implementation "com.android.support:appcompat-v7:${supportLibraryVersion}"
+    implementation "com.android.support:cardview-v7:${supportLibraryVersion}"
+    implementation "com.android.support:recyclerview-v7:${supportLibraryVersion}"
+    implementation "com.android.support:animated-vector-drawable:${supportLibraryVersion}"
+    implementation "com.android.support:design:${supportLibraryVersion}"
 
     debugImplementation "io.palaima.debugdrawer:debugdrawer:${debugDrawerVersion}"
     releaseImplementation "io.palaima.debugdrawer:debugdrawer-no-op:${debugDrawerVersion}"
@@ -149,20 +149,24 @@ dependencies {
 
     // Log
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-        transitive = true;
+        transitive = true
     }
 
     // UI
     implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
 
     // Helpers
-    implementation 'com.jakewharton:butterknife:8.5.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    implementation 'com.karumi:dexter:4.1.0'
 
     // Dragonfly Library
     implementation project(":library")
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    // Tests
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    testImplementation 'junit:junit:4.12'
 }
 
 android.applicationVariants.all { variant ->
