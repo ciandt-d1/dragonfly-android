@@ -52,6 +52,14 @@ class ModelSelectionViewHolder(itemView: View, val itemClick: (Model) -> Unit) :
         setOnClickListener {
             itemClick(item)
         }
+
+        if (resources.configuration.fontScale > 1) {
+
+            icon.visibility = View.GONE
+
+            download.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+            download.compoundDrawablePadding = 0
+        }
     }
 
     companion object {
