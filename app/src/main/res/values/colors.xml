@@ -16,4 +16,11 @@
     <color name="model_selection_item_downloading">#AAAAAA</color>
     <color name="model_selection_item_downloaded">#3DBBC1</color>
     <color name="model_selection_item_download_background">#FFFFFF</color>
+
+    <color name="about_title">#212121</color>
+    <color name="about_description">#757575</color>
+    <color name="about_privacy">@color/colorAccent</color>
+    <color name="about_line">#e0e0e0</color>
+    <color name="about_powered">#9E9E9E</color>
+
 </resources>
