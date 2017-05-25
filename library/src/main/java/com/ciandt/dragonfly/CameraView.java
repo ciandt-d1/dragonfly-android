@@ -4,6 +4,7 @@ import android.content.Context;
 import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Size;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -14,11 +15,14 @@ import java.util.TimerTask;
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback, Camera.PreviewCallback {
 
     private static final String LOG_TAG = CameraView.class.getSimpleName();
+    public static final int CAMERA_ROTATION = 90;
 
     private Camera camera;
     private LensViewCallback callback;
 
     private int frameTimeInterval = 1000;
+
+    private Camera.Size previewSize;
 
 
     public CameraView(Context context) {
@@ -40,7 +44,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
             throw new Exception("Failed to open Camera");
         }
 
-        camera.setDisplayOrientation(90);
+        camera.setDisplayOrientation(CAMERA_ROTATION);
         getHolder().addCallback(this);
     }
 
@@ -50,6 +54,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
             camera = null;
             getHolder().removeCallback(this);
         }
+    }
+
+    public int getCameraRotation() {
+        return CAMERA_ROTATION;
     }
 
 
@@ -69,6 +77,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
             camera.setPreviewDisplay(getHolder());
             camera.startPreview();
             capture();
+
+            if (callback != null) {
+                callback.onPreviewStarted(convertSize(previewSize), CAMERA_ROTATION);
+            }
         } catch (IOException e) {
             Log.e(LOG_TAG, e.getMessage());
         }
@@ -96,10 +108,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         }
 
         // Preview Size
-        Camera.Size size = getBestPreviewSize(width, height, parameters);
-        parameters.setPreviewSize(size.width, size.height);
-        Log.d(LOG_TAG, "getBestPreviewSize: " + size.width);
-        Log.d(LOG_TAG, "getBestPreviewSize: " + size.height);
+        previewSize = getBestPreviewSize(width, height, parameters);
+        parameters.setPreviewSize(previewSize.width, previewSize.height);
+        Log.d(LOG_TAG, "getBestPreviewSize: " + previewSize.width);
+        Log.d(LOG_TAG, "getBestPreviewSize: " + previewSize.height);
 
         camera.setParameters(parameters);
     }
@@ -148,6 +160,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         stopPreview();
     }
 
+    public Camera.Size getPreviewSize() {
+        return previewSize;
+    }
+
     /**
      * Camera Preview Callback
      */
@@ -163,7 +179,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
             return;
         }
 
-        callback.onFrameReady(data);
+        Camera.Parameters parameters = camera.getParameters();
+        Size size = new Size(parameters.getPreviewSize().width, parameters.getPreviewSize().height);
+
+        callback.onFrameReady(data, convertSize(parameters.getPreviewSize()), parameters.getPreviewFormat());
 
         new Timer().schedule(new TimerTask() {
 
@@ -174,12 +193,17 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         }, frameTimeInterval);
     }
 
+    private Size convertSize(Camera.Size cameraSize) {
+        return new Size(cameraSize.width, cameraSize.height);
+    }
 
     /**
      * Callback interface
      */
     public interface LensViewCallback {
 
-        void onFrameReady(byte[] data);
+        void onFrameReady(byte[] data, Size previewSize, int previewFormat);
+
+        void onPreviewStarted(Size previewSize, int rotation);
     }
 }

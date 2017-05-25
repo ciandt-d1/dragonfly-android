@@ -1,6 +1,7 @@
 package com.ciandt.dragonfly.example;
 
 import android.os.Bundle;
+import android.util.Size;
 import android.widget.TextView;
 
 import com.ciandt.dragonfly.CameraView;
@@ -42,8 +43,13 @@ public class RealTimeActivity extends BaseActivity implements CameraView.LensVie
     }
 
     @Override
-    public void onFrameReady(byte[] data) {
+    public void onFrameReady(byte[] data, Size size, int previewFormat) {
         frame++;
-        logView.setText("frame: " + frame);
+        logView.setText(String.format("frame: %s | size: %s | format: %s", frame, size, previewFormat));
+    }
+
+    @Override
+    public void onPreviewStarted(Size previewSize, int rotation) {
+
     }
 }
