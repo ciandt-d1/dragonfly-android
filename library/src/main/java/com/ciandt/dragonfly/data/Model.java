@@ -101,15 +101,15 @@ public class Model implements Parcelable {
 
     @Override
     public String toString() {
-        return "Model{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", version=" + version +
-                ", size=" + size +
-                ", description='" + description + '\'' +
-                ", colors=" + Arrays.toString(colors) +
-                ", status=" + status +
-                '}';
+        return "Model {" +
+                "\n\tid='" + id + '\'' +
+                ",\n\tname='" + name + '\'' +
+                ",\n\tversion=" + version +
+                ",\n\tsize=" + size +
+                ",\n\tdescription='" + description + '\'' +
+                ",\n\tcolors=" + Arrays.toString(colors) +
+                ",\n\tstatus=" + status +
+                "\n}";
     }
 
     /**
