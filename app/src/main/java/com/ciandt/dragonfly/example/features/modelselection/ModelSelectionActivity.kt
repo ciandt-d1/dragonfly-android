@@ -7,9 +7,9 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
 import android.widget.Button
 import com.ciandt.dragonfly.data.Model
-import com.ciandt.dragonfly.example.BaseActivity
 import com.ciandt.dragonfly.example.MainActivity
 import com.ciandt.dragonfly.example.R
+import com.ciandt.dragonfly.example.shared.BaseActivity
 
 
 class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
@@ -28,7 +28,8 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_model_selection)
 
-        presenter = ModelSelectionPresenter(this)
+        presenter = ModelSelectionPresenter()
+        presenter.attachView(this)
 
         setupList()
         setupAboutButton()
@@ -38,6 +39,16 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
         } else {
             presenter.getModelsList()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter.attachView(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter.detachView()
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {

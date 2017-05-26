@@ -3,6 +3,7 @@ package com.ciandt.dragonfly.example;
 import com.ciandt.dragonfly.Dragonfly;
 import com.ciandt.dragonfly.Recognition;
 import com.ciandt.dragonfly.data.Model;
+import com.ciandt.dragonfly.example.shared.BaseActivity;
 
 import android.Manifest;
 import android.content.Context;

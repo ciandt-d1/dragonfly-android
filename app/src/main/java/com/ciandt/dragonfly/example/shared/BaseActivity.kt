@@ -1,4 +1,4 @@
-package com.ciandt.dragonfly.example
+package com.ciandt.dragonfly.example.shared
 
 import android.app.Activity
 import android.content.Context

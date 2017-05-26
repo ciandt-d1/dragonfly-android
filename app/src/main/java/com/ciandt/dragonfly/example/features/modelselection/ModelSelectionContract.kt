@@ -1,6 +1,7 @@
 package com.ciandt.dragonfly.example.features.modelselection
 
 import com.ciandt.dragonfly.data.Model
+import com.ciandt.dragonfly.example.shared.BasePresenter
 
 interface ModelSelectionContract {
 
@@ -13,7 +14,7 @@ interface ModelSelectionContract {
         fun run(model: Model)
     }
 
-    interface Presenter {
+    interface Presenter : BasePresenter<View> {
 
         fun getModelsList()
 
