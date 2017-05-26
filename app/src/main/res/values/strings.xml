@@ -13,4 +13,16 @@
     <string name="model_selection_item_download">Download</string>
     <string name="model_selection_item_downloading">Downloading…</string>
     <string name="model_selection_item_downloaded">Let\'s start</string>
+
+    <string name="about_title">About Us</string>
+    <string name="about_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+        id elementum neque. Nulla eu libero at tellus egestas euismod nec sit amet justo. Sed quis
+        aliquam enim. Interdum et malesuada fames ac ante ipsum primis in faucibus. Proin euismod
+        nisl sit amet facilisis dapibus.
+    </string>
+    <string name="about_privacy">
+        <u>Privacy &amp; Policy</u>
+    </string>
+    <string name="about_privacy_url">http://www.ciandt.com</string>
+    <string name="about_powered">POWERED BY CIANDT</string>
 </resources>

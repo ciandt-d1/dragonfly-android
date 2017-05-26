@@ -30,4 +30,14 @@
     <dimen name="model_selection_item_download_padding_right">20dp</dimen>
     <dimen name="model_selection_item_download_drawable_padding">8dp</dimen>
 
+    <dimen name="about_title_height">56dp</dimen>
+    <dimen name="about_description_padding">24dp</dimen>
+    <dimen name="about_privacy_margin_top">8dp</dimen>
+    <dimen name="about_line_horizontal_margin">10dp</dimen>
+    <dimen name="about_line_height">1dp</dimen>
+
+    <dimen name="about_powered_height">56dp</dimen>
+    <dimen name="about_powered_horizontal_margin">10dp</dimen>
+    <dimen name="about_powered_drawable_padding">-32dp</dimen>
+
 </resources>

@@ -9,6 +9,7 @@ import android.widget.Button
 import com.ciandt.dragonfly.data.Model
 import com.ciandt.dragonfly.example.MainActivity
 import com.ciandt.dragonfly.example.R
+import com.ciandt.dragonfly.example.features.about.AboutActivity
 import com.ciandt.dragonfly.example.shared.BaseActivity
 
 
@@ -77,7 +78,8 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
     private fun setupAboutButton() {
         aboutButton = findViewById(R.id.about) as Button
         aboutButton.setOnClickListener {
-            presenter.getModelsList()
+            val intent = AboutActivity.create(this)
+            startActivity(intent)
         }
     }
 

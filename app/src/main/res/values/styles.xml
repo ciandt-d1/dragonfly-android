@@ -70,4 +70,29 @@
         <item name="android:maxLines">1</item>
     </style>
 
+    <style name="About.Title" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+        <item name="android:textColor">@color/about_title</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="About.Description" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+        <item name="android:textColor">@color/about_description</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:lineSpacingExtra">6dp</item>
+        <item name="android:padding">@dimen/about_description_padding</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="About.Privacy" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+        <item name="android:textColor">@color/about_privacy</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">@dimen/about_privacy_margin_top</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
 </resources>
