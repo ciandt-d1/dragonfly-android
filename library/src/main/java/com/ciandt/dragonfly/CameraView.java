@@ -24,6 +24,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
     private Camera.Size previewSize;
 
+    private boolean isPreviewActive = false;
+
 
     public CameraView(Context context) {
         super(context);
@@ -73,10 +75,16 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
      * Internal methods
      */
     private void startPreview() {
+        if (isPreviewActive) {
+            return;
+        }
+
         try {
             camera.setPreviewDisplay(getHolder());
             camera.startPreview();
             capture();
+
+            isPreviewActive = true;
 
             if (callback != null) {
                 callback.onPreviewStarted(convertSize(previewSize), CAMERA_ROTATION);
@@ -87,9 +95,15 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
     }
 
     private void stopPreview() {
+        if (!isPreviewActive) {
+            return;
+        }
+
         try {
             camera.setPreviewCallback(null);
             camera.stopPreview();
+
+            isPreviewActive = false;
         } catch (Exception e) {
             // This will happen when camera is not running
         }
@@ -101,6 +115,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         }
 
         Camera.Parameters parameters = camera.getParameters();
+        parameters.set("orientation", "portrait");
+        parameters.set("rotation", 0);
 
         // Focus
         if (parameters.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
@@ -150,6 +166,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
             return;
         }
 
+        if (isPreviewActive) {
+            stopPreview();
+        }
+
         stopPreview();
         configPreview(width, height);
         startPreview();
@@ -158,10 +178,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         stopPreview();
-    }
-
-    public Camera.Size getPreviewSize() {
-        return previewSize;
     }
 
     /**
@@ -180,9 +196,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         }
 
         Camera.Parameters parameters = camera.getParameters();
-        Size size = new Size(parameters.getPreviewSize().width, parameters.getPreviewSize().height);
-
-        callback.onFrameReady(data, convertSize(parameters.getPreviewSize()), parameters.getPreviewFormat());
+        callback.onFrameReady(data, convertSize(parameters.getPreviewSize()));
 
         new Timer().schedule(new TimerTask() {
 
@@ -202,7 +216,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
      */
     public interface LensViewCallback {
 
-        void onFrameReady(byte[] data, Size previewSize, int previewFormat);
+        void onFrameReady(byte[] data, Size previewSize);
 
         void onPreviewStarted(Size previewSize, int rotation);
     }

@@ -43,9 +43,9 @@ public class RealTimeActivity extends BaseActivity implements CameraView.LensVie
     }
 
     @Override
-    public void onFrameReady(byte[] data, Size size, int previewFormat) {
+    public void onFrameReady(byte[] data, Size size) {
         frame++;
-        logView.setText(String.format("frame: %s | size: %s | format: %s", frame, size, previewFormat));
+        logView.setText(String.format("frame: %s | size: %s", frame, size));
     }
 
     @Override

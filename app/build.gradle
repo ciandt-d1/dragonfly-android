@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.21.7'
+        classpath 'io.fabric.tools:gradle:1.22.1'
     }
 }
 
@@ -16,6 +16,7 @@ repositories {
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
 
 apply from: '../versions.gradle'
@@ -122,48 +123,55 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    implementation 'com.android.support:appcompat-v7:25.3.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-    implementation 'com.karumi:dexter:4.1.0'
 
-    testImplementation 'junit:junit:4.12'
+    def supportLibraryVersion = '25.3.1'
 
-    debugImplementation "io.palaima.debugdrawer:debugdrawer:${debugDrawerVersion}"
-    releaseImplementation "io.palaima.debugdrawer:debugdrawer-no-op:${debugDrawerVersion}"
-    debugImplementation "io.palaima.debugdrawer:debugdrawer-view:${debugDrawerVersion}"
-    releaseImplementation "io.palaima.debugdrawer:debugdrawer-view-no-op:${debugDrawerVersion}"
-    implementation "io.palaima.debugdrawer:debugdrawer-commons:${debugDrawerVersion}"
-    implementation "io.palaima.debugdrawer:debugdrawer-actions:${debugDrawerVersion}"
-    implementation "io.palaima.debugdrawer:debugdrawer-okhttp3:${debugDrawerVersion}"
-    implementation "io.palaima.debugdrawer:debugdrawer-glide:${debugDrawerVersion}"
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.facebook.stetho:stetho:1.5.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    compile "com.android.support:appcompat-v7:${supportLibraryVersion}"
+    compile "com.android.support:cardview-v7:${supportLibraryVersion}"
+    compile "com.android.support:recyclerview-v7:${supportLibraryVersion}"
+    compile "com.android.support:animated-vector-drawable:${supportLibraryVersion}"
+    compile "com.android.support:design:${supportLibraryVersion}"
+
+    debugCompile "io.palaima.debugdrawer:debugdrawer:${debugDrawerVersion}"
+    releaseCompile "io.palaima.debugdrawer:debugdrawer-no-op:${debugDrawerVersion}"
+    debugCompile "io.palaima.debugdrawer:debugdrawer-view:${debugDrawerVersion}"
+    releaseCompile "io.palaima.debugdrawer:debugdrawer-view-no-op:${debugDrawerVersion}"
+    compile "io.palaima.debugdrawer:debugdrawer-commons:${debugDrawerVersion}"
+    compile "io.palaima.debugdrawer:debugdrawer-actions:${debugDrawerVersion}"
+    compile "io.palaima.debugdrawer:debugdrawer-okhttp3:${debugDrawerVersion}"
+    compile "io.palaima.debugdrawer:debugdrawer-glide:${debugDrawerVersion}"
+
+    compile 'com.facebook.stetho:stetho:1.5.0'
 
     // Log
-    implementation('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-        transitive = true;
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true
     }
 
     // UI
-    implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
+    compile 'uk.co.chrisjenx:calligraphy:2.3.0'
 
     // Helpers
-    implementation 'com.jakewharton:butterknife:8.5.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile 'com.karumi:dexter:4.1.0'
 
     // Dragonfly Library
-    implementation project(":library")
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile project(":library")
+
+    // Tests
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    testCompile 'junit:junit:4.12'
 }
 
 android.applicationVariants.all { variant ->
     // Assigns a different version code for each output APK other than the universal APK.
-    variant.outputs.all { output ->
+    variant.outputs.each { output ->
 
         // Stores the value of ext.archsCodes that is associated with the ABI for this variant.
         // Determines the ABI for this variant and returns the mapped value.
@@ -176,11 +184,9 @@ android.applicationVariants.all { variant ->
         output.versionCodeOverride = archVersionCode * appVersionArchsMultiplier + variant.versionCode
 
         // Change filename of apk file
-        if (archCode == null) {
-            archCode = "universal"
-        }
-        def filename = "app-${variant.versionName}-$archVersionCode-$archCode-${variant.name}.apk"
-        outputFileName = filename
+        def version = variant.versionName + "-" + archVersionCode
+        def file = output.outputFile
+        output.outputFile = new File(file.parent, file.name.replace("app-", "app-" + version + "-"))
 
         // If universal, set APK path for Fabric Beta
         if (archVersionCode == 0) {

@@ -3,7 +3,7 @@
 .gradle/
 /build
 
-# Local configuration file (sdk path, etc)
+# Local configuration file (sdk modelPath, etc)
 local.properties
 fabric.properties
 .configs

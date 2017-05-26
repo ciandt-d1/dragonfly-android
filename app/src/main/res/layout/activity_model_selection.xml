@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".features.modelselection.ModelSelectionActivity">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/model_selection_title_margin_top"
+        android:layout_marginLeft="@dimen/model_selection_title_horizontal_margin"
+        android:layout_marginRight="@dimen/model_selection_title_horizontal_margin"
+        android:layout_marginStart="@dimen/model_selection_title_horizontal_margin"
+        android:layout_marginEnd="@dimen/model_selection_title_horizontal_margin"
+        style="@style/ModelSelection.Title"
+        android:text="@string/model_selection_title"
+    />
+
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/model_selection_subtitle_margin_top"
+        android:layout_marginLeft="@dimen/model_selection_subtitle_horizontal_margin"
+        android:layout_marginRight="@dimen/model_selection_subtitle_horizontal_margin"
+        android:layout_marginStart="@dimen/model_selection_subtitle_horizontal_margin"
+        android:layout_marginEnd="@dimen/model_selection_subtitle_horizontal_margin"
+        android:layout_below="@+id/title"
+        style="@style/ModelSelection.Subtitle"
+        android:text="@string/model_selection_subtitle"
+    />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/model_selection_list_height"
+        android:layout_marginTop="@dimen/model_selection_list_margin_top"
+        android:paddingLeft="@dimen/model_selection_list_horizontal_padding"
+        android:paddingRight="@dimen/model_selection_list_horizontal_padding"
+        android:layout_below="@+id/subtitle"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+    />
+
+
+    <View android:layout_width="match_parent"
+          android:layout_height="@dimen/model_selection_line_height"
+          android:layout_marginLeft="@dimen/model_selection_line_horizontal_margin"
+          android:layout_marginRight="@dimen/model_selection_line_horizontal_margin"
+          android:layout_above="@+id/about"
+          android:background="@color/model_selection_line"/>
+
+    <Button
+        android:id="@+id/about"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/model_selection_about_height"
+        android:layout_marginLeft="@dimen/model_selection_about_horizontal_margin"
+        android:layout_marginRight="@dimen/model_selection_about_horizontal_margin"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent"
+        android:drawablePadding="@dimen/model_selection_about_drawable_padding"
+        android:drawableStart="@drawable/ciandt_logo"
+        android:text="@string/model_selection_about"
+        android:textColor="@color/model_selection_about"
+    />
+
+</RelativeLayout>

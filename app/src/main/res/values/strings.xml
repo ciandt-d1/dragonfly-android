@@ -3,4 +3,14 @@
     <string name="app_version">App Version: %1$s (%2$d)</string>
     <string name="library_version">Dragonfly Library Version: %1$s (%2$d)</string>
     <string name="wait">Wait…</string>
+
+    <string name="model_selection_title">Dragonfly Lens</string>
+    <string name="model_selection_subtitle">Select a model and check what you can identify around
+        you
+    </string>
+    <string name="model_selection_about">About us</string>
+    <string name="model_selection_item_info">Ver. %1$04d - %2$s</string>
+    <string name="model_selection_item_download">Download</string>
+    <string name="model_selection_item_downloading">Downloading…</string>
+    <string name="model_selection_item_downloaded">Let\'s start</string>
 </resources>

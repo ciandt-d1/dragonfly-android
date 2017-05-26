@@ -14,7 +14,6 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
@@ -23,16 +22,21 @@
             android:value="${FABRIC_API_KEY}"/>
 
         <activity android:name=".MainActivity">
+
+        </activity>
+
+        <activity android:name="com.ciandt.dragonfly.example.features.modelselection.ModelSelectionActivity">
+        </activity>
+
+        <activity android:name=".RealTimeActivity">
+        </activity>
+
+        <activity android:name=".RealTimeRecognizerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity android:name=".RealTimeActivity">
-        </activity>
-
-        <activity android:name=".RealTimeRecognizerActivity">
         </activity>
     </application>
 
