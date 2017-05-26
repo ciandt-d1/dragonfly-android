@@ -7,9 +7,9 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
 import android.widget.Button
 import com.ciandt.dragonfly.data.Model
-import com.ciandt.dragonfly.example.MainActivity
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.features.about.AboutActivity
+import com.ciandt.dragonfly.example.features.realtime.RealTimeActivity
 import com.ciandt.dragonfly.example.shared.BaseActivity
 
 
@@ -103,7 +103,7 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
     }
 
     override fun run(model: Model) {
-        val intent = MainActivity.create(this, model)
+        val intent = RealTimeActivity.create(this, model)
         startActivity(intent)
     }
 }
