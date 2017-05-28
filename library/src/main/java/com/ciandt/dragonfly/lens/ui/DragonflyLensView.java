@@ -1,6 +1,8 @@
 package com.ciandt.dragonfly.lens.ui;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -9,6 +11,7 @@ import android.util.Size;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ciandt.dragonfly.CameraView;
@@ -30,8 +33,20 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
 
     private TextView labelView;
     private CameraView cameraView;
+    private ImageView ornamentView;
 
     private DragonflyLensContract.LensPresenter lensPresenter;
+
+    private static final ImageView.ScaleType[] SCALE_TYPES = {
+            ImageView.ScaleType.MATRIX,
+            ImageView.ScaleType.FIT_XY,
+            ImageView.ScaleType.FIT_START,
+            ImageView.ScaleType.FIT_CENTER,
+            ImageView.ScaleType.FIT_END,
+            ImageView.ScaleType.CENTER,
+            ImageView.ScaleType.CENTER_CROP,
+            ImageView.ScaleType.CENTER_INSIDE
+    };
 
     @Override
     public void setModel(Model model) {
@@ -75,19 +90,19 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
 
     public DragonflyLensView(Context context) {
         super(context);
-        initialize(context);
+        initialize(context, null);
     }
 
     public DragonflyLensView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initialize(context);
+        initialize(context, attrs);
     }
 
     public DragonflyLensView(Context context,
                              AttributeSet attrs,
                              int defStyle) {
         super(context, attrs, defStyle);
-        initialize(context);
+        initialize(context, attrs);
     }
 
     /**
@@ -95,23 +110,42 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
      *
      * @param context the current context for the view.
      */
-    private void initialize(Context context) {
+    private void initialize(Context context, AttributeSet attrs) {
         DragonflyLogger.debug(LOG_TAG, "initialize()");
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.dragonfly_lens_view, this);
 
-        lensPresenter = new DragonflyLensPresenter(new DragonflyLensInteractor(getContext()));
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-
         labelView = (TextView) this.findViewById(R.id.labelView);
         cameraView = (CameraView) this.findViewById(R.id.cameraView);
+        ornamentView = (ImageView) this.findViewById(R.id.ornamentView);
+
+        lensPresenter = new DragonflyLensPresenter(new DragonflyLensInteractor(getContext()));
+
+        processAttributeSet(context, attrs);
     }
 
+    private void processAttributeSet(Context context, AttributeSet attrs) {
+        if (attrs == null) {
+            return;
+        }
+
+        TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.DragonflyLensView, 0, 0);
+        try {
+            Drawable ornamentDrawable = typedArray.getDrawable(R.styleable.DragonflyLensView_cameraOrnament);
+            if (ornamentDrawable != null) {
+                ornamentView.setImageDrawable(ornamentDrawable);
+                ornamentView.setVisibility(VISIBLE);
+            }
+
+            final int scaleTypeIndex = typedArray.getInt(R.styleable.DragonflyLensView_cameraOrnamentScaleType, -1);
+            if (scaleTypeIndex >= 0 && scaleTypeIndex <= SCALE_TYPES.length) {
+                ornamentView.setScaleType(SCALE_TYPES[scaleTypeIndex]);
+            }
+        } finally {
+            typedArray.recycle();
+        }
+    }
 
     public void start() {
         lensPresenter.attach(this);
