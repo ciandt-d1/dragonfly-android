@@ -19,6 +19,14 @@ public class Model implements Parcelable {
     private String[] colors;
     private int status = STATUS_DEFAULT;
 
+    private String modelPath;
+    private String labelsPath;
+
+    private int inputSize;
+    private int imageMean;
+    private float imageStd;
+    private String inputName;
+    private String outputName;
 
     public Model(String id) {
         this.id = id;
@@ -32,48 +40,54 @@ public class Model implements Parcelable {
         return name;
     }
 
-    public void setName(String name) {
+    public Model setName(String name) {
         this.name = name;
+        return this;
     }
 
     public int getVersion() {
         return version;
     }
 
-    public void setVersion(int version) {
+    public Model setVersion(int version) {
         this.version = version;
+        return this;
     }
 
     public long getSize() {
         return size;
     }
 
-    public void setSize(long size) {
+    public Model setSize(long size) {
         this.size = size;
+        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public Model setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public String[] getColors() {
         return colors;
     }
 
-    public void setColors(String[] colors) {
+    public Model setColors(String[] colors) {
         this.colors = colors;
+        return this;
     }
 
     public int getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public Model setStatus(int status) {
         this.status = status;
+        return this;
     }
 
     public boolean isDownloading() {
@@ -82,6 +96,70 @@ public class Model implements Parcelable {
 
     public boolean isDownloaded() {
         return status == STATUS_DOWNLOADED;
+    }
+
+
+    public String getModelPath() {
+        return modelPath;
+    }
+
+    public Model setModelPath(String modelPath) {
+        this.modelPath = modelPath;
+        return this;
+    }
+
+    public String getLabelsPath() {
+        return labelsPath;
+    }
+
+    public Model setLabelsPath(String labelsPath) {
+        this.labelsPath = labelsPath;
+        return this;
+    }
+
+    public int getInputSize() {
+        return inputSize;
+    }
+
+    public Model setInputSize(int inputSize) {
+        this.inputSize = inputSize;
+        return this;
+    }
+
+    public int getImageMean() {
+        return imageMean;
+    }
+
+    public Model setImageMean(int imageMean) {
+        this.imageMean = imageMean;
+        return this;
+    }
+
+    public float getImageStd() {
+        return imageStd;
+    }
+
+    public Model setImageStd(float imageStd) {
+        this.imageStd = imageStd;
+        return this;
+    }
+
+    public String getInputName() {
+        return inputName;
+    }
+
+    public Model setInputName(String inputName) {
+        this.inputName = inputName;
+        return this;
+    }
+
+    public String getOutputName() {
+        return outputName;
+    }
+
+    public Model setOutputName(String outputName) {
+        this.outputName = outputName;
+        return this;
     }
 
     @Override
@@ -109,12 +187,16 @@ public class Model implements Parcelable {
                 ", description='" + description + '\'' +
                 ", colors=" + Arrays.toString(colors) +
                 ", status=" + status +
+                ", modelPath='" + modelPath + '\'' +
+                ", labelsPath='" + labelsPath + '\'' +
+                ", inputSize=" + inputSize +
+                ", imageMean=" + imageMean +
+                ", imageStd=" + imageStd +
+                ", inputName='" + inputName + '\'' +
+                ", outputName='" + outputName + '\'' +
                 '}';
     }
 
-    /**
-     * Parcelable methods
-     */
     @Override
     public int describeContents() {
         return 0;
@@ -129,6 +211,13 @@ public class Model implements Parcelable {
         dest.writeString(this.description);
         dest.writeStringArray(this.colors);
         dest.writeInt(this.status);
+        dest.writeString(this.modelPath);
+        dest.writeString(this.labelsPath);
+        dest.writeInt(this.inputSize);
+        dest.writeInt(this.imageMean);
+        dest.writeFloat(this.imageStd);
+        dest.writeString(this.inputName);
+        dest.writeString(this.outputName);
     }
 
     protected Model(Parcel in) {
@@ -139,6 +228,13 @@ public class Model implements Parcelable {
         this.description = in.readString();
         this.colors = in.createStringArray();
         this.status = in.readInt();
+        this.modelPath = in.readString();
+        this.labelsPath = in.readString();
+        this.inputSize = in.readInt();
+        this.imageMean = in.readInt();
+        this.imageStd = in.readFloat();
+        this.inputName = in.readString();
+        this.outputName = in.readString();
     }
 
     public static final Creator<Model> CREATOR = new Creator<Model>() {

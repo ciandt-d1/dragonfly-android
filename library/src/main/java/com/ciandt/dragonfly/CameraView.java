@@ -1,12 +1,14 @@
 package com.ciandt.dragonfly;
 
 import android.content.Context;
+import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Size;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 
 import java.io.IOException;
 import java.util.Timer;
@@ -90,7 +92,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
                 callback.onPreviewStarted(convertSize(previewSize), CAMERA_ROTATION);
             }
         } catch (IOException e) {
-            Log.e(LOG_TAG, e.getMessage());
+            DragonflyLogger.error(LOG_TAG, e.getMessage());
         }
     }
 
@@ -115,8 +117,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         }
 
         Camera.Parameters parameters = camera.getParameters();
-        parameters.set("orientation", "portrait");
-        parameters.set("rotation", 0);
+        parameters.setPreviewFormat(ImageFormat.NV21);
 
         // Focus
         if (parameters.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
@@ -126,8 +127,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         // Preview Size
         previewSize = getBestPreviewSize(width, height, parameters);
         parameters.setPreviewSize(previewSize.width, previewSize.height);
-        Log.d(LOG_TAG, "getBestPreviewSize: " + previewSize.width);
-        Log.d(LOG_TAG, "getBestPreviewSize: " + previewSize.height);
+        DragonflyLogger.debug(LOG_TAG, "getBestPreviewSize: " + previewSize.width);
+        DragonflyLogger.debug(LOG_TAG, "getBestPreviewSize: " + previewSize.height);
 
         camera.setParameters(parameters);
     }

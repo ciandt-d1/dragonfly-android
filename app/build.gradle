@@ -167,6 +167,8 @@ dependencies {
     })
 
     testCompile 'junit:junit:4.12'
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testCompile 'org.amshove.kluent:kluent:1.20'
 }
 
 android.applicationVariants.all { variant ->
@@ -213,3 +215,21 @@ task setupCrashlytics(type: Exec) {
 }
 
 preBuild.dependsOn(setupFabric, setupCrashlytics)
+
+// Kotlin Support
+// - Unit tests
+task copyTestClasses(type: Copy) {
+    from "build/tmp/kotlin-classes/debugUnitTest"
+    into "build/intermediates/classes/debug"
+}
+
+// - Instrumented test
+task copySdkClasses(type: Copy) {
+    from "build/tmp/kotlin-classes/debug"
+    into "build/intermediates/classes/debug"
+}
+
+afterEvaluate {
+    compileDebugUnitTestSources.dependsOn copyTestClasses
+    compileDebugAndroidTestSources.dependsOn copySdkClasses
+}

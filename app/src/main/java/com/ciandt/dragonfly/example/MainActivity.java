@@ -1,10 +1,5 @@
 package com.ciandt.dragonfly.example;
 
-import com.ciandt.dragonfly.Dragonfly;
-import com.ciandt.dragonfly.Recognition;
-import com.ciandt.dragonfly.data.Model;
-import com.ciandt.dragonfly.example.shared.BaseActivity;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +13,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ciandt.dragonfly.Dragonfly;
+import com.ciandt.dragonfly.data.Model;
+import com.ciandt.dragonfly.example.shared.BaseActivity;
+import com.ciandt.dragonfly.tensorflow.Classifier;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -113,7 +112,7 @@ public class MainActivity extends BaseActivity {
 
                                     Log.d(MainActivity.class.getSimpleName(), "classifying...");
 
-                                    final List<Recognition> classify = Dragonfly.classify(getAssets(), model, label, bitmap);
+                                    final List<Classifier.Recognition> classify = Dragonfly.classify(getAssets(), model, label, bitmap);
 
                                     runOnUiThread(new Runnable() {
 

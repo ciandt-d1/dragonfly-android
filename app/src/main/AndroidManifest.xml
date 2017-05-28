@@ -5,9 +5,6 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-
-    <uses-feature android:name="android.hardware.camera"/>
 
     <application
         android:name=".DragonflyApplication"
@@ -21,15 +18,14 @@
             android:name="io.fabric.ApiKey"
             android:value="${FABRIC_API_KEY}"/>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"/>
 
+        <activity android:name=".features.modelselection.ModelSelectionActivity">
         </activity>
 
-        <activity android:name="com.ciandt.dragonfly.example.features.modelselection.ModelSelectionActivity">
-        </activity>
+        <activity android:name=".features.about.AboutActivity"/>
 
-        <activity android:name=".RealTimeActivity">
-        </activity>
+        <activity android:name=".features.realtime.RealTimeActivity"/>
 
         <activity android:name=".RealTimeRecognizerActivity">
             <intent-filter>
@@ -38,6 +34,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

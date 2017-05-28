@@ -5,6 +5,7 @@ import android.util.Size;
 import android.widget.TextView;
 
 import com.ciandt.dragonfly.CameraView;
+import com.ciandt.dragonfly.example.shared.BaseActivity;
 
 public class RealTimeActivity extends BaseActivity implements CameraView.LensViewCallback {
 
