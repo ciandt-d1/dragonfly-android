@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:tools="http://schemas.android.com/tools"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:background="@android:color/holo_orange_light">
+
+    <com.ciandt.dragonfly.CameraView
+        android:id="@+id/cameraView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:background="@android:color/black"/>
+
+    <ImageView android:id="@+id/grid"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_centerInParent="true"
+               android:scaleType="center"
+               android:src="@drawable/dragonfly_lens_grid"/>
+
+    <TextView android:id="@+id/labelView"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/Dragonfly.Lens.Label"
+              android:background="@drawable/rounded_corner"
+              android:layout_gravity="center"
+              android:visibility="gone"
+              tools:text="Hammer 25%"
+              tools:visibility="visible"/>
+</merge>
