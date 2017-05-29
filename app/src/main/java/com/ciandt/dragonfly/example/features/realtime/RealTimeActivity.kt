@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.widget.TextView
 import com.ciandt.dragonfly.data.Model
 import com.ciandt.dragonfly.example.R
-import com.ciandt.dragonfly.example.shared.BaseActivity
+import com.ciandt.dragonfly.example.shared.FullScreenActivity
 
-class RealTimeActivity : BaseActivity(), RealTimeContract.View {
+class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
 
     private lateinit var presenter: RealTimeContract.Presenter
 
