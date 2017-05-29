@@ -17,6 +17,7 @@ import java.util.TimerTask;
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback, Camera.PreviewCallback {
 
     private static final String LOG_TAG = CameraView.class.getSimpleName();
+
     public static final int CAMERA_ROTATION = 90;
 
     private Camera camera;
@@ -43,6 +44,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
 
     public void start() throws Exception {
+        DragonflyLogger.debug(LOG_TAG, String.format("%s - start()", LOG_TAG));
+
         camera = Camera.open();
         if (camera == null) {
             throw new Exception("Failed to open Camera");
@@ -53,11 +56,17 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
     }
 
     public void stop() {
-        if (camera != null) {
-            camera.release();
-            camera = null;
-            getHolder().removeCallback(this);
+        DragonflyLogger.debug(LOG_TAG, String.format("%s - stop()", LOG_TAG));
+
+        if (camera == null) {
+            DragonflyLogger.debug(LOG_TAG, String.format("%s - stop() - camera is null (already stopped)", LOG_TAG));
         }
+
+        stopPreview();
+
+        camera.release();
+        camera = null;
+        getHolder().removeCallback(this);
     }
 
     public int getCameraRotation() {
@@ -77,16 +86,19 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
      * Internal methods
      */
     private void startPreview() {
+        DragonflyLogger.debug(LOG_TAG, String.format("%s - startPreview()", LOG_TAG));
+
         if (isPreviewActive) {
+            DragonflyLogger.debug(LOG_TAG, String.format("%s - startPreview() - preview is already active. Skipping", LOG_TAG));
             return;
         }
 
         try {
             camera.setPreviewDisplay(getHolder());
             camera.startPreview();
-            capture();
-
             isPreviewActive = true;
+
+            capture();
 
             if (callback != null) {
                 callback.onPreviewStarted(convertSize(previewSize), CAMERA_ROTATION);
@@ -97,17 +109,22 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
     }
 
     private void stopPreview() {
+        DragonflyLogger.debug(LOG_TAG, String.format("%s - stopPreview()", LOG_TAG));
+
         if (!isPreviewActive) {
+            DragonflyLogger.debug(LOG_TAG, String.format("%s - stopPreview() - Preview is already inactive. Skipping.", LOG_TAG));
             return;
         }
 
         try {
+            isPreviewActive = false;
+
             camera.setPreviewCallback(null);
             camera.stopPreview();
 
-            isPreviewActive = false;
         } catch (Exception e) {
             // This will happen when camera is not running
+            DragonflyLogger.error(LOG_TAG, e);
         }
     }
 
@@ -159,16 +176,15 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
      */
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        DragonflyLogger.debug(LOG_TAG, String.format("%s - surfaceCreated()", LOG_TAG));
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        DragonflyLogger.debug(LOG_TAG, String.format("%s - surfaceChanged()", LOG_TAG));
+
         if (holder.getSurface() == null) {
             return;
-        }
-
-        if (isPreviewActive) {
-            stopPreview();
         }
 
         stopPreview();
@@ -178,6 +194,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        DragonflyLogger.debug(LOG_TAG, String.format("%s - surfaceDestroyed()", LOG_TAG));
         stopPreview();
     }
 
@@ -185,7 +202,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
      * Camera Preview Callback
      */
     private void capture() {
-        if (camera != null) {
+        DragonflyLogger.debug(LOG_TAG, String.format("%s - capture() - isPreviewActive: %s", LOG_TAG, isPreviewActive));
+
+        if (camera != null && isPreviewActive) {
             camera.setOneShotPreviewCallback(this);
         }
     }

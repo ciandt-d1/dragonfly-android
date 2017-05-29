@@ -48,11 +48,13 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
             ImageView.ScaleType.CENTER_INSIDE
     };
 
-    @Override
-    public void setModel(Model model) {
+
+    private void loadModel(Model model) {
+        DragonflyLogger.debug(LOG_TAG, String.format("%s.loadModel(%s)", LOG_TAG, model));
+
         this.model = model;
 
-        lensPresenter.setupModel(model);
+        lensPresenter.loadModel(model);
     }
 
     @Override
@@ -147,14 +149,23 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
         }
     }
 
-    public void start() {
+    @Override
+    public void start(Model model) {
+        loadModel(model);
         lensPresenter.attach(this);
         startCameraView();
+
+        // Not sure why, but this guarantees the camera works after turning the screen off and then
+        // back on.
+        cameraView.setVisibility(VISIBLE);
     }
 
+    @Override
     public void stop() {
         lensPresenter.detach();
         stopCameraView();
+
+        cameraView.setVisibility(GONE);
     }
 
     private void startCameraView() {

@@ -3,13 +3,12 @@
        xmlns:tools="http://schemas.android.com/tools"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       android:background="@android:color/holo_orange_light">
+       android:background="@color/dragonfly_lens_view_background">
 
     <com.ciandt.dragonfly.CameraView
         android:id="@+id/cameraView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:background="@android:color/black"/>
+        android:layout_height="match_parent"/>
 
     <ImageView android:id="@+id/ornamentView"
                android:layout_width="match_parent"

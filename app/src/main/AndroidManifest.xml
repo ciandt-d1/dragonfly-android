@@ -25,9 +25,11 @@
 
         <activity android:name=".features.about.AboutActivity"/>
 
-        <activity android:name=".features.realtime.RealTimeActivity"/>
+        <activity android:name=".features.realtime.RealTimeActivity"
+                  android:screenOrientation="portrait"/>
 
-        <activity android:name=".RealTimeRecognizerActivity">
+        <activity android:name=".RealTimeRecognizerActivity"
+                  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

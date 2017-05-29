@@ -20,7 +20,9 @@ public interface DragonflyLensContract {
 
     interface LensView extends BaseViewContract {
 
-        void setModel(Model model);
+        void start(Model model);
+
+        void stop();
 
         void setLabel(String label);
 
@@ -35,7 +37,7 @@ public interface DragonflyLensContract {
 
     interface LensPresenter extends BasePresenterContract<LensView> {
 
-        void setupModel(Model model);
+        void loadModel(Model model);
 
         void analyzeBitmap(Bitmap bitmap);
 
@@ -52,7 +54,9 @@ public interface DragonflyLensContract {
 
     interface LensInteractorContract extends BaseInteractorContract<LensPresenter> {
 
-        void setupModel(Model model);
+        void loadModel(Model model);
+
+        void releaseModel();
 
         void analyzeBitmap(Bitmap bitmap);
 

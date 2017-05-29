@@ -2,8 +2,10 @@ package com.ciandt.dragonfly.example;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import com.ciandt.dragonfly.data.Model;
+import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.example.shared.BaseActivity;
 import com.ciandt.dragonfly.lens.ui.DragonflyLensView;
 import com.karumi.dexter.Dexter;
@@ -34,12 +36,15 @@ public class RealTimeRecognizerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_real_time_recognizer);
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         dragonflyLensView = (DragonflyLensView) findViewById(R.id.dragonFlyLens);
-        dragonflyLensView.setModel(model());
     }
 
     @Override
     protected void onResume() {
+        DragonflyLogger.INSTANCE.debug(LOG_TAG, "RealTimeRecognizerActivity.onResume()");
+
         super.onResume();
 
         Dexter.withActivity(this)
@@ -61,7 +66,7 @@ public class RealTimeRecognizerActivity extends BaseActivity {
                                     .build();
                 } else {
                     if (dragonflyLensView != null) {
-                        dragonflyLensView.start();
+                        dragonflyLensView.start(model());
                     }
                 }
             }
@@ -75,6 +80,8 @@ public class RealTimeRecognizerActivity extends BaseActivity {
 
     @Override
     protected void onPause() {
+        DragonflyLogger.INSTANCE.debug(LOG_TAG, "RealTimeRecognizerActivity.onPause()");
+
         super.onPause();
 
         if (dragonflyLensView != null) {

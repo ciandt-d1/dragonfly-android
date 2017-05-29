@@ -19,9 +19,15 @@ public class DragonflyLensPresenter extends AbstractPresenter<DragonflyLensContr
 
     private static final String LOG_TAG = DragonflyLensPresenter.class.getSimpleName();
 
+    private static final int MAX_MODEL_LOADING_ATTEMPTS = 5;
+
     private float confidenceThreshold = 0f;
 
     private DragonflyLensContract.LensInteractorContract interactor;
+
+    private Model loadedModel;
+
+    private int modelLoadingAttempts = 0;
 
     public DragonflyLensPresenter(DragonflyLensContract.LensInteractorContract interactor) {
         if (interactor == null) {
@@ -45,13 +51,27 @@ public class DragonflyLensPresenter extends AbstractPresenter<DragonflyLensContr
     }
 
     @Override
-    public void setupModel(Model model) {
+    public void detach() {
+        super.detach();
+
+        loadedModel = null;
+        interactor.releaseModel();
+    }
+
+    @Override
+    public void loadModel(Model model) {
         if (model == null) {
-            DragonflyLogger.warn(LOG_TAG, "setupModel() called with null argument.");
+            DragonflyLogger.warn(LOG_TAG, "loadModel() called with null argument.");
             return;
         }
 
-        interactor.setupModel(model);
+        if (model.equals(this.loadedModel)) {
+            DragonflyLogger.info(LOG_TAG, "This loadedModel is already currently setup. Ignoring it.");
+            return;
+        }
+
+        modelLoadingAttempts = 0;
+        interactor.loadModel(model);
     }
 
     @Override
@@ -105,16 +125,27 @@ public class DragonflyLensPresenter extends AbstractPresenter<DragonflyLensContr
             return;
         }
 
+        loadedModel = model;
         view.onModelReady(model);
     }
 
     @Override
     public void onModelFailure(DragonflyModelException e) {
-        if (!hasViewAttached()) {
-            return;
-        }
+        if (e.getModel() != null) {
+            if (modelLoadingAttempts == MAX_MODEL_LOADING_ATTEMPTS) {
+                String message = String.format("Failed to load loadedModel %s after %s attempts", loadedModel, modelLoadingAttempts);
+                throw new DragonflyModelException(message, e, e.getModel());
+            }
 
-        view.onModelFailure(e);
+            DragonflyLogger.warn(LOG_TAG, String.format("Failed to load loadedModel. Retrying with %s", e.getModel()));
+            modelLoadingAttempts++;
+            interactor.loadModel(e.getModel());
+            return;
+        } else {
+            if (hasViewAttached()) {
+                view.onModelFailure(e);
+            }
+        }
     }
 
     private int formatConfidence(float confidence) {

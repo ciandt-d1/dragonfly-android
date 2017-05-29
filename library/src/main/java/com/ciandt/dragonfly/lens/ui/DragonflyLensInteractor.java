@@ -50,18 +50,18 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
     }
 
     @Override
-    public void setupModel(Model model) {
+    public void loadModel(Model model) {
         if (model == null) {
             throw new IllegalArgumentException("model can't be null.");
         }
 
         if (model.equals(this.model)) {
-            DragonflyLogger.debug(LOG_TAG, "This model is already currently setup. Ignoring it.");
+            DragonflyLogger.info(LOG_TAG, "This model is already currently setup. Ignoring it.");
             return;
         }
 
         if (loadModelTask != null && !loadModelTask.isCancelled()) {
-            DragonflyLogger.debug(LOG_TAG, "LoadModelTask in progress. Canceling it.");
+            DragonflyLogger.debug(LOG_TAG, "LoadModelTask is not cancelled. Cancelling it..");
             loadModelTask.cancel(true);
         }
 
@@ -70,13 +70,27 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
     }
 
     @Override
+    public void releaseModel() {
+        model = null;
+
+        if (classifier != null) {
+            classifier.close();
+        }
+    }
+
+    @Override
     public void analyzeBitmap(final Bitmap bitmap) {
+        if (!isModelLoaded()) {
+            DragonflyLogger.warn(LOG_TAG, "No model loaded. Skipping analyzeBitmap() call.");
+            return;
+        }
+
         if (bitmap == null) {
             throw new IllegalArgumentException("bitmap can't be null.");
         }
 
         if (analyzeBitmapTask != null && AsyncTask.Status.RUNNING.equals(analyzeBitmapTask.getStatus())) {
-            DragonflyLogger.debug(LOG_TAG, "AnalyzeBitmapTask is running. Skiping this round.");
+            DragonflyLogger.debug(LOG_TAG, "AnalyzeBitmapTask is running. Skipping this round.");
             return;
         }
 
@@ -86,12 +100,17 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
     @Override
     public void analyzeYUVNV21Picture(byte[] data, int width, int height) {
+        if (!isModelLoaded()) {
+            DragonflyLogger.warn(LOG_TAG, "No model loaded. Skipping analyzeYUVNV21Picture() call.");
+            return;
+        }
+
         if (data == null) {
             throw new IllegalArgumentException("data can't be null.");
         }
 
         if (analyzeYUVN21Task != null && AsyncTask.Status.RUNNING.equals(analyzeYUVN21Task.getStatus())) {
-            DragonflyLogger.debug(LOG_TAG, "AnalyzeYUVN21Task is running. Skiping this round.");
+            DragonflyLogger.debug(LOG_TAG, "AnalyzeYUVN21Task is running. Skipping this round.");
             return;
         }
 
@@ -99,6 +118,10 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
         AnalyzeYUVN21Task.TaskParams taskParams = new AnalyzeYUVN21Task.TaskParams(data, width, height);
         AsyncTaskCompat.executeParallel(analyzeYUVN21Task, taskParams);
+    }
+
+    private boolean isModelLoaded() {
+        return model != null;
     }
 
     private static class LoadModelTask extends AsyncTask<Model, Void, AsyncTaskResult<Model, DragonflyModelException>> {
@@ -131,7 +154,7 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
             } catch (Exception e) {
                 String errorMessage = String.format("Failed to load model %s at %s", model.getName(), model.getModelPath());
 
-                return new AsyncTaskResult<>(null, new DragonflyModelException(errorMessage, e));
+                return new AsyncTaskResult<>(null, new DragonflyModelException(errorMessage, e, model));
             }
         }
 
@@ -220,6 +243,11 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
                 final Canvas canvas = new Canvas(croppedBitmap);
                 canvas.drawBitmap(bitmap, frameToCropTransform, null);
+
+                DragonflyLogger.debug(LOG_TAG, "Saving bitmaps to disk.");
+                ImageUtils.saveBitmap(bitmap, "original.png");
+                ImageUtils.saveBitmap(croppedBitmap, "cropped.png");
+
 
                 List<Classifier.Recognition> results = interactor.classifier.recognizeImage(croppedBitmap);
 
