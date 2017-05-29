@@ -2,6 +2,7 @@ package com.ciandt.dragonfly.helpers;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -21,7 +22,7 @@ public class YUVNV21ToRGBA888Converter {
         bitmapManager = new BitmapManager();
     }
 
-    public Bitmap convert(byte[] data, int width, int height, Bitmap.Config config) {
+    public Bitmap convert(byte[] data, int width, int height, Bitmap.Config config, int rotation) {
         ScriptIntrinsicYuvToRGB yuvToRgbIntrinsic = ScriptIntrinsicYuvToRGB.create(renderScript, Element.U8_4(renderScript));
 
         Type.Builder yuvType = new Type.Builder(renderScript, Element.U8(renderScript)).setX(data.length);
@@ -38,6 +39,18 @@ public class YUVNV21ToRGBA888Converter {
         Bitmap bitmap = bitmapManager.get(width, height, config);
         out.copyTo(bitmap);
 
+        if (rotation != 0) {
+            bitmap = rotate(bitmap, rotation);
+        }
+
         return bitmap;
+    }
+
+    // TODO: replace with RenderScript alternative.
+    private Bitmap rotate(Bitmap bitmap, int degrees) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degrees);
+
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 }

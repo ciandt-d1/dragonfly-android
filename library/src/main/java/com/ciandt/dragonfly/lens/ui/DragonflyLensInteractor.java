@@ -99,7 +99,7 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
     }
 
     @Override
-    public void analyzeYUVNV21Picture(byte[] data, int width, int height) {
+    public void analyzeYUVNV21Picture(byte[] data, int width, int height, int rotation) {
         if (!isModelLoaded()) {
             DragonflyLogger.warn(LOG_TAG, "No model loaded. Skipping analyzeYUVNV21Picture() call.");
             return;
@@ -116,7 +116,7 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
         analyzeYUVN21Task = new AnalyzeYUVN21Task(this);
 
-        AnalyzeYUVN21Task.TaskParams taskParams = new AnalyzeYUVN21Task.TaskParams(data, width, height);
+        AnalyzeYUVN21Task.TaskParams taskParams = new AnalyzeYUVN21Task.TaskParams(data, width, height, rotation);
         AsyncTaskCompat.executeParallel(analyzeYUVN21Task, taskParams);
     }
 
@@ -229,7 +229,7 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
             DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeYUVN21Task.doInBackground() - start"));
 
             try {
-                Bitmap bitmap = interactor.yuvToRgbConverter.convert(taskParams.getData(), taskParams.getWidth(), taskParams.getHeight(), Bitmap.Config.ARGB_8888);
+                Bitmap bitmap = interactor.yuvToRgbConverter.convert(taskParams.getData(), taskParams.getWidth(), taskParams.getHeight(), Bitmap.Config.ARGB_8888, taskParams.getRotation());
                 Bitmap croppedBitmap = Bitmap.createBitmap(interactor.model.getInputSize(), interactor.model.getInputSize(), Bitmap.Config.ARGB_8888);
 
                 Matrix frameToCropTransform = ImageUtils.getTransformationMatrix(
@@ -243,6 +243,7 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
                 final Canvas canvas = new Canvas(croppedBitmap);
                 canvas.drawBitmap(bitmap, frameToCropTransform, null);
+
 
                 DragonflyLogger.debug(LOG_TAG, "Saving bitmaps to disk.");
                 ImageUtils.saveBitmap(bitmap, "original.png");
@@ -277,11 +278,13 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
             private byte[] data;
             private int width;
             private int height;
+            private int rotation;
 
-            public TaskParams(byte[] data, int width, int height) {
+            public TaskParams(byte[] data, int width, int height, int rotation) {
                 this.data = data;
                 this.width = width;
                 this.height = height;
+                this.rotation = rotation;
             }
 
             public byte[] getData() {
@@ -294,6 +297,10 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
             public int getHeight() {
                 return height;
+            }
+
+            public int getRotation() {
+                return rotation;
             }
         }
     }

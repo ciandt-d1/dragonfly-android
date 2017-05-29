@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.ciandt.dragonfly.base.ui.BaseInteractorContract;
 import com.ciandt.dragonfly.base.ui.BasePresenterContract;
 import com.ciandt.dragonfly.base.ui.BaseViewContract;
+import com.ciandt.dragonfly.base.ui.Orientation;
 import com.ciandt.dragonfly.data.Model;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
@@ -28,6 +29,8 @@ public interface DragonflyLensContract {
 
         void setLabel(String label, int confidence);
 
+        void setOrientation(@Orientation.Mode int orientation);
+
         void onModelReady(Model model);
 
         void onModelFailure(DragonflyModelException e);
@@ -41,7 +44,7 @@ public interface DragonflyLensContract {
 
         void analyzeBitmap(Bitmap bitmap);
 
-        void analyzeYUVNV21(byte[] data, int width, int height);
+        void analyzeYUVNV21(byte[] data, int width, int height, int rotation);
 
         void onImageAnalyzed(List<Classifier.Recognition> results);
 
@@ -60,6 +63,6 @@ public interface DragonflyLensContract {
 
         void analyzeBitmap(Bitmap bitmap);
 
-        void analyzeYUVNV21Picture(byte[] data, int width, int height);
+        void analyzeYUVNV21Picture(byte[] data, int width, int height, int rotation);
     }
 }

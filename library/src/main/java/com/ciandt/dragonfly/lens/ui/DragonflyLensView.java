@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.ciandt.dragonfly.CameraView;
 import com.ciandt.dragonfly.R;
+import com.ciandt.dragonfly.base.ui.Orientation;
 import com.ciandt.dragonfly.data.Model;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
@@ -28,6 +29,9 @@ import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
 public class DragonflyLensView extends FrameLayout implements DragonflyLensContract.LensView, CameraView.LensViewCallback {
 
     private static final String LOG_TAG = DragonflyLensView.class.getSimpleName();
+
+    @Orientation.Mode
+    private int orientation;
 
     private Model model;
 
@@ -76,6 +80,11 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
     }
 
     @Override
+    public void setOrientation(@Orientation.Mode int orientation) {
+        this.orientation = orientation;
+    }
+
+    @Override
     public void onModelReady(Model model) {
         // TODO: define if we should use this info locally (avoid calling the presenter while the model is not ready?)
     }
@@ -119,7 +128,10 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
         inflater.inflate(R.layout.dragonfly_lens_view, this);
 
         labelView = (TextView) this.findViewById(R.id.labelView);
+
         cameraView = (CameraView) this.findViewById(R.id.cameraView);
+        cameraView.setOrientation(orientation);
+
         ornamentView = (ImageView) this.findViewById(R.id.ornamentView);
 
         lensPresenter = new DragonflyLensPresenter(new DragonflyLensInteractor(getContext()));
@@ -187,8 +199,8 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
     }
 
     @Override
-    public void onFrameReady(byte[] data, Size previewSize) {
-        lensPresenter.analyzeYUVNV21(data, previewSize.getWidth(), previewSize.getHeight());
+    public void onFrameReady(byte[] data, Size previewSize, int rotation) {
+        lensPresenter.analyzeYUVNV21(data, previewSize.getWidth(), previewSize.getHeight(), rotation);
     }
 
     @Override

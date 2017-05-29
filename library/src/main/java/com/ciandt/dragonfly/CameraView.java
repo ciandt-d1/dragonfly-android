@@ -8,6 +8,7 @@ import android.util.Size;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.ciandt.dragonfly.base.ui.Orientation;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 
 import java.io.IOException;
@@ -18,7 +19,11 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
     private static final String LOG_TAG = CameraView.class.getSimpleName();
 
-    public static final int CAMERA_ROTATION = 90;
+    public static final int CAMERA_ROTATION_LANDSCAPE = 0;
+    public static final int CAMERA_ROTATION_PORTRAIT = 90;
+
+    private @Orientation.Mode
+    int orientation;
 
     private Camera camera;
     private LensViewCallback callback;
@@ -42,6 +47,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         super(context, attrs, defStyleAttr);
     }
 
+    public void setOrientation(@Orientation.Mode int orientation) {
+        this.orientation = orientation;
+    }
 
     public void start() throws Exception {
         DragonflyLogger.debug(LOG_TAG, String.format("%s - start()", LOG_TAG));
@@ -51,7 +59,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
             throw new Exception("Failed to open Camera");
         }
 
-        camera.setDisplayOrientation(CAMERA_ROTATION);
+        camera.setDisplayOrientation(getOrientationDegrees());
         getHolder().addCallback(this);
     }
 
@@ -68,11 +76,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         camera = null;
         getHolder().removeCallback(this);
     }
-
-    public int getCameraRotation() {
-        return CAMERA_ROTATION;
-    }
-
 
     public void setCallback(LensViewCallback callback) {
         this.callback = callback;
@@ -101,7 +104,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
             capture();
 
             if (callback != null) {
-                callback.onPreviewStarted(convertSize(previewSize), CAMERA_ROTATION);
+                callback.onPreviewStarted(convertSize(previewSize), getOrientationDegrees());
             }
         } catch (IOException e) {
             DragonflyLogger.error(LOG_TAG, e.getMessage());
@@ -216,7 +219,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         }
 
         Camera.Parameters parameters = camera.getParameters();
-        callback.onFrameReady(data, convertSize(parameters.getPreviewSize()));
+        callback.onFrameReady(data, convertSize(parameters.getPreviewSize()), getOrientationDegrees());
 
         new Timer().schedule(new TimerTask() {
 
@@ -231,12 +234,20 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         return new Size(cameraSize.width, cameraSize.height);
     }
 
+    private int getOrientationDegrees() {
+        if (orientation == Orientation.ORIENTATION_PORTRAIT) {
+            return CAMERA_ROTATION_PORTRAIT;
+        } else {
+            return CAMERA_ROTATION_LANDSCAPE;
+        }
+    }
+
     /**
      * Callback interface
      */
     public interface LensViewCallback {
 
-        void onFrameReady(byte[] data, Size previewSize);
+        void onFrameReady(byte[] data, Size previewSize, int rotation);
 
         void onPreviewStarted(Size previewSize, int rotation);
     }

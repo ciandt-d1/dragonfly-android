@@ -80,8 +80,8 @@ public class DragonflyLensPresenter extends AbstractPresenter<DragonflyLensContr
     }
 
     @Override
-    public void analyzeYUVNV21(byte[] data, int width, int height) {
-        interactor.analyzeYUVNV21Picture(data, width, height);
+    public void analyzeYUVNV21(byte[] data, int width, int height, int rotation) {
+        interactor.analyzeYUVNV21Picture(data, width, height, rotation);
     }
 
     @Override
