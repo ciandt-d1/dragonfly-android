@@ -2,7 +2,6 @@ package com.ciandt.dragonfly.example.shared
 
 import android.view.View
 
-
 abstract class FullScreenActivity : BaseActivity(hasDebugDrawer = false) {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

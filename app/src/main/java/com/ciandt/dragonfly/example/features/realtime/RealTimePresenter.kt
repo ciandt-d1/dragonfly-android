@@ -14,7 +14,6 @@ class RealTimePresenter : RealTimeContract.Presenter {
         this.view = null
     }
 
-
     override fun initModel(model: Model) {
         view?.showInfo(model.toString())
     }
