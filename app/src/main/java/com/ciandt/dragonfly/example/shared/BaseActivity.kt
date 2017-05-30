@@ -55,7 +55,6 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
         configDebugDrawer(intent)
     }
 
-
     override fun setContentView(view: View) {
         super.setContentView(view)
 

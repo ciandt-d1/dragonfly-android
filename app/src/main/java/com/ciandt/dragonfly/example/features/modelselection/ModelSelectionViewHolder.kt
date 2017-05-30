@@ -63,8 +63,6 @@ class ModelSelectionViewHolder(itemView: View, val itemClick: (Model) -> Unit) :
     }
 
     companion object {
-        fun getLayoutRes(): Int {
-            return R.layout.item_model_selection
-        }
+        fun getLayoutRes(): Int = R.layout.item_model_selection
     }
 }
