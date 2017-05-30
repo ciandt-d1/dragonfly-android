@@ -1,10 +1,8 @@
 package com.ciandt.dragonfly.example;
 
-import com.ciandt.dragonfly.Dragonfly;
-import com.ciandt.dragonfly.Recognition;
-import com.ciandt.dragonfly.example.shared.BaseActivity;
-
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -15,6 +13,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ciandt.dragonfly.Dragonfly;
+import com.ciandt.dragonfly.data.Model;
+import com.ciandt.dragonfly.example.shared.BaseActivity;
+import com.ciandt.dragonfly.tensorflow.Classifier;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -26,7 +28,11 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import javax.annotation.Nonnull;
+
 public class MainActivity extends BaseActivity {
+
+    private static final String MODEL_BUNDLE = "MODEL_BUNDLE";
 
     private TextView info;
     private ImageView image;
@@ -95,18 +101,18 @@ public class MainActivity extends BaseActivity {
                                     String model;
                                     String label;
                                     if (fromAssets) {
-                                        model = "file:///android_asset/model1.pb";
-                                        label = "file:///android_asset/model1.txt";
+                                        model = "file:///android_asset/model.pb";
+                                        label = "file:///android_asset/labels.txt";
                                     } else {
-                                        model = getFilesDir() + "/model1.pb";
-                                        label = getFilesDir() + "/model1.txt";
+                                        model = getFilesDir() + "/models/1/model.pb";
+                                        label = getFilesDir() + "/models/1/labels.txt";
                                     }
 
                                     Bitmap bitmap = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.drawable.mug);
 
                                     Log.d(MainActivity.class.getSimpleName(), "classifying...");
 
-                                    final List<Recognition> classify = Dragonfly.classify(getAssets(), model, label, bitmap);
+                                    final List<Classifier.Recognition> classify = Dragonfly.classify(getAssets(), model, label, bitmap);
 
                                     runOnUiThread(new Runnable() {
 
@@ -134,6 +140,12 @@ public class MainActivity extends BaseActivity {
 
                     }
                 }).check();
+    }
+
+    public static Intent create(@Nonnull Context context, @Nonnull Model model) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(MODEL_BUNDLE, model);
+        return intent;
     }
 
 }

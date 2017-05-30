@@ -3,8 +3,8 @@
           package="com.ciandt.dragonfly.example">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".DragonflyApplication"
@@ -30,8 +30,8 @@
 
         <activity android:name=".features.about.AboutActivity"/>
 
-        <activity android:name=".features.realtime.RealTimeActivity"/>
-
+        <activity android:name=".features.realtime.RealTimeActivity"
+                  android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

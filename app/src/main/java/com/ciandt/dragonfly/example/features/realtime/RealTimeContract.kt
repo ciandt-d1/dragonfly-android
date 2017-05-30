@@ -1,18 +1,24 @@
 package com.ciandt.dragonfly.example.features.realtime
 
-import com.ciandt.dragonfly.data.Model
-import com.ciandt.dragonfly.example.shared.BasePresenter
+import android.support.annotation.StringRes
+import com.ciandt.dragonfly.example.shared.BasePresenterContract
 
 interface RealTimeContract {
 
     interface View {
+        fun requestRealTimePermissions()
 
-        fun showInfo(info: String)
+        fun startRecognition()
+
+        fun showRealTimePermissionsError(@StringRes title: Int, @StringRes message: Int)
     }
 
-    interface Presenter : BasePresenter<View> {
+    interface Presenter : BasePresenterContract<View> {
 
-        fun initModel(model: Model)
+        fun onRealTimePermissionsGranted()
+
+        fun onRealTimePermissionsDenied()
+
+        fun onRealTimePermissionsPermanentlyDenied()
     }
-
 }
