@@ -74,7 +74,7 @@ public class ImageUtils {
         Log.i(LOG_TAG, String.format("Saving %dx%d bitmap to %s.", bitmap.getWidth(), bitmap.getHeight(), root));
         final File myDir = new File(root);
 
-        if (!myDir.mkdirs()) {
+        if (!myDir.exists() && !myDir.mkdirs()) {
             Log.i(LOG_TAG, "Make dir failed");
         }
 

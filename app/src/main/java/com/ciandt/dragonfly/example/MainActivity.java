@@ -101,11 +101,11 @@ public class MainActivity extends BaseActivity {
                                     String model;
                                     String label;
                                     if (fromAssets) {
-                                        model = "file:///android_asset/model1.pb";
-                                        label = "file:///android_asset/model1.txt";
+                                        model = "file:///android_asset/model.pb";
+                                        label = "file:///android_asset/labels.txt";
                                     } else {
-                                        model = getFilesDir() + "/model1.pb";
-                                        label = getFilesDir() + "/model1.txt";
+                                        model = getFilesDir() + "/models/1/model.pb";
+                                        label = getFilesDir() + "/models/1/labels.txt";
                                     }
 
                                     Bitmap bitmap = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.drawable.mug);
