@@ -17,10 +17,10 @@ class DragonflyApplication : Application() {
         setupCrashlytics()
         setupCalligraphy()
         setupStetho()
-        setupDragonfly()
+        setupDragonflyLib()
     }
 
-    private fun setupDragonfly() {
+    private fun setupDragonflyLib() {
         DragonflyLogger.setLogLevel(DragonflyLogger.LOG_LEVEL_DEBUG)
     }
 

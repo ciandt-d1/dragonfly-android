@@ -68,6 +68,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
         if (camera == null) {
             DragonflyLogger.debug(LOG_TAG, String.format("%s - stop() - camera is null (already stopped)", LOG_TAG));
+            return;
         }
 
         stopPreview();

@@ -245,12 +245,6 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
                 final Canvas canvas = new Canvas(croppedBitmap);
                 canvas.drawBitmap(bitmap, frameToCropTransform, null);
 
-
-                DragonflyLogger.debug(LOG_TAG, "Saving bitmaps to disk.");
-                ImageUtils.saveBitmap(bitmap, "original.png");
-                ImageUtils.saveBitmap(croppedBitmap, "cropped.png");
-
-
                 List<Classifier.Recognition> results = interactor.classifier.recognizeImage(croppedBitmap);
 
                 return new AsyncTaskResult<>(results, null);

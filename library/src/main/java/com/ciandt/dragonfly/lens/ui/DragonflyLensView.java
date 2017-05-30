@@ -263,7 +263,7 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
 
             @Override
             public SavedState createFromParcel(Parcel source) {
-                return createFromParcel(null);
+                return createFromParcel(source, null);
             }
 
             public SavedState[] newArray(int size) {

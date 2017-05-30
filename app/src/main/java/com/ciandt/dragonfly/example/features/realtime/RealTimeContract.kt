@@ -1,5 +1,6 @@
 package com.ciandt.dragonfly.example.features.realtime
 
+import android.support.annotation.StringRes
 import com.ciandt.dragonfly.example.shared.BasePresenterContract
 
 interface RealTimeContract {
@@ -9,7 +10,7 @@ interface RealTimeContract {
 
         fun startRecognition()
 
-        fun showRealTimePermissionsError(title: String, message: String)
+        fun showRealTimePermissionsError(@StringRes title: Int, @StringRes message: Int)
     }
 
     interface Presenter : BasePresenterContract<View> {
@@ -17,5 +18,7 @@ interface RealTimeContract {
         fun onRealTimePermissionsGranted()
 
         fun onRealTimePermissionsDenied()
+
+        fun onRealTimePermissionsPermanentlyDenied()
     }
 }

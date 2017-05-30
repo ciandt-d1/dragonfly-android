@@ -32,9 +32,6 @@
 
         <activity android:name=".features.realtime.RealTimeActivity"
                   android:screenOrientation="portrait"/>
-
-        <activity android:name=".RealTimeRecognizerActivity"
-                  android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
