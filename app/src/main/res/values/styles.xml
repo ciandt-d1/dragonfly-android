@@ -1,11 +1,13 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="Base.V0.AppTheme"/>
+
+    <style name="Base.V0.AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="colorPrimaryDark">@color/windowBackground</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
     </style>
 
     <style name="ModelSelection.Title" parent="TextAppearance.AppCompat">

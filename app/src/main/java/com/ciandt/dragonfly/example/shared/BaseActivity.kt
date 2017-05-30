@@ -17,7 +17,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
  * Created by iluz on 5/15/17.
  */
 
-abstract class BaseActivity : AppCompatActivity(), DebugActionsHelper.DebuggableActivity {
+abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppCompatActivity(), DebugActionsHelper.DebuggableActivity {
 
     protected var debugDrawer: DebugDrawer? = null
 
@@ -73,7 +73,7 @@ abstract class BaseActivity : AppCompatActivity(), DebugActionsHelper.Debuggable
     }
 
     fun configDebugDrawer(currentIntent: Intent) {
-        if (Features.ENABLE_DEBUG_DRAWER && currentIntent.getBooleanExtra(CommonBundleNames.SHOW_DEBUG_DRAWER_BUNDLE, true)) {
+        if (hasDebugDrawer && Features.ENABLE_DEBUG_DRAWER && currentIntent.getBooleanExtra(CommonBundleNames.SHOW_DEBUG_DRAWER_BUNDLE, true)) {
             buildNewDebugDrawer()
         }
     }
