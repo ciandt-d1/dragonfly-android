@@ -45,7 +45,7 @@
     </style>
 
     <style name="ModelSelection.Item.Name" parent="TextAppearance.AppCompat">
-        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+        <item name="fontPath">fonts/Roboto-Bold.ttf</item>
         <item name="android:textColor">@color/model_selection_item_title</item>
         <item name="android:textSize">18sp</item>
         <item name="android:maxLines">1</item>
@@ -59,6 +59,7 @@
         <item name="android:textColor">@color/model_selection_item_info</item>
         <item name="android:textSize">12sp</item>
         <item name="android:maxLines">1</item>
+        <item name="android:lineSpacingExtra">4sp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:paddingLeft">@dimen/model_selection_item_text_horizontal_padding</item>
         <item name="android:paddingRight">@dimen/model_selection_item_text_horizontal_padding</item>
@@ -67,9 +68,10 @@
     <style name="ModelSelection.Item.Description" parent="TextAppearance.AppCompat">
         <item name="fontPath">fonts/Roboto-Regular.ttf</item>
         <item name="android:textColor">@color/model_selection_item_description</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:minLines">4</item>
         <item name="android:maxLines">4</item>
+        <item name="android:lineSpacingExtra">2sp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:paddingLeft">@dimen/model_selection_item_text_horizontal_padding</item>
         <item name="android:paddingRight">@dimen/model_selection_item_text_horizontal_padding</item>

@@ -13,9 +13,9 @@
     <color name="model_selection_message">#757575</color>
 
     <color name="model_selection_item_title">#FFFFFF</color>
-    <color name="model_selection_item_info">#BFFFFFFF</color>
+    <color name="model_selection_item_info">#B3FFFFFF</color>
     <color name="model_selection_item_description">#FFFFFF</color>
-    <color name="model_selection_item_download">#757575</color>
+    <color name="model_selection_item_download">#8A000000</color>
     <color name="model_selection_item_downloading">#AAAAAA</color>
     <color name="model_selection_item_downloaded">#3DBBC1</color>
     <color name="model_selection_item_download_background">#FFFFFF</color>
