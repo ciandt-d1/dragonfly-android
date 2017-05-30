@@ -1,6 +1,7 @@
 package com.ciandt.dragonfly.example
 
 import android.app.Application
+import com.ciandt.dragonfly.infrastructure.DragonflyLogger
 
 import com.crashlytics.android.Crashlytics
 import com.facebook.stetho.Stetho
@@ -16,6 +17,11 @@ class DragonflyApplication : Application() {
         setupCrashlytics()
         setupCalligraphy()
         setupStetho()
+        setupDragonfly()
+    }
+
+    private fun setupDragonfly() {
+        DragonflyLogger.setLogLevel(DragonflyLogger.LOG_LEVEL_DEBUG)
     }
 
     private fun setupCrashlytics() {

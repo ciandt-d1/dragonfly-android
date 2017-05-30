@@ -56,7 +56,7 @@ android {
     defaultConfig {
         applicationId "com.ciandt.dragonfly.example"
 
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 25
 
         versionName "${appVersionMajor}.${appVersionMinor}.${appVersionPatch}"

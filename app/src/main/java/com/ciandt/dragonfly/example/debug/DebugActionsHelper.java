@@ -96,77 +96,7 @@ public class DebugActionsHelper {
 
                             @Override
                             public void onPermissionGranted(PermissionGrantedResponse response) {
-                                AsyncTaskCompat.executeParallel(new AsyncTask<Void, Void, Boolean>() {
-
-                                    @Override
-                                    protected void onPreExecute() {
-                                        super.onPreExecute();
-
-                                        Toast.makeText(target.getActivityInstance(), "Copying model from assets...", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                    @Override
-                                    protected Boolean doInBackground(Void... params) {
-                                        Boolean result;
-                                        try {
-                                            result = copyModelFromAssets("model1.pb") && copyModelFromAssets("model1.txt");
-                                        } catch (Exception e) {
-                                            Log.e(LOG_TAG, e.getMessage(), e);
-                                            result = false;
-                                        }
-
-                                        return result;
-
-                                    }
-
-                                    @NonNull
-                                    private Boolean copyModelFromAssets(String srcFilePath) throws Exception {
-                                        byte[] buffer = new byte[1024];
-
-                                        File outputFile = new File(target.getActivityInstance().getFilesDir(), srcFilePath);
-
-                                        InputStream is = null;
-                                        OutputStream os = null;
-
-                                        boolean result = false;
-                                        try {
-                                            is = target.getActivityInstance().getAssets().open(srcFilePath);
-                                            os = new FileOutputStream(outputFile);
-
-                                            int n;
-                                            while (-1 != (n = is.read(buffer))) {
-                                                os.write(buffer, 0, n);
-                                            }
-
-                                            result = true;
-                                        } catch (Exception e) {
-                                            Log.e(LOG_TAG, e.getMessage(), e);
-
-                                            result = false;
-                                        } finally {
-                                            if (is != null) {
-                                                is.close();
-                                            }
-
-                                            if (os != null) {
-                                                os.close();
-                                            }
-                                        }
-
-                                        return result;
-                                    }
-
-                                    @Override
-                                    protected void onPostExecute(Boolean result) {
-                                        super.onPostExecute(result);
-
-                                        if (result) {
-                                            Toast.makeText(target.getActivityInstance(), "Model successfully copied!", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Toast.makeText(target.getActivityInstance(), "Failed to copy model!", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
+                                copyTensorFlowModelFromAssetsToExternalStorage(target);
                             }
 
                             @Override
@@ -181,7 +111,6 @@ public class DebugActionsHelper {
                         }).check();
             }
         }));
-
 
         return actions;
     }
@@ -204,6 +133,82 @@ public class DebugActionsHelper {
         if (debugDrawer != null && debugDrawer.isDrawerOpen()) {
             debugDrawer.closeDrawer();
         }
+    }
+
+    private static void copyTensorFlowModelFromAssetsToExternalStorage(final DebuggableActivity target)
+
+    {
+        AsyncTaskCompat.executeParallel(new AsyncTask<Void, Void, Boolean>() {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                Toast.makeText(target.getActivityInstance(), "Copying model from assets...", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                Boolean result;
+                try {
+                    result = copyModelFromAssets("model1.pb") && copyModelFromAssets("model1.txt");
+                } catch (Exception e) {
+                    Log.e(LOG_TAG, e.getMessage(), e);
+                    result = false;
+                }
+
+                return result;
+
+            }
+
+            @NonNull
+            private Boolean copyModelFromAssets(String srcFilePath) throws Exception {
+                byte[] buffer = new byte[1024];
+
+                File outputFile = new File(target.getActivityInstance().getFilesDir(), srcFilePath);
+
+                InputStream is = null;
+                OutputStream os = null;
+
+                boolean result = false;
+                try {
+                    is = target.getActivityInstance().getAssets().open(srcFilePath);
+                    os = new FileOutputStream(outputFile);
+
+                    int n;
+                    while (-1 != (n = is.read(buffer))) {
+                        os.write(buffer, 0, n);
+                    }
+
+                    result = true;
+                } catch (Exception e) {
+                    Log.e(LOG_TAG, e.getMessage(), e);
+
+                    result = false;
+                } finally {
+                    if (is != null) {
+                        is.close();
+                    }
+
+                    if (os != null) {
+                        os.close();
+                    }
+                }
+
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                super.onPostExecute(result);
+
+                if (result) {
+                    Toast.makeText(target.getActivityInstance(), "Model successfully copied!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(target.getActivityInstance(), "Failed to copy model!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     public interface DebuggableActivity {

@@ -1,4 +1,4 @@
-package com.ciandt.dragonfly;
+package com.ciandt.dragonfly.tensorflow;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -25,7 +25,7 @@ import java.util.Vector;
 /**
  * A classifier specialized to label images using TensorFlow.
  */
-public class TensorFlowImageClassifier {
+public class TensorFlowImageClassifier implements Classifier {
 
     private static final String LOG_TAG = TensorFlowImageClassifier.class.getSimpleName();
     private static final String ASSET_FILE_PREFIX = "file:///android_asset/";

@@ -7,15 +7,29 @@ import java.util.UUID;
 
 public class FakeModelGenerator {
 
+    private static final int INPUT_SIZE = 224;
+    private static final int IMAGE_MEAN = 117;
+    private static final float IMAGE_STD = 1;
+    private static final String INPUT_NAME = "input";
+    private static final String OUTPUT_NAME = "output";
+    private static final String MODEL_FILE = "file:///android_asset/model1.pb";
+    private static final String LABEL_FILE = "file:///android_asset/model1.txt";
+
     public static Model generate(String id) {
 
-        Model model = new Model(id);
-
-        model.setName(getName(id));
-        model.setVersion(getVersion(id));
-        model.setSize(getSize(id));
-        model.setDescription(getDescription(id));
-        model.setColors(getColors(id));
+        Model model = new Model(id)
+                .setName(getName(id))
+                .setVersion(getVersion(id))
+                .setSize(getSize(id))
+                .setDescription(getDescription(id))
+                .setColors(getColors(id))
+                .setInputSize(INPUT_SIZE)
+                .setImageMean(IMAGE_MEAN)
+                .setImageStd(IMAGE_STD)
+                .setInputName(INPUT_NAME)
+                .setOutputName(OUTPUT_NAME)
+                .setModelPath(MODEL_FILE)
+                .setLabelsPath(LABEL_FILE);
 
         if (id.equals("1")) {
             model.setStatus(Model.STATUS_DOWNLOADED);
