@@ -151,7 +151,7 @@ public class DebugActionsHelper {
             protected Boolean doInBackground(Void... params) {
                 Boolean result;
                 try {
-                    result = copyModelFromAssets("model1.pb") && copyModelFromAssets("model1.txt");
+                    result = copyModelFromAssets("models/1/model.pb") && copyModelFromAssets("models/1/labels.txt");
                 } catch (Exception e) {
                     Log.e(LOG_TAG, e.getMessage(), e);
                     result = false;
