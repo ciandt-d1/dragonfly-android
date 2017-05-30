@@ -1,21 +1,18 @@
 package com.ciandt.dragonfly.example.features.realtime
 
-import com.ciandt.dragonfly.data.Model
+import com.ciandt.dragonfly.example.shared.BasePresenter
 
-class RealTimePresenter : RealTimeContract.Presenter {
-
-    private var view: RealTimeContract.View? = null
-
+class RealTimePresenter : BasePresenter<RealTimeContract.View>(), RealTimeContract.Presenter {
     override fun attachView(view: RealTimeContract.View) {
-        this.view = view
+        super.attachView(view)
+        view.requestRealTimePermissions();
     }
 
-    override fun detachView() {
-        this.view = null
+    override fun onRealTimePermissionsDenied() {
+        view?.showRealTimePermissionsError("Permissions required", "Both camera and write to external storage permissions are needed.");
     }
 
-
-    override fun initModel(model: Model) {
-        view?.showInfo(model.toString())
+    override fun onRealTimePermissionsGranted() {
+        view?.startRecognition();
     }
 }

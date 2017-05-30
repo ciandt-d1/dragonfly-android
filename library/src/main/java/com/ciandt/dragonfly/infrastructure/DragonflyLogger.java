@@ -1,5 +1,6 @@
 package com.ciandt.dragonfly.infrastructure;
 
+import android.annotation.SuppressLint;
 import android.os.Environment;
 import android.support.annotation.IntDef;
 import android.text.TextUtils;
@@ -152,6 +153,7 @@ public class DragonflyLogger {
         return BuildConfig.DEBUG || LOG_LEVEL >= logLevel;
     }
 
+    @SuppressLint("DefaultLocale")
     private static String getTag() {
 
         StackTraceElement stackTraceElement = getCallerClass();

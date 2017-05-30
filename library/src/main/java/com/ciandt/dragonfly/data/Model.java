@@ -2,22 +2,35 @@ package com.ciandt.dragonfly.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.IntDef;
 
+import java.lang.annotation.Retention;
 import java.util.Arrays;
 
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 public class Model implements Parcelable {
+
+    @Retention(SOURCE)
+    @IntDef({STATUS_DEFAULT, STATUS_DOWNLOADING, STATUS_DOWNLOADED})
+    public @interface Status {
+
+    }
 
     public static final int STATUS_DEFAULT = 0;
     public static final int STATUS_DOWNLOADING = 1;
     public static final int STATUS_DOWNLOADED = 2;
 
-    private String id;
+    @Status
+    private int status = STATUS_DEFAULT;
+
+    private final String id;
     private String name;
     private int version;
     private long size;
     private String description;
     private String[] colors;
-    private int status = STATUS_DEFAULT;
+
 
     private String modelPath;
     private String labelsPath;
@@ -85,7 +98,7 @@ public class Model implements Parcelable {
         return status;
     }
 
-    public Model setStatus(int status) {
+    public Model setStatus(@Status int status) {
         this.status = status;
         return this;
     }

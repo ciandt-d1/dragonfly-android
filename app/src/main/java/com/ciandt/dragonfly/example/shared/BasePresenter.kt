@@ -1,8 +1,20 @@
 package com.ciandt.dragonfly.example.shared
 
-interface BasePresenter<V> {
+/**
+ * Created by iluz on 5/30/17.
+ */
+abstract class BasePresenter<V> : BasePresenterContract<V> {
+    protected var view: V? = null
 
-    fun attachView(view: V)
+    override fun attachView(view: V) {
+        this.view = view
+    }
 
-    fun detachView()
+    override fun detachView() {
+        view = null
+    }
+
+    override fun hasViewAttached(): Boolean {
+        return view != null
+    }
 }

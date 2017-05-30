@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<merge
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000">
 
-    <TextView
-        android:id="@+id/info"
+    <com.ciandt.dragonfly.lens.ui.DragonflyLensView
+        android:id="@+id/dragonFlyLens"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="24dp"
-        android:gravity="center_vertical"
-        android:textColor="#ffffff"
-    />
+        app:cameraOrnament="@drawable/dragonfly_lens_grid"
+        app:cameraOrnamentScaleType="center"/>
 
-</RelativeLayout>
+</merge>

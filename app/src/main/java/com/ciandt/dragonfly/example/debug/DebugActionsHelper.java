@@ -2,7 +2,6 @@ package com.ciandt.dragonfly.example.debug;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.os.AsyncTaskCompat;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.ciandt.dragonfly.example.RealTimeRecognizerActivity;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -113,20 +111,6 @@ public class DebugActionsHelper {
                         }).check();
             }
         }));
-
-
-        actions.add(new ButtonAction("Open RealTimeRecognizerActivity", new ButtonAction.Listener() {
-
-            @Override
-            public void onClick() {
-                Activity activity = target.getActivityInstance();
-
-                Intent intent = new Intent(activity, RealTimeRecognizerActivity.class);
-                activity.startActivity(intent);
-                closeDebugDrawer(target);
-            }
-        }));
-
 
         return actions;
     }

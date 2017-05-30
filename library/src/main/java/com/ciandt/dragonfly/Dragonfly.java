@@ -16,10 +16,12 @@ public class Dragonfly {
     private static final String INPUT_NAME = "input";
     private static final String OUTPUT_NAME = "output";
 
+    @SuppressWarnings("SameReturnValue")
     public static int getVersion() {
         return BuildConfig.VERSION_CODE;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public static String getVersionName() {
         return BuildConfig.VERSION_NAME;
     }

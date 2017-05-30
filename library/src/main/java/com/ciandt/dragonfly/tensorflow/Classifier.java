@@ -28,7 +28,7 @@ public interface Classifier {
     /**
      * An immutable result returned by a Classifier describing what was recognized.
      */
-    public class Recognition {
+    class Recognition {
 
         /**
          * A unique identifier for what has been recognized. Specific to the class, not the instance
@@ -99,7 +99,7 @@ public interface Classifier {
             }
 
             if (confidence != null) {
-                resultString += String.format("(%.1f%%) ", confidence * 100.0f);
+                resultString += confidence;
             }
 
             if (location != null) {

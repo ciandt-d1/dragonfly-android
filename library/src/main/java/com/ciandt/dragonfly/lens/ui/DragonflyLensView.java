@@ -7,7 +7,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Size;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 import com.ciandt.dragonfly.CameraView;
 import com.ciandt.dragonfly.R;
 import com.ciandt.dragonfly.base.ui.Orientation;
+import com.ciandt.dragonfly.base.ui.Size;
 import com.ciandt.dragonfly.data.Model;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
@@ -32,8 +32,6 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
 
     @Orientation.Mode
     private int orientation;
-
-    private Model model;
 
     private TextView labelView;
     private CameraView cameraView;
@@ -55,8 +53,6 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
 
     private void loadModel(Model model) {
         DragonflyLogger.debug(LOG_TAG, String.format("%s.loadModel(%s)", LOG_TAG, model));
-
-        this.model = model;
 
         lensPresenter.loadModel(model);
     }

@@ -4,11 +4,11 @@ import android.content.Context;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.util.AttributeSet;
-import android.util.Size;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.ciandt.dragonfly.base.ui.Orientation;
+import com.ciandt.dragonfly.base.ui.Size;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 
 import java.io.IOException;
@@ -19,8 +19,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
     private static final String LOG_TAG = CameraView.class.getSimpleName();
 
-    public static final int CAMERA_ROTATION_LANDSCAPE = 0;
-    public static final int CAMERA_ROTATION_PORTRAIT = 90;
+    private static final int CAMERA_ROTATION_LANDSCAPE = 0;
+    private static final int CAMERA_ROTATION_PORTRAIT = 90;
 
     private @Orientation.Mode
     int orientation;

@@ -8,10 +8,10 @@ public interface BaseInteractorContract<P> {
 
     void setPresenter(P presenter);
 
-    static class AsyncTaskResult<R, E> {
+    class AsyncTaskResult<R, E> {
 
-        private R result;
-        private E error;
+        private final R result;
+        private final E error;
 
         public AsyncTaskResult(R result, E error) {
             this.result = result;

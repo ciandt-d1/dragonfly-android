@@ -14,8 +14,8 @@ import android.renderscript.Type;
  */
 public class YUVNV21ToRGBA888Converter {
 
-    private BitmapManager bitmapManager;
-    RenderScript renderScript;
+    private final BitmapManager bitmapManager;
+    private final RenderScript renderScript;
 
     public YUVNV21ToRGBA888Converter(Context context) {
         renderScript = RenderScript.create(context.getApplicationContext());

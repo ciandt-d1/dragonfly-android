@@ -2,18 +2,9 @@ package com.ciandt.dragonfly.example.features.modelselection
 
 import com.ciandt.dragonfly.data.FakeModelGenerator
 import com.ciandt.dragonfly.data.Model
+import com.ciandt.dragonfly.example.shared.BasePresenter
 
-class ModelSelectionPresenter : ModelSelectionContract.Presenter {
-
-    private var view: ModelSelectionContract.View? = null
-
-    override fun attachView(view: ModelSelectionContract.View) {
-        this.view = view
-    }
-
-    override fun detachView() {
-        this.view = null
-    }
+class ModelSelectionPresenter : BasePresenter<ModelSelectionContract.View>(), ModelSelectionContract.Presenter {
 
     override fun getModelsList() {
 

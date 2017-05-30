@@ -37,7 +37,7 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
     private AnalyzeBitmapTask analyzeBitmapTask;
     private AnalyzeYUVN21Task analyzeYUVN21Task;
 
-    private YUVNV21ToRGBA888Converter yuvToRgbConverter;
+    private final YUVNV21ToRGBA888Converter yuvToRgbConverter;
 
     public DragonflyLensInteractor(Context context) {
         this.context = context.getApplicationContext();
@@ -120,13 +120,14 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
         AsyncTaskCompat.executeParallel(analyzeYUVN21Task, taskParams);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isModelLoaded() {
         return model != null;
     }
 
     private static class LoadModelTask extends AsyncTask<Model, Void, AsyncTaskResult<Model, DragonflyModelException>> {
 
-        private DragonflyLensInteractor interactor;
+        private final DragonflyLensInteractor interactor;
 
         public LoadModelTask(DragonflyLensInteractor interactor) {
             this.interactor = interactor;
@@ -177,7 +178,7 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
     private static class AnalyzeBitmapTask extends AsyncTask<Bitmap, Void, AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException>> {
 
-        private DragonflyLensInteractor interactor;
+        private final DragonflyLensInteractor interactor;
 
         public AnalyzeBitmapTask(DragonflyLensInteractor interactor) {
             this.interactor = interactor;
@@ -187,7 +188,7 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
         protected AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException> doInBackground(Bitmap... bitmaps) {
             Bitmap bitmap = bitmaps[0];
 
-            DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeBitmapTask.doInBackground() - start"));
+            DragonflyLogger.debug(LOG_TAG, "AnalyzeBitmapTask.doInBackground() - start");
 
             try {
                 List<Classifier.Recognition> results = interactor.classifier.recognizeImage(bitmap);
@@ -216,7 +217,7 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
     private static class AnalyzeYUVN21Task extends AsyncTask<AnalyzeYUVN21Task.TaskParams, Void, AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException>> {
 
-        private DragonflyLensInteractor interactor;
+        private final DragonflyLensInteractor interactor;
 
         public AnalyzeYUVN21Task(DragonflyLensInteractor interactor) {
             this.interactor = interactor;
@@ -226,7 +227,7 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
         protected AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException> doInBackground(AnalyzeYUVN21Task.TaskParams... params) {
             AnalyzeYUVN21Task.TaskParams taskParams = params[0];
 
-            DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeYUVN21Task.doInBackground() - start"));
+            DragonflyLogger.debug(LOG_TAG, "AnalyzeYUVN21Task.doInBackground() - start");
 
             try {
                 Bitmap bitmap = interactor.yuvToRgbConverter.convert(taskParams.getData(), taskParams.getWidth(), taskParams.getHeight(), Bitmap.Config.ARGB_8888, taskParams.getRotation());
@@ -275,10 +276,10 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
         public static class TaskParams {
 
-            private byte[] data;
-            private int width;
-            private int height;
-            private int rotation;
+            private final byte[] data;
+            private final int width;
+            private final int height;
+            private final int rotation;
 
             public TaskParams(byte[] data, int width, int height, int rotation) {
                 this.data = data;

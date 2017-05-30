@@ -140,7 +140,6 @@ public class DragonflyLensPresenter extends AbstractPresenter<DragonflyLensContr
             DragonflyLogger.warn(LOG_TAG, String.format("Failed to load loadedModel. Retrying with %s", e.getModel()));
             modelLoadingAttempts++;
             interactor.loadModel(e.getModel());
-            return;
         } else {
             if (hasViewAttached()) {
                 view.onModelFailure(e);
