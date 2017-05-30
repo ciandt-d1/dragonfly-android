@@ -3,7 +3,7 @@ package com.ciandt.dragonfly.example.helpers
 import org.amshove.kluent.shouldEqualTo
 import org.junit.Test
 import java.text.NumberFormat
-import java.util.*
+import java.util.Locale
 
 private val numberFormat = NumberFormat.getInstance(Locale.US)
 

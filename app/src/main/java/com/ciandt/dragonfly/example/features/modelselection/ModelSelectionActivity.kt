@@ -3,15 +3,13 @@ package com.ciandt.dragonfly.example.features.modelselection
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.LinearSnapHelper
-import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
-import android.widget.Button
 import com.ciandt.dragonfly.data.Model
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.features.about.AboutActivity
 import com.ciandt.dragonfly.example.features.realtime.RealTimeActivity
 import com.ciandt.dragonfly.example.shared.BaseActivity
-
+import kotlinx.android.synthetic.main.activity_model_selection.*
 
 class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
 
@@ -19,11 +17,7 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
 
     private lateinit var presenter: ModelSelectionContract.Presenter
 
-    private lateinit var recyclerView: RecyclerView
-
     private val models = ArrayList<Model>()
-
-    private lateinit var aboutButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +52,6 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
     }
 
     private fun setupList() {
-        recyclerView = findViewById(R.id.list) as RecyclerView
         recyclerView.hasFixedSize()
 
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -76,13 +69,11 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
     }
 
     private fun setupAboutButton() {
-        aboutButton = findViewById(R.id.about) as Button
-        aboutButton.setOnClickListener {
+        about.setOnClickListener {
             val intent = AboutActivity.create(this)
             startActivity(intent)
         }
     }
-
 
     override fun update(models: List<Model>) {
         this.models.clear()

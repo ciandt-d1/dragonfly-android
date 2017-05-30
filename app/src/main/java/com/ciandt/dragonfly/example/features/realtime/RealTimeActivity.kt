@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.ciandt.dragonfly.data.Model
 import com.ciandt.dragonfly.example.R
-import com.ciandt.dragonfly.example.shared.BaseActivity
+import com.ciandt.dragonfly.example.shared.FullScreenActivity
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -15,7 +15,7 @@ import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsList
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import kotlinx.android.synthetic.main.activity_real_time.*
 
-class RealTimeActivity : BaseActivity(), RealTimeContract.View {
+class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
     private lateinit var presenter: RealTimeContract.Presenter
 
     private var model: Model? = null
