@@ -1,4 +1,4 @@
-package com.ciandt.dragonfly.helpers;
+package com.ciandt.dragonfly.image_processing;
 
 import android.graphics.Bitmap;
 

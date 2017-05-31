@@ -2,14 +2,14 @@ package com.ciandt.dragonfly.lens.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.support.v4.os.AsyncTaskCompat;
+import android.util.TimingLogger;
 
 import com.ciandt.dragonfly.data.Model;
-import com.ciandt.dragonfly.helpers.ImageUtils;
-import com.ciandt.dragonfly.helpers.YUVNV21ToRGBA888Converter;
+import com.ciandt.dragonfly.image_processing.ImageUtils;
+import com.ciandt.dragonfly.image_processing.YUVNV21ToRGBA888Converter;
+import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
@@ -17,6 +17,7 @@ import com.ciandt.dragonfly.tensorflow.Classifier;
 import com.ciandt.dragonfly.tensorflow.TensorFlowImageClassifier;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by iluz on 5/26/17.
@@ -229,27 +230,35 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
             DragonflyLogger.debug(LOG_TAG, "AnalyzeYUVN21Task.doInBackground() - start");
 
+            // To see the log ouput, make sure to run the command below:
+            // adb shell setprop log.tag.<LOG_TAG> VERBOSE
+            TimingLogger timings = new TimingLogger(LOG_TAG, "AnalyzeYUVN21Task.doInBackground()");
+
             try {
                 Bitmap bitmap = interactor.yuvToRgbConverter.convert(taskParams.getData(), taskParams.getWidth(), taskParams.getHeight(), Bitmap.Config.ARGB_8888, taskParams.getRotation());
-                Bitmap croppedBitmap = Bitmap.createBitmap(interactor.model.getInputSize(), interactor.model.getInputSize(), Bitmap.Config.ARGB_8888);
+                timings.addSplit("Convert YUV to RGB");
 
-                Matrix frameToCropTransform = ImageUtils.getTransformationMatrix(
-                        taskParams.getWidth(),
-                        taskParams.getHeight(),
-                        interactor.model.getInputSize(),
-                        interactor.model.getInputSize(),
-                        0,
-                        true
-                );
-
-                final Canvas canvas = new Canvas(croppedBitmap);
-                canvas.drawBitmap(bitmap, frameToCropTransform, null);
+                Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, interactor.model.getInputSize(), interactor.model.getInputSize(), false);
+                timings.addSplit("Scale bitmap");
 
                 List<Classifier.Recognition> results = interactor.classifier.recognizeImage(croppedBitmap);
+                timings.addSplit("Classify image");
+
+                timings.dumpToLog();
+
+                if (DragonflyConfig.shouldSaveBitmapsInDebugMode()) {
+                    DragonflyLogger.warn(LOG_TAG, "Saving bitmaps for debugging.");
+
+                    ImageUtils.saveBitmap(bitmap, String.format("original-%s%s.png", System.currentTimeMillis(), UUID.randomUUID().toString()));
+                    ImageUtils.saveBitmap(croppedBitmap, String.format("cropped-%s%s.png", System.currentTimeMillis(), UUID.randomUUID().toString()));
+                }
 
                 return new AsyncTaskResult<>(results, null);
             } catch (Exception e) {
                 String errorMessage = String.format("Failed to analyze byte array with error: %s", e.getMessage());
+
+                timings.addSplit(e.getMessage());
+                timings.dumpToLog();
 
                 return new AsyncTaskResult<>(null, new DragonflyRecognitionException(errorMessage, e));
             }

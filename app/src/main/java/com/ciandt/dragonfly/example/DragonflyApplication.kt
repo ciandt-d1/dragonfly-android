@@ -1,6 +1,8 @@
 package com.ciandt.dragonfly.example
 
 import android.app.Application
+import com.ciandt.dragonfly.example.config.Features
+import com.ciandt.dragonfly.infrastructure.DragonflyConfig
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger
 
 import com.crashlytics.android.Crashlytics
@@ -22,6 +24,7 @@ class DragonflyApplication : Application() {
 
     private fun setupDragonflyLib() {
         DragonflyLogger.setLogLevel(DragonflyLogger.LOG_LEVEL_DEBUG)
+        DragonflyConfig.shouldSaveBitmapsInDebugMode(Features.SAVE_CAPTURED_IMAGES_TO_DEVICE)
     }
 
     private fun setupCrashlytics() {
