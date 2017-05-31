@@ -26,6 +26,7 @@
     <string name="about_privacy_url">http://www.ciandt.com</string>
     <string name="about_powered">POWERED BY CIANDT</string>
 
+    <string name="permissions_open_settings">Settings</string>
     <string name="permissions_required_title">Permissions required</string>
     <string name="permissions_required_description_realtime">Camera permission is required for this
         functionality.
