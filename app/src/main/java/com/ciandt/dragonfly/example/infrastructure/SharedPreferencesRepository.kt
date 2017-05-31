@@ -62,9 +62,9 @@ class SharedPreferencesRepository(sharedPreferences: SharedPreferences) : Prefer
         editAndCommit { editor -> editor.clear() }
     }
 
-    private fun editAndCommit(putCode: (editor: SharedPreferences.Editor) -> Unit) {
+    private fun editAndCommit(editAction: (editor: SharedPreferences.Editor) -> Unit) {
         val editor: SharedPreferences.Editor = sharedPreferences.edit()
-        putCode(editor)
+        editAction(editor)
         editor.commit()
     }
 
