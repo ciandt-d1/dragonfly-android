@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.StringRes
-import android.view.WindowManager
 import com.ciandt.dragonfly.data.Model
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.helpers.IntentHelper
@@ -32,8 +31,6 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_real_time)
-
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         val preferencesRepository: PreferencesRepository = SharedPreferencesRepository.get(applicationContext)
         presenter = RealTimePresenter(preferencesRepository)

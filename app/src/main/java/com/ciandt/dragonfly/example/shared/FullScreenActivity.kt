@@ -1,8 +1,27 @@
 package com.ciandt.dragonfly.example.shared
 
+import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.View
+import android.view.WindowManager
 
-abstract class FullScreenActivity : BaseActivity(hasDebugDrawer = false) {
+abstract class FullScreenActivity(protected var keepScreenOn: Boolean = true) : BaseActivity(hasDebugDrawer = false) {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (keepScreenOn) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onCreate(savedInstanceState, persistentState)
+
+        if (keepScreenOn) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
