@@ -73,26 +73,26 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
                 .withPermission(Manifest.permission.CAMERA)
                 .withListener(object : PermissionListener {
                     override fun onPermissionGranted(response: PermissionGrantedResponse) {
-                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionGranted()", RealTimeActivity::class.java.simpleName))
+                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionGranted()", CLASS_NAME))
 
                         presenter.onRealTimePermissionsGranted()
                     }
 
                     override fun onPermissionDenied(response: PermissionDeniedResponse) {
-                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionDenied() - permanently? %s", RealTimeActivity::class.java.simpleName, response.isPermanentlyDenied))
+                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionDenied() - permanently? %s", CLASS_NAME, response.isPermanentlyDenied))
 
                         presenter.onRealTimePermissionsDenied(response.isPermanentlyDenied)
                     }
 
                     override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {
-                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionRationaleShouldBeShown()", RealTimeActivity::class.java.simpleName))
+                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionRationaleShouldBeShown()", CLASS_NAME))
 
                         token.continuePermissionRequest()
                     }
                 })
                 .withErrorListener(object : PermissionRequestErrorListener {
                     override fun onError(error: DexterError) {
-                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onError(): %s", RealTimeActivity::class.java.simpleName, error))
+                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onError(): %s", CLASS_NAME, error))
                     }
                 })
                 .check()
@@ -127,6 +127,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
     }
 
     companion object {
+        private val CLASS_NAME = RealTimeActivity::class.java.simpleName
         private val LOG_TAG = RealTimeActivity::class.java.simpleName
 
         private val MODEL_BUNDLE = "MODEL_BUNDLE"
