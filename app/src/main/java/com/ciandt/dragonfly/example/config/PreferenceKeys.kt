@@ -7,6 +7,6 @@ import com.ciandt.dragonfly.example.BuildConfig
  */
 interface PreferenceKeys {
     companion object {
-        val REAL_TIME_PERMISSION_PERMANENTLY_DENIED = String.format("%s.real_time_permissions_permanently_denied", BuildConfig.APPLICATION_ID);
+        val REAL_TIME_PERMISSIONS_PERMANENTLY_DENIED = String.format("%s.real_time_permissions_permanently_denied", BuildConfig.APPLICATION_ID)
     }
 }

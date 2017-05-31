@@ -25,4 +25,5 @@
     <color name="about_line">#e0e0e0</color>
     <color name="about_powered">#9E9E9E</color>
 
+    <color name="dragonfly_lens_view_background">@android:color/black</color>
 </resources>

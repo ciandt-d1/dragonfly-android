@@ -5,6 +5,4 @@
     <color name="dragonfly_lens_color_white_alpha_70">#B2FFFFFF</color>
 
     <color name="dragonfly_lens_label_text_color">@color/dragonfly_lens_color_white_alpha_70</color>
-
-    <color name="dragonfly_lens_view_background">@android:color/black</color>
 </resources>

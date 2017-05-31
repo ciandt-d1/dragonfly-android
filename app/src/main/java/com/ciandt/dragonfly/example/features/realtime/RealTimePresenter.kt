@@ -11,7 +11,7 @@ class RealTimePresenter(preferencesRepository: PreferencesRepository) : BasePres
     override fun attachView(view: RealTimeContract.View) {
         super.attachView(view)
 
-        if (preferenceRepository.getBoolean(PreferenceKeys.REAL_TIME_PERMISSION_PERMANENTLY_DENIED, false)) {
+        if (preferenceRepository.getBoolean(PreferenceKeys.REAL_TIME_PERMISSIONS_PERMANENTLY_DENIED, false)) {
             view.showRealTimePermissionsRequiredAlert(R.string.permissions_required_title, R.string.permissions_required_description_realtime)
         } else {
             view.checkRealTimeRequiredPermissions()
@@ -20,7 +20,7 @@ class RealTimePresenter(preferencesRepository: PreferencesRepository) : BasePres
 
     override fun onRealTimePermissionsDenied(permanently: Boolean) {
         if (permanently) {
-            preferenceRepository.putBoolean(PreferenceKeys.REAL_TIME_PERMISSION_PERMANENTLY_DENIED, true)
+            preferenceRepository.putBoolean(PreferenceKeys.REAL_TIME_PERMISSIONS_PERMANENTLY_DENIED, true)
             view?.showRealTimePermissionsRequiredAlert(R.string.permissions_required_title, R.string.permissions_required_description_realtime)
         } else {
             view?.checkRealTimeRequiredPermissions()
@@ -28,7 +28,7 @@ class RealTimePresenter(preferencesRepository: PreferencesRepository) : BasePres
     }
 
     override fun onRealTimePermissionsGranted() {
-        preferenceRepository.remove(PreferenceKeys.REAL_TIME_PERMISSION_PERMANENTLY_DENIED)
+        preferenceRepository.remove(PreferenceKeys.REAL_TIME_PERMISSIONS_PERMANENTLY_DENIED)
         view?.startRecognition()
     }
 }

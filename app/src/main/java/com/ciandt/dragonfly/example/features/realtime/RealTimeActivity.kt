@@ -26,7 +26,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
     private var model: Model? = null
 
     private var missingPermissionsAlertDialog: AlertDialog? = null
-    private var comingFromSettings = false;
+    private var comingFromSettings = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +46,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
         super.onResume()
 
         if (comingFromSettings) {
-            comingFromSettings = false;
+            comingFromSettings = false
             checkRealTimeRequiredPermissions()
         }
 
@@ -87,7 +87,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
                     override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {
                         DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionRationaleShouldBeShown()", this.javaClass.simpleName))
 
-                        token.continuePermissionRequest();
+                        token.continuePermissionRequest()
                     }
                 })
                 .withErrorListener(object : PermissionRequestErrorListener {
@@ -127,7 +127,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
     }
 
     companion object {
-        private val LOG_TAG = RealTimeActivity.javaClass.simpleName
+        private val LOG_TAG = RealTimeActivity::class.java.simpleName
 
         private val MODEL_BUNDLE = "MODEL_BUNDLE"
 
