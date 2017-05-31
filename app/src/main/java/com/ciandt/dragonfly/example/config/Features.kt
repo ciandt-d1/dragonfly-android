@@ -10,5 +10,6 @@ interface Features {
     companion object {
 
         val ENABLE_DEBUG_DRAWER = BuildConfig.DEBUG && true
+        val SAVE_CAPTURED_IMAGES_TO_DEVICE = false
     }
 }

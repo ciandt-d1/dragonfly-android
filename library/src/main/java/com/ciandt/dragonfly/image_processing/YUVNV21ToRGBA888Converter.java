@@ -1,4 +1,4 @@
-package com.ciandt.dragonfly.helpers;
+package com.ciandt.dragonfly.image_processing;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -39,14 +39,13 @@ public class YUVNV21ToRGBA888Converter {
         Bitmap bitmap = bitmapManager.get(width, height, config);
         out.copyTo(bitmap);
 
-        if (rotation != 0) {
-            bitmap = rotate(bitmap, rotation);
+        if (rotation == 0) {
+            return bitmap;
         }
 
-        return bitmap;
+        return rotate(bitmap, rotation);
     }
 
-    // TODO: replace with RenderScript alternative.
     private Bitmap rotate(Bitmap bitmap, int degrees) {
         Matrix matrix = new Matrix();
         matrix.postRotate(degrees);
