@@ -1,18 +1,21 @@
 package com.ciandt.dragonfly.example.features.realtime
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.StringRes
 import com.ciandt.dragonfly.data.Model
 import com.ciandt.dragonfly.example.R
+import com.ciandt.dragonfly.example.helpers.IntentHelper
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
+import com.ciandt.dragonfly.example.infrastructure.PreferencesRepository
+import com.ciandt.dragonfly.example.infrastructure.SharedPreferencesRepository
 import com.ciandt.dragonfly.example.shared.FullScreenActivity
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.*
-import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener
 import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_real_time.*
 
@@ -22,11 +25,15 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
 
     private var model: Model? = null
 
+    private var missingPermissionsAlertDialog: AlertDialog? = null
+    private var comingFromSettings = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_real_time)
 
-        presenter = RealTimePresenter()
+        val preferencesRepository: PreferencesRepository = SharedPreferencesRepository.get(applicationContext)
+        presenter = RealTimePresenter(preferencesRepository)
 
         if (savedInstanceState != null) {
             model = savedInstanceState.getParcelable(MODEL_BUNDLE)
@@ -37,11 +44,19 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
 
     override fun onResume() {
         super.onResume()
+
+        if (comingFromSettings) {
+            comingFromSettings = false
+            checkRealTimeRequiredPermissions()
+        }
+
         presenter.attachView(this)
     }
 
     override fun onPause() {
         super.onPause()
+
+        missingPermissionsAlertDialog?.dismiss()
         presenter.detachView()
         dragonFlyLens.stop()
     }
@@ -53,29 +68,31 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
         }
     }
 
-    override fun requestRealTimePermissions() {
+    override fun checkRealTimeRequiredPermissions() {
         Dexter.withActivity(this)
                 .withPermission(Manifest.permission.CAMERA)
                 .withListener(object : PermissionListener {
                     override fun onPermissionGranted(response: PermissionGrantedResponse) {
+                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionGranted()", CLASS_NAME))
+
                         presenter.onRealTimePermissionsGranted()
                     }
 
                     override fun onPermissionDenied(response: PermissionDeniedResponse) {
-                        if (response.isPermanentlyDenied) {
-                            presenter.onRealTimePermissionsPermanentlyDenied()
-                        } else {
-                            presenter.onRealTimePermissionsDenied()
-                        }
+                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionDenied() - permanently? %s", CLASS_NAME, response.isPermanentlyDenied))
+
+                        presenter.onRealTimePermissionsDenied(response.isPermanentlyDenied)
                     }
 
                     override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {
-                        token.continuePermissionRequest();
+                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionRationaleShouldBeShown()", CLASS_NAME))
+
+                        token.continuePermissionRequest()
                     }
                 })
                 .withErrorListener(object : PermissionRequestErrorListener {
                     override fun onError(error: DexterError) {
-                        DragonflyLogger.error(LOG_TAG, "Dexter error: " + error.toString());
+                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onError(): %s", CLASS_NAME, error))
                     }
                 })
                 .check()
@@ -85,18 +102,33 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
         dragonFlyLens.start(model)
     }
 
-    override fun showRealTimePermissionsError(@StringRes title: Int, @StringRes message: Int) {
-        DialogOnAnyDeniedMultiplePermissionsListener.Builder
-                .withContext(this@RealTimeActivity)
-                .withTitle(title)
-                .withMessage(message)
-                .withButtonText(android.R.string.ok)
-                .withIcon(R.mipmap.ic_launcher)
-                .build()
+    override fun showRealTimePermissionsRequiredAlert(@StringRes title: Int, @StringRes message: Int) {
+        missingPermissionsAlertDialog = AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setCancelable(false)
+                .setNegativeButton(android.R.string.cancel, {
+                    dialog, which ->
+                    finish()
+                })
+                .setPositiveButton(R.string.permissions_open_settings, {
+                    dialog, which ->
+                    dialog.dismiss()
+
+                    // https://stackoverflow.com/a/27575063/1120207
+                    comingFromSettings = true
+                    startActivity(IntentHelper.openSettings())
+                })
+                .setIcon(R.mipmap.ic_launcher)
+                .create()
+
+        missingPermissionsAlertDialog?.setCanceledOnTouchOutside(false)
+        missingPermissionsAlertDialog?.show()
     }
 
     companion object {
-        private val LOG_TAG = RealTimeActivity.javaClass.simpleName
+        private val CLASS_NAME = RealTimeActivity::class.java.simpleName
+        private val LOG_TAG = RealTimeActivity::class.java.simpleName
 
         private val MODEL_BUNDLE = "MODEL_BUNDLE"
 

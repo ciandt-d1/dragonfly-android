@@ -6,19 +6,17 @@ import com.ciandt.dragonfly.example.shared.BasePresenterContract
 interface RealTimeContract {
 
     interface View {
-        fun requestRealTimePermissions()
+        fun checkRealTimeRequiredPermissions()
 
         fun startRecognition()
 
-        fun showRealTimePermissionsError(@StringRes title: Int, @StringRes message: Int)
+        fun showRealTimePermissionsRequiredAlert(@StringRes title: Int, @StringRes message: Int)
     }
 
     interface Presenter : BasePresenterContract<View> {
 
         fun onRealTimePermissionsGranted()
 
-        fun onRealTimePermissionsDenied()
-
-        fun onRealTimePermissionsPermanentlyDenied()
+        fun onRealTimePermissionsDenied(permanently: Boolean)
     }
 }
