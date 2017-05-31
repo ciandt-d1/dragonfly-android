@@ -73,26 +73,26 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
                 .withPermission(Manifest.permission.CAMERA)
                 .withListener(object : PermissionListener {
                     override fun onPermissionGranted(response: PermissionGrantedResponse) {
-                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionGranted()", this.javaClass.simpleName))
+                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionGranted()", RealTimeActivity::class.java.simpleName))
 
                         presenter.onRealTimePermissionsGranted()
                     }
 
                     override fun onPermissionDenied(response: PermissionDeniedResponse) {
-                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionDenied() - permanently? %s", this.javaClass.simpleName, response.isPermanentlyDenied))
+                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionDenied() - permanently? %s", RealTimeActivity::class.java.simpleName, response.isPermanentlyDenied))
 
                         presenter.onRealTimePermissionsDenied(response.isPermanentlyDenied)
                     }
 
                     override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {
-                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionRationaleShouldBeShown()", this.javaClass.simpleName))
+                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionRationaleShouldBeShown()", RealTimeActivity::class.java.simpleName))
 
                         token.continuePermissionRequest()
                     }
                 })
                 .withErrorListener(object : PermissionRequestErrorListener {
                     override fun onError(error: DexterError) {
-                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onError(): %s", this.javaClass.simpleName, error))
+                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onError(): %s", RealTimeActivity::class.java.simpleName, error))
                     }
                 })
                 .check()
