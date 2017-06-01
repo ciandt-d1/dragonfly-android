@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="dragonfly_lens_label_margin_top">-200dp</dimen>
-    <dimen name="dragonfly_lens_label_padding">8dp</dimen>
-    <dimen name="dragonfly_lens_label_text_size">20sp</dimen>
+    <dimen name="dragonfly_lens_label_margin_top">-210dp</dimen>
+    <dimen name="dragonfly_lens_label_vertical_padding">8dp</dimen>
+    <dimen name="dragonfly_lens_label_horizontal_padding">8dp</dimen>
+    <dimen name="dragonfly_lens_label_text_size">24sp</dimen>
 </resources>

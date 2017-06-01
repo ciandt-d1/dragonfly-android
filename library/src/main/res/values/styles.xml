@@ -6,7 +6,10 @@
         <item name="android:minLines">1</item>
         <item name="android:maxLines">1</item>
         <item name="android:textAlignment">center</item>
-        <item name="android:padding">@dimen/dragonfly_lens_label_padding</item>
+        <item name="android:paddingTop">@dimen/dragonfly_lens_label_vertical_padding</item>
+        <item name="android:paddingBottom">@dimen/dragonfly_lens_label_vertical_padding</item>
+        <item name="android:paddingLeft">@dimen/dragonfly_lens_label_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/dragonfly_lens_label_horizontal_padding</item>
         <item name="android:layout_marginTop">@dimen/dragonfly_lens_label_margin_top</item>
     </style>
 </resources>
