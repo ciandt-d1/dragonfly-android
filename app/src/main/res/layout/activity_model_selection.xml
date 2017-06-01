@@ -45,6 +45,55 @@
         android:overScrollMode="never"
     />
 
+    <LinearLayout
+        android:id="@+id/messageContainer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/model_selection_list_height"
+        android:layout_alignTop="@id/recyclerView"
+        android:layout_alignBottom="@id/recyclerView"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/messageIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_warning"/>
+
+        <TextView
+            android:id="@+id/messageText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/model_selection_message_text_margin"
+            style="@style/ModelSelection.Message"
+            android:text="@string/model_selection_empty_message"/>
+
+        <Button
+            android:id="@+id/messageRetry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/model_selection_message_button_margin"
+            android:layout_marginEnd="@dimen/model_selection_message_button_margin"
+            android:background="@android:color/transparent"
+            android:text="@string/model_selection_retry"
+            android:textColor="@color/model_selection_about"/>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/recyclerView"
+        android:layout_alignBottom="@id/recyclerView"
+        android:layout_centerHorizontal="true"
+        style="?android:attr/progressBarStyle"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorAccent"
+        android:visibility="invisible"/>
 
     <View android:layout_width="match_parent"
           android:layout_height="@dimen/model_selection_line_height"

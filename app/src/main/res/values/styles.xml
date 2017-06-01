@@ -35,6 +35,15 @@
         <item name="android:text">@string/model_selection_about</item>
     </style>
 
+    <style name="ModelSelection.Message" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+        <item name="android:textColor">@color/model_selection_message</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
     <style name="ModelSelection.Item.Name" parent="TextAppearance.AppCompat">
         <item name="fontPath">fonts/Roboto-Medium.ttf</item>
         <item name="android:textColor">@color/model_selection_item_title</item>

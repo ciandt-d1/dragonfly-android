@@ -1,22 +1,28 @@
 package com.ciandt.dragonfly.example.features.modelselection
 
-import com.ciandt.dragonfly.data.FakeModelGenerator
 import com.ciandt.dragonfly.data.Model
 import com.ciandt.dragonfly.example.shared.BasePresenter
 
-class ModelSelectionPresenter : BasePresenter<ModelSelectionContract.View>(), ModelSelectionContract.Presenter {
+class ModelSelectionPresenter(private var interactor: ModelSelectionContract.Interactor) : BasePresenter<ModelSelectionContract.View>(), ModelSelectionContract.Presenter {
 
-    override fun getModelsList() {
+    override fun loadModels() {
 
-        val models = ArrayList<Model>()
-        models.add(FakeModelGenerator.generate("1"))
-        models.add(FakeModelGenerator.generate("2"))
-        models.add(FakeModelGenerator.generate("3"))
-        models.add(FakeModelGenerator.generate("4"))
-        models.add(FakeModelGenerator.generate("5"))
-        models.add(FakeModelGenerator.generate("6"))
+        view?.showLoading()
 
-        view?.update(models)
+        interactor.loadModels(
+                onSuccess = { models ->
+
+                    if (models.isEmpty()) {
+                        view?.showEmpty()
+                    } else {
+                        view?.update(models)
+                    }
+
+                },
+                onFailure = { exception ->
+                    view?.showError(exception)
+                }
+        )
     }
 
     override fun selectModel(model: Model) {

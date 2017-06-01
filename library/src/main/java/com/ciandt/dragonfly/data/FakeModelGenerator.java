@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-public class FakeModelGenerator {
+class FakeModelGenerator {
 
     private static final int INPUT_SIZE = 224;
     private static final int IMAGE_MEAN = 117;
