@@ -57,14 +57,9 @@
         android:id="@+id/about"
         android:layout_width="match_parent"
         android:layout_height="@dimen/model_selection_about_height"
-        android:layout_marginLeft="@dimen/model_selection_about_horizontal_margin"
-        android:layout_marginRight="@dimen/model_selection_about_horizontal_margin"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/transparent"
-        android:drawablePadding="@dimen/model_selection_about_drawable_padding"
+        style="@style/ModelSelection.About"
         android:drawableStart="@drawable/ciandt_logo"
-        android:text="@string/model_selection_about"
-        android:textColor="@color/model_selection_about"
     />
 
 </RelativeLayout>
