@@ -97,4 +97,18 @@
         <item name="android:textAlignment">center</item>
     </style>
 
+    <!-- Override default style from library -->
+    <style name="Dragonfly.Lens.Label" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+        <item name="android:textColor">@color/dragonfly_lens_label_text_color</item>
+        <item name="android:textSize">@dimen/dragonfly_lens_label_text_size</item>
+        <item name="android:minLines">1</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:paddingTop">@dimen/dragonfly_lens_label_vertical_padding</item>
+        <item name="android:paddingBottom">@dimen/dragonfly_lens_label_vertical_padding</item>
+        <item name="android:paddingLeft">@dimen/dragonfly_lens_label_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/dragonfly_lens_label_horizontal_padding</item>
+        <item name="android:layout_marginTop">@dimen/dragonfly_lens_label_margin_top</item>
+    </style>
 </resources>
