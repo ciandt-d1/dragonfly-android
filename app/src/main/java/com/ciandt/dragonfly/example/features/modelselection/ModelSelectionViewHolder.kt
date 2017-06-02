@@ -8,6 +8,7 @@ import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.helpers.ColorHelper
 import com.ciandt.dragonfly.example.helpers.SizeHelper
 import kotlinx.android.synthetic.main.item_model_selection.view.*
+import java.text.DecimalFormat
 
 class ModelSelectionViewHolder(itemView: View, val itemClick: (Model) -> Unit) : RecyclerView.ViewHolder(itemView) {
 
@@ -17,7 +18,7 @@ class ModelSelectionViewHolder(itemView: View, val itemClick: (Model) -> Unit) :
 
         description.text = item.description
 
-        val format = resources.getString(R.string.model_selection_item_info, item.version, SizeHelper.toReadable(item.size))
+        val format = resources.getString(R.string.model_selection_item_info, item.version, SizeHelper.toReadable(item.size, format = DecimalFormat("#.##")))
         info.text = format
 
         if (item.colors.size >= 2) {
