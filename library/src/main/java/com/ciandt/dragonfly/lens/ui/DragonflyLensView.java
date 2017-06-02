@@ -39,6 +39,8 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
 
     private DragonflyLensContract.LensPresenter lensPresenter;
 
+    private CameraOrnamentVisibilityCallback cameraOrnamentVisibilityCallback;
+
     private static final ImageView.ScaleType[] SCALE_TYPES = {
             ImageView.ScaleType.MATRIX,
             ImageView.ScaleType.FIT_XY,
@@ -50,11 +52,8 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
             ImageView.ScaleType.CENTER_INSIDE
     };
 
-
-    private void loadModel(Model model) {
-        DragonflyLogger.debug(LOG_TAG, String.format("%s.loadModel(%s)", LOG_TAG, model));
-
-        lensPresenter.loadModel(model);
+    public void setCameraOrnamentVisibilityCallback(CameraOrnamentVisibilityCallback cameraOrnamentVisibilityCallback) {
+        this.cameraOrnamentVisibilityCallback = cameraOrnamentVisibilityCallback;
     }
 
     @Override
@@ -145,7 +144,6 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
             Drawable ornamentDrawable = typedArray.getDrawable(R.styleable.DragonflyLensView_cameraOrnament);
             if (ornamentDrawable != null) {
                 ornamentView.setImageDrawable(ornamentDrawable);
-                ornamentView.setVisibility(VISIBLE);
             }
 
             final int scaleTypeIndex = typedArray.getInt(R.styleable.DragonflyLensView_cameraOrnamentScaleType, -1);
@@ -166,6 +164,14 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
         // Not sure why, but this guarantees the camera works after turning the screen off and then
         // back on.
         cameraView.setVisibility(VISIBLE);
+
+        if (ornamentView.getDrawable() != null) {
+            if (cameraOrnamentVisibilityCallback == null) {
+                ornamentView.setVisibility(VISIBLE);
+            } else {
+                cameraOrnamentVisibilityCallback.onMakingCameraOrnamentVisible(ornamentView);
+            }
+        }
     }
 
     @Override
@@ -174,6 +180,12 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
         stopCameraView();
 
         cameraView.setVisibility(GONE);
+    }
+
+    private void loadModel(Model model) {
+        DragonflyLogger.debug(LOG_TAG, String.format("%s.loadModel(%s)", LOG_TAG, model));
+
+        lensPresenter.loadModel(model);
     }
 
     private void startCameraView() {
@@ -270,5 +282,10 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
                 return new SavedState[size];
             }
         };
+    }
+
+    public interface CameraOrnamentVisibilityCallback {
+
+        void onMakingCameraOrnamentVisible(ImageView ornament);
     }
 }

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.StringRes
+import android.view.View.VISIBLE
 import com.ciandt.dragonfly.data.Model
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.helpers.IntentHelper
@@ -35,10 +36,22 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
         val preferencesRepository: PreferencesRepository = SharedPreferencesRepository.get(applicationContext)
         presenter = RealTimePresenter(preferencesRepository)
 
+        setupDragonflyLens()
+
         if (savedInstanceState != null) {
             model = savedInstanceState.getParcelable(MODEL_BUNDLE)
         } else {
             model = intent.extras?.getParcelable<Model>(MODEL_BUNDLE)
+        }
+    }
+
+    private fun setupDragonflyLens() {
+        dragonFlyLens.setCameraOrnamentVisibilityCallback { ornament ->
+            ornament.alpha = 0f
+            ornament.visibility = VISIBLE
+            ornament.animate()
+                    .alpha(1.0f)
+                    .setDuration(3000)
         }
     }
 
