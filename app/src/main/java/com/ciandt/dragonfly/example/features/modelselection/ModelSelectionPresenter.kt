@@ -31,8 +31,6 @@ class ModelSelectionPresenter(private var interactor: ModelSelectionContract.Int
             view?.run(model)
 
         } else if (model.isDownloading) {
-            model.status = Model.STATUS_DOWNLOADED
-            view?.update(model)
 
         } else {
             model.status = Model.STATUS_DOWNLOADING
