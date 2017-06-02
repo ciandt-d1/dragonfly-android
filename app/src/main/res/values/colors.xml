@@ -9,7 +9,8 @@
     <color name="model_selection_title">#414141</color>
     <color name="model_selection_subtitle">#757575</color>
     <color name="model_selection_line">#e0e0e0</color>
-    <color name="model_selection_about">#7C67E8</color>
+    <color name="model_selection_about">@color/colorAccent</color>
+    <color name="model_selection_message">#757575</color>
 
     <color name="model_selection_item_title">#FFFFFF</color>
     <color name="model_selection_item_info">#BFFFFFFF</color>

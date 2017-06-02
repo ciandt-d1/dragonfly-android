@@ -13,8 +13,11 @@
     <dimen name="model_selection_line_horizontal_margin">10dp</dimen>
     <dimen name="model_selection_line_height">1dp</dimen>
 
+    <dimen name="model_selection_message_text_margin">8dp</dimen>
+    <dimen name="model_selection_message_button_margin">8dp</dimen>
+
     <dimen name="model_selection_about_height">56dp</dimen>
-    <dimen name="model_selection_about_horizontal_margin">10dp</dimen>
+    <dimen name="model_selection_about_horizontal_padding">10dp</dimen>
     <dimen name="model_selection_about_drawable_padding">-32dp</dimen>
 
     <dimen name="model_selection_item_width">160dp</dimen>
