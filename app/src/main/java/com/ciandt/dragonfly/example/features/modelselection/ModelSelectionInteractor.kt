@@ -12,7 +12,9 @@ class ModelSelectionInteractor : ModelSelectionContract.Interactor {
         AsyncTaskCompat.executeParallel(task)
     }
 
-    data class LoadModelsResult(val models: List<Model>, val exception: Exception?)
+    data class LoadModelsResult(val models: List<Model>, val exception: Exception?) {
+        fun isSuccessful(): Boolean = exception == null
+    }
 
     private class LoadModelsTask(private var onSuccess: (List<Model>) -> Unit, private var onFailure: (Exception) -> Unit) : AsyncTask<Void, Void, LoadModelsResult>() {
 
@@ -28,10 +30,10 @@ class ModelSelectionInteractor : ModelSelectionContract.Interactor {
         override fun onPostExecute(result: LoadModelsResult) {
             super.onPostExecute(result)
 
-            if (result.exception != null) {
-                onFailure(result.exception)
-            } else {
+            if (result.isSuccessful()) {
                 onSuccess(result.models)
+            } else {
+                onFailure(result.exception!!)
             }
         }
     }
