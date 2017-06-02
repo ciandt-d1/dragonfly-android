@@ -18,11 +18,15 @@ class FakeModelGenerator {
     public static Model generate(String id) {
 
         if (id.equals("1")) {
-            return getModel1();
+            return getFlowersModel();
         }
 
         if (id.equals("2")) {
-            return getModel2();
+            return getTensorflowDemoModel();
+        }
+
+        if (id.equals("3")) {
+            return getHPModel();
         }
 
         Model model = new Model(id)
@@ -42,11 +46,28 @@ class FakeModelGenerator {
         return model;
     }
 
-    private static Model getModel1() {
+    private static Model getFlowersModel() {
         return new Model("1")
-                .setName("Demo")
+                .setName("Flowers")
                 .setVersion(1)
-                .setSize(31457280L)
+                .setSize(88481067L)
+                .setDescription("This model recognize 130 plants")
+                .setColors(new String[]{"#9BCE4F", "#228B22"})
+                .setInputSize(299)
+                .setImageMean(128)
+                .setImageStd(128)
+                .setInputName("Mul")
+                .setOutputName("final_result")
+                .setModelPath("file:///android_asset/models/flowers/model.pb")
+                .setLabelsPath("file:///android_asset/models/flowers/labels.txt")
+                .setStatus(Model.STATUS_DOWNLOADED);
+    }
+
+    private static Model getTensorflowDemoModel() {
+        return new Model("2")
+                .setName("TF Demo")
+                .setVersion(1)
+                .setSize(53884595L)
                 .setDescription("Simple model for demonstration")
                 .setColors(new String[]{"#8E78FD", "#826BF2"})
                 .setInputSize(224)
@@ -54,16 +75,16 @@ class FakeModelGenerator {
                 .setImageStd(1)
                 .setInputName("input")
                 .setOutputName("output")
-                .setModelPath("file:///android_asset/models/1/model.pb")
-                .setLabelsPath("file:///android_asset/models/1/labels.txt")
+                .setModelPath("file:///android_asset/models/demo/model.pb")
+                .setLabelsPath("file:///android_asset/models/demo/labels.txt")
                 .setStatus(Model.STATUS_DOWNLOADED);
     }
 
-    private static Model getModel2() {
-        return new Model("2")
+    private static Model getHPModel() {
+        return new Model("3")
                 .setName("Sorting Hat")
                 .setVersion(1)
-                .setSize(9793699L)
+                .setSize(87164854L)
                 .setDescription("Which Hogwarts house would you be sorted into?")
                 .setColors(new String[]{"#FDD736", "#990000"})
                 .setInputSize(299)
@@ -71,16 +92,14 @@ class FakeModelGenerator {
                 .setImageStd(128)
                 .setInputName("Mul")
                 .setOutputName("final_result")
-                .setModelPath("file:///android_asset/models/2/model.pb")
-                .setLabelsPath("file:///android_asset/models/2/labels.txt")
+                .setModelPath("file:///android_asset/models/hp/model.pb")
+                .setLabelsPath("file:///android_asset/models/hp/labels.txt")
                 .setStatus(Model.STATUS_DOWNLOADED);
     }
-
 
     private static String getName(String id) {
 
         Map<String, String> names = new HashMap<>();
-        names.put("3", "Flowers");
         names.put("4", "Dogs");
         names.put("5", "Employees");
         names.put("6", "Foods");
@@ -95,7 +114,6 @@ class FakeModelGenerator {
     private static int getVersion(String id) {
 
         Map<String, Integer> versions = new HashMap<>();
-        versions.put("3", 1);
         versions.put("4", 3);
         versions.put("5", 12);
         versions.put("6", 2);
@@ -110,7 +128,6 @@ class FakeModelGenerator {
     private static long getSize(String id) {
 
         Map<String, Long> versions = new HashMap<>();
-        versions.put("3", 15728640L);
         versions.put("4", 20447232L);
         versions.put("5", 106954752L);
         versions.put("6", 48234493L);
@@ -125,7 +142,6 @@ class FakeModelGenerator {
     private static String getDescription(String id) {
 
         Map<String, String> names = new HashMap<>();
-        names.put("3", "This model recognize more than 5000 flowers species.");
         names.put("4", "Discover the breed of your dog. More than 200 breeds.");
         names.put("5", "Discover the name of your employees. On demand.");
         names.put("6", "Is your food healthy? What is the nutritional information?");
@@ -140,8 +156,6 @@ class FakeModelGenerator {
     private static String[] getColors(String id) {
 
         Map<String, String[]> colors = new HashMap<>();
-
-        colors.put("3", new String[]{"#3EB9C1", "#22E2B8"});
         colors.put("4", new String[]{"#e9d362", "#333333"});
         colors.put("5", new String[]{"#9d50bb", "#6e48aa"});
         colors.put("7", new String[]{"#73c8a9", "#373b44"});
