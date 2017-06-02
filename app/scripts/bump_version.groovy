@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-def int[] findVersions() {
+static int[] findVersions() {
     int[] versions = [0, 0, 0]
 
     File file = new File("versions.gradle")
@@ -24,7 +24,7 @@ def int[] findVersions() {
 }
 
 
-def String generateVersion(int[] versions) {
+static String generateVersion(int[] versions) {
 
     def content = """ext {
 	appVersionMajor = ${versions[0]}
@@ -40,28 +40,31 @@ def String generateVersion(int[] versions) {
 }
 
 
-def void commit(int[] versions) {
+static void commit(int[] versions) {
 
     def version = "${versions[0]}.${versions[1]}.${versions[2]}"
 
     def git_add = "git add versions.gradle"
     def git_commit = "git commit -m 'Increase version'"
     def git_tag = "git tag -a $version -m $version"
-    def git_push = "git push origin $version"
+    def git_push_tag = "git push origin $version"
+    def git_push_head = "git push origin HEAD"
 
-    print git_add
+    println git_add
     println git_add.execute().text
 
-    print git_commit
+    println git_commit
     println git_commit.execute().text
 
-    print git_tag
+    println git_tag
     println git_tag.execute().text
 
-    print git_push
-    println git_push.execute().text
-}
+    println git_push_tag
+    println git_push_tag.execute().text
 
+    println git_push_head
+    println git_push_head.execute().text
+}
 
 
 if (args.length == 0) {
