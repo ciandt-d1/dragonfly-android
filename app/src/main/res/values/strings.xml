@@ -10,6 +10,7 @@
     <string name="model_selection_item_download">Download</string>
     <string name="model_selection_item_downloading">Downloading…</string>
     <string name="model_selection_item_downloaded">Let\'s start</string>
+    <string name="model_selection_item_wait">Downloading in progress. Please wait…</string>
 
     <string name="model_selection_empty_message">Oops…\nNo models found!</string>
     <string name="model_selection_error_message">Uh-oh, an error occurred!</string>

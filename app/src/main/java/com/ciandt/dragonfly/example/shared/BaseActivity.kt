@@ -85,4 +85,8 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
     override fun getActivityInstance(): Activity {
         return this
     }
+
+    fun getRootView(): ViewGroup {
+        return window.decorView.findViewById(android.R.id.content) as ViewGroup
+    }
 }
