@@ -18,6 +18,8 @@ interface ModelSelectionContract {
         fun update(model: Model)
 
         fun run(model: Model)
+
+        fun showDownloading(model: Model)
     }
 
     interface Presenter : BasePresenterContract<View> {

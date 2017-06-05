@@ -1,6 +1,7 @@
 package com.ciandt.dragonfly.example.features.modelselection
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.LinearSnapHelper
@@ -129,5 +130,9 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
     override fun run(model: Model) {
         val intent = RealTimeActivity.create(this, model)
         startActivity(intent)
+    }
+
+    override fun showDownloading(model: Model) {
+        Snackbar.make(getRootView(), getString(R.string.model_selection_item_wait), Snackbar.LENGTH_LONG).show()
     }
 }
