@@ -66,7 +66,6 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
         recyclerView.hasFixedSize()
 
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        LinearSnapHelper().attachToRecyclerView(recyclerView)
 
         (recyclerView.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
