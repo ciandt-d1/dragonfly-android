@@ -27,4 +27,6 @@
     <color name="about_powered">#9E9E9E</color>
 
     <color name="dragonfly_lens_view_background">@android:color/black</color>
+
+    <color name="task_description">@color/colorPrimaryDark</color>
 </resources>
