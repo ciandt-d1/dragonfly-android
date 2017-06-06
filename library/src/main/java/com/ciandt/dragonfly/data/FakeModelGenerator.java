@@ -29,7 +29,7 @@ class FakeModelGenerator {
             return getHPModel();
         }
 
-        Model model = new Model(id)
+        return new Model(id)
                 .setName(getName(id))
                 .setVersion(getVersion(id))
                 .setSize(getSize(id))
@@ -42,8 +42,6 @@ class FakeModelGenerator {
                 .setOutputName(OUTPUT_NAME)
                 .setModelPath(MODEL_FILE)
                 .setLabelsPath(LABEL_FILE);
-
-        return model;
     }
 
     private static Model getFlowersModel() {

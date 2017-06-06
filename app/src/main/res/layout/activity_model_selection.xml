@@ -93,7 +93,8 @@
         style="?android:attr/progressBarStyle"
         android:indeterminate="true"
         android:indeterminateTint="@color/colorAccent"
-        android:visibility="invisible"/>
+        android:visibility="invisible"
+        tools:ignore="UnusedAttribute"/>
 
     <View android:layout_width="match_parent"
           android:layout_height="@dimen/model_selection_line_height"
