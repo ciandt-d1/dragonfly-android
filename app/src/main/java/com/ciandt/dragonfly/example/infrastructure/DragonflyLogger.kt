@@ -26,11 +26,7 @@ object DragonflyLogger {
     private val LOG_LEVEL_INFO = 3
     private val LOG_LEVEL_DEBUG = 4
 
-    fun debug(msg: String) {
-        debug(tag, msg)
-    }
-
-    fun debug(tag: String, msg: String) {
+    fun debug(tag: String = this.tag, msg: String) {
         if (shouldLog(LOG_LEVEL_DEBUG) && !TextUtils.isEmpty(msg)) {
             if (!BuildConfig.DEBUG) {
                 Crashlytics.log(LOG_LEVEL_DEBUG, tag, msg)
@@ -40,11 +36,7 @@ object DragonflyLogger {
         }
     }
 
-    fun info(msg: String) {
-        info(tag, msg)
-    }
-
-    fun info(tag: String, msg: String) {
+    fun info(tag: String = this.tag, msg: String) {
         if (shouldLog(LOG_LEVEL_INFO) && !TextUtils.isEmpty(msg)) {
             if (!BuildConfig.DEBUG) {
                 Crashlytics.log(LOG_LEVEL_INFO, tag, msg)
@@ -54,11 +46,7 @@ object DragonflyLogger {
         }
     }
 
-    fun warn(msg: String) {
-        warn(tag, msg, null)
-    }
-
-    fun warn(tag: String, msg: String, ex: Throwable? = null) {
+    fun warn(tag: String = this.tag, msg: String, ex: Throwable? = null) {
         if (shouldLog(LOG_LEVEL_WARN) && !TextUtils.isEmpty(msg)) {
             if (!BuildConfig.DEBUG) {
                 Crashlytics.log(LOG_LEVEL_WARN, tag, msg)
@@ -68,19 +56,11 @@ object DragonflyLogger {
         }
     }
 
-    fun error(msg: String) {
-        error(tag, msg, null)
-    }
-
-    fun error(ex: Throwable) {
+    fun error(tag: String = this.tag, ex: Throwable) {
         error(tag, ex.message, ex)
     }
 
-    fun error(tag: String, ex: Throwable) {
-        error(tag, ex.message, ex)
-    }
-
-    fun error(tag: String, msg: String?, ex: Throwable? = null) {
+    fun error(tag: String = this.tag, msg: String?, ex: Throwable? = null) {
         if (shouldLog(LOG_LEVEL_ERROR) && !TextUtils.isEmpty(msg)) {
             if (!BuildConfig.DEBUG) {
                 Crashlytics.log(LOG_LEVEL_ERROR, tag, msg)
@@ -94,11 +74,7 @@ object DragonflyLogger {
         }
     }
 
-    fun exception(ex: Throwable) {
-        exception(tag, ex)
-    }
-
-    fun exception(tag: String, ex: Throwable) {
+    fun exception(tag: String = this.tag, ex: Throwable) {
         error(tag, ex)
     }
 
@@ -150,17 +126,10 @@ object DragonflyLogger {
 
             val stackTraceElements = stackTrace
 
-            var lastStackTraceElement: StackTraceElement? = null
-
-            for (i in stackTraceElements.indices.reversed()) {
-                val stackTraceElement = stackTraceElements[i]
-
-                if (stackTraceElement.className.contains(LOGGER_CLASS_NAME)) {
-                    break
-                }
-
-                lastStackTraceElement = stackTraceElement
-            }
+            val lastStackTraceElement: StackTraceElement? = stackTraceElements.indices.reversed()
+                    .map { stackTraceElements[it] }
+                    .takeWhile { !it.className.contains(LOGGER_CLASS_NAME) }
+                    .lastOrNull()
 
             return lastStackTraceElement
         }

@@ -103,11 +103,9 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
                         token.continuePermissionRequest()
                     }
                 })
-                .withErrorListener(object : PermissionRequestErrorListener {
-                    override fun onError(error: DexterError) {
-                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onError(): %s", CLASS_NAME, error))
-                    }
-                })
+                .withErrorListener { error ->
+                    DragonflyLogger.debug(LOG_TAG, String.format("%s.onError(): %s", CLASS_NAME, error))
+                }
                 .check()
     }
 
