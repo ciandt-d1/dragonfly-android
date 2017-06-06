@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: '../sonarqube.gradle'
+apply from: '../quality.gradle'
 
 ext {
     libVersionMajor = 0

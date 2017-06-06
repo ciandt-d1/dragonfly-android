@@ -1,0 +1,29 @@
+apply plugin: 'pmd'
+
+def configDir = "${project.rootDir}/settings"
+def reportsDir = "${project.buildDir}/reports"
+
+task pmd(type: Pmd) {
+    group = "Quality"
+
+    ignoreFailures = false
+    ruleSetFiles = files("$configDir/pmd/pmd-ruleset.xml")
+    ruleSets = []
+
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+        xml {
+            destination "$reportsDir/pmd/pmd.xml"
+        }
+        html {
+            destination "$reportsDir/pmd/pmd.html"
+        }
+    }
+}
+
+check.dependsOn 'pmd'
