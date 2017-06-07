@@ -7,8 +7,10 @@ import com.ciandt.dragonfly.example.BuildConfig
 import com.crashlytics.android.Crashlytics
 import java.io.BufferedWriter
 import java.io.File
-import java.io.FileWriter
+import java.io.FileOutputStream
 import java.io.IOException
+import java.io.OutputStreamWriter
+import java.nio.charset.StandardCharsets
 import java.util.Locale
 
 /**
@@ -87,7 +89,7 @@ object DragonflyLogger {
         var out: BufferedWriter? = null
 
         try {
-            out = BufferedWriter(FileWriter(log.absolutePath, log.exists()))
+            out = BufferedWriter(OutputStreamWriter(FileOutputStream(log.absolutePath, log.exists()), StandardCharsets.UTF_8))
             out.write(message)
             out.close()
         } catch (e: IOException) {
