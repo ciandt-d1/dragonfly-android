@@ -177,7 +177,7 @@ public class TensorFlowImageClassifier implements Classifier {
             if (outputs[i] > THRESHOLD) {
                 pq.add(
                         new Recognition(
-                                "" + i, labels.size() > i ? labels.get(i) : "unknown", outputs[i], null));
+                                Integer.toString(i), labels.size() > i ? labels.get(i) : "unknown", outputs[i], null));
             }
         }
         final ArrayList<Recognition> recognitions = new ArrayList<>();

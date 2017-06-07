@@ -1,12 +1,12 @@
 package com.ciandt.dragonfly.infrastructure;
 
+import com.ciandt.dragonfly.BuildConfig;
+
 import android.annotation.SuppressLint;
 import android.os.Environment;
 import android.support.annotation.IntDef;
 import android.text.TextUtils;
 import android.util.Log;
-
-import com.ciandt.dragonfly.BuildConfig;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -38,14 +38,14 @@ public class DragonflyLogger {
     public static final int LOG_LEVEL_DEBUG = 4;
 
     @LogLevel
-    private static int LOG_LEVEL = LOG_LEVEL_ERROR;
+    private static int logLevel = LOG_LEVEL_ERROR;
 
     private DragonflyLogger() {
         // just to disable default constructor
     }
 
     public static void setLogLevel(@LogLevel int logLevel) {
-        LOG_LEVEL = logLevel;
+        DragonflyLogger.logLevel = logLevel;
     }
 
     public static void debug(String msg) {
@@ -150,7 +150,7 @@ public class DragonflyLogger {
     }
 
     private static boolean shouldLog(int logLevel) {
-        return BuildConfig.DEBUG || LOG_LEVEL >= logLevel;
+        return BuildConfig.DEBUG || DragonflyLogger.logLevel >= logLevel;
     }
 
     @SuppressLint("DefaultLocale")
