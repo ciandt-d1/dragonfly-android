@@ -1,7 +1,36 @@
+apply plugin: 'findbugs'
 apply plugin: 'pmd'
 
 def configDir = "${project.rootDir}/settings"
 def reportsDir = "${project.buildDir}/reports"
+
+task findbugs(type: FindBugs, dependsOn: "assembleDebug") {
+    group = "Quality"
+
+    ignoreFailures = false
+    effort = "max"
+    reportLevel = "high"
+    excludeFilter = new File("$configDir/findbugs/findbugs-filter.xml")
+    classes = files("${project.buildDir}/intermediates/classes")
+
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    reports {
+        xml.enabled = true
+        html.enabled = false
+        xml {
+            destination "$reportsDir/findbugs/findbugs.xml"
+        }
+        html {
+            destination "$reportsDir/findbugs/findbugs.html"
+        }
+    }
+
+    classpath = files()
+}
+
 
 task pmd(type: Pmd) {
     group = "Quality"
@@ -26,4 +55,4 @@ task pmd(type: Pmd) {
     }
 }
 
-check.dependsOn 'pmd'
+check.dependsOn 'findbugs', 'pmd'
