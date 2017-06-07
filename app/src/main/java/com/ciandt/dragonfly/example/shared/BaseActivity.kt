@@ -1,17 +1,23 @@
 package com.ciandt.dragonfly.example.shared
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.support.annotation.LayoutRes
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.ViewGroup
+import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.config.CommonBundleNames
 import com.ciandt.dragonfly.example.config.Features
 import com.ciandt.dragonfly.example.debug.DebugActionsHelper
 import io.palaima.debugdrawer.DebugDrawer
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
+
 
 /**
  * Created by iluz on 5/15/17.
@@ -52,17 +58,23 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
     override fun setContentView(@LayoutRes layoutResID: Int) {
         super.setContentView(layoutResID)
 
+        configTaskDescription()
+
         configDebugDrawer(intent)
     }
 
     override fun setContentView(view: View) {
         super.setContentView(view)
 
+        configTaskDescription()
+
         configDebugDrawer(intent)
     }
 
     override fun setContentView(view: View, params: ViewGroup.LayoutParams) {
         super.setContentView(view, params)
+
+        configTaskDescription()
 
         configDebugDrawer(intent)
     }
@@ -88,5 +100,18 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
 
     fun getRootView(): ViewGroup {
         return window.decorView.findViewById(android.R.id.content) as ViewGroup
+    }
+
+
+    private var icLauncher: Bitmap? = null
+
+    fun configTaskDescription() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            if (icLauncher == null) {
+                icLauncher = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
+            }
+            val taskDescription = ActivityManager.TaskDescription(resources.getString(R.string.app_name), icLauncher, ContextCompat.getColor(this, R.color.task_description))
+            setTaskDescription(taskDescription)
+        }
     }
 }
