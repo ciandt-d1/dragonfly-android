@@ -55,4 +55,16 @@ task pmd(type: Pmd) {
     }
 }
 
-check.dependsOn 'findbugs', 'pmd'
+android {
+    lintOptions {
+        abortOnError false
+        warningsAsErrors true
+        xmlReport true
+        htmlReport true
+        lintConfig file("$configDir/lint/lint.xml")
+        htmlOutput file("$reportsDir/lint/lint-results.html")
+        xmlOutput file("$reportsDir/lint/lint-results.xml")
+    }
+}
+
+check.dependsOn 'findbugs', 'pmd', 'lint'

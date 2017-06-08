@@ -21,6 +21,7 @@ apply plugin: 'io.fabric'
 
 apply from: '../versions.gradle'
 apply from: '../sonarqube.gradle'
+apply from: '../quality.gradle'
 
 def debugDrawerVersion = '0.7.0'
 
@@ -71,10 +72,6 @@ android {
         manifestPlaceholders = [
                 FABRIC_API_KEY: fabricProperties['apiKey']
         ]
-    }
-
-    lintOptions {
-        abortOnError false
     }
 
     signingConfigs {
