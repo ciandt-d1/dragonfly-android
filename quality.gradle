@@ -67,4 +67,24 @@ android {
     }
 }
 
-check.dependsOn 'findbugs', 'pmd', 'lint'
+task checkApp {
+    group = "Quality"
+
+    dependsOn ':app:findbugs'
+    dependsOn ':app:pmd'
+}
+
+task checkLibrary {
+    group = "Quality"
+
+    dependsOn ':library:findbugs'
+    dependsOn ':library:pmd'
+    dependsOn ':library:lint'
+}
+
+task checkAll {
+    group = "Quality"
+
+    dependsOn 'checkApp'
+    dependsOn 'checkLibrary'
+}
