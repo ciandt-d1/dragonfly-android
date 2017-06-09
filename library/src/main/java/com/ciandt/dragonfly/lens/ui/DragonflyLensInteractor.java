@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.support.v4.os.AsyncTaskCompat;
 import android.util.TimingLogger;
 
-import com.ciandt.dragonfly.data.Model;
+import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.image_processing.ImageUtils;
 import com.ciandt.dragonfly.image_processing.YUVNV21ToRGBA888Converter;
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
@@ -23,7 +23,7 @@ import java.util.UUID;
  * Created by iluz on 5/26/17.
  */
 
-public class DragonflyLensInteractor implements DragonflyLensContract.LensInteractorContract {
+public class DragonflyLensInteractor implements DragonflyLensContract.LensInteractor {
 
     private static final String LOG_TAG = DragonflyLensInteractor.class.getSimpleName();
 

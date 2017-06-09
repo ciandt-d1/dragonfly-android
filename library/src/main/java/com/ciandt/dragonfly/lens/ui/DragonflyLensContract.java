@@ -6,9 +6,11 @@ import com.ciandt.dragonfly.base.ui.BaseInteractorContract;
 import com.ciandt.dragonfly.base.ui.BasePresenterContract;
 import com.ciandt.dragonfly.base.ui.BaseViewContract;
 import com.ciandt.dragonfly.base.ui.Orientation;
-import com.ciandt.dragonfly.data.Model;
+import com.ciandt.dragonfly.data.model.Model;
+import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
+import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
 import java.util.List;
@@ -36,6 +38,14 @@ public interface DragonflyLensContract {
         void onModelFailure(DragonflyModelException e);
 
         void onBitmapAnalysisFailed(DragonflyRecognitionException e);
+
+        void takeSnapshot();
+
+        void onStartTakingSnapshot();
+
+        void onSnapshotTaken(DragonflyCameraSnapshot snapshot);
+
+        void onSnapshotError(DragonflySnapshotException e);
     }
 
     interface LensPresenter extends BasePresenterContract<LensView> {
@@ -53,9 +63,13 @@ public interface DragonflyLensContract {
         void onModelReady(Model model);
 
         void onModelFailure(DragonflyModelException e);
+
+        void takeSnapshot();
+
+        void saveSnapshot(byte[] data);
     }
 
-    interface LensInteractorContract extends BaseInteractorContract<LensPresenter> {
+    interface LensInteractor extends BaseInteractorContract<LensPresenter> {
 
         void loadModel(Model model);
 
@@ -64,5 +78,10 @@ public interface DragonflyLensContract {
         void analyzeBitmap(Bitmap bitmap);
 
         void analyzeYUVNV21Picture(byte[] data, int width, int height, int rotation);
+    }
+
+    interface LensSnapshotInteractorContract extends BaseInteractorContract<LensPresenter> {
+
+        void saveSnapshot(byte[] data);
     }
 }

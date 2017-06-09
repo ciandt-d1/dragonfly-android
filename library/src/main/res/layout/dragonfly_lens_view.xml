@@ -29,4 +29,13 @@
               android:visibility="gone"
               tools:text="Hammer 25%"
               tools:visibility="visible"/>
+
+    <ImageButton android:id="@+id/btnSnapshot"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_marginBottom="@dimen/dragonfly_lens_snapshot_button_margin_bottom"
+                 android:layout_gravity="bottom|center_horizontal"
+                 android:src="@android:drawable/ic_menu_camera"
+                 android:visibility="visible"
+                 tools:visibility="visible"/>
 </merge>

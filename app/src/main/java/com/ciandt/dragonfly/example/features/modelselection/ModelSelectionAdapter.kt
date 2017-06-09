@@ -4,7 +4,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.ciandt.dragonfly.data.Model
+import com.ciandt.dragonfly.data.model.Model
 
 class ModelSelectionAdapter(var context: Context, var list: ArrayList<Model>, val itemClick: (Model) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
