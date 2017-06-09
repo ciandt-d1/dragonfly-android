@@ -23,14 +23,14 @@ import java.util.UUID;
  * Created by iluz on 5/26/17.
  */
 
-public class DragonflyLensClassificatorInteractor implements DragonflyLensContract.LensInteractor {
+public class DragonflyLensClassificatorInteractor implements DragonflyLensRealTimeContract.LensClassificatorInteractor {
 
     // Manually set to avoid '"DragonflyLensClassificatorInteractor" exceeds limit of 23 characters'
     private static final String LOG_TAG = "ClassificatorInteractor";
 
     private Context context;
 
-    private DragonflyLensContract.LensPresenter presenter;
+    private DragonflyLensRealTimeContract.LensRealTimePresenter presenter;
 
     private Classifier classifier;
     private Model model;
@@ -47,7 +47,7 @@ public class DragonflyLensClassificatorInteractor implements DragonflyLensContra
     }
 
     @Override
-    public void setPresenter(DragonflyLensContract.LensPresenter presenter) {
+    public void setPresenter(DragonflyLensRealTimeContract.LensRealTimePresenter presenter) {
         this.presenter = presenter;
     }
 

@@ -20,12 +20,12 @@ import java.util.UUID;
  * Created by iluz on 6/9/17.
  */
 
-public class DragonflyLensSnapshotInteractor implements DragonflyLensContract.LensSnapshotInteractor {
+public class DragonflyLensSnapshotInteractor implements DragonflyLensRealTimeContract.LensSnapshotInteractor {
 
     // Manually set to avoid '"DragonflyLensSnapshotInteractor" exceeds limit of 23 characters'
     private static final String LOG_TAG = "SnapshotInteractor";
 
-    private DragonflyLensContract.LensPresenter presenter;
+    private DragonflyLensRealTimeContract.LensRealTimePresenter presenter;
 
     private SaveSnapshotTask saveSnapshotTask;
 
@@ -36,7 +36,7 @@ public class DragonflyLensSnapshotInteractor implements DragonflyLensContract.Le
     }
 
     @Override
-    public void setPresenter(DragonflyLensContract.LensPresenter presenter) {
+    public void setPresenter(DragonflyLensRealTimeContract.LensRealTimePresenter presenter) {
         this.presenter = presenter;
     }
 

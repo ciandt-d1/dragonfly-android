@@ -17,46 +17,46 @@ import java.util.List;
  * Created by iluz on 5/26/17.
  */
 
-public class DragonflyLensPresenter extends AbstractPresenter<DragonflyLensContract.LensView> implements DragonflyLensContract.LensPresenter {
+public class DragonflyLensRealTimeRealTimePresenter extends AbstractPresenter<DragonflyLensRealTimeContract.LensRealTimeView> implements DragonflyLensRealTimeContract.LensRealTimePresenter {
 
-    private static final String LOG_TAG = DragonflyLensPresenter.class.getSimpleName();
+    private static final String LOG_TAG = DragonflyLensRealTimeRealTimePresenter.class.getSimpleName();
 
     private static final int MAX_MODEL_LOADING_ATTEMPTS = 5;
 
     private float confidenceThreshold = 0f;
 
-    private DragonflyLensContract.LensInteractor lensInteractor;
-    private DragonflyLensContract.LensSnapshotInteractor snapshotInteractor;
+    private DragonflyLensRealTimeContract.LensClassificatorInteractor lensClassificatorInteractor;
+    private DragonflyLensRealTimeContract.LensSnapshotInteractor snapshotInteractor;
 
     private Model loadedModel;
 
     private int modelLoadingAttempts = 0;
 
-    public DragonflyLensPresenter(DragonflyLensContract.LensInteractor lensInteractor, DragonflyLensContract.LensSnapshotInteractor snapshotInteractor) {
-        if (lensInteractor == null) {
-            throw new IllegalArgumentException("lensInteractor can't be null.");
+    public DragonflyLensRealTimeRealTimePresenter(DragonflyLensRealTimeContract.LensClassificatorInteractor lensClassificatorInteractor, DragonflyLensRealTimeContract.LensSnapshotInteractor snapshotInteractor) {
+        if (lensClassificatorInteractor == null) {
+            throw new IllegalArgumentException("lensClassificatorInteractor can't be null.");
         }
 
         if (snapshotInteractor == null) {
             throw new IllegalArgumentException("snapshotInteractor can't be null.");
         }
 
-        lensInteractor.setPresenter(this);
-        this.lensInteractor = lensInteractor;
+        lensClassificatorInteractor.setPresenter(this);
+        this.lensClassificatorInteractor = lensClassificatorInteractor;
 
         snapshotInteractor.setPresenter(this);
         this.snapshotInteractor = snapshotInteractor;
     }
 
     @SuppressWarnings("unused")
-    public DragonflyLensPresenter(DragonflyLensContract.LensInteractor lensInteractor, DragonflyLensContract.LensSnapshotInteractor snapshotInteractor, float confidenceThreshold) {
-        this(lensInteractor, snapshotInteractor);
+    public DragonflyLensRealTimeRealTimePresenter(DragonflyLensRealTimeContract.LensClassificatorInteractor lensClassificatorInteractor, DragonflyLensRealTimeContract.LensSnapshotInteractor snapshotInteractor, float confidenceThreshold) {
+        this(lensClassificatorInteractor, snapshotInteractor);
 
         if (confidenceThreshold < 0 || confidenceThreshold > 1) {
             throw new IllegalArgumentException("confidenceThreshold should be a float between 0 and 1.");
         }
 
-        this.lensInteractor = lensInteractor;
+        this.lensClassificatorInteractor = lensClassificatorInteractor;
         this.confidenceThreshold = confidenceThreshold;
     }
 
@@ -65,7 +65,7 @@ public class DragonflyLensPresenter extends AbstractPresenter<DragonflyLensContr
         super.detach();
 
         loadedModel = null;
-        lensInteractor.releaseModel();
+        lensClassificatorInteractor.releaseModel();
     }
 
     @Override
@@ -81,17 +81,17 @@ public class DragonflyLensPresenter extends AbstractPresenter<DragonflyLensContr
         }
 
         modelLoadingAttempts = 0;
-        lensInteractor.loadModel(model);
+        lensClassificatorInteractor.loadModel(model);
     }
 
     @Override
     public void analyzeBitmap(Bitmap bitmap) {
-        lensInteractor.analyzeBitmap(bitmap);
+        lensClassificatorInteractor.analyzeBitmap(bitmap);
     }
 
     @Override
     public void analyzeYUVNV21(byte[] data, int width, int height, int rotation) {
-        lensInteractor.analyzeYUVNV21Picture(data, width, height, rotation);
+        lensClassificatorInteractor.analyzeYUVNV21Picture(data, width, height, rotation);
     }
 
     @Override
@@ -149,7 +149,7 @@ public class DragonflyLensPresenter extends AbstractPresenter<DragonflyLensContr
 
             DragonflyLogger.warn(LOG_TAG, String.format("Failed to load loadedModel. Retrying with %s", e.getModel()));
             modelLoadingAttempts++;
-            lensInteractor.loadModel(e.getModel());
+            lensClassificatorInteractor.loadModel(e.getModel());
         } else {
             if (hasViewAttached()) {
                 view.onModelFailure(e);
