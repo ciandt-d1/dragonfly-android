@@ -174,12 +174,6 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
 
     @Override
     public void onSnapshotSaved(DragonflyCameraSnapshot snapshot) {
-//        DragonflyCameraSnapshot snapshot = DragonflyCameraSnapshot.newBuilder()
-//                .withHeight(640)
-//                .withWidth(480)
-//                .withPath("a path")
-//                .build();
-
         view.onSnapshotTaken(snapshot);
     }
 
