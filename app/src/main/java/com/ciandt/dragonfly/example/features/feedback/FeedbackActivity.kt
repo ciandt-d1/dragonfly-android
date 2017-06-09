@@ -16,7 +16,7 @@ class FeedbackActivity : AppCompatActivity(), FeedbackContract.View {
     }
 
     companion object {
-        private val SNAPSHOT_BUNDLE = String.format("%s.model_bundle", BuildConfig.APPLICATION_ID);
+        private val SNAPSHOT_BUNDLE = String.format("%s.snapshot_bundle", BuildConfig.APPLICATION_ID);
 
         fun newIntent(context: Context, snapshot: DragonflyCameraSnapshot): Intent {
             val intent = Intent(context, FeedbackActivity::class.java)
