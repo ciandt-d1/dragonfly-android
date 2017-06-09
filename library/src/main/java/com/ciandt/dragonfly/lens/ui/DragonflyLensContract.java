@@ -39,7 +39,7 @@ public interface DragonflyLensContract {
 
         void onBitmapAnalysisFailed(DragonflyRecognitionException e);
 
-        void takeSnapshot();
+        void captureCameraFrame();
 
         void onStartTakingSnapshot();
 
@@ -66,7 +66,13 @@ public interface DragonflyLensContract {
 
         void takeSnapshot();
 
-        void saveSnapshot(byte[] data);
+        void onSnapshotCaptured(byte[] data, int width, int height, int rotation);
+
+        void onFailedToCaptureCameraFrame(DragonflySnapshotException e);
+
+        void onSnapshotSaved(DragonflyCameraSnapshot snapshot);
+
+        void onFailedToSaveSnapshot(DragonflySnapshotException e);
     }
 
     interface LensInteractor extends BaseInteractorContract<LensPresenter> {
@@ -80,8 +86,8 @@ public interface DragonflyLensContract {
         void analyzeYUVNV21Picture(byte[] data, int width, int height, int rotation);
     }
 
-    interface LensSnapshotInteractorContract extends BaseInteractorContract<LensPresenter> {
+    interface LensSnapshotInteractor extends BaseInteractorContract<LensPresenter> {
 
-        void saveSnapshot(byte[] data);
+        void saveSnapshot(byte[] data, int width, int height, int rotation);
     }
 }

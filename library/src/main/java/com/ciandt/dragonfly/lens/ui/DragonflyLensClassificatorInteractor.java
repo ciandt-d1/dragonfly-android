@@ -23,9 +23,10 @@ import java.util.UUID;
  * Created by iluz on 5/26/17.
  */
 
-public class DragonflyLensInteractor implements DragonflyLensContract.LensInteractor {
+public class DragonflyLensClassificatorInteractor implements DragonflyLensContract.LensInteractor {
 
-    private static final String LOG_TAG = DragonflyLensInteractor.class.getSimpleName();
+    // Manually set to avoid '"DragonflyLensClassificatorInteractor" exceeds limit of 23 characters'
+    private static final String LOG_TAG = "ClassificatorInteractor";
 
     private Context context;
 
@@ -40,7 +41,7 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
     private final YUVNV21ToRGBA888Converter yuvToRgbConverter;
 
-    public DragonflyLensInteractor(Context context) {
+    public DragonflyLensClassificatorInteractor(Context context) {
         this.context = context.getApplicationContext();
         this.yuvToRgbConverter = new YUVNV21ToRGBA888Converter(context);
     }
@@ -111,7 +112,7 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
         }
 
         if (analyzeYUVN21Task != null && AsyncTask.Status.RUNNING.equals(analyzeYUVN21Task.getStatus())) {
-            DragonflyLogger.debug(LOG_TAG, "AnalyzeYUVN21Task is running. Skipping this round.");
+            DragonflyLogger.debug(LOG_TAG, "SaveSnapshotTask is running. Skipping this round.");
             return;
         }
 
@@ -128,9 +129,9 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
     private static class LoadModelTask extends AsyncTask<Model, Void, AsyncTaskResult<Model, DragonflyModelException>> {
 
-        private final DragonflyLensInteractor interactor;
+        private final DragonflyLensClassificatorInteractor interactor;
 
-        public LoadModelTask(DragonflyLensInteractor interactor) {
+        public LoadModelTask(DragonflyLensClassificatorInteractor interactor) {
             this.interactor = interactor;
         }
 
@@ -179,9 +180,9 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
     private static class AnalyzeBitmapTask extends AsyncTask<Bitmap, Void, AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException>> {
 
-        private final DragonflyLensInteractor interactor;
+        private final DragonflyLensClassificatorInteractor interactor;
 
-        public AnalyzeBitmapTask(DragonflyLensInteractor interactor) {
+        public AnalyzeBitmapTask(DragonflyLensClassificatorInteractor interactor) {
             this.interactor = interactor;
         }
 
@@ -218,9 +219,9 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
     private static class AnalyzeYUVN21Task extends AsyncTask<AnalyzeYUVN21Task.TaskParams, Void, AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException>> {
 
-        private final DragonflyLensInteractor interactor;
+        private final DragonflyLensClassificatorInteractor interactor;
 
-        public AnalyzeYUVN21Task(DragonflyLensInteractor interactor) {
+        public AnalyzeYUVN21Task(DragonflyLensClassificatorInteractor interactor) {
             this.interactor = interactor;
         }
 
@@ -228,11 +229,11 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
         protected AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException> doInBackground(AnalyzeYUVN21Task.TaskParams... params) {
             AnalyzeYUVN21Task.TaskParams taskParams = params[0];
 
-            DragonflyLogger.debug(LOG_TAG, "AnalyzeYUVN21Task.doInBackground() - start");
+            DragonflyLogger.debug(LOG_TAG, "SaveSnapshotTask.doInBackground() - start");
 
             // To see the log ouput, make sure to run the command below:
             // adb shell setprop log.tag.<LOG_TAG> VERBOSE
-            TimingLogger timings = new TimingLogger(LOG_TAG, "AnalyzeYUVN21Task.doInBackground()");
+            TimingLogger timings = new TimingLogger(LOG_TAG, "SaveSnapshotTask.doInBackground()");
 
             try {
                 Bitmap bitmap = interactor.yuvToRgbConverter.convert(taskParams.getData(), taskParams.getWidth(), taskParams.getHeight(), Bitmap.Config.ARGB_8888, taskParams.getRotation());
@@ -267,11 +268,11 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
         @Override
         protected void onPostExecute(AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException> result) {
             if (result.hasError()) {
-                DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeYUVN21Task.onPostExecute() - error | exception: %s", result.getError()));
+                DragonflyLogger.debug(LOG_TAG, String.format("SaveSnapshotTask.onPostExecute() - error | exception: %s", result.getError()));
 
                 interactor.presenter.onImageAnalysisFailed(result.getError());
             } else {
-                DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeYUVN21Task.onPostExecute() - success | recognitions: %s", result.getResult()));
+                DragonflyLogger.debug(LOG_TAG, String.format("SaveSnapshotTask.onPostExecute() - success | recognitions: %s", result.getResult()));
 
                 interactor.presenter.onImageAnalyzed(result.getResult());
             }

@@ -10,11 +10,21 @@ public class DragonflyConfig {
 
     private static boolean saveBitmapsInDebugMode = false;
 
+    private static String dropboxPath;
+
     public static boolean shouldSaveBitmapsInDebugMode() {
         return saveBitmapsInDebugMode;
     }
 
     public static void shouldSaveBitmapsInDebugMode(boolean saveBitmapsInDebugMode) {
         DragonflyConfig.saveBitmapsInDebugMode = BuildConfig.DEBUG && saveBitmapsInDebugMode;
+    }
+
+    public static String getDropboxPath() {
+        return dropboxPath;
+    }
+
+    public static void setDropboxPath(String dropboxPath) {
+        DragonflyConfig.dropboxPath = dropboxPath;
     }
 }

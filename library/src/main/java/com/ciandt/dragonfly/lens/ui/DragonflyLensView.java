@@ -106,8 +106,8 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
     }
 
     @Override
-    public void takeSnapshot() {
-        lensPresenter.saveSnapshot(null);
+    public void captureCameraFrame() {
+        cameraView.takeSnapshot();
     }
 
     @Override
@@ -175,7 +175,7 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
             }
         });
 
-        lensPresenter = new DragonflyLensPresenter(new DragonflyLensInteractor(getContext()));
+        lensPresenter = new DragonflyLensPresenter(new DragonflyLensClassificatorInteractor(getContext()), new DragonflyLensSnapshotInteractor(getContext()));
 
         processAttributeSet(context, attrs);
     }
@@ -255,6 +255,11 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
     @Override
     public void onFrameReady(byte[] data, Size previewSize, int rotation) {
         lensPresenter.analyzeYUVNV21(data, previewSize.getWidth(), previewSize.getHeight(), rotation);
+    }
+
+    @Override
+    public void onSnapshotCaptured(byte[] data, Size previewSize, int rotation) {
+        lensPresenter.onSnapshotCaptured(data, previewSize.getWidth(), previewSize.getHeight(), rotation);
     }
 
     @Override
