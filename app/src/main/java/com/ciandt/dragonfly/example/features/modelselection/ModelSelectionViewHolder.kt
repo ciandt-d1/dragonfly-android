@@ -3,7 +3,7 @@ package com.ciandt.dragonfly.example.features.modelselection
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.ciandt.dragonfly.data.Model
+import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.helpers.ColorHelper
 import com.ciandt.dragonfly.example.helpers.SizeHelper

@@ -9,7 +9,9 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,10 +19,12 @@ import com.ciandt.dragonfly.CameraView;
 import com.ciandt.dragonfly.R;
 import com.ciandt.dragonfly.base.ui.Orientation;
 import com.ciandt.dragonfly.base.ui.Size;
-import com.ciandt.dragonfly.data.Model;
+import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
+import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
+import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
 
 /**
  * Created by iluz on 5/22/17.
@@ -37,9 +41,12 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
     private CameraView cameraView;
     private ImageView ornamentView;
 
+    private ImageButton btnSnapshot;
+
     private DragonflyLensContract.LensPresenter lensPresenter;
 
     private CameraOrnamentVisibilityCallback cameraOrnamentVisibilityCallback;
+    private SnapshotCallbacks snapshotCallbacks;
 
     private static final ImageView.ScaleType[] SCALE_TYPES = {
             ImageView.ScaleType.MATRIX,
@@ -54,6 +61,10 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
 
     public void setCameraOrnamentVisibilityCallback(CameraOrnamentVisibilityCallback cameraOrnamentVisibilityCallback) {
         this.cameraOrnamentVisibilityCallback = cameraOrnamentVisibilityCallback;
+    }
+
+    public void setSnapshotCallbacks(SnapshotCallbacks snapshotCallbacks) {
+        this.snapshotCallbacks = snapshotCallbacks;
     }
 
     @Override
@@ -94,6 +105,32 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
         // TODO: handle the error in a user friendly way.
     }
 
+    @Override
+    public void takeSnapshot() {
+        lensPresenter.saveSnapshot(null);
+    }
+
+    @Override
+    public void onStartTakingSnapshot() {
+        if (snapshotCallbacks != null) {
+            snapshotCallbacks.onStartTakingSnapshot();
+        }
+    }
+
+    @Override
+    public void onSnapshotTaken(DragonflyCameraSnapshot snapshot) {
+        if (snapshotCallbacks != null) {
+            snapshotCallbacks.onSnapshotTaken(snapshot);
+        }
+    }
+
+    @Override
+    public void onSnapshotError(DragonflySnapshotException e) {
+        if (snapshotCallbacks != null) {
+            snapshotCallbacks.onSnapshotError(e);
+        }
+    }
+
     public DragonflyLensView(Context context) {
         super(context);
         initialize(context, null);
@@ -128,6 +165,15 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
         cameraView.setOrientation(orientation);
 
         ornamentView = (ImageView) this.findViewById(R.id.ornamentView);
+
+        btnSnapshot = (ImageButton) this.findViewById(R.id.btnSnapshot);
+        btnSnapshot.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                lensPresenter.takeSnapshot();
+            }
+        });
 
         lensPresenter = new DragonflyLensPresenter(new DragonflyLensInteractor(getContext()));
 
@@ -287,5 +333,14 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
     public interface CameraOrnamentVisibilityCallback {
 
         void onMakingCameraOrnamentVisible(ImageView ornament);
+    }
+
+    public interface SnapshotCallbacks {
+
+        void onStartTakingSnapshot();
+
+        void onSnapshotTaken(DragonflyCameraSnapshot snapshot);
+
+        void onSnapshotError(DragonflySnapshotException e);
     }
 }
