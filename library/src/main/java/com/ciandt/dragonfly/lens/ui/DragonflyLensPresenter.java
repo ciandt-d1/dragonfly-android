@@ -3,8 +3,9 @@ package com.ciandt.dragonfly.lens.ui;
 import android.graphics.Bitmap;
 
 import com.ciandt.dragonfly.base.ui.AbstractPresenter;
-import com.ciandt.dragonfly.data.Model;
+import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
+import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
@@ -23,13 +24,13 @@ public class DragonflyLensPresenter extends AbstractPresenter<DragonflyLensContr
 
     private float confidenceThreshold = 0f;
 
-    private DragonflyLensContract.LensInteractorContract interactor;
+    private DragonflyLensContract.LensInteractor interactor;
 
     private Model loadedModel;
 
     private int modelLoadingAttempts = 0;
 
-    public DragonflyLensPresenter(DragonflyLensContract.LensInteractorContract interactor) {
+    public DragonflyLensPresenter(DragonflyLensContract.LensInteractor interactor) {
         if (interactor == null) {
             throw new IllegalArgumentException("interactor can't be null.");
         }
@@ -39,7 +40,7 @@ public class DragonflyLensPresenter extends AbstractPresenter<DragonflyLensContr
     }
 
     @SuppressWarnings("unused")
-    public DragonflyLensPresenter(DragonflyLensContract.LensInteractorContract interactor, float confidenceThreshold) {
+    public DragonflyLensPresenter(DragonflyLensContract.LensInteractor interactor, float confidenceThreshold) {
         this(interactor);
 
         if (confidenceThreshold < 0 || confidenceThreshold > 1) {
@@ -145,6 +146,22 @@ public class DragonflyLensPresenter extends AbstractPresenter<DragonflyLensContr
                 view.onModelFailure(e);
             }
         }
+    }
+
+    @Override
+    public void takeSnapshot() {
+        view.takeSnapshot();
+    }
+
+    @Override
+    public void saveSnapshot(byte[] data) {
+        DragonflyCameraSnapshot snapshot = DragonflyCameraSnapshot.newBuilder()
+                .withHeight(640)
+                .withWidth(480)
+                .withPath("a path")
+                .build();
+        
+        view.onSnapshotTaken(snapshot);
     }
 
     private int formatConfidence(float confidence) {

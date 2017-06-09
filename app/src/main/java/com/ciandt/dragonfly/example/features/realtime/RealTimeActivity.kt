@@ -7,13 +7,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.view.View.VISIBLE
-import com.ciandt.dragonfly.data.Model
+import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.R
+import com.ciandt.dragonfly.example.features.feedback.FeedbackActivity
 import com.ciandt.dragonfly.example.helpers.IntentHelper
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.ciandt.dragonfly.example.infrastructure.PreferencesRepository
 import com.ciandt.dragonfly.example.infrastructure.SharedPreferencesRepository
 import com.ciandt.dragonfly.example.shared.FullScreenActivity
+import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
+import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException
+import com.ciandt.dragonfly.lens.ui.DragonflyLensView
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.*
@@ -21,7 +25,7 @@ import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_real_time.*
 
 
-class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
+class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyLensView.SnapshotCallbacks {
     private lateinit var presenter: RealTimeContract.Presenter
 
     private var model: Model? = null
@@ -53,6 +57,8 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
                     .alpha(1.0f)
                     .setDuration(3000)
         }
+
+        dragonFlyLens.setSnapshotCallbacks(this)
     }
 
     override fun onResume() {
@@ -137,6 +143,21 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View {
 
         missingPermissionsAlertDialog?.setCanceledOnTouchOutside(false)
         missingPermissionsAlertDialog?.show()
+    }
+
+    override fun onStartTakingSnapshot() {
+        DragonflyLogger.debug(LOG_TAG, "onStartTakingSnapshot()")
+    }
+
+    override fun onSnapshotTaken(snapshot: DragonflyCameraSnapshot) {
+        DragonflyLogger.debug(LOG_TAG, String.format("onSnapshotTaken(%s)", snapshot));
+
+        intent = FeedbackActivity.newIntent(this, snapshot)
+        startActivity(intent)
+    }
+
+    override fun onSnapshotError(e: DragonflySnapshotException) {
+        DragonflyLogger.debug(LOG_TAG, String.format("onSnapshotError(%s)", e));
     }
 
     companion object {

@@ -1,4 +1,4 @@
-package com.ciandt.dragonfly.data;
+package com.ciandt.dragonfly.data.model;
 
 import java.util.HashMap;
 import java.util.Map;

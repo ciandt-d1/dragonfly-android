@@ -1,6 +1,6 @@
 package com.ciandt.dragonfly.example.features.modelselection
 
-import com.ciandt.dragonfly.data.Model
+import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.shared.BasePresenterContract
 
 interface ModelSelectionContract {

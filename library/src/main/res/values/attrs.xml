@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="DragonflyLensView">
-        <attr format="reference" name="cameraOrnament"/>
+        <attr format="reference" name="dlvCameraOrnament"/>
 
-        <attr name="cameraOrnamentScaleType">
+        <attr name="dlvCameraOrnamentScaleType">
             <!-- Scale using the image matrix when drawing. See
                  {@link android.widget.ImageView#setImageMatrix(Matrix)}. -->
             <enum name="matrix" value="0"/>

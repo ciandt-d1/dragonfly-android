@@ -1,4 +1,4 @@
-package com.ciandt.dragonfly.data;
+package com.ciandt.dragonfly.data.model;
 
 import java.util.ArrayList;
 import java.util.List;
