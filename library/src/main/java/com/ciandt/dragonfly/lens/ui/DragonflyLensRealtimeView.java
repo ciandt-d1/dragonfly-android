@@ -30,9 +30,9 @@ import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
  * Created by iluz on 5/22/17.
  */
 
-public class DragonflyLensRealtimeRealTimeView extends FrameLayout implements DragonflyLensRealTimeContract.LensRealTimeView, CameraView.LensViewCallback {
+public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyLensRealTimeContract.LensRealTimeView, CameraView.LensViewCallback {
 
-    private static final String LOG_TAG = DragonflyLensRealtimeRealTimeView.class.getSimpleName();
+    private static final String LOG_TAG = DragonflyLensRealtimeView.class.getSimpleName();
 
     @Orientation.Mode
     private int orientation;
@@ -131,19 +131,19 @@ public class DragonflyLensRealtimeRealTimeView extends FrameLayout implements Dr
         }
     }
 
-    public DragonflyLensRealtimeRealTimeView(Context context) {
+    public DragonflyLensRealtimeView(Context context) {
         super(context);
         initialize(context, null);
     }
 
-    public DragonflyLensRealtimeRealTimeView(Context context, AttributeSet attrs) {
+    public DragonflyLensRealtimeView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize(context, attrs);
     }
 
-    public DragonflyLensRealtimeRealTimeView(Context context,
-                                             AttributeSet attrs,
-                                             int defStyle) {
+    public DragonflyLensRealtimeView(Context context,
+                                     AttributeSet attrs,
+                                     int defStyle) {
         super(context, attrs, defStyle);
         initialize(context, attrs);
     }
@@ -175,7 +175,7 @@ public class DragonflyLensRealtimeRealTimeView extends FrameLayout implements Dr
             }
         });
 
-        lensRealTimePresenter = new DragonflyLensRealTimeRealTimePresenter(new DragonflyLensClassificatorInteractor(getContext()), new DragonflyLensSnapshotInteractor(getContext()));
+        lensRealTimePresenter = new DragonflyLensRealTimePresenter(new DragonflyLensClassificatorInteractor(getContext()), new DragonflyLensSnapshotInteractor(getContext()));
 
         processAttributeSet(context, attrs);
     }
@@ -185,14 +185,14 @@ public class DragonflyLensRealtimeRealTimeView extends FrameLayout implements Dr
             return;
         }
 
-        TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.DragonflyLensRealtimeRealTimeView, 0, 0);
+        TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.DragonflyLensRealtimeView, 0, 0);
         try {
-            Drawable ornamentDrawable = typedArray.getDrawable(R.styleable.DragonflyLensRealtimeRealTimeView_dlvCameraOrnament);
+            Drawable ornamentDrawable = typedArray.getDrawable(R.styleable.DragonflyLensRealtimeView_dlvCameraOrnament);
             if (ornamentDrawable != null) {
                 ornamentView.setImageDrawable(ornamentDrawable);
             }
 
-            final int scaleTypeIndex = typedArray.getInt(R.styleable.DragonflyLensRealtimeRealTimeView_dlvCameraOrnamentScaleType, -1);
+            final int scaleTypeIndex = typedArray.getInt(R.styleable.DragonflyLensRealtimeView_dlvCameraOrnamentScaleType, -1);
             if (scaleTypeIndex >= 0 && scaleTypeIndex <= SCALE_TYPES.length) {
                 ornamentView.setScaleType(SCALE_TYPES[scaleTypeIndex]);
             }

@@ -17,9 +17,9 @@ import java.util.List;
  * Created by iluz on 5/26/17.
  */
 
-public class DragonflyLensRealTimeRealTimePresenter extends AbstractPresenter<DragonflyLensRealTimeContract.LensRealTimeView> implements DragonflyLensRealTimeContract.LensRealTimePresenter {
+public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyLensRealTimeContract.LensRealTimeView> implements DragonflyLensRealTimeContract.LensRealTimePresenter {
 
-    private static final String LOG_TAG = DragonflyLensRealTimeRealTimePresenter.class.getSimpleName();
+    private static final String LOG_TAG = DragonflyLensRealTimePresenter.class.getSimpleName();
 
     private static final int MAX_MODEL_LOADING_ATTEMPTS = 5;
 
@@ -32,7 +32,7 @@ public class DragonflyLensRealTimeRealTimePresenter extends AbstractPresenter<Dr
 
     private int modelLoadingAttempts = 0;
 
-    public DragonflyLensRealTimeRealTimePresenter(DragonflyLensRealTimeContract.LensClassificatorInteractor lensClassificatorInteractor, DragonflyLensRealTimeContract.LensSnapshotInteractor snapshotInteractor) {
+    public DragonflyLensRealTimePresenter(DragonflyLensRealTimeContract.LensClassificatorInteractor lensClassificatorInteractor, DragonflyLensRealTimeContract.LensSnapshotInteractor snapshotInteractor) {
         if (lensClassificatorInteractor == null) {
             throw new IllegalArgumentException("lensClassificatorInteractor can't be null.");
         }
@@ -49,7 +49,7 @@ public class DragonflyLensRealTimeRealTimePresenter extends AbstractPresenter<Dr
     }
 
     @SuppressWarnings("unused")
-    public DragonflyLensRealTimeRealTimePresenter(DragonflyLensRealTimeContract.LensClassificatorInteractor lensClassificatorInteractor, DragonflyLensRealTimeContract.LensSnapshotInteractor snapshotInteractor, float confidenceThreshold) {
+    public DragonflyLensRealTimePresenter(DragonflyLensRealTimeContract.LensClassificatorInteractor lensClassificatorInteractor, DragonflyLensRealTimeContract.LensSnapshotInteractor snapshotInteractor, float confidenceThreshold) {
         this(lensClassificatorInteractor, snapshotInteractor);
 
         if (confidenceThreshold < 0 || confidenceThreshold > 1) {

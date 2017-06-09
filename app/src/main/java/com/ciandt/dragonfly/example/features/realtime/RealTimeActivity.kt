@@ -18,7 +18,7 @@ import com.ciandt.dragonfly.example.infrastructure.SharedPreferencesRepository
 import com.ciandt.dragonfly.example.shared.FullScreenActivity
 import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException
-import com.ciandt.dragonfly.lens.ui.DragonflyLensRealtimeRealTimeView
+import com.ciandt.dragonfly.lens.ui.DragonflyLensRealtimeView
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.*
@@ -26,7 +26,7 @@ import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_real_time.*
 
 
-class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyLensRealtimeRealTimeView.SnapshotCallbacks {
+class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyLensRealtimeView.SnapshotCallbacks {
     private lateinit var presenter: RealTimeContract.Presenter
 
     lateinit private var model: Model
