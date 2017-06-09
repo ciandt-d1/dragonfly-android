@@ -89,14 +89,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
     public void takeSnapshot() {
         snapshoting = true;
-//        camera.takePicture(null, new Camera.PictureCallback() {
-//
-//            @Override
-//            public void onPictureTaken(byte[] data, Camera camera) {
-//                Camera.Parameters parameters = camera.getParameters();
-//                callback.onSnapshotCaptured(data, convertSize(parameters.getPreviewSize()), getOrientationDegrees());
-//            }
-//        }, null);
     }
 
     /**
