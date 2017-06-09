@@ -112,7 +112,7 @@ public class DragonflyLensClassificatorInteractor implements DragonflyLensRealTi
         }
 
         if (analyzeYUVN21Task != null && AsyncTask.Status.RUNNING.equals(analyzeYUVN21Task.getStatus())) {
-            DragonflyLogger.debug(LOG_TAG, "SaveSnapshotTask is running. Skipping this round.");
+            DragonflyLogger.debug(LOG_TAG, "AnalyzeYUVN21Task is running. Skipping this round.");
             return;
         }
 
@@ -229,11 +229,11 @@ public class DragonflyLensClassificatorInteractor implements DragonflyLensRealTi
         protected AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException> doInBackground(AnalyzeYUVN21Task.TaskParams... params) {
             AnalyzeYUVN21Task.TaskParams taskParams = params[0];
 
-            DragonflyLogger.debug(LOG_TAG, "SaveSnapshotTask.doInBackground() - start");
+            DragonflyLogger.debug(LOG_TAG, "AnalyzeYUVN21Task.doInBackground() - start");
 
             // To see the log ouput, make sure to run the command below:
             // adb shell setprop log.tag.<LOG_TAG> VERBOSE
-            TimingLogger timings = new TimingLogger(LOG_TAG, "SaveSnapshotTask.doInBackground()");
+            TimingLogger timings = new TimingLogger(LOG_TAG, "AnalyzeYUVN21Task.doInBackground()");
 
             try {
                 Bitmap bitmap = interactor.yuvToRgbConverter.convert(taskParams.getData(), taskParams.getWidth(), taskParams.getHeight(), Bitmap.Config.ARGB_8888, taskParams.getRotation());
@@ -268,11 +268,11 @@ public class DragonflyLensClassificatorInteractor implements DragonflyLensRealTi
         @Override
         protected void onPostExecute(AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException> result) {
             if (result.hasError()) {
-                DragonflyLogger.debug(LOG_TAG, String.format("SaveSnapshotTask.onPostExecute() - error | exception: %s", result.getError()));
+                DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeYUVN21Task.onPostExecute() - error | exception: %s", result.getError()));
 
                 interactor.presenter.onImageAnalysisFailed(result.getError());
             } else {
-                DragonflyLogger.debug(LOG_TAG, String.format("SaveSnapshotTask.onPostExecute() - success | recognitions: %s", result.getResult()));
+                DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeYUVN21Task.onPostExecute() - success | recognitions: %s", result.getResult()));
 
                 interactor.presenter.onImageAnalyzed(result.getResult());
             }
