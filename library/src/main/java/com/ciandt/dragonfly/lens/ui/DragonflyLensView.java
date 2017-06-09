@@ -141,12 +141,12 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
 
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.DragonflyLensView, 0, 0);
         try {
-            Drawable ornamentDrawable = typedArray.getDrawable(R.styleable.DragonflyLensView_cameraOrnament);
+            Drawable ornamentDrawable = typedArray.getDrawable(R.styleable.DragonflyLensView_dlvCameraOrnament);
             if (ornamentDrawable != null) {
                 ornamentView.setImageDrawable(ornamentDrawable);
             }
 
-            final int scaleTypeIndex = typedArray.getInt(R.styleable.DragonflyLensView_cameraOrnamentScaleType, -1);
+            final int scaleTypeIndex = typedArray.getInt(R.styleable.DragonflyLensView_dlvCameraOrnamentScaleType, -1);
             if (scaleTypeIndex >= 0 && scaleTypeIndex <= SCALE_TYPES.length) {
                 ornamentView.setScaleType(SCALE_TYPES[scaleTypeIndex]);
             }
