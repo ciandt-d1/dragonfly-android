@@ -7,10 +7,8 @@ import com.ciandt.dragonfly.base.ui.ClassificatorInteractor;
 import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
-import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
-import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
 import java.util.List;
@@ -19,45 +17,34 @@ import java.util.List;
  * Created by iluz on 5/26/17.
  */
 
-public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyLensRealTimeContract.LensRealTimeView> implements DragonflyLensRealTimeContract.LensRealTimePresenter, ClassificatorInteractor.LensClassificatorInteractorCallbacks, DragonflyLensRealTimeContract.LensSnapshotInteractor.SnapshotCallbacks {
+public class DragonflyFeedbackPresenter extends AbstractPresenter<DragonflyLensFeedbackContract.FeedbackView> implements DragonflyLensFeedbackContract.FeedbackPresenter, ClassificatorInteractor.LensClassificatorInteractorCallbacks {
 
-    private static final String LOG_TAG = DragonflyLensRealTimePresenter.class.getSimpleName();
-
-    private float confidenceThreshold = 0f;
+    private static final String LOG_TAG = DragonflyFeedbackPresenter.class.getSimpleName();
 
     private ClassificatorInteractor lensClassificatorInteractor;
-    private DragonflyLensRealTimeContract.LensSnapshotInteractor snapshotInteractor;
 
     private Model loadedModel;
 
     private int modelLoadingAttempts = 0;
 
-    public DragonflyLensRealTimePresenter(ClassificatorInteractor lensClassificatorInteractor, DragonflyLensRealTimeContract.LensSnapshotInteractor snapshotInteractor) {
+    public DragonflyFeedbackPresenter(ClassificatorInteractor lensClassificatorInteractor) {
         if (lensClassificatorInteractor == null) {
             throw new IllegalArgumentException("lensClassificatorInteractor can't be null.");
         }
 
-        if (snapshotInteractor == null) {
-            throw new IllegalArgumentException("snapshotInteractor can't be null.");
-        }
-
         lensClassificatorInteractor.setClassificationCallbacks(this);
         this.lensClassificatorInteractor = lensClassificatorInteractor;
-
-        snapshotInteractor.setCallbacks(this);
-        this.snapshotInteractor = snapshotInteractor;
     }
 
     @SuppressWarnings("unused")
-    public DragonflyLensRealTimePresenter(ClassificatorInteractor lensClassificatorInteractor, DragonflyLensRealTimeContract.LensSnapshotInteractor snapshotInteractor, float confidenceThreshold) {
-        this(lensClassificatorInteractor, snapshotInteractor);
+    public DragonflyFeedbackPresenter(ClassificatorInteractor lensClassificatorInteractor, float confidenceThreshold) {
+        this(lensClassificatorInteractor);
 
         if (confidenceThreshold < 0 || confidenceThreshold > 1) {
             throw new IllegalArgumentException("confidenceThreshold should be a float between 0 and 1.");
         }
 
         this.lensClassificatorInteractor = lensClassificatorInteractor;
-        this.confidenceThreshold = confidenceThreshold;
     }
 
     @Override
@@ -90,34 +77,12 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
     }
 
     @Override
-    public void analyzeYUVNV21(byte[] data, int width, int height, int rotation) {
-        lensClassificatorInteractor.analyzeYUVNV21Picture(data, width, height, rotation);
-    }
-
-    @Override
     public void onImageAnalyzed(List<Classifier.Recognition> results) {
         if (!hasViewAttached()) {
             return;
         }
 
-        if (results == null || results.size() == 0) {
-            view.setLabel("");
-            return;
-        }
-
-        Classifier.Recognition mainResult = results.get(0);
-
-        if (!mainResult.hasTitle()) {
-            view.setLabel("");
-            return;
-        }
-
-        if (mainResult.isRelevant(confidenceThreshold)) {
-            view.setLabel(mainResult.getTitle(), formatConfidence(mainResult.getConfidence()));
-            return;
-        }
-
-        view.setLabel(mainResult.getTitle());
+        view.onBitmapAnalyzed(results);
     }
 
     @Override
@@ -155,34 +120,5 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
                 view.onModelFailure(e);
             }
         }
-    }
-
-    @Override
-    public void takeSnapshot() {
-        view.captureCameraFrame();
-    }
-
-    @Override
-    public void onSnapshotCaptured(byte[] data, int width, int height, int rotation) {
-        snapshotInteractor.saveSnapshot(data, width, height, rotation);
-    }
-
-    @Override
-    public void onFailedToCaptureCameraFrame(DragonflySnapshotException e) {
-        view.onSnapshotError(e);
-    }
-
-    @Override
-    public void onSnapshotSaved(DragonflyCameraSnapshot snapshot) {
-        view.onSnapshotTaken(snapshot);
-    }
-
-    @Override
-    public void onFailedToSaveSnapshot(DragonflySnapshotException e) {
-        view.onSnapshotError(e);
-    }
-
-    private int formatConfidence(float confidence) {
-        return Math.round(confidence * 100);
     }
 }

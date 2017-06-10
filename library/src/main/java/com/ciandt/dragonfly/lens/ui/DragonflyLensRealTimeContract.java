@@ -69,25 +69,17 @@ public interface DragonflyLensRealTimeContract {
         void onSnapshotCaptured(byte[] data, int width, int height, int rotation);
 
         void onFailedToCaptureCameraFrame(DragonflySnapshotException e);
-
-        void onSnapshotSaved(DragonflyCameraSnapshot snapshot);
-
-        void onFailedToSaveSnapshot(DragonflySnapshotException e);
     }
 
-    interface LensClassificatorInteractor extends BaseInteractorContract<LensRealTimePresenter> {
-
-        void loadModel(Model model);
-
-        void releaseModel();
-
-        void analyzeBitmap(Bitmap bitmap);
-
-        void analyzeYUVNV21Picture(byte[] data, int width, int height, int rotation);
-    }
-
-    interface LensSnapshotInteractor extends BaseInteractorContract<LensRealTimePresenter> {
+    interface LensSnapshotInteractor extends BaseInteractorContract<LensSnapshotInteractor.SnapshotCallbacks> {
 
         void saveSnapshot(byte[] data, int width, int height, int rotation);
+
+        interface SnapshotCallbacks {
+
+            void onFailedToSaveSnapshot(DragonflySnapshotException e);
+
+            void onSnapshotSaved(DragonflyCameraSnapshot snapshot);
+        }
     }
 }

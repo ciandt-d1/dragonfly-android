@@ -4,9 +4,9 @@ package com.ciandt.dragonfly.base.ui;
  * Created by iluz on 5/26/17.
  */
 
-public interface BaseInteractorContract<P> {
+public interface BaseInteractorContract<C> {
 
-    void setPresenter(P presenter);
+    void setCallbacks(C callbacks);
 
     class AsyncTaskResult<R, E> {
 

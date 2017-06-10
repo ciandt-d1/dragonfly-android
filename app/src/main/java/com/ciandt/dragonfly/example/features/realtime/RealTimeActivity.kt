@@ -83,7 +83,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        model?.let {
+        model.let {
             outState?.putParcelable(MODEL_BUNDLE, it)
         }
     }
