@@ -62,6 +62,6 @@ class DragonflyApplication : Application() {
         val dropboxPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + BuildConfig.APPLICATION_ID;
         DragonflyConfig.setDropboxPath(dropboxPath)
 
-        DragonflyConfig.setMaxModeloLoadingRetryAttempts(5)
+        DragonflyConfig.setMaxModelLoadingRetryAttempts(5)
     }
 }

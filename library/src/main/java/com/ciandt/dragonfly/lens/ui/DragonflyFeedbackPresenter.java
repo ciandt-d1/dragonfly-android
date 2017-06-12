@@ -107,7 +107,7 @@ public class DragonflyFeedbackPresenter extends AbstractPresenter<DragonflyLensF
     @Override
     public void onModelFailure(DragonflyModelException e) {
         if (e.getModel() != null) {
-            if (modelLoadingAttempts == DragonflyConfig.getMaxModeloLoadingRetryAttempts()) {
+            if (modelLoadingAttempts == DragonflyConfig.getMaxModelLoadingRetryAttempts()) {
                 String message = String.format("Failed to load loadedModel %s after %s attempts", loadedModel, modelLoadingAttempts);
                 throw new DragonflyModelException(message, e, e.getModel());
             }
