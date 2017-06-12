@@ -34,6 +34,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
     private boolean isPreviewActive = false;
 
+    private boolean snapshoting = false;
 
     public CameraView(Context context) {
         super(context);
@@ -86,11 +87,17 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         this.frameTimeInterval = frameTimeInterval;
     }
 
+    public void takeSnapshot() {
+        snapshoting = true;
+    }
+
     /**
      * Internal methods
      */
     private void startPreview() {
         DragonflyLogger.debug(LOG_TAG, String.format("%s - startPreview()", LOG_TAG));
+
+        snapshoting = false;
 
         if (isPreviewActive) {
             DragonflyLogger.debug(LOG_TAG, String.format("%s - startPreview() - preview is already active. Skipping", LOG_TAG));
@@ -220,6 +227,15 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         }
 
         Camera.Parameters parameters = camera.getParameters();
+
+        if (snapshoting) {
+            stopPreview();
+            snapshoting = false;
+
+            callback.onSnapshotCaptured(data, convertSize(parameters.getPreviewSize()), getOrientationDegrees());
+            return;
+        }
+
         callback.onFrameReady(data, convertSize(parameters.getPreviewSize()), getOrientationDegrees());
 
         new Timer().schedule(new TimerTask() {
@@ -249,6 +265,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
     public interface LensViewCallback {
 
         void onFrameReady(byte[] data, Size previewSize, int rotation);
+
+        void onSnapshotCaptured(byte[] data, Size previewSize, int rotation);
 
         void onPreviewStarted(Size previewSize, int rotation);
     }

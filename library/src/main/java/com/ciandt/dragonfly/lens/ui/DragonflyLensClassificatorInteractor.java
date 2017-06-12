@@ -23,13 +23,14 @@ import java.util.UUID;
  * Created by iluz on 5/26/17.
  */
 
-public class DragonflyLensInteractor implements DragonflyLensContract.LensInteractor {
+public class DragonflyLensClassificatorInteractor implements DragonflyLensRealTimeContract.LensClassificatorInteractor {
 
-    private static final String LOG_TAG = DragonflyLensInteractor.class.getSimpleName();
+    // Manually set to avoid '"DragonflyLensClassificatorInteractor" exceeds limit of 23 characters'
+    private static final String LOG_TAG = "ClassificatorInteractor";
 
     private Context context;
 
-    private DragonflyLensContract.LensPresenter presenter;
+    private DragonflyLensRealTimeContract.LensRealTimePresenter presenter;
 
     private Classifier classifier;
     private Model model;
@@ -40,13 +41,13 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
     private final YUVNV21ToRGBA888Converter yuvToRgbConverter;
 
-    public DragonflyLensInteractor(Context context) {
+    public DragonflyLensClassificatorInteractor(Context context) {
         this.context = context.getApplicationContext();
         this.yuvToRgbConverter = new YUVNV21ToRGBA888Converter(context);
     }
 
     @Override
-    public void setPresenter(DragonflyLensContract.LensPresenter presenter) {
+    public void setPresenter(DragonflyLensRealTimeContract.LensRealTimePresenter presenter) {
         this.presenter = presenter;
     }
 
@@ -128,9 +129,9 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
     private static class LoadModelTask extends AsyncTask<Model, Void, AsyncTaskResult<Model, DragonflyModelException>> {
 
-        private final DragonflyLensInteractor interactor;
+        private final DragonflyLensClassificatorInteractor interactor;
 
-        public LoadModelTask(DragonflyLensInteractor interactor) {
+        public LoadModelTask(DragonflyLensClassificatorInteractor interactor) {
             this.interactor = interactor;
         }
 
@@ -179,9 +180,9 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
     private static class AnalyzeBitmapTask extends AsyncTask<Bitmap, Void, AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException>> {
 
-        private final DragonflyLensInteractor interactor;
+        private final DragonflyLensClassificatorInteractor interactor;
 
-        public AnalyzeBitmapTask(DragonflyLensInteractor interactor) {
+        public AnalyzeBitmapTask(DragonflyLensClassificatorInteractor interactor) {
             this.interactor = interactor;
         }
 
@@ -218,9 +219,9 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
     private static class AnalyzeYUVN21Task extends AsyncTask<AnalyzeYUVN21Task.TaskParams, Void, AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException>> {
 
-        private final DragonflyLensInteractor interactor;
+        private final DragonflyLensClassificatorInteractor interactor;
 
-        public AnalyzeYUVN21Task(DragonflyLensInteractor interactor) {
+        public AnalyzeYUVN21Task(DragonflyLensClassificatorInteractor interactor) {
             this.interactor = interactor;
         }
 

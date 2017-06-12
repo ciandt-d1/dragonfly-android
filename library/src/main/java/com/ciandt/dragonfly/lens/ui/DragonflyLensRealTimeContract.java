@@ -19,9 +19,9 @@ import java.util.List;
  * Created by iluz on 5/22/17.
  */
 
-public interface DragonflyLensContract {
+public interface DragonflyLensRealTimeContract {
 
-    interface LensView extends BaseViewContract {
+    interface LensRealTimeView extends BaseViewContract {
 
         void start(Model model);
 
@@ -39,7 +39,7 @@ public interface DragonflyLensContract {
 
         void onBitmapAnalysisFailed(DragonflyRecognitionException e);
 
-        void takeSnapshot();
+        void captureCameraFrame();
 
         void onStartTakingSnapshot();
 
@@ -48,7 +48,7 @@ public interface DragonflyLensContract {
         void onSnapshotError(DragonflySnapshotException e);
     }
 
-    interface LensPresenter extends BasePresenterContract<LensView> {
+    interface LensRealTimePresenter extends BasePresenterContract<LensRealTimeView> {
 
         void loadModel(Model model);
 
@@ -66,10 +66,16 @@ public interface DragonflyLensContract {
 
         void takeSnapshot();
 
-        void saveSnapshot(byte[] data);
+        void onSnapshotCaptured(byte[] data, int width, int height, int rotation);
+
+        void onFailedToCaptureCameraFrame(DragonflySnapshotException e);
+
+        void onSnapshotSaved(DragonflyCameraSnapshot snapshot);
+
+        void onFailedToSaveSnapshot(DragonflySnapshotException e);
     }
 
-    interface LensInteractor extends BaseInteractorContract<LensPresenter> {
+    interface LensClassificatorInteractor extends BaseInteractorContract<LensRealTimePresenter> {
 
         void loadModel(Model model);
 
@@ -80,8 +86,8 @@ public interface DragonflyLensContract {
         void analyzeYUVNV21Picture(byte[] data, int width, int height, int rotation);
     }
 
-    interface LensSnapshotInteractorContract extends BaseInteractorContract<LensPresenter> {
+    interface LensSnapshotInteractor extends BaseInteractorContract<LensRealTimePresenter> {
 
-        void saveSnapshot(byte[] data);
+        void saveSnapshot(byte[] data, int width, int height, int rotation);
     }
 }

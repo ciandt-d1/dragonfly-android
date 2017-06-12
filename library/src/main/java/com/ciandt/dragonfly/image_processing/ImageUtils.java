@@ -16,8 +16,9 @@ limitations under the License.
 package com.ciandt.dragonfly.image_processing;
 
 import android.graphics.Bitmap;
-import android.os.Environment;
 import android.util.Log;
+
+import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,8 +37,11 @@ public class ImageUtils {
      * @param filename The location to save the bitmap to.
      */
     public static void saveBitmap(final Bitmap bitmap, final String filename) {
-        final String root =
-                Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "tensorflow";
+        final String root = DragonflyConfig.getDropboxPath();
+        if (root == null) {
+            throw new IllegalStateException("DragonflyConfig.setDropboxPath() should be called with a writable system path");
+        }
+
         Log.i(LOG_TAG, String.format("Saving %dx%d bitmap to %s.", bitmap.getWidth(), bitmap.getHeight(), root));
         final File myDir = new File(root);
 

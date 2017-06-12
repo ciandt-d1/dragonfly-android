@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.ciandt.dragonfly.lens.ui.DragonflyLensView
+    <com.ciandt.dragonfly.lens.ui.DragonflyLensRealtimeView
         android:id="@+id/dragonFlyLens"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

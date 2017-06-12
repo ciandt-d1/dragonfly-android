@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.annotation.StringRes
 import android.view.View.VISIBLE
 import com.ciandt.dragonfly.data.model.Model
+import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.features.feedback.FeedbackActivity
 import com.ciandt.dragonfly.example.helpers.IntentHelper
@@ -17,7 +18,7 @@ import com.ciandt.dragonfly.example.infrastructure.SharedPreferencesRepository
 import com.ciandt.dragonfly.example.shared.FullScreenActivity
 import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException
-import com.ciandt.dragonfly.lens.ui.DragonflyLensView
+import com.ciandt.dragonfly.lens.ui.DragonflyLensRealtimeView
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.*
@@ -25,10 +26,10 @@ import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_real_time.*
 
 
-class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyLensView.SnapshotCallbacks {
+class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyLensRealtimeView.SnapshotCallbacks {
     private lateinit var presenter: RealTimeContract.Presenter
 
-    private var model: Model? = null
+    lateinit private var model: Model
 
     private var missingPermissionsAlertDialog: AlertDialog? = null
     private var comingFromSettings = false
@@ -45,7 +46,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         if (savedInstanceState != null) {
             model = savedInstanceState.getParcelable(MODEL_BUNDLE)
         } else {
-            model = intent.extras?.getParcelable<Model>(MODEL_BUNDLE)
+            model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
         }
     }
 
@@ -152,7 +153,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
     override fun onSnapshotTaken(snapshot: DragonflyCameraSnapshot) {
         DragonflyLogger.debug(LOG_TAG, String.format("onSnapshotTaken(%s)", snapshot));
 
-        intent = FeedbackActivity.newIntent(this, snapshot)
+        intent = FeedbackActivity.newIntent(this, model, snapshot)
         startActivity(intent)
     }
 
@@ -164,7 +165,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         private val CLASS_NAME = RealTimeActivity::class.java.simpleName
         private val LOG_TAG = RealTimeActivity::class.java.simpleName
 
-        private val MODEL_BUNDLE = "MODEL_BUNDLE"
+        private val MODEL_BUNDLE = String.format("%s.model_bundle", BuildConfig.APPLICATION_ID);
 
         fun create(context: Context, model: Model): Intent {
             val intent = Intent(context, RealTimeActivity::class.java)
