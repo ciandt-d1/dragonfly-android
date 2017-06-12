@@ -13,7 +13,7 @@ import com.ciandt.dragonfly.tensorflow.Classifier;
 import java.util.List;
 
 /**
- * Created by iluz on 5/22/17.
+ * Created by iluz on 6/9/17.
  */
 
 public interface DragonflyLensFeedbackContract {
