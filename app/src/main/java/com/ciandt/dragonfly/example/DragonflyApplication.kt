@@ -8,6 +8,7 @@ import com.ciandt.dragonfly.infrastructure.DragonflyLogger
 
 import com.crashlytics.android.Crashlytics
 import com.facebook.stetho.Stetho
+import com.squareup.leakcanary.LeakCanary
 
 import io.fabric.sdk.android.Fabric
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
@@ -18,20 +19,17 @@ class DragonflyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
+
         setupCrashlytics()
         setupCalligraphy()
         setupStetho()
         setupDragonflyLib()
-    }
-
-    private fun setupDragonflyLib() {
-        DragonflyLogger.setLogLevel(DragonflyLogger.LOG_LEVEL_DEBUG)
-        DragonflyConfig.shouldSaveBitmapsInDebugMode(Features.SAVE_CAPTURED_IMAGES_TO_DEVICE)
-
-        val dropboxPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + BuildConfig.APPLICATION_ID;
-        DragonflyConfig.setDropboxPath(dropboxPath)
-
-        DragonflyConfig.setMaxModeloLoadingRetryAttempts(5)
     }
 
     private fun setupCrashlytics() {
@@ -55,5 +53,15 @@ class DragonflyApplication : Application() {
 
     private fun setupStetho() {
         Stetho.initializeWithDefaults(this)
+    }
+
+    private fun setupDragonflyLib() {
+        DragonflyLogger.setLogLevel(DragonflyLogger.LOG_LEVEL_DEBUG)
+        DragonflyConfig.shouldSaveBitmapsInDebugMode(Features.SAVE_CAPTURED_IMAGES_TO_DEVICE)
+
+        val dropboxPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + BuildConfig.APPLICATION_ID;
+        DragonflyConfig.setDropboxPath(dropboxPath)
+
+        DragonflyConfig.setMaxModeloLoadingRetryAttempts(5)
     }
 }

@@ -22,8 +22,6 @@ apply plugin: 'io.fabric'
 apply from: '../versions.gradle'
 apply from: '../sonarqube.gradle'
 
-def debugDrawerVersion = '0.7.0'
-
 ext {
     // The order is based on way the Play store works with multiple APKs. Remember, if a users
     // device is compatible with more than one APK for an application the device will receive the
@@ -124,18 +122,19 @@ android {
 
 dependencies {
 
-    def supportLibraryVersion = '25.3.1'
-
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:${kotlin_version}"
 
+    def supportLibraryVersion = '25.3.1'
     compile "com.android.support:appcompat-v7:${supportLibraryVersion}"
     compile "com.android.support:cardview-v7:${supportLibraryVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibraryVersion}"
     compile "com.android.support:animated-vector-drawable:${supportLibraryVersion}"
     compile "com.android.support:design:${supportLibraryVersion}"
 
+
+    def debugDrawerVersion = '0.7.0'
     debugCompile "io.palaima.debugdrawer:debugdrawer:${debugDrawerVersion}"
     releaseCompile "io.palaima.debugdrawer:debugdrawer-no-op:${debugDrawerVersion}"
     debugCompile "io.palaima.debugdrawer:debugdrawer-view:${debugDrawerVersion}"
@@ -144,6 +143,11 @@ dependencies {
     compile "io.palaima.debugdrawer:debugdrawer-actions:${debugDrawerVersion}"
     compile "io.palaima.debugdrawer:debugdrawer-okhttp3:${debugDrawerVersion}"
     compile "io.palaima.debugdrawer:debugdrawer-glide:${debugDrawerVersion}"
+
+    def leakCanaryVersion = '1.5.1'
+    debugCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
+    testCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
 
     compile 'com.facebook.stetho:stetho:1.5.0'
 
@@ -167,7 +171,7 @@ dependencies {
     })
 
     testCompile 'junit:junit:4.12'
-    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:${kotlin_version}"
     testCompile 'org.amshove.kluent:kluent:1.20'
 }
 
