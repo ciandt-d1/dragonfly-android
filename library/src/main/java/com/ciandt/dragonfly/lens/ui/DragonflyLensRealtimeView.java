@@ -17,14 +17,18 @@ import android.widget.TextView;
 
 import com.ciandt.dragonfly.CameraView;
 import com.ciandt.dragonfly.R;
+import com.ciandt.dragonfly.base.ui.ImageScaleTypes;
 import com.ciandt.dragonfly.base.ui.Orientation;
 import com.ciandt.dragonfly.base.ui.Size;
 import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
+import com.ciandt.dragonfly.infrastructure.PermissionsMapping;
 import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
+
+import java.util.List;
 
 /**
  * Created by iluz on 5/22/17.
@@ -47,17 +51,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     private CameraOrnamentVisibilityCallback cameraOrnamentVisibilityCallback;
     private SnapshotCallbacks snapshotCallbacks;
-
-    private static final ImageView.ScaleType[] SCALE_TYPES = {
-            ImageView.ScaleType.MATRIX,
-            ImageView.ScaleType.FIT_XY,
-            ImageView.ScaleType.FIT_START,
-            ImageView.ScaleType.FIT_CENTER,
-            ImageView.ScaleType.FIT_END,
-            ImageView.ScaleType.CENTER,
-            ImageView.ScaleType.CENTER_CROP,
-            ImageView.ScaleType.CENTER_INSIDE
-    };
+    private PermissionsCallback permissionsCallback;
 
     public void setCameraOrnamentVisibilityCallback(CameraOrnamentVisibilityCallback cameraOrnamentVisibilityCallback) {
         this.cameraOrnamentVisibilityCallback = cameraOrnamentVisibilityCallback;
@@ -65,6 +59,10 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     public void setSnapshotCallbacks(SnapshotCallbacks snapshotCallbacks) {
         this.snapshotCallbacks = snapshotCallbacks;
+    }
+
+    public void setPermissionsCallback(PermissionsCallback permissionsCallback) {
+        this.permissionsCallback = permissionsCallback;
     }
 
     @Override
@@ -107,7 +105,13 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     @Override
     public void captureCameraFrame() {
-        cameraView.takeSnapshot();
+        if (permissionsCallback == null) {
+            throw new IllegalStateException("setPermissionsCallback() should be called with a valid PermissionsCallback instance");
+        }
+
+        if (permissionsCallback.checkPermissions(PermissionsMapping.CAPTURE_FRAME)) {
+            cameraView.takeSnapshot();
+        }
     }
 
     @Override
@@ -193,8 +197,8 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
             }
 
             final int scaleTypeIndex = typedArray.getInt(R.styleable.DragonflyLensRealtimeView_dlvCameraOrnamentScaleType, -1);
-            if (scaleTypeIndex >= 0 && scaleTypeIndex <= SCALE_TYPES.length) {
-                ornamentView.setScaleType(SCALE_TYPES[scaleTypeIndex]);
+            if (scaleTypeIndex >= 0 && scaleTypeIndex <= ImageScaleTypes.VALUES.length) {
+                ornamentView.setScaleType(ImageScaleTypes.VALUES[scaleTypeIndex]);
             }
         } finally {
             typedArray.recycle();
@@ -347,5 +351,10 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         void onSnapshotTaken(DragonflyCameraSnapshot snapshot);
 
         void onSnapshotError(DragonflySnapshotException e);
+    }
+
+    public interface PermissionsCallback {
+
+        boolean checkPermissions(List<String> permissions);
     }
 }

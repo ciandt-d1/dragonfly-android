@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.ciandt.dragonfly.example.features.feedback.FeedbackActivity">
 
+    <com.ciandt.dragonfly.lens.ui.DragonflyLensFeedbackView
+        android:id="@+id/dragonFlyLensFeedbackView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/holo_red_light"
+        app:dlfvCameraOrnament="@drawable/dragonfly_lens_grid"
+        app:dlfvCameraOrnamentScaleType="center"/>
 </FrameLayout>

@@ -2,9 +2,12 @@ package com.ciandt.dragonfly.lens.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -12,16 +15,19 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.ciandt.dragonfly.R;
+import com.ciandt.dragonfly.base.ui.ImageScaleTypes;
 import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
+import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
+import java.io.File;
 import java.util.List;
 
 /**
- * Created by iluz on 5/22/17.
+ * Created by iluz on 6/9/17.
  */
 
 public class DragonflyLensFeedbackView extends FrameLayout implements DragonflyLensFeedbackContract.FeedbackView {
@@ -33,16 +39,21 @@ public class DragonflyLensFeedbackView extends FrameLayout implements DragonflyL
 
     private DragonflyLensFeedbackContract.FeedbackPresenter feedbackPresenter;
 
-    private static final ImageView.ScaleType[] SCALE_TYPES = {
-            ImageView.ScaleType.MATRIX,
-            ImageView.ScaleType.FIT_XY,
-            ImageView.ScaleType.FIT_START,
-            ImageView.ScaleType.FIT_CENTER,
-            ImageView.ScaleType.FIT_END,
-            ImageView.ScaleType.CENTER,
-            ImageView.ScaleType.CENTER_CROP,
-            ImageView.ScaleType.CENTER_INSIDE
-    };
+
+    public DragonflyLensFeedbackView(Context context) {
+        super(context);
+        initialize(context, null);
+    }
+
+    public DragonflyLensFeedbackView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        initialize(context, attrs);
+    }
+
+    public DragonflyLensFeedbackView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        initialize(context, attrs);
+    }
 
     @Override
     public void onModelReady(Model model) {
@@ -64,21 +75,24 @@ public class DragonflyLensFeedbackView extends FrameLayout implements DragonflyL
         // TODO: handle the error in a user friendly way.
     }
 
-    public DragonflyLensFeedbackView(Context context) {
-        super(context);
-        initialize(context, null);
+    @Override
+    public void setSnapshot(DragonflyCameraSnapshot snapshot) {
+        if (snapshot == null || TextUtils.isEmpty(snapshot.getPath())) {
+            previewView.setImageDrawable(null);
+            return;
+        }
+
+        File imgFile = new File(snapshot.getPath());
+        if (imgFile.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            previewView.setImageBitmap(bitmap);
+        }
     }
 
-    public DragonflyLensFeedbackView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initialize(context, attrs);
-    }
-
-    public DragonflyLensFeedbackView(Context context,
-                                     AttributeSet attrs,
-                                     int defStyle) {
-        super(context, attrs, defStyle);
-        initialize(context, attrs);
+    @Override
+    public void setModel(Model model) {
+        loadModel(model);
+        feedbackPresenter.attach(this);
     }
 
     /**
@@ -90,7 +104,7 @@ public class DragonflyLensFeedbackView extends FrameLayout implements DragonflyL
         DragonflyLogger.debug(LOG_TAG, "initialize()");
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.dragonfly_lens_view, this);
+        inflater.inflate(R.layout.dragonfly_feedback_view, this);
 
         previewView = (ImageView) this.findViewById(R.id.previewImageView);
         ornamentView = (ImageView) this.findViewById(R.id.ornamentView);
@@ -101,33 +115,28 @@ public class DragonflyLensFeedbackView extends FrameLayout implements DragonflyL
     }
 
     private void processAttributeSet(Context context, AttributeSet attrs) {
+        DragonflyLogger.debug(LOG_TAG, "processAttributeSet()");
+
         if (attrs == null) {
             return;
         }
 
-        TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.DragonflyLensRealtimeView, 0, 0);
+        TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.DragonflyLensFeedbackView, 0, 0);
         try {
-            Drawable ornamentDrawable = typedArray.getDrawable(R.styleable.DragonflyLensRealtimeView_dlvCameraOrnament);
+            Drawable ornamentDrawable = typedArray.getDrawable(R.styleable.DragonflyLensFeedbackView_dlfvCameraOrnament);
             if (ornamentDrawable != null) {
                 ornamentView.setImageDrawable(ornamentDrawable);
+                ornamentView.setVisibility(VISIBLE);
+            } else {
+                ornamentView.setVisibility(GONE);
             }
 
-            final int scaleTypeIndex = typedArray.getInt(R.styleable.DragonflyLensRealtimeView_dlvCameraOrnamentScaleType, -1);
-            if (scaleTypeIndex >= 0 && scaleTypeIndex <= SCALE_TYPES.length) {
-                ornamentView.setScaleType(SCALE_TYPES[scaleTypeIndex]);
+            final int scaleTypeIndex = typedArray.getInt(R.styleable.DragonflyLensFeedbackView_dlfvCameraOrnamentScaleType, -1);
+            if (scaleTypeIndex >= 0 && scaleTypeIndex <= ImageScaleTypes.VALUES.length) {
+                ornamentView.setScaleType(ImageScaleTypes.VALUES[scaleTypeIndex]);
             }
         } finally {
             typedArray.recycle();
-        }
-    }
-
-    @Override
-    public void setModel(Model model) {
-        loadModel(model);
-        feedbackPresenter.attach(this);
-
-        if (ornamentView.getDrawable() != null) {
-            ornamentView.setVisibility(VISIBLE);
         }
     }
 

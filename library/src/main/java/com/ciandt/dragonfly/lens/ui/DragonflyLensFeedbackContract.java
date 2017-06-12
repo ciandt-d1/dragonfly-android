@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.ciandt.dragonfly.base.ui.BasePresenterContract;
 import com.ciandt.dragonfly.base.ui.BaseViewContract;
 import com.ciandt.dragonfly.data.model.Model;
+import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
@@ -20,6 +21,8 @@ public interface DragonflyLensFeedbackContract {
     interface FeedbackView extends BaseViewContract {
 
         void setModel(Model model);
+
+        void setSnapshot(DragonflyCameraSnapshot snapshot);
 
         void onModelReady(Model model);
 

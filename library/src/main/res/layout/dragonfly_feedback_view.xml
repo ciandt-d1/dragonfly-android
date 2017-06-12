@@ -6,7 +6,8 @@
 
     <ImageView android:id="@+id/previewImageView"
                android:layout_width="match_parent"
-               android:layout_height="match_parent"/>
+               android:layout_height="match_parent"
+               android:scaleType="fitXY"/>
 
     <ImageView android:id="@+id/ornamentView"
                android:layout_width="match_parent"

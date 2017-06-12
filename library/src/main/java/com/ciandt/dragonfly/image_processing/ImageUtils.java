@@ -22,6 +22,7 @@ import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Utility class for manipulating images.
@@ -36,30 +37,41 @@ public class ImageUtils {
      * @param bitmap   The bitmap to save.
      * @param filename The location to save the bitmap to.
      */
-    public static void saveBitmap(final Bitmap bitmap, final String filename) {
+    public static boolean saveBitmap(final Bitmap bitmap, final String filename) throws IOException {
         final String root = DragonflyConfig.getDropboxPath();
         if (root == null) {
             throw new IllegalStateException("DragonflyConfig.setDropboxPath() should be called with a writable system path");
         }
 
+        boolean wasSuccessful;
+
         Log.i(LOG_TAG, String.format("Saving %dx%d bitmap to %s.", bitmap.getWidth(), bitmap.getHeight(), root));
         final File myDir = new File(root);
 
         if (!myDir.exists() && !myDir.mkdirs()) {
-            Log.i(LOG_TAG, "Make dir failed");
+            throw new IllegalStateException("Failed to create destination folder.");
         }
 
         final File file = new File(myDir, filename);
         if (file.exists()) {
             file.delete();
         }
+
+        final FileOutputStream out = new FileOutputStream(file);
         try {
-            final FileOutputStream out = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 99, out);
+            bitmap.compress(Bitmap.CompressFormat.WEBP, 99, out);
             out.flush();
-            out.close();
+
+            wasSuccessful = true;
         } catch (final Exception e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
+            throw new IOException(e);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
         }
+
+
+        return wasSuccessful;
     }
 }
