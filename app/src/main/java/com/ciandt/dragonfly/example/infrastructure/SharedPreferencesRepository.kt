@@ -27,43 +27,43 @@ class SharedPreferencesRepository(protected var sharedPreferences: SharedPrefere
             sharedPreferences.getStringSet(key, defaultValue)
 
     override fun putBoolean(key: String, value: Boolean) {
-        editAndCommit { editor -> editor.putBoolean(key, value) }
+        editAndApply { editor -> editor.putBoolean(key, value) }
     }
 
     override fun putFloat(key: String, value: Float) {
-        editAndCommit { editor -> editor.putFloat(key, value) }
+        editAndApply { editor -> editor.putFloat(key, value) }
     }
 
     override fun putInt(key: String, value: Int) {
-        editAndCommit { editor -> editor.putInt(key, value) }
+        editAndApply { editor -> editor.putInt(key, value) }
     }
 
     override fun putLong(key: String, value: Long) {
-        editAndCommit { editor -> editor.putLong(key, value) }
+        editAndApply { editor -> editor.putLong(key, value) }
     }
 
     override fun putString(key: String, value: String) {
-        editAndCommit { editor -> editor.putString(key, value) }
+        editAndApply { editor -> editor.putString(key, value) }
     }
 
     override fun putStringSet(key: String, value: Set<String>) {
-        editAndCommit { editor -> editor.putStringSet(key, value) }
+        editAndApply { editor -> editor.putStringSet(key, value) }
     }
 
     override fun exists(key: String): Boolean = sharedPreferences.contains(key)
 
     override fun remove(key: String) {
-        editAndCommit { editor -> editor.remove(key) }
+        editAndApply { editor -> editor.remove(key) }
     }
 
     override fun removeAll() {
-        editAndCommit { editor -> editor.clear() }
+        editAndApply { editor -> editor.clear() }
     }
 
-    private fun editAndCommit(editAction: (editor: SharedPreferences.Editor) -> Unit) {
+    private fun editAndApply(editAction: (editor: SharedPreferences.Editor) -> Unit) {
         val editor: SharedPreferences.Editor = sharedPreferences.edit()
         editAction(editor)
-        editor.commit()
+        editor.apply()
     }
 
     companion object {

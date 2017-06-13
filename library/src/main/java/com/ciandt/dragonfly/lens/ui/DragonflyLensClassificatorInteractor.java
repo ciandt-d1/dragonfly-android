@@ -30,7 +30,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
     // Manually set to avoid '"DragonflyLensClassificatorInteractor" exceeds limit of 23 characters'
     private static final String LOG_TAG = "ClassificatorInteractor";
 
-    private Context context;
+    private final Context context;
 
     private LensClassificatorInteractorCallbacks classificationCallbacks;
 
