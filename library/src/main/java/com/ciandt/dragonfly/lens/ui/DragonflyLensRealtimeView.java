@@ -161,7 +161,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         DragonflyLogger.debug(LOG_TAG, "initialize()");
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.dragonfly_lens_view, this);
+        inflater.inflate(R.layout.dragonfly_lens_realtime_view, this);
 
         labelView = (TextView) this.findViewById(R.id.labelView);
 
@@ -170,7 +170,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
         ornamentView = (ImageView) this.findViewById(R.id.ornamentView);
 
-        btnSnapshot = (ImageButton) this.findViewById(R.id.btnSnapshot);
+        btnSnapshot = (TakePhotoButton) this.findViewById(R.id.btnSnapshot);
         btnSnapshot.setOnClickListener(new OnClickListener() {
 
             @Override
