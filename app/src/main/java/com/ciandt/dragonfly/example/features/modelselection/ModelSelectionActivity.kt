@@ -42,14 +42,16 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
 
         if (savedInstanceState != null) {
             update(savedInstanceState.getParcelableArrayList(MODELS_BUNDLE))
-        } else {
-            presenter.loadModels()
         }
     }
 
     override fun onResume() {
         super.onResume()
         presenter.attachView(this)
+
+        if (models.isEmpty()) {
+            presenter.loadModels()
+        }
     }
 
     override fun onPause() {
