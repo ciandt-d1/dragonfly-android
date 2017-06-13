@@ -1,18 +1,20 @@
 package com.ciandt.dragonfly.infrastructure;
 
+import com.ciandt.dragonfly.BuildConfig;
+
 import android.annotation.SuppressLint;
 import android.os.Environment;
 import android.support.annotation.IntDef;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.ciandt.dragonfly.BuildConfig;
-
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.annotation.Retention;
+import java.nio.charset.StandardCharsets;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -38,14 +40,14 @@ public class DragonflyLogger {
     public static final int LOG_LEVEL_DEBUG = 4;
 
     @LogLevel
-    private static int LOG_LEVEL = LOG_LEVEL_ERROR;
+    private static int logLevel = LOG_LEVEL_ERROR;
 
     private DragonflyLogger() {
         // just to disable default constructor
     }
 
     public static void setLogLevel(@LogLevel int logLevel) {
-        LOG_LEVEL = logLevel;
+        DragonflyLogger.logLevel = logLevel;
     }
 
     public static void debug(String msg) {
@@ -133,7 +135,7 @@ public class DragonflyLogger {
         BufferedWriter out = null;
 
         try {
-            out = new BufferedWriter(new FileWriter(log.getAbsolutePath(), log.exists()));
+            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(log.getAbsolutePath(), log.exists()), StandardCharsets.UTF_8));
             out.write(message);
             out.close();
         } catch (IOException e) {
@@ -150,7 +152,7 @@ public class DragonflyLogger {
     }
 
     private static boolean shouldLog(int logLevel) {
-        return BuildConfig.DEBUG || LOG_LEVEL >= logLevel;
+        return BuildConfig.DEBUG || DragonflyLogger.logLevel >= logLevel;
     }
 
     @SuppressLint("DefaultLocale")

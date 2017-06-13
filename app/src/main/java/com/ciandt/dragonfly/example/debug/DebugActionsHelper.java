@@ -39,7 +39,7 @@ import io.palaima.debugdrawer.commons.SettingsModule;
  */
 public class DebugActionsHelper {
 
-    private static String LOG_TAG = DebugActionsHelper.class.getSimpleName();
+    private static final String LOG_TAG = DebugActionsHelper.class.getSimpleName();
 
     public static DebugDrawer buildDebugDrawer(DebuggableActivity target) {
         Activity activity = target.getActivityInstance();

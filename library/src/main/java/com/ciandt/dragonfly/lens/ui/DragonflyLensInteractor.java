@@ -27,7 +27,7 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
     private static final String LOG_TAG = DragonflyLensInteractor.class.getSimpleName();
 
-    private Context context;
+    private final Context context;
 
     private DragonflyLensContract.LensPresenter presenter;
 
