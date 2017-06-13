@@ -21,6 +21,7 @@ apply plugin: 'io.fabric'
 
 apply from: '../versions.gradle'
 apply from: '../sonarqube.gradle'
+apply from: '../quality.gradle'
 
 ext {
     // The order is based on way the Play store works with multiple APKs. Remember, if a users
@@ -49,7 +50,7 @@ fabricProperties.load(new FileInputStream(fabricPropertiesFile))
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         applicationId "com.ciandt.dragonfly.example"
@@ -69,10 +70,6 @@ android {
         manifestPlaceholders = [
                 FABRIC_API_KEY: fabricProperties['apiKey']
         ]
-    }
-
-    lintOptions {
-        abortOnError false
     }
 
     signingConfigs {

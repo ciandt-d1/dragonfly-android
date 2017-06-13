@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -42,7 +43,7 @@ public class TensorFlowImageClassifier implements Classifier {
     private float imageStd;
 
     // Pre-allocated buffers.
-    private Vector<String> labels = new Vector<String>();
+    private final Vector<String> labels = new Vector<>();
     private int[] intValues;
     private float[] floatValues;
     private float[] outputs;
@@ -100,7 +101,7 @@ public class TensorFlowImageClassifier implements Classifier {
 
 
         Log.i(LOG_TAG, "Reading labels from: " + actualLabelFilename);
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
         String line;
         while ((line = br.readLine()) != null) {
             c.labels.add(line);
@@ -163,7 +164,7 @@ public class TensorFlowImageClassifier implements Classifier {
 
         // Find the best classifications.
         PriorityQueue<Recognition> pq =
-                new PriorityQueue<Recognition>(
+                new PriorityQueue<>(
                         3,
                         new Comparator<Recognition>() {
 
@@ -177,10 +178,10 @@ public class TensorFlowImageClassifier implements Classifier {
             if (outputs[i] > THRESHOLD) {
                 pq.add(
                         new Recognition(
-                                "" + i, labels.size() > i ? labels.get(i) : "unknown", outputs[i], null));
+                                Integer.toString(i), labels.size() > i ? labels.get(i) : "unknown", outputs[i], null));
             }
         }
-        final ArrayList<Recognition> recognitions = new ArrayList<Recognition>();
+        final ArrayList<Recognition> recognitions = new ArrayList<>();
         int recognitionsSize = Math.min(pq.size(), MAX_RESULTS);
         for (int i = 0; i < recognitionsSize; ++i) {
             recognitions.add(pq.poll());
