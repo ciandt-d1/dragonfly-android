@@ -131,4 +131,27 @@
         <item name="android:paddingRight">@dimen/dragonfly_lens_label_horizontal_padding</item>
         <item name="android:layout_marginTop">@dimen/dragonfly_lens_label_margin_top</item>
     </style>
+
+
+    <style name="ChipView.Text" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+        <item name="android:textColor">#8a000000</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+    </style>
+
+    <style name="ChipView.Item" parent="Widget.AppCompat.Button.Borderless">
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+        <item name="android:background">@drawable/chip_selector_background</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@drawable/chip_selector_text</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
 </resources>

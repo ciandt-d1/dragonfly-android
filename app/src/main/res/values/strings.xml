@@ -33,4 +33,6 @@
     <string name="permissions_required_description_realtime">Camera permission is required for this
         functionality.
     </string>
+
+    <string name="also_identify">I also identify these options</string>
 </resources>
