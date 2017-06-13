@@ -104,7 +104,7 @@ public class DragonflyLensFeedbackView extends FrameLayout implements DragonflyL
         DragonflyLogger.debug(LOG_TAG, "initialize()");
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.dragonfly_feedback_view, this);
+        inflater.inflate(R.layout.dragonfly_lens_feedback_view, this);
 
         previewView = (ImageView) this.findViewById(R.id.previewImageView);
         ornamentView = (ImageView) this.findViewById(R.id.ornamentView);
