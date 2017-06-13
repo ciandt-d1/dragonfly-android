@@ -1,6 +1,7 @@
 package com.ciandt.dragonfly.example
 
 import android.app.Application
+import android.os.Environment
 import com.ciandt.dragonfly.example.config.Features
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger
@@ -11,6 +12,7 @@ import com.squareup.leakcanary.LeakCanary
 
 import io.fabric.sdk.android.Fabric
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
+import java.io.File
 
 class DragonflyApplication : Application() {
 
@@ -56,5 +58,10 @@ class DragonflyApplication : Application() {
     private fun setupDragonflyLib() {
         DragonflyLogger.setLogLevel(DragonflyLogger.LOG_LEVEL_DEBUG)
         DragonflyConfig.shouldSaveBitmapsInDebugMode(Features.SAVE_CAPTURED_IMAGES_TO_DEVICE)
+
+        val dropboxPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + BuildConfig.APPLICATION_ID;
+        DragonflyConfig.setDropboxPath(dropboxPath)
+
+        DragonflyConfig.setMaxModelLoadingRetryAttempts(5)
     }
 }

@@ -19,6 +19,18 @@ public class DragonflyCameraSnapshot implements Parcelable {
         height = builder.height;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public static Builder newBuilder() {
         return new Builder();
     }

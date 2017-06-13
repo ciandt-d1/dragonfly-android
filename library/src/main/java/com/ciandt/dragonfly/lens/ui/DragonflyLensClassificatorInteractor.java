@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.support.v4.os.AsyncTaskCompat;
 import android.util.TimingLogger;
 
+import com.ciandt.dragonfly.base.ui.BaseInteractorContract.AsyncTaskResult;
+import com.ciandt.dragonfly.base.ui.ClassificatorInteractor;
 import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.image_processing.ImageUtils;
 import com.ciandt.dragonfly.image_processing.YUVNV21ToRGBA888Converter;
@@ -23,14 +25,14 @@ import java.util.UUID;
  * Created by iluz on 5/26/17.
  */
 
-public class DragonflyLensClassificatorInteractor implements DragonflyLensRealTimeContract.LensClassificatorInteractor {
+public class DragonflyLensClassificatorInteractor implements ClassificatorInteractor {
 
     // Manually set to avoid '"DragonflyLensClassificatorInteractor" exceeds limit of 23 characters'
     private static final String LOG_TAG = "ClassificatorInteractor";
 
     private Context context;
 
-    private DragonflyLensRealTimeContract.LensRealTimePresenter presenter;
+    private LensClassificatorInteractorCallbacks classificationCallbacks;
 
     private Classifier classifier;
     private Model model;
@@ -47,8 +49,8 @@ public class DragonflyLensClassificatorInteractor implements DragonflyLensRealTi
     }
 
     @Override
-    public void setPresenter(DragonflyLensRealTimeContract.LensRealTimePresenter presenter) {
-        this.presenter = presenter;
+    public void setClassificationCallbacks(LensClassificatorInteractorCallbacks classificationCallbacks) {
+        this.classificationCallbacks = classificationCallbacks;
     }
 
     @Override
@@ -166,14 +168,14 @@ public class DragonflyLensClassificatorInteractor implements DragonflyLensRealTi
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("LoadModelTask.onPostExecute() - error | exception: %s", result.getError()));
 
-                interactor.presenter.onModelFailure(result.getError());
+                interactor.classificationCallbacks.onModelFailure(result.getError());
             } else {
                 Model model = result.getResult();
 
                 DragonflyLogger.debug(LOG_TAG, String.format("LoadModelTask.onPostExecute() - success | model: %s", result.getResult()));
 
                 interactor.model = model;
-                interactor.presenter.onModelReady(model);
+                interactor.classificationCallbacks.onModelReady(model);
             }
         }
     }
@@ -208,11 +210,11 @@ public class DragonflyLensClassificatorInteractor implements DragonflyLensRealTi
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeBitmapTask.onPostExecute() - error | exception: %s", result.getError()));
 
-                interactor.presenter.onImageAnalysisFailed(result.getError());
+                interactor.classificationCallbacks.onImageAnalysisFailed(result.getError());
             } else {
                 DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeBitmapTask.onPostExecute() - success | recognitions: %s", result.getResult()));
 
-                interactor.presenter.onImageAnalyzed(result.getResult());
+                interactor.classificationCallbacks.onImageAnalyzed(result.getResult());
             }
         }
     }
@@ -270,11 +272,11 @@ public class DragonflyLensClassificatorInteractor implements DragonflyLensRealTi
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeYUVN21Task.onPostExecute() - error | exception: %s", result.getError()));
 
-                interactor.presenter.onImageAnalysisFailed(result.getError());
+                interactor.classificationCallbacks.onImageAnalysisFailed(result.getError());
             } else {
                 DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeYUVN21Task.onPostExecute() - success | recognitions: %s", result.getResult()));
 
-                interactor.presenter.onImageAnalyzed(result.getResult());
+                interactor.classificationCallbacks.onImageAnalyzed(result.getResult());
             }
         }
 

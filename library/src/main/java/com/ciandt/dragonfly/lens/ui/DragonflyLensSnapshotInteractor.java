@@ -25,19 +25,13 @@ public class DragonflyLensSnapshotInteractor implements DragonflyLensRealTimeCon
     // Manually set to avoid '"DragonflyLensSnapshotInteractor" exceeds limit of 23 characters'
     private static final String LOG_TAG = "SnapshotInteractor";
 
-    private DragonflyLensRealTimeContract.LensRealTimePresenter presenter;
-
     private SaveSnapshotTask saveSnapshotTask;
 
     private final YUVNV21ToRGBA888Converter yuvToRgbConverter;
+    private SnapshotCallbacks snapshotCallbacks;
 
     public DragonflyLensSnapshotInteractor(Context context) {
         this.yuvToRgbConverter = new YUVNV21ToRGBA888Converter(context);
-    }
-
-    @Override
-    public void setPresenter(DragonflyLensRealTimeContract.LensRealTimePresenter presenter) {
-        this.presenter = presenter;
     }
 
     @Override
@@ -55,6 +49,11 @@ public class DragonflyLensSnapshotInteractor implements DragonflyLensRealTimeCon
 
         SaveSnapshotTask.TaskParams taskParams = new SaveSnapshotTask.TaskParams(data, width, height, rotation);
         AsyncTaskCompat.executeParallel(saveSnapshotTask, taskParams);
+    }
+
+    @Override
+    public void setCallbacks(SnapshotCallbacks callbacks) {
+        this.snapshotCallbacks = callbacks;
     }
 
     private static class SaveSnapshotTask extends AsyncTask<SaveSnapshotTask.TaskParams, Void, AsyncTaskResult<DragonflyCameraSnapshot, DragonflySnapshotException>> {
@@ -108,11 +107,11 @@ public class DragonflyLensSnapshotInteractor implements DragonflyLensRealTimeCon
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("SaveSnapshotTask.onPostExecute() - error | exception: %s", result.getError()));
 
-                interactor.presenter.onFailedToSaveSnapshot(result.getError());
+                interactor.snapshotCallbacks.onFailedToSaveSnapshot(result.getError());
             } else {
                 DragonflyLogger.debug(LOG_TAG, String.format("SaveSnapshotTask.onPostExecute() - success | snapshot: %s", result.getResult()));
 
-                interactor.presenter.onSnapshotSaved(result.getResult());
+                interactor.snapshotCallbacks.onSnapshotSaved(result.getResult());
             }
         }
 

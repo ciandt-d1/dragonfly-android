@@ -12,6 +12,8 @@ public class DragonflyConfig {
 
     private static String dropboxPath;
 
+    private static int maxModelLoadingRetryAttempts;
+
     public static boolean shouldSaveBitmapsInDebugMode() {
         return saveBitmapsInDebugMode;
     }
@@ -26,5 +28,13 @@ public class DragonflyConfig {
 
     public static void setDropboxPath(String dropboxPath) {
         DragonflyConfig.dropboxPath = dropboxPath;
+    }
+
+    public static int getMaxModelLoadingRetryAttempts() {
+        return maxModelLoadingRetryAttempts;
+    }
+
+    public static void setMaxModelLoadingRetryAttempts(int maxModelLoadingRetryAttempts) {
+        DragonflyConfig.maxModelLoadingRetryAttempts = maxModelLoadingRetryAttempts;
     }
 }

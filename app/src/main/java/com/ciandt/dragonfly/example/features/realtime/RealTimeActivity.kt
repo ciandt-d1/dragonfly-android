@@ -4,8 +4,10 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.annotation.StringRes
+import android.support.v4.content.ContextCompat
 import android.view.View.VISIBLE
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
@@ -20,10 +22,13 @@ import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException
 import com.ciandt.dragonfly.lens.ui.DragonflyLensRealtimeView
 import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.*
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_real_time.*
+import java.security.InvalidParameterException
 
 
 class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyLensRealtimeView.SnapshotCallbacks {
@@ -51,6 +56,53 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
     }
 
     private fun setupDragonflyLens() {
+        setupDragonflyLensCameraOrnament()
+
+        dragonFlyLens.setSnapshotCallbacks(this)
+
+        setupDragonflyLensPermissionsCallback()
+    }
+
+    private fun setupDragonflyLensPermissionsCallback() {
+        dragonFlyLens.setPermissionsCallback(DragonflyLensRealtimeView.PermissionsCallback {
+            permissions ->
+
+            if (permissions == null || permissions.size == 0) {
+                throw InvalidParameterException("Empty permissions list provided.")
+            }
+
+            val pendingPermissions = ArrayList<String>()
+            permissions.forEach {
+                val isPermissionGranted = ContextCompat.checkSelfPermission(this@RealTimeActivity, it) == PackageManager.PERMISSION_GRANTED
+                if (!isPermissionGranted) {
+                    pendingPermissions.add(it)
+                }
+            }
+
+            if (pendingPermissions.isEmpty()) {
+                return@PermissionsCallback true
+            } else {
+                Dexter
+                        .withActivity(this)
+                        .withPermissions(pendingPermissions)
+                        .withListener(object : MultiplePermissionsListener {
+                            override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                                DragonflyLogger.debug(LOG_TAG, "onPermissionsChecked()")
+                            }
+
+                            override fun onPermissionRationaleShouldBeShown(permissions: MutableList<PermissionRequest>, token: PermissionToken) {
+                                token.continuePermissionRequest()
+                            }
+
+                        })
+                        .check()
+
+                return@PermissionsCallback false
+            }
+        })
+    }
+
+    private fun setupDragonflyLensCameraOrnament() {
         dragonFlyLens.setCameraOrnamentVisibilityCallback { ornament ->
             ornament.alpha = 0f
             ornament.visibility = VISIBLE
@@ -58,8 +110,6 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
                     .alpha(1.0f)
                     .setDuration(3000)
         }
-
-        dragonFlyLens.setSnapshotCallbacks(this)
     }
 
     override fun onResume() {
@@ -83,7 +133,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        model?.let {
+        model.let {
             outState?.putParcelable(MODEL_BUNDLE, it)
         }
     }
@@ -93,26 +143,26 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
                 .withPermission(Manifest.permission.CAMERA)
                 .withListener(object : PermissionListener {
                     override fun onPermissionGranted(response: PermissionGrantedResponse) {
-                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionGranted()", CLASS_NAME))
+                        DragonflyLogger.debug(LOG_TAG, "checkRealTimeRequiredPermissions() - onPermissionGranted()")
 
                         presenter.onRealTimePermissionsGranted()
                     }
 
                     override fun onPermissionDenied(response: PermissionDeniedResponse) {
-                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionDenied() - permanently? %s", CLASS_NAME, response.isPermanentlyDenied))
+                        DragonflyLogger.debug(LOG_TAG, "checkRealTimeRequiredPermissions() - onPermissionDenied() - permanently? ${response.isPermanentlyDenied}")
 
                         presenter.onRealTimePermissionsDenied(response.isPermanentlyDenied)
                     }
 
                     override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {
-                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onPermissionRationaleShouldBeShown()", CLASS_NAME))
+                        DragonflyLogger.debug(LOG_TAG, "${CLASS_NAME}.onPermissionRationaleShouldBeShown()")
 
                         token.continuePermissionRequest()
                     }
                 })
                 .withErrorListener(object : PermissionRequestErrorListener {
                     override fun onError(error: DexterError) {
-                        DragonflyLogger.debug(LOG_TAG, String.format("%s.onError(): %s", CLASS_NAME, error))
+                        DragonflyLogger.debug(LOG_TAG, "${CLASS_NAME}.onError(): ${error}")
                     }
                 })
                 .check()
@@ -151,21 +201,21 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
     }
 
     override fun onSnapshotTaken(snapshot: DragonflyCameraSnapshot) {
-        DragonflyLogger.debug(LOG_TAG, String.format("onSnapshotTaken(%s)", snapshot));
+        DragonflyLogger.debug(LOG_TAG, "onSnapshotTaken(${snapshot})")
 
         intent = FeedbackActivity.newIntent(this, model, snapshot)
         startActivity(intent)
     }
 
     override fun onSnapshotError(e: DragonflySnapshotException) {
-        DragonflyLogger.debug(LOG_TAG, String.format("onSnapshotError(%s)", e));
+        DragonflyLogger.debug(LOG_TAG, "onSnapshotError(${e})")
     }
 
     companion object {
         private val CLASS_NAME = RealTimeActivity::class.java.simpleName
         private val LOG_TAG = RealTimeActivity::class.java.simpleName
 
-        private val MODEL_BUNDLE = String.format("%s.model_bundle", BuildConfig.APPLICATION_ID);
+        private val MODEL_BUNDLE = "${BuildConfig.APPLICATION_ID}.model_bundle"
 
         fun create(context: Context, model: Model): Intent {
             val intent = Intent(context, RealTimeActivity::class.java)
