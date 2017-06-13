@@ -208,7 +208,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     @Override
     public void start(Model model) {
         loadModel(model);
-        lensRealTimePresenter.attach(this);
+        lensRealTimePresenter.attachView(this);
         startCameraView();
 
         // Not sure why, but this guarantees the camera works after turning the screen off and then
@@ -226,7 +226,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     @Override
     public void stop() {
-        lensRealTimePresenter.detach();
+        lensRealTimePresenter.detachView();
         stopCameraView();
 
         cameraView.setVisibility(GONE);

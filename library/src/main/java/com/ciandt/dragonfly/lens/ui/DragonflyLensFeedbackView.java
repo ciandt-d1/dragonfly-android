@@ -3,7 +3,6 @@ package com.ciandt.dragonfly.lens.ui;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -17,13 +16,13 @@ import android.widget.ImageView;
 import com.ciandt.dragonfly.R;
 import com.ciandt.dragonfly.base.ui.ImageScaleTypes;
 import com.ciandt.dragonfly.data.model.Model;
+import com.ciandt.dragonfly.image_processing.ImageUtils;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -34,10 +33,14 @@ public class DragonflyLensFeedbackView extends FrameLayout implements DragonflyL
 
     private static final String LOG_TAG = DragonflyLensFeedbackView.class.getSimpleName();
 
+    private ModelCallbacks modelCallbacks;
+    private SnapshotAnalysisCallbacks snapshotAnalysisCallbacks;
+
     private ImageView previewView;
     private ImageView ornamentView;
 
     private DragonflyLensFeedbackContract.FeedbackPresenter feedbackPresenter;
+    private DragonflyCameraSnapshot snapshot;
 
 
     public DragonflyLensFeedbackView(Context context) {
@@ -55,44 +58,74 @@ public class DragonflyLensFeedbackView extends FrameLayout implements DragonflyL
         initialize(context, attrs);
     }
 
+    public void setModelCallbacks(ModelCallbacks modelCallbacks) {
+        this.modelCallbacks = modelCallbacks;
+    }
+
+    public void setSnapshotAnalysisCallbacks(SnapshotAnalysisCallbacks snapshotAnalysisCallbacks) {
+        this.snapshotAnalysisCallbacks = snapshotAnalysisCallbacks;
+    }
+
     @Override
     public void onModelReady(Model model) {
-        // TODO: define if we should use this info locally (avoid calling the presenter while the model is not ready?)
+        if (modelCallbacks != null) {
+            modelCallbacks.onModelReady(model);
+        }
     }
 
     @Override
     public void onModelFailure(DragonflyModelException e) {
-        // TODO: handle the error in a user friendly way.
+        if (modelCallbacks != null) {
+            modelCallbacks.onModelFailure(e);
+        }
+    }
+
+    @Override
+    public void analyzeSnapshot() {
+        if (snapshot == null) {
+            throw new IllegalStateException("setSnapshot() should be called first with a valid snapshot object.");
+        }
+
+        Bitmap bitmap = ImageUtils.loadBitmapFromDisk(snapshot.getPath());
+        feedbackPresenter.analyzeBitmap(bitmap);
     }
 
     @Override
     public void onBitmapAnalyzed(List<Classifier.Recognition> results) {
-
+        if (snapshotAnalysisCallbacks != null) {
+            snapshotAnalysisCallbacks.onSnapshotAnalyzed(results);
+        }
     }
 
     @Override
     public void onBitmapAnalysisFailed(DragonflyRecognitionException e) {
-        // TODO: handle the error in a user friendly way.
+        if (snapshotAnalysisCallbacks != null) {
+            snapshotAnalysisCallbacks.onSnapshotAnalysisFailed(e);
+        }
     }
 
     @Override
     public void setSnapshot(DragonflyCameraSnapshot snapshot) {
+        this.snapshot = snapshot;
+
         if (snapshot == null || TextUtils.isEmpty(snapshot.getPath())) {
             previewView.setImageDrawable(null);
             return;
         }
 
-        File imgFile = new File(snapshot.getPath());
-        if (imgFile.exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            previewView.setImageBitmap(bitmap);
-        }
+        Bitmap bitmap = ImageUtils.loadBitmapFromDisk(snapshot.getPath());
+        previewView.setImageBitmap(bitmap);
     }
 
     @Override
-    public void setModel(Model model) {
+    public void start(Model model) {
         loadModel(model);
-        feedbackPresenter.attach(this);
+        feedbackPresenter.attachView(this);
+    }
+
+    @Override
+    public void stop() {
+        feedbackPresenter.detachView();
     }
 
     /**
@@ -142,6 +175,10 @@ public class DragonflyLensFeedbackView extends FrameLayout implements DragonflyL
 
     private void loadModel(Model model) {
         DragonflyLogger.debug(LOG_TAG, String.format("%s.loadModel(%s)", LOG_TAG, model));
+
+        if (modelCallbacks != null) {
+            modelCallbacks.onStartedLoadingModel(model);
+        }
 
         feedbackPresenter.loadModel(model);
     }
@@ -212,5 +249,21 @@ public class DragonflyLensFeedbackView extends FrameLayout implements DragonflyL
                 return new SavedState[size];
             }
         };
+    }
+
+    public interface ModelCallbacks {
+
+        void onStartedLoadingModel(Model model);
+
+        void onModelReady(Model model);
+
+        void onModelFailure(DragonflyModelException e);
+    }
+
+    public interface SnapshotAnalysisCallbacks {
+
+        void onSnapshotAnalyzed(List<Classifier.Recognition> results);
+
+        void onSnapshotAnalysisFailed(DragonflyRecognitionException e);
     }
 }

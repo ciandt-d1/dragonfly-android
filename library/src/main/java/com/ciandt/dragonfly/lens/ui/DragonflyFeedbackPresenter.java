@@ -27,13 +27,13 @@ public class DragonflyFeedbackPresenter extends AbstractPresenter<DragonflyLensF
 
     private int modelLoadingAttempts = 0;
 
-    public DragonflyFeedbackPresenter(ClassificatorInteractor lensClassificatorInteractor) {
-        if (lensClassificatorInteractor == null) {
-            throw new IllegalArgumentException("lensClassificatorInteractor can't be null.");
+    public DragonflyFeedbackPresenter(ClassificatorInteractor classificatorInteractor) {
+        if (classificatorInteractor == null) {
+            throw new IllegalArgumentException("classificatorInteractor can't be null.");
         }
 
-        lensClassificatorInteractor.setClassificationCallbacks(this);
-        this.lensClassificatorInteractor = lensClassificatorInteractor;
+        classificatorInteractor.setClassificationCallbacks(this);
+        this.lensClassificatorInteractor = classificatorInteractor;
     }
 
     @SuppressWarnings("unused")
@@ -48,8 +48,8 @@ public class DragonflyFeedbackPresenter extends AbstractPresenter<DragonflyLensF
     }
 
     @Override
-    public void detach() {
-        super.detach();
+    public void detachView() {
+        super.detachView();
 
         loadedModel = null;
         lensClassificatorInteractor.releaseModel();

@@ -8,12 +8,12 @@ public class AbstractPresenter<V> implements BasePresenterContract<V> {
     protected V view;
 
     @Override
-    public void attach(V view) {
+    public void attachView(V view) {
         this.view = view;
     }
 
     @Override
-    public void detach() {
+    public void detachView() {
         view = null;
     }
 

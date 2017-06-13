@@ -20,13 +20,17 @@ public interface DragonflyLensFeedbackContract {
 
     interface FeedbackView extends BaseViewContract {
 
-        void setModel(Model model);
+        void start(Model model);
+
+        void stop();
 
         void setSnapshot(DragonflyCameraSnapshot snapshot);
 
         void onModelReady(Model model);
 
         void onModelFailure(DragonflyModelException e);
+
+        void analyzeSnapshot();
 
         void onBitmapAnalyzed(List<Classifier.Recognition> results);
 
