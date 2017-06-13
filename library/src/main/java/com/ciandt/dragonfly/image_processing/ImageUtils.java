@@ -16,6 +16,7 @@ limitations under the License.
 package com.ciandt.dragonfly.image_processing;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
@@ -73,5 +74,14 @@ public class ImageUtils {
 
 
         return wasSuccessful;
+    }
+
+    public static Bitmap loadBitmapFromDisk(String path) {
+        File imgFile = new File(path);
+        if (imgFile.exists()) {
+            return BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        } else {
+            return null;
+        }
     }
 }

@@ -194,8 +194,16 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
             DragonflyLogger.debug(LOG_TAG, "AnalyzeBitmapTask.doInBackground() - start");
 
+            // To see the log ouput, make sure to run the command below:
+            // adb shell setprop log.tag.<LOG_TAG> VERBOSE
+            TimingLogger timings = new TimingLogger(LOG_TAG, "AnalyzeBitmapTask.doInBackground()");
+
             try {
-                List<Classifier.Recognition> results = interactor.classifier.recognizeImage(bitmap);
+                Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, interactor.model.getInputSize(), interactor.model.getInputSize(), false);
+                timings.addSplit("Scale bitmap");
+
+                List<Classifier.Recognition> results = interactor.classifier.recognizeImage(croppedBitmap);
+                timings.addSplit("Classify image");
 
                 return new AsyncTaskResult<>(results, null);
             } catch (Exception e) {

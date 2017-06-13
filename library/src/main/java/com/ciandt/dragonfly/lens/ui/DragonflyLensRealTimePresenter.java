@@ -61,8 +61,8 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
     }
 
     @Override
-    public void detach() {
-        super.detach();
+    public void detachView() {
+        super.detachView();
 
         loadedModel = null;
         lensClassificatorInteractor.releaseModel();
