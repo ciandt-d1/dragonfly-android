@@ -1,10 +1,14 @@
 package com.ciandt.dragonfly.example.features.feedback
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
+import android.view.View
 import android.widget.Toast
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
@@ -17,18 +21,27 @@ import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException
 import com.ciandt.dragonfly.lens.ui.DragonflyLensFeedbackView
 import com.ciandt.dragonfly.tensorflow.Classifier
 import kotlinx.android.synthetic.main.activity_feedback.*
+import kotlinx.android.synthetic.main.partial_feedback_result.*
 
 
 class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
-    lateinit private var cameraSnapshot: DragonflyCameraSnapshot
-    lateinit private var model: Model
+    private val HIDE_SHOW_ANIMATION_DURATION = 150L
+    private val FIRST_APPEAR_ANIMATION_DURATION = 1000L
 
-    var lastRecognizedObjects: ArrayList<Classifier.Recognition>? = null
+    private lateinit var presenter: FeedbackContract.Presenter
+    private lateinit var cameraSnapshot: DragonflyCameraSnapshot
+    private lateinit var model: Model
+
+    private var lastRecognizedObjects: ArrayList<Classifier.Recognition>? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feedback)
+
+        presenter = FeedbackPresenter()
+        presenter.attachView(this)
 
         if (savedInstanceState != null) {
             model = savedInstanceState.getParcelable(MODEL_BUNDLE)
@@ -47,6 +60,8 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             setupModelCallbacks()
             setupBitmapAnalysisCallbacks()
         }
+
+        setupResultsView()
 
         dragonFlyLensFeedbackView.setSnapshot(cameraSnapshot)
     }
@@ -87,7 +102,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                 DragonflyLogger.debug(LOG_TAG, "DragonflyLensFeedbackView.SnapshotAnalysisCallbacks.onSnapshotAnalyzed(${results})")
 
                 lastRecognizedObjects = ArrayList(results)
-                Snackbar.make(getRootView(), results.toString(), Snackbar.LENGTH_INDEFINITE).show()
+                presenter.setRecognitions(results)
             }
 
             override fun onSnapshotAnalysisFailed(e: DragonflyRecognitionException?) {
@@ -98,16 +113,51 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         })
     }
 
+    private fun setupResultsView() {
+
+        val duration = HIDE_SHOW_ANIMATION_DURATION * 2
+        feedbackResultContainer.layoutTransition?.setDuration(duration)
+        feedbackView.layoutTransition?.setDuration(duration)
+        footer.layoutTransition?.setDuration(duration)
+
+        toggleButton.setOnClickListener {
+            if (chipsContainer.visibility == View.GONE) {
+                expandResults()
+            } else {
+                collapseResults()
+            }
+        }
+
+        positiveButton.setOnClickListener {
+            presenter.markAsPositive()
+        }
+
+        negativeButton.setOnClickListener {
+            presenter.markAsNegative()
+        }
+
+        chipsViews.setSelectCallback { chip ->
+            if (chip is FeedbackChip) {
+                presenter.markAsNegative(chip.recognition)
+            }
+        }
+
+    }
+
     override fun onResume() {
         super.onResume()
+        presenter.attachView(this)
 
-        if (!hasRecognizedObjectsCached()) {
+        if (hasRecognizedObjectsCached()) {
+            presenter.setRecognitions(lastRecognizedObjects!!)
+        } else {
             dragonFlyLensFeedbackView.start(model)
         }
     }
 
     override fun onPause() {
         super.onPause()
+        presenter.detachView()
 
         dragonFlyLensFeedbackView.stop()
     }
@@ -123,10 +173,157 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         }
     }
 
+    override fun showNoRecognitions() {
+        Snackbar.make(getRootView(), "No recognitions found.", Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun showRecognitions(main: Classifier.Recognition, others: List<Classifier.Recognition>) {
+
+        result.text = getString(R.string.feedback_classification, main.title)
+
+        if (others.isEmpty()) {
+            footer.visibility = View.GONE
+
+        } else {
+
+            val chips = ArrayList<FeedbackChip>()
+            others.forEach {
+                chips.add(FeedbackChip(it))
+            }
+
+            chipsViews.setChips(chips)
+        }
+
+        showFeedbackView()
+    }
+
+    override fun showPositiveRecognition(recognition: Classifier.Recognition) {
+
+        positiveButton.isActivated = true
+        negativeButton.isActivated = false
+
+        result.text = recognition.title
+        result.setTextColor(ContextCompat.getColor(this, R.color.feedback_submitted))
+
+        collapseResults()
+    }
+
+    override fun showNegativeRecognition(recognition: Classifier.Recognition) {
+
+        positiveButton.visibility = View.GONE
+        negativeButton.visibility = View.GONE
+        underRevision.visibility = View.VISIBLE
+
+        result.text = recognition.title
+        result.setTextColor(ContextCompat.getColor(this, R.color.feedback_submitted))
+
+        footer.visibility = View.GONE
+    }
+
+    private fun expandResults() {
+
+        toggleButton.isClickable = false
+        toggleButton.animate()
+                .alpha(0.0f)
+                .setDuration(HIDE_SHOW_ANIMATION_DURATION)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        toggleButton.text = getString(R.string.feedback_close)
+                        toggleButton.setTextColor(ContextCompat.getColor(this@FeedbackActivity, R.color.feedback_close))
+                        toggleButton.animate()
+                                .alpha(1.0f)
+                                .setDuration(HIDE_SHOW_ANIMATION_DURATION)
+                                .setListener(object : AnimatorListenerAdapter() {
+                                    override fun onAnimationEnd(animation: Animator?) {
+                                        super.onAnimationEnd(animation)
+                                        toggleButton.isClickable = true
+                                    }
+                                })
+                    }
+                })
+
+        arrow.animate()
+                .alpha(0.0f)
+                .setDuration(HIDE_SHOW_ANIMATION_DURATION)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        arrow.setImageDrawable(ContextCompat.getDrawable(this@FeedbackActivity, R.drawable.ic_arrow_down))
+                        arrow.animate()
+                                .alpha(1.0f)
+                                .setDuration(HIDE_SHOW_ANIMATION_DURATION)
+                                .setListener(null)
+
+                    }
+                })
+
+        chipsContainer.visibility = View.VISIBLE
+    }
+
+    private fun collapseResults() {
+
+        toggleButton.isClickable = false
+        toggleButton.animate()
+                .alpha(0.0f)
+                .setDuration(HIDE_SHOW_ANIMATION_DURATION)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        toggleButton.text = getString(R.string.feedback_more_info)
+                        toggleButton.setTextColor(ContextCompat.getColor(this@FeedbackActivity, R.color.feedback_more_info))
+                        toggleButton.animate()
+                                .alpha(1.0f)
+                                .setDuration(HIDE_SHOW_ANIMATION_DURATION)
+                                .setListener(object : AnimatorListenerAdapter() {
+                                    override fun onAnimationEnd(animation: Animator?) {
+                                        super.onAnimationEnd(animation)
+
+                                        toggleButton.isClickable = true
+                                    }
+                                })
+
+                    }
+                })
+
+        arrow.animate()
+                .alpha(0.0f)
+                .setDuration(HIDE_SHOW_ANIMATION_DURATION)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        arrow.setImageDrawable(ContextCompat.getDrawable(this@FeedbackActivity, R.drawable.ic_arrow_up))
+                        arrow.animate()
+                                .alpha(1.0f)
+                                .setDuration(HIDE_SHOW_ANIMATION_DURATION)
+                                .setListener(null)
+                    }
+                })
+
+        chipsContainer.visibility = View.GONE
+    }
+
+    private fun showFeedbackView() {
+
+        if (feedbackView.alpha > 0) {
+            return
+        }
+
+        feedbackView.isClickable = false
+        feedbackView.animate()
+                .alpha(1.0f)
+                .setDuration(FIRST_APPEAR_ANIMATION_DURATION)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        feedbackView.isClickable = true
+                    }
+                })
+    }
+
     private fun hasRecognizedObjectsCached() = lastRecognizedObjects != null
 
     companion object {
-        private val CLASS_NAME = FeedbackActivity::class.java.simpleName
         private val LOG_TAG = FeedbackActivity::class.java.simpleName
 
         private val MODEL_BUNDLE = String.format("%s.model_bundle", BuildConfig.APPLICATION_ID)
@@ -142,3 +339,4 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         }
     }
 }
+

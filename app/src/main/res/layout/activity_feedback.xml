@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/feedback_background"
     tools:context="com.ciandt.dragonfly.example.features.feedback.FeedbackActivity">
 
     <com.ciandt.dragonfly.lens.ui.DragonflyLensFeedbackView
@@ -19,7 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         style="@style/AppTheme.Toolbar"
-        android:elevation="@dimen/toolbar_elevation">
+        android:elevation="@dimen/toolbar_elevation"
+        tools:ignore="UnusedAttribute">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -50,4 +53,20 @@
                 android:text="@string/feedback_save"/>
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
-</FrameLayout>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/feedbackView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/feedback_cardview_margin"
+        android:layout_alignParentBottom="true"
+        android:alpha="0.0"
+        android:animateLayoutChanges="true"
+        card_view:cardCornerRadius="@dimen/feedback_cardview_corner_radius"
+        tools:alpha="1.0">
+
+        <include layout="@layout/partial_feedback_result"/>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>
