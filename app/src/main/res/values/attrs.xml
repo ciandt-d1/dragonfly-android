@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ChipsView">
+        <attr format="reference" name="chipLayout"/>
+        <attr format="dimension" name="chipSpaceBetween"/>
+        <attr format="dimension" name="chipSpaceBefore"/>
+        <attr format="dimension" name="chipSpaceAfter"/>
+        <attr format="boolean" name="fadingEdges"/>
+        <attr format="reference" name="fadingEdgesDrawable"/>
+        <attr format="dimension" name="fadingEdgesWidth"/>
+        <attr format="boolean" name="selectable"/>
+    </declare-styleable>
+
+</resources>

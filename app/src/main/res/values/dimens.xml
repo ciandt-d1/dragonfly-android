@@ -43,4 +43,9 @@
     <dimen name="about_powered_horizontal_margin">10dp</dimen>
     <dimen name="about_powered_drawable_padding">-32dp</dimen>
 
+    <dimen name="chip_space_before">16dp</dimen>
+    <dimen name="chip_space_between">4dp</dimen>
+    <dimen name="chip_space_after">16dp</dimen>
+    <dimen name="fading_edges_width">16dp</dimen>
+
 </resources>
