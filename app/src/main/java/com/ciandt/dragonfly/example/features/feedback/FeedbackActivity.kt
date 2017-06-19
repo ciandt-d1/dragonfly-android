@@ -5,11 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.design.widget.Snackbar
+import android.widget.Toast
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
-import com.ciandt.dragonfly.example.shared.FullScreenActivity
+import com.ciandt.dragonfly.example.shared.BaseActivity
 import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException
@@ -18,7 +19,7 @@ import com.ciandt.dragonfly.tensorflow.Classifier
 import kotlinx.android.synthetic.main.activity_feedback.*
 
 
-class FeedbackActivity : FullScreenActivity(), FeedbackContract.View {
+class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
     lateinit private var cameraSnapshot: DragonflyCameraSnapshot
     lateinit private var model: Model
@@ -39,12 +40,27 @@ class FeedbackActivity : FullScreenActivity(), FeedbackContract.View {
             lastRecognizedObjects = null
         }
 
+        setupBackButton()
+        setupSaveImageButton()
+
         if (!hasRecognizedObjectsCached()) {
             setupModelCallbacks()
             setupBitmapAnalysisCallbacks()
         }
 
         dragonFlyLensFeedbackView.setSnapshot(cameraSnapshot)
+    }
+
+    private fun setupSaveImageButton() {
+        btnSaveImage.setOnClickListener({
+            Toast.makeText(this, "Save image", Toast.LENGTH_SHORT).show()
+        })
+    }
+
+    private fun setupBackButton() {
+        btnBack.setOnClickListener({
+            super.onBackPressed()
+        })
     }
 
     private fun setupModelCallbacks() {

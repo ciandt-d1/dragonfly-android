@@ -34,5 +34,8 @@
         functionality.
     </string>
 
+    <string name="feedback_title">Results</string>
+    <string name="feedback_save">Save</string>
+
     <string name="also_identify">I also identify these options</string>
 </resources>

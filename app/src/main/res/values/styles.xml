@@ -117,6 +117,38 @@
         <item name="android:textAlignment">center</item>
     </style>
 
+    <!-- Toolbar -->
+    <style name="AppTheme.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="titleTextAppearance">@style/AppTheme.Toolbar.TextAppearance.Title</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="contentInsetStart">0dp</item>
+        <item name="android:background">@color/toolbar_background</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+    </style>
+
+    <style name="AppTheme.Toolbar.Button.Navigation"
+           parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="android:padding">8dp</item>
+        <item name="android:width">48dp</item>
+        <item name="android:height">48dp</item>
+    </style>
+
+    <style name="AppTheme.Toolbar.TextAppearance.Title"
+           parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">@color/black_87</item>
+        <item name="android:textSize">20sp</item>
+        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+    </style>
+
+    <style name="AppTheme.Toolbar.Button.Flat" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+
     <!-- Override default style from library -->
     <style name="Dragonfly.Lens.Label" parent="TextAppearance.AppCompat">
         <item name="fontPath">fonts/Roboto-Regular.ttf</item>
@@ -131,6 +163,9 @@
         <item name="android:paddingRight">@dimen/dragonfly_lens_label_horizontal_padding</item>
         <item name="android:layout_marginTop">@dimen/dragonfly_lens_label_margin_top</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
 
     <style name="ChipView.Text" parent="TextAppearance.AppCompat">
