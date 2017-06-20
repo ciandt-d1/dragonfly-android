@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="toolbar_elevation">4dp</dimen>
+
     <dimen name="model_selection_title_margin_top">56dp</dimen>
     <dimen name="model_selection_title_horizontal_margin">30dp</dimen>
 
