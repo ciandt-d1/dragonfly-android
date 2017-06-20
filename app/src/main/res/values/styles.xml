@@ -185,4 +185,30 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="Feedback.Result.Title" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+        <item name="android:textColor">@color/feedback_result_title</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Feedback.Result.UnderRevision" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+        <item name="android:textColor">@color/feedback_result_under_revision</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="Feedback.Result.Others" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+        <item name="android:textColor">@color/feedback_others</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Feedback.Result.MoreInfo" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:textColor">@color/feedback_more_info</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
 </resources>

@@ -35,4 +35,14 @@
     <color name="dragonfly_lens_view_background">@android:color/black</color>
 
     <color name="task_description">@color/colorPrimaryDark</color>
+
+    <color name="feedback_background">#000000</color>
+    <color name="feedback_submitted">#19d0a3</color>
+    <color name="feedback_more_info">#89000000</color>
+    <color name="feedback_close">#dd000000</color>
+    <color name="feedback_result_title">#dd000000</color>
+    <color name="feedback_result_under_revision">#60000000</color>
+    <color name="feedback_result_background">#ffffff</color>
+    <color name="feedback_result_line">#1e000000</color>
+    <color name="feedback_others">#89000000</color>
 </resources>

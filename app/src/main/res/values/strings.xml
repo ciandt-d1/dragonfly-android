@@ -36,6 +36,11 @@
 
     <string name="feedback_title">Results</string>
     <string name="feedback_save">Save</string>
-
-    <string name="also_identify">I also identify these options</string>
+    <string name="feedback_also_identify">I also identify these options</string>
+    <string name="feedback_classification">%s - Is this correct?</string>
+    <string name="feedback_more_info">MORE INFO</string>
+    <string name="feedback_close">CLOSE</string>
+    <string name="feedback_positive_button_content_description">Positive</string>
+    <string name="feedback_negative_button_content_description">Negative</string>
+    <string name="feedback_under_revision">Under Revision</string>
 </resources>
