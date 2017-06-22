@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:chipsView="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/feedback_form"
+              android:animateLayoutChanges="true"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/feedback_form_title_margin_top"
+        android:layout_marginLeft="@dimen/feedback_form_title_horizontal_margin"
+        android:layout_marginRight="@dimen/feedback_form_title_horizontal_margin"
+        style="@style/Feedback.Form.Title"
+        android:text="@string/feedback_something_is_wrong"
+    />
+
+    <TextView
+        android:id="@+id/formChipsLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/feedback_form_other_options_margin_top"
+        android:layout_marginLeft="@dimen/feedback_form_other_options_horizontal_margin"
+        android:layout_marginRight="@dimen/feedback_form_other_options_horizontal_margin"
+        style="@style/Feedback.Form.Others"
+        android:text="@string/feedback_choose_option"
+    />
+
+    <com.ciandt.dragonfly.example.components.chips.ChipsView
+        android:id="@+id/formChipsViews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/feedback_form_chips_margin_top"
+        chipsView:chipLayout="@layout/item_feedback_form_chip"
+        chipsView:chipSpaceAfter="@dimen/chip_space_after"
+        chipsView:chipSpaceBefore="@dimen/chip_space_before"
+        chipsView:chipSpaceBetween="@dimen/chip_space_between"
+        chipsView:fadingEdges="true"
+        chipsView:fadingEdgesDrawable="@drawable/chip_feedback_form_gradient"
+        chipsView:fadingEdgesWidth="@dimen/fading_edges_width"
+        chipsView:selectable="true"
+    />
+
+    <com.ciandt.dragonfly.example.components.input.DragonflyAutoComplete
+        android:id="@+id/input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/feedback_form_input_margin_top"
+        android:layout_marginLeft="@dimen/feedback_form_input_horizontal_margin"
+        android:layout_marginRight="@dimen/feedback_form_input_horizontal_margin"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:hint="@string/feedback_form_hint_or"
+        app:hintTextAppearance="@style/Feedback.Form.Hint"
+        app:lineColor="@color/feedback_form_input_line"
+        app:lineColorFocused="@color/feedback_form_input_line_focused"
+        app:textAppearance="@style/Feedback.Form.Input"
+        app:textMarginBottom="@dimen/feedback_form_input_text_margin_bottom"
+        app:textMarginTop="@dimen/feedback_form_input_text_margin_top"
+    />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/feedback_form_buttons_margin_top"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/touchable_area_minimum_dimension"
+            android:layout_marginRight="@dimen/feedback_form_buttons_margin_right"
+            style="@style/Feedback.Form.CancelButton"
+            android:text="@string/feedback_form_button_cancel"
+        />
+
+        <Button
+            android:id="@+id/confirmButton"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/touchable_area_minimum_dimension"
+            android:layout_marginRight="@dimen/feedback_form_buttons_margin_right"
+            style="@style/Feedback.Form.ConfirmButton"
+            android:text="@string/feedback_form_button_confirm"
+        />
+
+    </LinearLayout>
+
+</LinearLayout>

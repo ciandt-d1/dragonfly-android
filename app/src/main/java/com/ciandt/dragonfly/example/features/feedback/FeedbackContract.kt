@@ -17,6 +17,8 @@ interface FeedbackContract {
         fun showPositiveRecognition(recognition: Classifier.Recognition)
 
         fun showNegativeRecognition(recognition: Classifier.Recognition)
+
+        fun showNegativeForm(others: List<Classifier.Recognition>)
     }
 
     interface Presenter : BasePresenterContract<View> {
@@ -25,7 +27,7 @@ interface FeedbackContract {
 
         fun markAsPositive()
 
-        fun markAsNegative(newRecognition: Classifier.Recognition? = null)
+        fun markAsNegative()
     }
 
 }

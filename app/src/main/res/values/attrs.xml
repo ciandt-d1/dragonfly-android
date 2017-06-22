@@ -12,4 +12,15 @@
         <attr format="boolean" name="selectable"/>
     </declare-styleable>
 
+    <declare-styleable name="DragonflyAutoComplete">
+        <attr format="string" name="hint"/>
+        <attr format="reference" name="hintTextAppearance"/>
+        <attr format="string" name="text"/>
+        <attr format="reference" name="textAppearance"/>
+        <attr format="dimension" name="textMarginTop"/>
+        <attr format="dimension" name="textMarginBottom"/>
+        <attr format="color" name="lineColor"/>
+        <attr format="color" name="lineColorFocused"/>
+    </declare-styleable>
+
 </resources>
