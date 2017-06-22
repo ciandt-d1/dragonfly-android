@@ -5,11 +5,10 @@ import android.os.Environment
 import com.ciandt.dragonfly.example.config.Features
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger
-
 import com.crashlytics.android.Crashlytics
 import com.facebook.stetho.Stetho
+import com.google.firebase.FirebaseApp
 import com.squareup.leakcanary.LeakCanary
-
 import io.fabric.sdk.android.Fabric
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 import java.io.File
@@ -30,6 +29,7 @@ class DragonflyApplication : Application() {
         setupCalligraphy()
         setupStetho()
         setupDragonflyLib()
+        setupFirebase()
     }
 
     private fun setupCrashlytics() {
@@ -63,5 +63,9 @@ class DragonflyApplication : Application() {
         DragonflyConfig.setDropboxPath(dropboxPath)
 
         DragonflyConfig.setMaxModelLoadingRetryAttempts(5)
+    }
+
+    private fun setupFirebase() {
+        FirebaseApp.initializeApp(this)
     }
 }

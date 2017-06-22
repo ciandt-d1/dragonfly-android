@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">Dragonfly</string>
-
     <string name="model_selection_title">Dragonfly Lens</string>
     <string name="model_selection_subtitle">Select a model and check what you can identify around
         you
