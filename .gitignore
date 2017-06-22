@@ -8,6 +8,7 @@ local.properties
 fabric.properties
 .configs
 app/src/main/assets/models
+google-services.json
 
 # Log Files
 *.log

@@ -61,6 +61,8 @@ android {
         versionName "${appVersionMajor}.${appVersionMinor}.${appVersionPatch}"
         versionCode appVersionMajor * appVersionMajorMultiplier + appVersionMinor * appVersionMinorMultiplier + appVersionPatch * appVersionPatchMultiplier
 
+        resValue "string", "app_name", "Dragonfly"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         resConfigs "en"
@@ -95,6 +97,24 @@ android {
             minifyEnabled false
             zipAlignEnabled false
             signingConfig signingConfigs.release
+        }
+    }
+
+    flavorDimensions "environment", "tenant"
+
+    productFlavors {
+        dragonfly {
+            dimension "tenant"
+        }
+
+        dev {
+            dimension "environment"
+
+            applicationId "com.ciandt.dragonfly.example.dev"
+        }
+
+        prd {
+            dimension "environment"
         }
     }
 
@@ -146,6 +166,11 @@ dependencies {
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
     testCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
 
+    def firebaseVersion = '11.0.1'
+    compile "com.google.firebase:firebase-core:${firebaseVersion}"
+    compile "com.google.firebase:firebase-database:${firebaseVersion}"
+    compile "com.google.firebase:firebase-auth:${firebaseVersion}"
+
     compile 'com.facebook.stetho:stetho:1.5.0'
 
     // Log
@@ -171,6 +196,68 @@ dependencies {
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:${kotlin_version}"
     testCompile 'org.amshove.kluent:kluent:1.20'
 }
+
+// - google-services.json
+task copyGoogleServicesJson(type: Copy) {
+    from "../.configs/google-services"
+    into "src"
+
+    doLast {
+        tasks.each { task ->
+            def matches
+            if ((matches = task.name =~ /process(.+?)(Debug|Release)GoogleServices/)) {
+                def flavor = matches.group(1).uncapitalize()
+
+                task.quickstartFile = project.file("./src/${flavor}/google-services.json")
+            }
+        }
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name ==~ /process.*GoogleServices/) {
+        task.dependsOn copyGoogleServicesJson
+    }
+}
+
+
+apply plugin: 'com.google.gms.google-services'
+
+/**
+ * Fix versionName and applicationId attributes of the variant.
+ * For the default flavor, the only thing done is to add the environment as suffix, if it's not prd.
+ * For example:
+ * - 2.0.2.dev
+ * If the environment is prd, nothing changes. For example:
+ * - 2.0.2
+ *
+ * For other flavors, the following is done:
+ * - If the environment is prd, only the tenant name is appended to the versionName. For example:
+ * -- 2.0.2.tenant
+ *
+ * - If the environment is any other than prd, then both the tenant and the environment are appended.
+ * For example:
+ * -- 2.0.2.tenant.dev
+ *
+ * This also add a suffix " (<ENVIRONMENT_NAME>)" to the app name if it points to the development environment.
+ */
+android.applicationVariants.all { variant ->
+    def tenant = variant.getProductFlavors().get(1).name
+    if (!tenant.equals('dragonfly')) {
+        variant.mergedFlavor.versionName += '.' + tenant
+
+        variant.mergedFlavor.applicationId += '.' + tenant
+    }
+
+    def environment = variant.getProductFlavors().get(0).name
+    if (!environment.equals('prd')) {
+        variant.mergedFlavor.versionName += '.' + environment
+
+        def appName = variant.mergedFlavor.resValues.get('app_name').getValue()
+        variant.resValue 'string', 'app_name', sprintf('%1$s (%2$s)', [appName, environment.toUpperCase()])
+    }
+}
+
 
 android.applicationVariants.all { variant ->
     // Assigns a different version code for each output APK other than the universal APK.
@@ -206,7 +293,6 @@ android.applicationVariants.all { variant ->
     }
 }
 
-
 task setupFabric(type: Exec) {
     commandLine 'sh', './scripts/setup_fabric.sh'
 }
@@ -231,6 +317,6 @@ task copySdkClasses(type: Copy) {
 }
 
 afterEvaluate {
-    compileDebugUnitTestSources.dependsOn copyTestClasses
-    compileDebugAndroidTestSources.dependsOn copySdkClasses
+    compileDevDragonflyDebugUnitTestSources.dependsOn copyTestClasses
+    compileDevDragonflyDebugAndroidTestSources.dependsOn copySdkClasses
 }
