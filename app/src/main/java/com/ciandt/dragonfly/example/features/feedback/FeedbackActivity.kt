@@ -120,8 +120,10 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     private fun setupResultsView() {
 
         val duration = HIDE_SHOW_ANIMATION_DURATION * 2
-        feedbackResultContainer.layoutTransition?.setDuration(duration)
+        feedbackContainer.layoutTransition?.setDuration(duration)
         feedbackView.layoutTransition?.setDuration(duration)
+        feedbackFormView.layoutTransition?.setDuration(duration)
+        feedbackResultContainer.layoutTransition?.setDuration(duration)
         footer.layoutTransition?.setDuration(duration)
 
         toggleButton.setOnClickListener {
@@ -234,9 +236,6 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             formChipsViews.setChips(chips)
         }
 
-        feedbackView.visibility = View.GONE
-        feedbackFormView.visibility = View.VISIBLE
-
         input.setText("")
         input.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -256,12 +255,14 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             cancelNegativeForm()
         }
 
+        feedbackView.visibility = View.GONE
+        feedbackFormView.visibility = View.VISIBLE
     }
 
     fun cancelNegativeForm() {
         currentFocus.hideSoftInputView()
-        feedbackView.visibility = View.VISIBLE
         feedbackFormView.visibility = View.GONE
+        feedbackView.visibility = View.VISIBLE
     }
 
     private fun expandResults() {
