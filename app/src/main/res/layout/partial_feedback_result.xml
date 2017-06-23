@@ -115,7 +115,7 @@
                 chipsView:fadingEdges="true"
                 chipsView:fadingEdgesDrawable="@drawable/chip_gradient"
                 chipsView:fadingEdgesWidth="@dimen/fading_edges_width"
-                chipsView:selectable="true"
+                chipsView:selectable="false"
             />
 
         </LinearLayout>

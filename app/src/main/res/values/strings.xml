@@ -34,6 +34,8 @@
 
     <string name="feedback_title">Results</string>
     <string name="feedback_save">Save</string>
+    <string name="feedback_save_content_description">Save picture to gallery</string>
+    <string name="feedback_back_content_description">Back to the real time</string>
     <string name="feedback_also_identify">I also identify these options</string>
     <string name="feedback_classification">%s - Is this correct?</string>
     <string name="feedback_more_info">MORE INFO</string>
@@ -41,4 +43,10 @@
     <string name="feedback_positive_button_content_description">Positive</string>
     <string name="feedback_negative_button_content_description">Negative</string>
     <string name="feedback_under_revision">Under Revision</string>
+    <string name="feedback_is_something_wrong">Is something wrong?</string>
+    <string name="feedback_choose_option">Choose a better option for this image:</string>
+    <string name="feedback_form_hint_or">Or you can type here what is this</string>
+    <string name="feedback_form_hint">Type here what is this</string>
+    <string name="feedback_form_button_cancel">CANCEL</string>
+    <string name="feedback_form_button_confirm">CONFIRM</string>
 </resources>

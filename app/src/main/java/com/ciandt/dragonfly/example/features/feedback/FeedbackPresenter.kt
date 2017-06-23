@@ -27,11 +27,13 @@ class FeedbackPresenter : BasePresenter<FeedbackContract.View>(), FeedbackContra
         view?.showPositiveRecognition(results.head())
     }
 
-    override fun markAsNegative(newRecognition: Classifier.Recognition?) {
+    override fun markAsNegative() {
         // TODO: show form, get result and update view
 
-        val onlyForDemo = newRecognition ?: results[results.size - 1]
-        view?.showNegativeRecognition(onlyForDemo)
+        view?.showNegativeForm(results.tail())
+
+//        val onlyForDemo = results[results.size - 1]
+//        view?.showNegativeRecognition(onlyForDemo)
     }
 
 }

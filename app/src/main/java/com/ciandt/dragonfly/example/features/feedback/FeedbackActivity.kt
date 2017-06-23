@@ -9,11 +9,14 @@ import android.os.PersistableBundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import android.widget.Toast
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
+import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
 import com.ciandt.dragonfly.example.shared.BaseActivity
 import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException
@@ -21,6 +24,7 @@ import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException
 import com.ciandt.dragonfly.lens.ui.DragonflyLensFeedbackView
 import com.ciandt.dragonfly.tensorflow.Classifier
 import kotlinx.android.synthetic.main.activity_feedback.*
+import kotlinx.android.synthetic.main.partial_feedback_form.*
 import kotlinx.android.synthetic.main.partial_feedback_result.*
 
 
@@ -135,13 +139,6 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         negativeButton.setOnClickListener {
             presenter.markAsNegative()
         }
-
-        chipsViews.setSelectCallback { chip ->
-            if (chip is FeedbackChip) {
-                presenter.markAsNegative(chip.recognition)
-            }
-        }
-
     }
 
     override fun onResume() {
@@ -218,6 +215,53 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         result.setTextColor(ContextCompat.getColor(this, R.color.feedback_submitted))
 
         footer.visibility = View.GONE
+    }
+
+    override fun showNegativeForm(others: List<Classifier.Recognition>) {
+
+        if (others.isEmpty()) {
+            formChipsLabel.visibility = View.GONE
+            formChipsViews.visibility = View.GONE
+            input.setHint(getString(R.string.feedback_form_hint))
+
+        } else {
+
+            val chips = ArrayList<FeedbackChip>()
+            others.forEach {
+                chips.add(FeedbackChip(it))
+            }
+
+            formChipsViews.setChips(chips)
+        }
+
+        feedbackView.visibility = View.GONE
+        feedbackFormView.visibility = View.VISIBLE
+
+        input.setText("")
+        input.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                currentFocus.hideSoftInputView()
+                return@OnEditorActionListener true
+            }
+            false
+        })
+
+        cancelButton.setOnClickListener {
+            println("cancelButton")
+            cancelNegativeForm()
+        }
+
+        confirmButton.setOnClickListener {
+            println("confirmButton")
+            cancelNegativeForm()
+        }
+
+    }
+
+    fun cancelNegativeForm() {
+        currentFocus.hideSoftInputView()
+        feedbackView.visibility = View.VISIBLE
+        feedbackFormView.visibility = View.GONE
     }
 
     private fun expandResults() {

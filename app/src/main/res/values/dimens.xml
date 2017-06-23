@@ -51,6 +51,8 @@
     <dimen name="chip_space_after">16dp</dimen>
     <dimen name="fading_edges_width">16dp</dimen>
 
+    <dimen name="chip_height">32dp</dimen>
+
     <dimen name="feedback_cardview_margin">8dp</dimen>
     <dimen name="feedback_cardview_corner_radius">2dp</dimen>
 
@@ -77,5 +79,22 @@
 
     <dimen name="feedback_result_more_info_height">48dp</dimen>
     <dimen name="feedback_result_more_info_padding_left">16dp</dimen>
+
+    <dimen name="feedback_form_title_margin_top">20dp</dimen>
+    <dimen name="feedback_form_title_horizontal_margin">16dp</dimen>
+
+    <dimen name="feedback_form_other_options_margin_top">24dp</dimen>
+    <dimen name="feedback_form_other_options_horizontal_margin">16dp</dimen>
+
+    <dimen name="feedback_form_chips_margin_top">8dp</dimen>
+
+    <dimen name="feedback_form_input_margin_top">24dp</dimen>
+    <dimen name="feedback_form_input_horizontal_margin">16dp</dimen>
+    <dimen name="feedback_form_input_text_margin_top">28dp</dimen>
+    <dimen name="feedback_form_input_text_margin_bottom">4dp</dimen>
+
+    <dimen name="feedback_form_buttons_margin_top">24dp</dimen>
+    <dimen name="feedback_form_buttons_margin_right">4dp</dimen>
+    <dimen name="feedback_form_buttons_horizontal_padding">16dp</dimen>
 
 </resources>
