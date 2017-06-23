@@ -136,9 +136,10 @@
 
     <style name="AppTheme.Toolbar.TextAppearance.Title"
            parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
         <item name="android:textColor">@color/black_87</item>
         <item name="android:textSize">20sp</item>
-        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+        <item name="android:textAlignment">center</item>
     </style>
 
     <style name="AppTheme.Toolbar.Button.Flat" parent="Widget.AppCompat.Button.Borderless">

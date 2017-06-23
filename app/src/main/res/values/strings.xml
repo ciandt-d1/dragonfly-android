@@ -34,6 +34,8 @@
 
     <string name="feedback_title">Results</string>
     <string name="feedback_save">Save</string>
+    <string name="feedback_save_content_description">Save picture to gallery</string>
+    <string name="feedback_back_content_description">Back to the real time</string>
     <string name="feedback_also_identify">I also identify these options</string>
     <string name="feedback_classification">%s - Is this correct?</string>
     <string name="feedback_more_info">MORE INFO</string>
