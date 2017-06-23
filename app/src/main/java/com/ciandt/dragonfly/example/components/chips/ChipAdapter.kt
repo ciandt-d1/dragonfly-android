@@ -7,12 +7,17 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.ciandt.dragonfly.example.R
 
-class ChipAdapter(var context: Context, var list: ArrayList<out Chip>, val onClick: (chip: Chip) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+class ChipAdapter(var context: Context, var list: ArrayList<out Chip>, val onClick: (chip: Chip, activated: Boolean) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val UNINITIALIZED_LAYOUT_RESOURCE = -1
 
     private var selectable = false
+    private var multipleSelection = false
     private var layout = UNINITIALIZED_LAYOUT_RESOURCE
+
+    private val selectedPositions = ArrayList<Int>()
+
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
 
@@ -24,11 +29,37 @@ class ChipAdapter(var context: Context, var list: ArrayList<out Chip>, val onCli
 
         view.findViewById(R.id.chipButton) as Button? ?: throw IllegalArgumentException("Layout for item should contain a Button with id = button")
 
-        return ChipViewHolder(view, selectable, onClick)
+        return ChipViewHolder(view, selectable) { chip, activated ->
+
+            val index = list.indexOf(chip)
+
+            val changes = ArrayList<Int>()
+            changes.add(index)
+
+            if (activated) {
+
+                if (!multipleSelection) {
+                    changes.addAll(selectedPositions)
+                    selectedPositions.clear()
+                }
+
+                selectedPositions.add(index)
+
+            } else {
+
+                selectedPositions.remove(index)
+            }
+
+            changes.forEach {
+                notifyItemChanged(it)
+            }
+
+            onClick.invoke(chip, activated)
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
-        (holder as ChipViewHolder).bind(list[position])
+        (holder as ChipViewHolder).bind(list[position], selectedPositions.contains(position))
     }
 
     override fun getItemCount(): Int {
@@ -43,7 +74,24 @@ class ChipAdapter(var context: Context, var list: ArrayList<out Chip>, val onCli
         this.selectable = selectable
     }
 
+    fun setMultipleSelection(multipleSelection: Boolean) {
+        this.multipleSelection = multipleSelection
+    }
+
     fun setChipLayout(layout: Int) {
         this.layout = layout
     }
+
+    fun getSelectedPositions(): List<Int> {
+        return selectedPositions
+    }
+
+    fun getSelectedItems(): List<Chip> {
+        val items = ArrayList<Chip>()
+        selectedPositions.forEach {
+            items.add(list[it])
+        }
+        return items
+    }
+
 }

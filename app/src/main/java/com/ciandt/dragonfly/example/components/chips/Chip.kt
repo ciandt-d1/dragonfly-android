@@ -4,7 +4,4 @@ interface Chip {
 
     fun getText(): String
 
-    fun isSelected(): Boolean
-
-    fun setSelected(status: Boolean)
 }

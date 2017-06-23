@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SimpleItemAnimator
 import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
@@ -49,8 +50,8 @@ class ChipsView : RelativeLayout {
         val inflater = context.getLayoutInflaterService()
         inflater.inflate(R.layout.component_chips_view, this)
 
-        adapter = ChipAdapter(context, chips) { chip ->
-            if (chip.isSelected()) {
+        adapter = ChipAdapter(context, chips) { chip, activated ->
+            if (activated) {
                 selectCallback?.invoke(chip)
             } else {
                 deselectCallback?.invoke(chip)
@@ -60,6 +61,7 @@ class ChipsView : RelativeLayout {
 
         recyclerView = findViewById(R.id.list) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        (recyclerView.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         recyclerView.adapter = adapter
         recyclerView.hasFixedSize()
     }
@@ -90,6 +92,9 @@ class ChipsView : RelativeLayout {
 
             val selectable = typedArray.getBoolean(R.styleable.ChipsView_selectable, false)
             setSelectable(selectable)
+
+            val multipleSelection = typedArray.getBoolean(R.styleable.ChipsView_multipleSelection, false)
+            setMultipleSelection(multipleSelection)
 
         } finally {
             typedArray.recycle()
@@ -125,6 +130,10 @@ class ChipsView : RelativeLayout {
         adapter.setSelectable(selectable)
     }
 
+    fun setMultipleSelection(multipleSelection: Boolean) {
+        adapter.setMultipleSelection(multipleSelection)
+    }
+
     fun setChips(chips: List<Chip>) {
         this.chips.clear()
         this.chips.addAll(chips)
@@ -137,5 +146,13 @@ class ChipsView : RelativeLayout {
 
     fun setDeselectCallback(callback: ((Chip) -> Unit)?) {
         deselectCallback = callback
+    }
+
+    fun getSelectedPositions(): List<Int> {
+        return adapter.getSelectedPositions()
+    }
+
+    fun getSelectedItems(): List<Chip> {
+        return adapter.getSelectedItems()
     }
 }
