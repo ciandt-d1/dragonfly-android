@@ -37,7 +37,8 @@
             android:screenOrientation="portrait"/>
 
         <activity android:name=".features.feedback.FeedbackActivity"
-                  android:screenOrientation="portrait"/>
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="adjustResize"/>
 
     </application>
 </manifest>
