@@ -240,7 +240,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         input.setText("")
         input.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                hideSoftInputView(currentFocus)
+                currentFocus.hideSoftInputView()
                 return@OnEditorActionListener true
             }
             false
@@ -259,7 +259,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     fun cancelNegativeForm() {
-        hideSoftInputView(currentFocus)
+        currentFocus.hideSoftInputView()
         feedbackView.visibility = View.VISIBLE
         feedbackFormView.visibility = View.GONE
     }

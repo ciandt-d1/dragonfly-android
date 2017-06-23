@@ -13,10 +13,3 @@ fun Context.getLayoutInflaterService(): LayoutInflater {
 fun Context.getInputMethodService(): InputMethodManager {
     return getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 }
-
-fun Context.hideSoftInputView(view: View?) {
-    view?.let {
-        getInputMethodService().hideSoftInputFromWindow(it.windowToken, 0)
-        it.clearFocus()
-    }
-}
