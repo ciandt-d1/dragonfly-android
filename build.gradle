@@ -2,6 +2,7 @@
 
 buildscript {
     ext.kotlin_version = '1.1.2-5'
+
     repositories {
         jcenter()
 
@@ -13,10 +14,12 @@ buildscript {
             url 'https://maven.google.com'
         }
     }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.2'
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.4"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_version}"
+        classpath "org.jetbrains.kotlin:kotlin-noarg:${kotlin_version}"
 
         classpath 'com.google.gms:google-services:3.1.0'
 

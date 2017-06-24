@@ -45,7 +45,7 @@ class FakeModelGenerator {
     }
 
     private static Model getFlowersModel() {
-        return new Model("1")
+        return new Model("flowers")
                 .setName("Flowers")
                 .setVersion(1)
                 .setSize(88481067L)
@@ -62,7 +62,7 @@ class FakeModelGenerator {
     }
 
     private static Model getTensorflowDemoModel() {
-        return new Model("2")
+        return new Model("tf-demo")
                 .setName("TF Demo")
                 .setVersion(1)
                 .setSize(53884595L)
@@ -79,7 +79,7 @@ class FakeModelGenerator {
     }
 
     private static Model getHPModel() {
-        return new Model("3")
+        return new Model("sorting-hat")
                 .setName("Sorting Hat")
                 .setVersion(1)
                 .setSize(87164854L)

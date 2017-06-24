@@ -23,6 +23,9 @@ import com.ciandt.dragonfly.lens.exception.DragonflyModelException
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException
 import com.ciandt.dragonfly.lens.ui.DragonflyLensFeedbackView
 import com.ciandt.dragonfly.tensorflow.Classifier
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_feedback.*
 import kotlinx.android.synthetic.main.partial_feedback_form.*
 import kotlinx.android.synthetic.main.partial_feedback_result.*
@@ -44,9 +47,6 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feedback)
 
-        presenter = FeedbackPresenter()
-        presenter.attachView(this)
-
         if (savedInstanceState != null) {
             model = savedInstanceState.getParcelable(MODEL_BUNDLE)
             cameraSnapshot = savedInstanceState.getParcelable(SNAPSHOT_BUNDLE)
@@ -56,6 +56,10 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
             lastRecognizedObjects = null
         }
+
+        val interactor = FeedbackInteractor(FirebaseStorage.getInstance(), FirebaseDatabase.getInstance())
+        presenter = FeedbackPresenter(model, cameraSnapshot, interactor, FirebaseAuth.getInstance())
+        presenter.attachView(this)
 
         setupBackButton()
         setupSaveImageButton()

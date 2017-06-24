@@ -17,6 +17,7 @@ repositories {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: "kotlin-noarg"
 apply plugin: 'io.fabric'
 
 apply from: '../versions.gradle'
@@ -24,8 +25,8 @@ apply from: '../sonarqube.gradle'
 apply from: '../quality.gradle'
 
 ext {
-    // The order is based on way the Play store works with multiple APKs. Remember, if a users
-    // device is compatible with more than one APK for an application the device will receive the
+    // The order is based on way the Play store works with multiple APKs. Remember, if a user's
+    // device is compatible with more than one APK for an application, the device will receive the
     // version with the highest version code. This is why an armeabi build will be given a prefix
     // of 1 as this build will also be able to run a armeabi-v7a device (2) and in some cases a x86
     // device (8) due to a proprietary ARM translation layer called libhoudini.
@@ -68,6 +69,8 @@ android {
         resConfigs "en"
 
         buildConfigField 'int', 'LOG_LEVEL', '4' // DragonflyLogger.LOG_LEVEL_DEBUG = 4;
+        
+        buildConfigField 'String', 'TENANT', '"ciandt"'
 
         manifestPlaceholders = [
                 FABRIC_API_KEY: fabricProperties['apiKey']
@@ -168,8 +171,9 @@ dependencies {
 
     def firebaseVersion = '11.0.1'
     compile "com.google.firebase:firebase-core:${firebaseVersion}"
-    compile "com.google.firebase:firebase-database:${firebaseVersion}"
     compile "com.google.firebase:firebase-auth:${firebaseVersion}"
+    compile "com.google.firebase:firebase-storage:${firebaseVersion}"
+    compile "com.google.firebase:firebase-database:${firebaseVersion}"
 
     compile 'com.facebook.stetho:stetho:1.5.0'
 

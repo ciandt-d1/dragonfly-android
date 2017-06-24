@@ -3,6 +3,8 @@ package com.ciandt.dragonfly.lens.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.File;
+
 /**
  * Created by iluz on 6/9/17.
  */
@@ -21,6 +23,12 @@ public class DragonflyCameraSnapshot implements Parcelable {
 
     public String getPath() {
         return path;
+    }
+
+    public String getName() {
+        String[] parts = path.split(File.separator);
+
+        return parts[parts.length - 1];
     }
 
     public int getWidth() {
