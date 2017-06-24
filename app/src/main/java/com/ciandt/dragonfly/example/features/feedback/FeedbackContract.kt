@@ -35,13 +35,9 @@ interface FeedbackContract {
     }
 
     interface Interactor {
-        fun setFeedbackCallbacks(callbacks: FeedbackCallbacks)
+        fun setOnFeedbackSavedCallback(callback: ((Feedback) -> Unit)?)
 
         fun saveFeedback(feedback: Feedback, cameraSnapshot: DragonflyCameraSnapshot)
-
-        interface FeedbackCallbacks {
-            fun onFeedbackSaved(feedback: Feedback)
-        }
     }
 
 }

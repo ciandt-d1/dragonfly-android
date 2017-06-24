@@ -18,15 +18,15 @@ import java.io.FileInputStream
 class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) : FeedbackContract.Interactor {
     private val storageRef = storage.reference
     private val databaseRef = database.reference
-    private var callbacks: FeedbackContract.Interactor.FeedbackCallbacks? = null
+    private var onFeedbackSavedCallback: ((Feedback) -> Unit)? = null
 
     override fun saveFeedback(feedback: Feedback, cameraSnapshot: DragonflyCameraSnapshot) {
         val taskParams = SaveFeedbackTask.TaskParams(feedback, cameraSnapshot)
         AsyncTaskCompat.executeParallel(SaveFeedbackTask(this), taskParams)
     }
 
-    override fun setFeedbackCallbacks(callbacks: FeedbackContract.Interactor.FeedbackCallbacks) {
-        this.callbacks = callbacks
+    override fun setOnFeedbackSavedCallback(callback: ((Feedback) -> Unit)?) {
+        this.onFeedbackSavedCallback = callback
     }
 
     companion object {
@@ -59,7 +59,7 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
 
                         interactor.databaseRef.child(FEEDBACK_COLLECTION).child(feedbackKey).setValue(taskParams.feedback)
 
-                        interactor.callbacks?.onFeedbackSaved(taskParams.feedback)
+                        interactor.onFeedbackSavedCallback?.invoke(taskParams.feedback)
                     }).addOnSuccessListener({ taskSnapshot ->
                         stream.close()
 
@@ -78,9 +78,9 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
 
                             deleteFile(updatedFeedback.imageLocalPath)
 
-                            interactor.callbacks?.onFeedbackSaved(updatedFeedback)
+                            interactor.onFeedbackSavedCallback?.invoke(updatedFeedback)
                         } else {
-                            interactor.callbacks?.onFeedbackSaved(taskParams.feedback)
+                            interactor.onFeedbackSavedCallback?.invoke(taskParams.feedback)
                         }
                     })
                 } catch(e: Exception) {

@@ -13,8 +13,14 @@ import com.ciandt.dragonfly.tensorflow.Classifier
 import com.google.firebase.auth.FirebaseAuth
 
 
-class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSnapshot, val feedbackInteractor: FeedbackContract.Interactor, val firebaseAuth: FirebaseAuth) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter, FeedbackContract.Interactor.FeedbackCallbacks {
+class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSnapshot, val feedbackInteractor: FeedbackContract.Interactor, val firebaseAuth: FirebaseAuth) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
     private val results = ArrayList<Classifier.Recognition>()
+
+    init {
+        feedbackInteractor.setOnFeedbackSavedCallback { feedback ->
+            DragonflyLogger.debug(LOG_TAG, "onFeedbackSaved(${feedback})")
+        }
+    }
 
     override fun setRecognitions(recognitions: List<Classifier.Recognition>) {
 
@@ -77,10 +83,6 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
         )
 
         feedbackInteractor.saveFeedback(feedback, cameraSnapshot)
-    }
-
-    override fun onFeedbackSaved(feedback: Feedback) {
-        DragonflyLogger.debug(LOG_TAG, "onFeedbackSaved(${feedback})")
     }
 
     companion object {
