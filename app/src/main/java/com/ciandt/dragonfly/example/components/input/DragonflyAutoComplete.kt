@@ -8,6 +8,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.support.annotation.StyleRes
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewTreeObserver
@@ -199,6 +200,10 @@ class DragonflyAutoComplete : RelativeLayout {
 
     fun setOnEditorActionListener(listener: OnEditorActionListener) {
         inputText.setOnEditorActionListener(listener)
+    }
+
+    fun setOnTextChangedListener(watcher: TextWatcher) {
+        inputText.addTextChangedListener(watcher)
     }
 
     override fun setEnabled(enabled: Boolean) {
