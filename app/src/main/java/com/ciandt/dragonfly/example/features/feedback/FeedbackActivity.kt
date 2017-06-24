@@ -238,10 +238,12 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
             formChipsViews.setSelectCallback { _ ->
                 disableInput()
+                enableConfirm()
             }
 
             formChipsViews.setDeselectCallback { _ ->
                 enableInput()
+                disableConfirm()
             }
         }
 
@@ -276,6 +278,14 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     private fun disableInput() {
         input.isEnabled = false
         input.alpha = 0.4f
+    }
+
+    private fun enableConfirm() {
+        confirmButton.isEnabled = true
+    }
+
+    private fun disableConfirm() {
+        confirmButton.isEnabled = false
     }
 
     fun cancelNegativeForm() {

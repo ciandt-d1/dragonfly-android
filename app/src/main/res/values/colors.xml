@@ -53,5 +53,6 @@
     <color name="feedback_form_input_line_focused">#1de9b6</color>
     <color name="feedback_form_cancel">#ffffff</color>
     <color name="feedback_form_confirm">#18f7b6</color>
+    <color name="feedback_form_confirm_disabled">#33ffffff</color>
 
 </resources>
