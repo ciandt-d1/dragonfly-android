@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
@@ -159,6 +161,20 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             false
         })
 
+        input.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                // intentionally empty
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // intentionally empty
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                confirmButton.isEnabled = (s != null && s!!.length > 0) || !formChipsViews.getSelected().isEmpty()
+            }
+        })
+
         cancelButton.setOnClickListener {
             hideNegativeForm()
         }
@@ -178,11 +194,13 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         formChipsViews.setSelectCallback {
             input.isEnabled = false
             input.clearFocus()
+            confirmButton.isEnabled = true
         }
 
         formChipsViews.setDeselectCallback {
             input.isEnabled = true
             input.clearFocus()
+            confirmButton.isEnabled = false
         }
     }
 
@@ -282,6 +300,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             formChipsViews.setChips(chips)
         }
 
+        input.isEnabled = true
         feedbackView.visibility = View.GONE
         feedbackFormView.visibility = View.VISIBLE
     }

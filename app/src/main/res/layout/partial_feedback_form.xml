@@ -84,6 +84,7 @@
             android:layout_height="@dimen/touchable_area_minimum_dimension"
             android:layout_marginRight="@dimen/feedback_form_buttons_margin_right"
             style="@style/Feedback.Form.ConfirmButton"
+            android:enabled="false"
             android:text="@string/feedback_form_button_confirm"
         />
 
