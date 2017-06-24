@@ -15,7 +15,7 @@
         android:layout_marginLeft="@dimen/feedback_form_title_horizontal_margin"
         android:layout_marginRight="@dimen/feedback_form_title_horizontal_margin"
         style="@style/Feedback.Form.Title"
-        android:text="@string/feedback_something_is_wrong"
+        android:text="@string/feedback_is_something_wrong"
     />
 
     <TextView

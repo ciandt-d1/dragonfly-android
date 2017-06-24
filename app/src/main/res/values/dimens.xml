@@ -51,6 +51,8 @@
     <dimen name="chip_space_after">16dp</dimen>
     <dimen name="fading_edges_width">16dp</dimen>
 
+    <dimen name="chip_height">32dp</dimen>
+
     <dimen name="feedback_cardview_margin">8dp</dimen>
     <dimen name="feedback_cardview_corner_radius">2dp</dimen>
 

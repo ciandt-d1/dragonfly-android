@@ -7,7 +7,7 @@
     <android.support.v7.widget.AppCompatButton
         android:id="@id/chipButton"
         android:layout_width="wrap_content"
-        android:layout_height="32dp"
+        android:layout_height="@dimen/chip_height"
         style="@style/Feedback.Form.ChipView"
         tools:text="Sunflower 99%"
     />

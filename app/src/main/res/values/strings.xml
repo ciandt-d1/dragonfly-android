@@ -43,7 +43,7 @@
     <string name="feedback_positive_button_content_description">Positive</string>
     <string name="feedback_negative_button_content_description">Negative</string>
     <string name="feedback_under_revision">Under Revision</string>
-    <string name="feedback_something_is_wrong">Something is wrong?</string>
+    <string name="feedback_is_something_wrong">Is something wrong?</string>
     <string name="feedback_choose_option">Choose a better option for this image:</string>
     <string name="feedback_form_hint_or">Or you can type here what is this</string>
     <string name="feedback_form_hint">Type here what is this</string>
