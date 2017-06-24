@@ -30,6 +30,8 @@ interface FeedbackContract {
         fun markAsPositive()
 
         fun markAsNegative()
+
+        fun saveNegativeFeedback(actualLabel: String)
     }
 
     interface Interactor {

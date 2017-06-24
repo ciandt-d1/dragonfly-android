@@ -131,6 +131,8 @@ class ChipsView : RelativeLayout {
         adapter.notifyDataSetChanged()
     }
 
+    fun getSelected() = adapter.getSelected()
+
     fun setSelectCallback(callback: ((Chip) -> Unit)?) {
         selectCallback = callback
     }

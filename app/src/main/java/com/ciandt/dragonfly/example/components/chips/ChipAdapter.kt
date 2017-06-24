@@ -46,4 +46,14 @@ class ChipAdapter(var context: Context, var list: ArrayList<out Chip>, val onCli
     fun setChipLayout(layout: Int) {
         this.layout = layout
     }
+
+    fun getSelected(): Chip? {
+        for (chip in list) {
+            if (chip.isSelected()) {
+                return chip
+            }
+        }
+
+        return null
+    }
 }

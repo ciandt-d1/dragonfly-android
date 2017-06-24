@@ -251,18 +251,22 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         })
 
         cancelButton.setOnClickListener {
-            println("cancelButton")
-            cancelNegativeForm()
+            hideNegativeForm()
         }
 
         confirmButton.setOnClickListener {
-            println("confirmButton")
-            cancelNegativeForm()
+            var actualLabel = input.getText()
+            formChipsViews.getSelected()?.let {
+                actualLabel = (it as FeedbackChip).recognition.title
+            }
+
+            presenter.saveNegativeFeedback(actualLabel)
+            hideNegativeForm()
         }
 
     }
 
-    fun cancelNegativeForm() {
+    fun hideNegativeForm() {
         hideSoftInputView(currentFocus)
         feedbackView.visibility = View.VISIBLE
         feedbackFormView.visibility = View.GONE

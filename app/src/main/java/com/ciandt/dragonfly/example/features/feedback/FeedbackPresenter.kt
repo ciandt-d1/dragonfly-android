@@ -13,11 +13,7 @@ import com.ciandt.dragonfly.tensorflow.Classifier
 import com.google.firebase.auth.FirebaseAuth
 
 
-class FeedbackPresenter(model: Model, cameraSnapshot: DragonflyCameraSnapshot, feedbackInteractor: FeedbackContract.Interactor, firebaseAuth: FirebaseAuth) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter, FeedbackContract.Interactor.FeedbackCallbacks {
-    private val model = model
-    private val cameraSnapshot = cameraSnapshot
-    private val feedbackInteractor = feedbackInteractor
-    private val firebaseAuth = firebaseAuth
+class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSnapshot, val feedbackInteractor: FeedbackContract.Interactor, val firebaseAuth: FirebaseAuth) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter, FeedbackContract.Interactor.FeedbackCallbacks {
     private val results = ArrayList<Classifier.Recognition>()
 
     override fun setRecognitions(recognitions: List<Classifier.Recognition>) {
@@ -61,6 +57,26 @@ class FeedbackPresenter(model: Model, cameraSnapshot: DragonflyCameraSnapshot, f
 
 //        val onlyForDemo = results[results.size - 1]
 //        view?.showNegativeRecognition(onlyForDemo)
+    }
+
+    override fun saveNegativeFeedback(actualLabel: String) {
+        val identifiedLabels = HashMap<String, Float>()
+        for (recognition in results) {
+            identifiedLabels.put(recognition.title, recognition.confidence)
+        }
+
+        val feedback = Feedback(
+                tenant = Tenant.ID,
+                project = model.id,
+                userId = firebaseAuth.currentUser!!.uid,
+                modelVersion = model.version,
+                value = Feedback.NEGATIVE,
+                actualLabel = actualLabel,
+                identifiedLabels = identifiedLabels,
+                imageLocalPath = cameraSnapshot.path
+        )
+
+        feedbackInteractor.saveFeedback(feedback, cameraSnapshot)
     }
 
     override fun onFeedbackSaved(feedback: Feedback) {

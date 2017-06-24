@@ -14,4 +14,6 @@ data class FeedbackChip(val recognition: Classifier.Recognition, private var sel
     override fun setSelected(status: Boolean) {
         this.selected = status
     }
+
+    fun getAssociatedRecognition() = recognition
 }
