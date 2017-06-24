@@ -10,6 +10,7 @@
         <attr format="reference" name="fadingEdgesDrawable"/>
         <attr format="dimension" name="fadingEdgesWidth"/>
         <attr format="boolean" name="selectable"/>
+        <attr format="boolean" name="allowsMultipleSelection"/>
     </declare-styleable>
 
     <declare-styleable name="DragonflyAutoComplete">

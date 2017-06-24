@@ -16,6 +16,7 @@ import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
+import com.ciandt.dragonfly.example.infrastructure.extensions.head
 import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
 import com.ciandt.dragonfly.example.shared.BaseActivity
 import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
@@ -255,8 +256,10 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
         confirmButton.setOnClickListener {
             var actualLabel = input.getText()
-            formChipsViews.getSelected()?.let {
-                actualLabel = (it as FeedbackChip).recognition.title
+
+            val selectedChips = formChipsViews.getSelected()
+            if (!selectedChips.isEmpty()) {
+                actualLabel = (selectedChips.head() as FeedbackChip).recognition.title
             }
 
             presenter.saveNegativeFeedback(actualLabel)

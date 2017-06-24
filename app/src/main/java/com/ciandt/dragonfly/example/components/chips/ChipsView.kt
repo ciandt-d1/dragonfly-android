@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SimpleItemAnimator
 import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
@@ -62,6 +63,9 @@ class ChipsView : RelativeLayout {
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = adapter
         recyclerView.hasFixedSize()
+
+        // avoid chips to blink when we clear their selection (due to other chip being selected)
+        (recyclerView.getItemAnimator() as SimpleItemAnimator).supportsChangeAnimations = false
     }
 
     fun initializeAttributes(attrs: AttributeSet) {
@@ -90,6 +94,9 @@ class ChipsView : RelativeLayout {
 
             val selectable = typedArray.getBoolean(R.styleable.ChipsView_selectable, false)
             setSelectable(selectable)
+
+            val allowsMultipleSelection = typedArray.getBoolean(R.styleable.ChipsView_allowsMultipleSelection, false)
+            setAllowsMultipleSelection(allowsMultipleSelection)
 
         } finally {
             typedArray.recycle()
@@ -123,6 +130,10 @@ class ChipsView : RelativeLayout {
 
     fun setSelectable(selectable: Boolean) {
         adapter.setSelectable(selectable)
+    }
+
+    fun setAllowsMultipleSelection(allowsMultipleSelection: Boolean) {
+        adapter.setAllowsMultipleSelection(allowsMultipleSelection)
     }
 
     fun setChips(chips: List<Chip>) {
