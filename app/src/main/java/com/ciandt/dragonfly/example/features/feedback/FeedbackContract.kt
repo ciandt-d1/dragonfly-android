@@ -16,7 +16,7 @@ interface FeedbackContract {
 
         fun showPositiveRecognition(recognition: Classifier.Recognition)
 
-        fun showNegativeRecognition(recognition: Classifier.Recognition)
+        fun showNegativeRecognition(label: String)
 
         fun showNegativeForm(others: List<Classifier.Recognition>)
     }
@@ -28,6 +28,8 @@ interface FeedbackContract {
         fun markAsPositive()
 
         fun markAsNegative()
+
+        fun submitNegative(label: String)
     }
 
 }

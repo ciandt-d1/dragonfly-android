@@ -28,12 +28,12 @@ class FeedbackPresenter : BasePresenter<FeedbackContract.View>(), FeedbackContra
     }
 
     override fun markAsNegative() {
-        // TODO: show form, get result and update view
-
         view?.showNegativeForm(results.tail())
+    }
 
-//        val onlyForDemo = results[results.size - 1]
-//        view?.showNegativeRecognition(onlyForDemo)
+    override fun submitNegative(label: String) {
+        // TODO: call interactor to save on firebase
+        view?.showNegativeRecognition(label)
     }
 
 }

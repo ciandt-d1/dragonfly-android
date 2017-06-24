@@ -209,13 +209,15 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         collapseResults()
     }
 
-    override fun showNegativeRecognition(recognition: Classifier.Recognition) {
+    override fun showNegativeRecognition(label: String) {
+
+        hideNegativeForm()
 
         positiveButton.visibility = View.GONE
         negativeButton.visibility = View.GONE
         underRevision.visibility = View.VISIBLE
 
-        result.text = recognition.title
+        result.text = label
         result.setTextColor(ContextCompat.getColor(this, R.color.feedback_submitted))
 
         footer.visibility = View.GONE
@@ -272,12 +274,20 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         })
 
         cancelButton.setOnClickListener {
-            cancelNegativeForm()
+            hideNegativeForm()
         }
 
         confirmButton.setOnClickListener {
-            println("confirmButton")
-            cancelNegativeForm()
+
+            val selected = formChipsViews.getSelectedItems().firstOrNull()
+            if (selected != null && selected is FeedbackChip) {
+
+                presenter.submitNegative(selected.recognition.title)
+
+            } else {
+
+                presenter.submitNegative(input.getText())
+            }
         }
 
         feedbackView.visibility = View.GONE
@@ -302,10 +312,10 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         confirmButton.isEnabled = false
     }
 
-    fun cancelNegativeForm() {
-        currentFocus.hideSoftInputView()
+    private fun hideNegativeForm() {
         feedbackFormView.visibility = View.GONE
         feedbackView.visibility = View.VISIBLE
+        currentFocus.hideSoftInputView()
     }
 
     private fun expandResults() {
