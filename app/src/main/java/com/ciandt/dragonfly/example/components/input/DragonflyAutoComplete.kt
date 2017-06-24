@@ -79,6 +79,19 @@ class DragonflyAutoComplete : RelativeLayout {
         }
     }
 
+    override fun setEnabled(enabled: Boolean) {
+        inputText.isEnabled = enabled
+        if (enabled == false) {
+            setText("")
+        }
+    }
+
+    override fun clearFocus() {
+        super.clearFocus()
+
+        inputText.clearFocus()
+    }
+
     private fun getYToCenterHint(): Float {
         return inputText.y + (inputText.height / 2) - (inputHint.height / 2)
     }

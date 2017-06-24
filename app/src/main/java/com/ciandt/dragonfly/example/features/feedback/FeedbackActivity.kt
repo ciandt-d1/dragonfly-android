@@ -71,6 +71,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         }
 
         setupResultsView()
+        setupNegativeFeedbackView()
 
         dragonFlyLensFeedbackView.setSnapshot(cameraSnapshot)
     }
@@ -145,6 +146,43 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
         negativeButton.setOnClickListener {
             presenter.markAsNegative()
+        }
+    }
+
+    private fun setupNegativeFeedbackView() {
+        input.setText("")
+        input.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                currentFocus.hideSoftInputView()
+                return@OnEditorActionListener true
+            }
+            false
+        })
+
+        cancelButton.setOnClickListener {
+            hideNegativeForm()
+        }
+
+        confirmButton.setOnClickListener {
+            var actualLabel = input.getText()
+
+            val selectedChips = formChipsViews.getSelected()
+            if (!selectedChips.isEmpty()) {
+                actualLabel = (selectedChips.head() as FeedbackChip).recognition.title
+            }
+
+            presenter.saveNegativeFeedback(actualLabel)
+            hideNegativeForm()
+        }
+
+        formChipsViews.setSelectCallback {
+            input.isEnabled = false
+            input.clearFocus()
+        }
+
+        formChipsViews.setDeselectCallback {
+            input.isEnabled = true
+            input.clearFocus()
         }
     }
 
@@ -232,6 +270,9 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             input.setHint(getString(R.string.feedback_form_hint))
 
         } else {
+            formChipsLabel.visibility = View.VISIBLE
+            formChipsViews.visibility = View.VISIBLE
+            input.setHint(getString(R.string.feedback_form_hint_or))
 
             val chips = ArrayList<FeedbackChip>()
             others.forEach {
@@ -239,31 +280,6 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             }
 
             formChipsViews.setChips(chips)
-        }
-
-        input.setText("")
-        input.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                currentFocus.hideSoftInputView()
-                return@OnEditorActionListener true
-            }
-            false
-        })
-
-        cancelButton.setOnClickListener {
-            hideNegativeForm()
-        }
-
-        confirmButton.setOnClickListener {
-            var actualLabel = input.getText()
-
-            val selectedChips = formChipsViews.getSelected()
-            if (!selectedChips.isEmpty()) {
-                actualLabel = (selectedChips.head() as FeedbackChip).recognition.title
-            }
-
-            presenter.saveNegativeFeedback(actualLabel)
-            hideNegativeForm()
         }
 
         feedbackView.visibility = View.GONE
