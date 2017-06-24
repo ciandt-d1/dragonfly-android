@@ -221,19 +221,28 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
     override fun showNegativeForm(others: List<Classifier.Recognition>) {
 
-        if (others.isEmpty()) {
+        val chips = ArrayList<FeedbackChip>()
+        others.forEach {
+            chips.add(FeedbackChip(it))
+        }
+
+        if (chips.isEmpty()) {
+
             formChipsLabel.visibility = View.GONE
             formChipsViews.visibility = View.GONE
             input.setHint(getString(R.string.feedback_form_hint))
 
         } else {
 
-            val chips = ArrayList<FeedbackChip>()
-            others.forEach {
-                chips.add(FeedbackChip(it))
+            formChipsViews.setChips(chips)
+
+            formChipsViews.setSelectCallback { _ ->
+                disableInput()
             }
 
-            formChipsViews.setChips(chips)
+            formChipsViews.setDeselectCallback { _ ->
+                enableInput()
+            }
         }
 
         input.setText("")
@@ -257,6 +266,16 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
         feedbackView.visibility = View.GONE
         feedbackFormView.visibility = View.VISIBLE
+    }
+
+    private fun enableInput() {
+        input.isEnabled = true
+        input.alpha = 1.0f
+    }
+
+    private fun disableInput() {
+        input.isEnabled = false
+        input.alpha = 0.4f
     }
 
     fun cancelNegativeForm() {

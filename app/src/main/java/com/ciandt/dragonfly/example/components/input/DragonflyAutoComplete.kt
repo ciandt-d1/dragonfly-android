@@ -16,6 +16,7 @@ import android.widget.TextView.OnEditorActionListener
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.infrastructure.extensions.getLayoutInflaterService
 import com.ciandt.dragonfly.example.infrastructure.extensions.toPx
+import kotlinx.android.synthetic.main.component_autocomplete_textview.*
 import kotlinx.android.synthetic.main.component_autocomplete_textview.view.*
 
 
@@ -162,6 +163,12 @@ class DragonflyAutoComplete : RelativeLayout {
         animatorSet.start()
     }
 
+    private fun setTextMargins(top: Int, bottom: Int) {
+        val layoutParams = inputText.layoutParams as MarginLayoutParams
+        layoutParams.setMargins(0, top, 0, bottom)
+        inputText.layoutParams = layoutParams
+    }
+
     fun setHint(text: String) {
         inputHint.text = text
     }
@@ -190,13 +197,15 @@ class DragonflyAutoComplete : RelativeLayout {
         }
     }
 
-    private fun setTextMargins(top: Int, bottom: Int) {
-        val layoutParams = inputText.layoutParams as MarginLayoutParams
-        layoutParams.setMargins(0, top, 0, bottom)
-        inputText.layoutParams = layoutParams
-    }
-
     fun setOnEditorActionListener(listener: OnEditorActionListener) {
         inputText.setOnEditorActionListener(listener)
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+
+        inputText.isEnabled = enabled
+        inputText.isFocusable = enabled
+        inputText.isFocusableInTouchMode = enabled
     }
 }
