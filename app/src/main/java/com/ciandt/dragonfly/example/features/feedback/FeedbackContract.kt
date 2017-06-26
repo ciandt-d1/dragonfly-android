@@ -2,7 +2,6 @@ package com.ciandt.dragonfly.example.features.feedback
 
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.shared.BasePresenterContract
-import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
 import com.ciandt.dragonfly.tensorflow.Classifier
 
 /**
@@ -37,6 +36,6 @@ interface FeedbackContract {
     interface Interactor {
         fun setOnFeedbackSavedCallback(callback: ((Feedback) -> Unit)?)
 
-        fun saveFeedback(feedback: Feedback, cameraSnapshot: DragonflyCameraSnapshot)
+        fun saveFeedback(feedback: Feedback)
     }
 }

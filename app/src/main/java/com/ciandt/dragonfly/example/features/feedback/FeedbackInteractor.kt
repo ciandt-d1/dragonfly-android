@@ -4,10 +4,11 @@ import android.os.AsyncTask
 import android.support.v4.os.AsyncTaskCompat
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
-import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
+import com.ciandt.dragonfly.example.infrastructure.extensions.lastChunk
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
+import java.io.File
 import java.io.FileInputStream
 
 
@@ -19,8 +20,8 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
     private val databaseRef = database.reference
     private var onFeedbackSavedCallback: ((Feedback) -> Unit)? = null
 
-    override fun saveFeedback(feedback: Feedback, cameraSnapshot: DragonflyCameraSnapshot) {
-        val taskParams = SaveFeedbackTask.TaskParams(feedback, cameraSnapshot)
+    override fun saveFeedback(feedback: Feedback) {
+        val taskParams = SaveFeedbackTask.TaskParams(feedback)
         AsyncTaskCompat.executeParallel(SaveFeedbackTask(this), taskParams)
     }
 
@@ -41,9 +42,10 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
 
                 DragonflyLogger.debug(LOG_TAG, "SaveFeedbackTask.doInBackground() - start")
 
-                val stream = FileInputStream(taskParams.cameraSnapshot.path)
+                val stream = FileInputStream(taskParams.feedback.imageLocalPath)
                 try {
-                    val imageReference = interactor.storageRef.child("${taskParams.feedback.tenant}/${taskParams.feedback.userId}/${taskParams.cameraSnapshot.name}")
+                    val fileName = taskParams.feedback.imageLocalPath.lastChunk(File.separator)
+                    val imageReference = interactor.storageRef.child("${taskParams.feedback.tenant}/${taskParams.feedback.userId}/${fileName}")
                     val metadata = StorageMetadata.Builder()
                             .setContentType("image/jpeg")
                             .build()
@@ -87,7 +89,7 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
                 return null
             }
 
-            class TaskParams(val feedback: Feedback, val cameraSnapshot: DragonflyCameraSnapshot)
+            class TaskParams(val feedback: Feedback)
         }
     }
 }

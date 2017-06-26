@@ -37,23 +37,7 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
     override fun markAsPositive() {
         view?.showPositiveRecognition(results.head())
 
-        val identifiedLabels = HashMap<String, Float>()
-        for (recognition in results) {
-            identifiedLabels.put(recognition.title, recognition.confidence)
-        }
-
-        val feedback = Feedback(
-                tenant = Tenant.ID,
-                project = model.id,
-                userId = firebaseAuth.currentUser!!.uid,
-                modelVersion = model.version,
-                value = Feedback.POSITIVE,
-                actualLabel = results.head().title,
-                identifiedLabels = identifiedLabels,
-                imageLocalPath = cameraSnapshot.path
-        )
-
-        feedbackInteractor.saveFeedback(feedback, cameraSnapshot)
+        saveFeedback(results.head().title, Feedback.POSITIVE)
     }
 
     override fun markAsNegative() {
@@ -63,6 +47,10 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
     override fun submitNegative(actualLabel: String) {
         view?.showNegativeRecognition(actualLabel)
 
+        saveFeedback(actualLabel, Feedback.NEGATIVE)
+    }
+
+    private fun saveFeedback(label: String, value: Int) {
         val identifiedLabels = HashMap<String, Float>()
         for (recognition in results) {
             identifiedLabels.put(recognition.title, recognition.confidence)
@@ -73,13 +61,13 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
                 project = model.id,
                 userId = firebaseAuth.currentUser!!.uid,
                 modelVersion = model.version,
-                value = Feedback.NEGATIVE,
-                actualLabel = actualLabel,
+                value = value,
+                actualLabel = label,
                 identifiedLabels = identifiedLabels,
                 imageLocalPath = cameraSnapshot.path
         )
 
-        feedbackInteractor.saveFeedback(feedback, cameraSnapshot)
+        feedbackInteractor.saveFeedback(feedback)
     }
 
     companion object {
