@@ -8,7 +8,6 @@ import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
-import java.io.File
 import java.io.FileInputStream
 
 
@@ -76,8 +75,6 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
 
                             interactor.databaseRef.child(FEEDBACK_COLLECTION).child(feedbackKey).setValue(updatedFeedback)
 
-                            deleteFile(updatedFeedback.imageLocalPath)
-
                             interactor.onFeedbackSavedCallback?.invoke(updatedFeedback)
                         } else {
                             interactor.onFeedbackSavedCallback?.invoke(taskParams.feedback)
@@ -88,15 +85,6 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
                 }
 
                 return null
-            }
-
-            private fun deleteFile(path: String) {
-                try {
-                    val file = File(path)
-                    file.delete()
-                } catch (e: Exception) {
-                    DragonflyLogger.error(LOG_TAG, e)
-                }
             }
 
             class TaskParams(val feedback: Feedback, val cameraSnapshot: DragonflyCameraSnapshot)
