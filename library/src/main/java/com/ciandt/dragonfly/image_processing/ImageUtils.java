@@ -60,7 +60,7 @@ public class ImageUtils {
 
         final FileOutputStream out = new FileOutputStream(file);
         try {
-            bitmap.compress(Bitmap.CompressFormat.WEBP, 99, out);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, out);
             out.flush();
 
             wasSuccessful = true;

@@ -46,7 +46,7 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
                 try {
                     val imageReference = interactor.storageRef.child("${taskParams.feedback.tenant}/${taskParams.feedback.userId}/${taskParams.cameraSnapshot.name}")
                     val metadata = StorageMetadata.Builder()
-                            .setContentType("image/webp")
+                            .setContentType("image/jpeg")
                             .build()
 
                     val feedbackKey = interactor.databaseRef.child(FEEDBACK_COLLECTION).push().getKey()

@@ -78,7 +78,7 @@ public class DragonflyLensSnapshotInteractor implements DragonflyLensRealTimeCon
                 Bitmap bitmap = interactor.yuvToRgbConverter.convert(taskParams.getData(), taskParams.getWidth(), taskParams.getHeight(), Bitmap.Config.ARGB_8888, taskParams.getRotation());
                 timings.addSplit("Convert YUV to RGB");
 
-                String fileName = String.format("%s.webp", UUID.nameUUIDFromBytes(taskParams.data).toString());
+                String fileName = String.format("%s.jpg", UUID.nameUUIDFromBytes(taskParams.data).toString());
                 ImageUtils.saveBitmap(bitmap, String.format(fileName, System.currentTimeMillis(), UUID.randomUUID().toString()));
                 timings.addSplit("Saved snapshot to disk.");
 
