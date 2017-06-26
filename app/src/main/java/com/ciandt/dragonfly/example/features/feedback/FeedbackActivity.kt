@@ -262,7 +262,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         result.text = label
         result.setTextColor(ContextCompat.getColor(this, R.color.feedback_submitted))
 
-        footer.visibility = View.GONE
+        footer.visibility = View.VISIBLE
     }
 
     override fun showNegativeForm(others: List<Classifier.Recognition>) {
