@@ -50,8 +50,8 @@ class ChipsView : RelativeLayout {
         val inflater = context.getLayoutInflaterService()
         inflater.inflate(R.layout.component_chips_view, this)
 
-        adapter = ChipAdapter(context, chips) { chip ->
-            if (chip.isSelected()) {
+        adapter = ChipAdapter(context, chips) { chip, activated ->
+            if (activated) {
                 selectCallback?.invoke(chip)
             } else {
                 deselectCallback?.invoke(chip)
@@ -61,11 +61,9 @@ class ChipsView : RelativeLayout {
 
         recyclerView = findViewById(R.id.list) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        (recyclerView.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         recyclerView.adapter = adapter
         recyclerView.hasFixedSize()
-
-        // avoid chips to blink when we clear their selection (due to other chip being selected)
-        (recyclerView.getItemAnimator() as SimpleItemAnimator).supportsChangeAnimations = false
     }
 
     fun initializeAttributes(attrs: AttributeSet) {
@@ -95,8 +93,8 @@ class ChipsView : RelativeLayout {
             val selectable = typedArray.getBoolean(R.styleable.ChipsView_selectable, false)
             setSelectable(selectable)
 
-            val allowsMultipleSelection = typedArray.getBoolean(R.styleable.ChipsView_allowsMultipleSelection, false)
-            setAllowsMultipleSelection(allowsMultipleSelection)
+            val multipleSelection = typedArray.getBoolean(R.styleable.ChipsView_multipleSelection, false)
+            setMultipleSelection(multipleSelection)
 
         } finally {
             typedArray.recycle()
@@ -132,8 +130,8 @@ class ChipsView : RelativeLayout {
         adapter.setSelectable(selectable)
     }
 
-    fun setAllowsMultipleSelection(allowsMultipleSelection: Boolean) {
-        adapter.setAllowsMultipleSelection(allowsMultipleSelection)
+    fun setMultipleSelection(multipleSelection: Boolean) {
+        adapter.setMultipleSelection(multipleSelection)
     }
 
     fun setChips(chips: List<Chip>) {
@@ -142,13 +140,19 @@ class ChipsView : RelativeLayout {
         adapter.notifyDataSetChanged()
     }
 
-    fun getSelected() = adapter.getSelected()
-
     fun setSelectCallback(callback: ((Chip) -> Unit)?) {
         selectCallback = callback
     }
 
     fun setDeselectCallback(callback: ((Chip) -> Unit)?) {
         deselectCallback = callback
+    }
+
+    fun getSelectedPositions(): List<Int> {
+        return adapter.getSelectedPositions()
+    }
+
+    fun getSelectedItems(): List<Chip> {
+        return adapter.getSelectedItems()
     }
 }

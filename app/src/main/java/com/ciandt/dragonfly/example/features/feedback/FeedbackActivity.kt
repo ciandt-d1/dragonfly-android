@@ -161,18 +161,17 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             false
         })
 
-        input.addTextChangedListener(object : TextWatcher {
+        input.setOnTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                // intentionally empty
+                if (s?.isBlank() ?: true) {
+                    disableConfirm()
+                } else {
+                    enableConfirm()
+                }
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // intentionally empty
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                confirmButton.isEnabled = (s != null && s!!.length > 0) || !formChipsViews.getSelected().isEmpty()
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
         cancelButton.setOnClickListener {
@@ -182,25 +181,13 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         confirmButton.setOnClickListener {
             var actualLabel = input.getText()
 
-            val selectedChips = formChipsViews.getSelected()
+            val selectedChips = formChipsViews.getSelectedItems()
             if (!selectedChips.isEmpty()) {
                 actualLabel = (selectedChips.head() as FeedbackChip).recognition.title
             }
 
             presenter.saveNegativeFeedback(actualLabel)
             hideNegativeForm()
-        }
-
-        formChipsViews.setSelectCallback {
-            input.isEnabled = false
-            input.clearFocus()
-            confirmButton.isEnabled = true
-        }
-
-        formChipsViews.setDeselectCallback {
-            input.isEnabled = true
-            input.clearFocus()
-            confirmButton.isEnabled = false
         }
     }
 
@@ -282,27 +269,52 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
     override fun showNegativeForm(others: List<Classifier.Recognition>) {
 
-        if (others.isEmpty()) {
+        val chips = ArrayList<FeedbackChip>()
+        others.forEach {
+            chips.add(FeedbackChip(it))
+        }
+
+        if (chips.isEmpty()) {
+
             formChipsLabel.visibility = View.GONE
             formChipsViews.visibility = View.GONE
             input.setHint(getString(R.string.feedback_form_hint))
 
         } else {
-            formChipsLabel.visibility = View.VISIBLE
-            formChipsViews.visibility = View.VISIBLE
-            input.setHint(getString(R.string.feedback_form_hint_or))
-
-            val chips = ArrayList<FeedbackChip>()
-            others.forEach {
-                chips.add(FeedbackChip(it))
-            }
 
             formChipsViews.setChips(chips)
+
+            formChipsViews.setSelectCallback { _ ->
+                disableInput()
+                enableConfirm()
+            }
+
+            formChipsViews.setDeselectCallback { _ ->
+                enableInput()
+                disableConfirm()
+            }
         }
 
-        input.isEnabled = true
         feedbackView.visibility = View.GONE
         feedbackFormView.visibility = View.VISIBLE
+    }
+
+    private fun enableInput() {
+        input.isEnabled = true
+        input.alpha = 1.0f
+    }
+
+    private fun disableInput() {
+        input.isEnabled = false
+        input.alpha = 0.4f
+    }
+
+    private fun enableConfirm() {
+        confirmButton.isEnabled = true
+    }
+
+    private fun disableConfirm() {
+        confirmButton.isEnabled = false
     }
 
     fun hideNegativeForm() {

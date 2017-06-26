@@ -34,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/feedback_form_chips_margin_top"
+        app:multipleSelection="false"
         chipsView:chipLayout="@layout/item_feedback_form_chip"
         chipsView:chipSpaceAfter="@dimen/chip_space_after"
         chipsView:chipSpaceBefore="@dimen/chip_space_before"

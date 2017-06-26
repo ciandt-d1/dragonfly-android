@@ -254,7 +254,7 @@
     </style>
 
     <style name="Feedback.Form.ConfirmButton" parent="Feedback.Form.CancelButton">
-        <item name="android:textColor">@color/feedback_form_confirm</item>
+        <item name="android:textColor">@drawable/confirm_button_selector</item>
     </style>
 
 </resources>
