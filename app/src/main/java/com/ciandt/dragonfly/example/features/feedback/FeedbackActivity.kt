@@ -18,7 +18,6 @@ import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
-import com.ciandt.dragonfly.example.infrastructure.extensions.head
 import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
 import com.ciandt.dragonfly.example.shared.BaseActivity
 import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
@@ -179,15 +178,12 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         }
 
         confirmButton.setOnClickListener {
-            var actualLabel = input.getText()
-
-            val selectedChips = formChipsViews.getSelectedItems()
-            if (!selectedChips.isEmpty()) {
-                actualLabel = (selectedChips.head() as FeedbackChip).recognition.title
+            val selected = formChipsViews.getSelectedItems().firstOrNull()
+            if (selected != null && selected is FeedbackChip) {
+                presenter.submitNegative(selected.recognition.title)
+            } else {
+                presenter.submitNegative(input.getText())
             }
-
-            presenter.saveNegativeFeedback(actualLabel)
-            hideNegativeForm()
         }
     }
 
@@ -255,13 +251,15 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         collapseResults()
     }
 
-    override fun showNegativeRecognition(recognition: Classifier.Recognition) {
+    override fun showNegativeRecognition(label: String) {
+
+        hideNegativeForm()
 
         positiveButton.visibility = View.GONE
         negativeButton.visibility = View.GONE
         underRevision.visibility = View.VISIBLE
 
-        result.text = recognition.title
+        result.text = label
         result.setTextColor(ContextCompat.getColor(this, R.color.feedback_submitted))
 
         footer.visibility = View.GONE
@@ -317,10 +315,10 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         confirmButton.isEnabled = false
     }
 
-    fun hideNegativeForm() {
-        currentFocus.hideSoftInputView()
+    private fun hideNegativeForm() {
         feedbackFormView.visibility = View.GONE
         feedbackView.visibility = View.VISIBLE
+        currentFocus.hideSoftInputView()
     }
 
     private fun expandResults() {

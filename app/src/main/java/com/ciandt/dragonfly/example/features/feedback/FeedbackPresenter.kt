@@ -57,15 +57,12 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
     }
 
     override fun markAsNegative() {
-        // TODO: show form, get result and update view
-
         view?.showNegativeForm(results.tail())
-
-//        val onlyForDemo = results[results.size - 1]
-//        view?.showNegativeRecognition(onlyForDemo)
     }
 
-    override fun saveNegativeFeedback(actualLabel: String) {
+    override fun submitNegative(actualLabel: String) {
+        view?.showNegativeRecognition(actualLabel)
+
         val identifiedLabels = HashMap<String, Float>()
         for (recognition in results) {
             identifiedLabels.put(recognition.title, recognition.confidence)
