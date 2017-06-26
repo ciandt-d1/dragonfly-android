@@ -42,6 +42,7 @@
         chipsView:fadingEdgesDrawable="@drawable/chip_feedback_form_gradient"
         chipsView:fadingEdgesWidth="@dimen/fading_edges_width"
         chipsView:selectable="true"
+        app:multipleSelection="false"
     />
 
     <com.ciandt.dragonfly.example.components.input.DragonflyAutoComplete
@@ -85,6 +86,7 @@
             android:layout_marginRight="@dimen/feedback_form_buttons_margin_right"
             style="@style/Feedback.Form.ConfirmButton"
             android:text="@string/feedback_form_button_confirm"
+            android:enabled="false"
         />
 
     </LinearLayout>
