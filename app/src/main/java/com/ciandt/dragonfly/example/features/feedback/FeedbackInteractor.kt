@@ -4,7 +4,7 @@ import android.os.AsyncTask
 import android.support.v4.os.AsyncTaskCompat
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
-import com.ciandt.dragonfly.example.infrastructure.extensions.lastChunk
+import com.ciandt.dragonfly.example.infrastructure.extensions.lastSegment
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
@@ -32,7 +32,7 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
     companion object {
         private val LOG_TAG = FeedbackInteractor::class.java.simpleName
 
-        private val FEEDBACK_COLLECTION = "feedback_stash"
+        private const val FEEDBACK_COLLECTION = "feedback_stash"
 
         private class SaveFeedbackTask(interactor: FeedbackInteractor) : AsyncTask<SaveFeedbackTask.TaskParams, Void, Void>() {
             val interactor = interactor
@@ -44,7 +44,7 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
 
                 val stream = FileInputStream(taskParams.feedback.imageLocalPath)
                 try {
-                    val fileName = taskParams.feedback.imageLocalPath.lastChunk(File.separator)
+                    val fileName = taskParams.feedback.imageLocalPath.lastSegment(File.separator)
                     val imageReference = interactor.storageRef.child("${taskParams.feedback.tenant}/${taskParams.feedback.userId}/${fileName}")
                     val metadata = StorageMetadata.Builder()
                             .setContentType("image/jpeg")

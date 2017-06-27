@@ -234,12 +234,12 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         showFeedbackView()
     }
 
-    private fun showOtherRecognitions(others: List<Classifier.Recognition>) {
-        if (others.isEmpty()) {
+    private fun showOtherRecognitions(otherRecognitions: List<Classifier.Recognition>) {
+        if (otherRecognitions.isEmpty()) {
             footer.visibility = View.GONE
         } else {
             val chips = ArrayList<FeedbackChip>()
-            others.forEach {
+            otherRecognitions.forEach {
                 chips.add(FeedbackChip(it))
             }
 
