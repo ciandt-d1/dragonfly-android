@@ -14,11 +14,13 @@ import com.google.firebase.auth.FirebaseAuth
 
 
 class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSnapshot, val feedbackInteractor: FeedbackContract.Interactor, val firebaseAuth: FirebaseAuth) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
+
     private val results = ArrayList<Classifier.Recognition>()
+    private var userFeedback: Feedback? = null
 
     init {
         feedbackInteractor.setOnFeedbackSavedCallback { feedback ->
-            DragonflyLogger.debug(LOG_TAG, "onFeedbackSaved(${feedback})")
+            DragonflyLogger.debug(LOG_TAG, "setUserFeedback(${feedback})")
         }
     }
 
@@ -31,11 +33,21 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
             return
         }
 
-        view?.showRecognitions(results.head(), results.tail())
+        if (userFeedback == null) {
+            view?.showRecognitions(results.head().title, results.tail())
+        } else {
+            userFeedback!!.let {
+                if (it.isPositive()) {
+                    view?.showPositiveRecognition(it.actualLabel, results.tail(), false)
+                } else {
+                    view?.showNegativeRecognition(it.actualLabel, results.tail())
+                }
+            }
+        }
     }
 
     override fun markAsPositive() {
-        view?.showPositiveRecognition(results.head())
+        view?.showPositiveRecognition(results.head().title, results.tail())
 
         saveFeedback(results.head().title, Feedback.POSITIVE)
     }
@@ -45,9 +57,13 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
     }
 
     override fun submitNegative(actualLabel: String) {
-        view?.showNegativeRecognition(actualLabel)
+        view?.showNegativeRecognition(results.head().title, results.tail())
 
         saveFeedback(actualLabel, Feedback.NEGATIVE)
+    }
+
+    override fun setUserFeedback(userFeedback: Feedback?) {
+        this.userFeedback = userFeedback
     }
 
     private fun saveFeedback(label: String, value: Int) {
@@ -66,6 +82,8 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
                 identifiedLabels = identifiedLabels,
                 imageLocalPath = cameraSnapshot.path
         )
+
+        view?.setUserFeedback(feedback)
 
         feedbackInteractor.saveFeedback(feedback)
     }

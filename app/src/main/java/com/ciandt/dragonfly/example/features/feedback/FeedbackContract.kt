@@ -13,13 +13,15 @@ interface FeedbackContract {
 
         fun showNoRecognitions()
 
-        fun showRecognitions(main: Classifier.Recognition, others: List<Classifier.Recognition>)
+        fun showRecognitions(mainRecognitionLabel: String, otherRecognitions: List<Classifier.Recognition>)
 
-        fun showPositiveRecognition(recognition: Classifier.Recognition)
+        fun showPositiveRecognition(mainRecognitionLabel: String, otherRecognitions: List<Classifier.Recognition>, collapseResults: Boolean = true)
 
-        fun showNegativeRecognition(label: String)
+        fun showNegativeRecognition(mainRecognitionLabel: String, otherRecognitions: List<Classifier.Recognition>)
 
-        fun showNegativeForm(others: List<Classifier.Recognition>)
+        fun showNegativeForm(otherRecognitions: List<Classifier.Recognition>)
+
+        fun setUserFeedback(feedback: Feedback)
     }
 
     interface Presenter : BasePresenterContract<View> {
@@ -31,6 +33,8 @@ interface FeedbackContract {
         fun markAsNegative()
 
         fun submitNegative(label: String)
+
+        fun setUserFeedback(userFeedback: Feedback?)
     }
 
     interface Interactor {
