@@ -57,7 +57,7 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
     }
 
     override fun submitNegative(actualLabel: String) {
-        view?.showNegativeRecognition(results.head().title, results.tail())
+        view?.showNegativeRecognition(actualLabel, results.tail())
 
         saveFeedback(actualLabel, Feedback.NEGATIVE)
     }

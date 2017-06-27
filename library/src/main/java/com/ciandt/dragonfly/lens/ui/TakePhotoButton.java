@@ -14,7 +14,7 @@ import com.ciandt.dragonfly.R;
  */
 public class TakePhotoButton extends android.support.v7.widget.AppCompatImageButton {
 
-    private int iconPadding = 8;
+    private static final int ICON_PADDING = 8;
 
     public TakePhotoButton(@NonNull Context context) {
         this(context, null, 0);
@@ -28,10 +28,10 @@ public class TakePhotoButton extends android.support.v7.widget.AppCompatImageBut
         super(context, attrs, defStyleAttr);
 
         setSoundEffectsEnabled(false);
-        setIconPadding(iconPadding);
+        setIconPadding(ICON_PADDING);
 
         setImageDrawable(ContextCompat.getDrawable(context, R.drawable.take_photo_button));
-        setIconPadding(iconPadding);
+        setIconPadding(ICON_PADDING);
     }
 
     private void setIconPadding(int paddingInDp) {

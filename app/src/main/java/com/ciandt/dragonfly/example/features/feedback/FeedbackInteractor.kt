@@ -34,8 +34,7 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
 
         private const val FEEDBACK_COLLECTION = "feedback_stash"
 
-        private class SaveFeedbackTask(interactor: FeedbackInteractor) : AsyncTask<SaveFeedbackTask.TaskParams, Void, Void>() {
-            val interactor = interactor
+        private class SaveFeedbackTask(val interactor: FeedbackInteractor) : AsyncTask<SaveFeedbackTask.TaskParams, Void, Void>() {
 
             override fun doInBackground(vararg params: TaskParams): Void? {
                 val taskParams = params[0]
@@ -50,7 +49,7 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
                             .setContentType("image/jpeg")
                             .build()
 
-                    val feedbackKey = interactor.databaseRef.child(FEEDBACK_COLLECTION).push().getKey()
+                    val feedbackKey = interactor.databaseRef.child(FEEDBACK_COLLECTION).push().key
 
                     val uploadTask = imageReference.putStream(stream, metadata)
                     uploadTask.addOnFailureListener({ exception ->

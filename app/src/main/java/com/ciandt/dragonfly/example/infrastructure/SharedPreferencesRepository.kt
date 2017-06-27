@@ -7,7 +7,7 @@ import android.content.SharedPreferences
 /**
  * Created by iluz on 5/30/17.
  */
-class SharedPreferencesRepository(protected var sharedPreferences: SharedPreferences) : PreferencesRepository {
+class SharedPreferencesRepository(val sharedPreferences: SharedPreferences) : PreferencesRepository {
     override fun getBoolean(key: String, defaultValue: Boolean): Boolean =
             sharedPreferences.getBoolean(key, defaultValue)
 

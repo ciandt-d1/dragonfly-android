@@ -81,7 +81,7 @@ public class TensorFlowImageClassifier implements Classifier {
         c.outputName = outputName;
 
         final boolean hasAssetPrefix = labelFilename.startsWith(ASSET_FILE_PREFIX);
-        InputStream is = null;
+        InputStream is;
         String actualLabelFilename = null;
 
         try {

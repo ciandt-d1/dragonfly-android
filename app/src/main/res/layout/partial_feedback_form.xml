@@ -74,7 +74,7 @@
             android:id="@+id/cancelButton"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/touchable_area_minimum_dimension"
-            android:layout_marginRight="@dimen/feedback_form_buttons_margin_right"
+            android:layout_marginEnd="@dimen/feedback_form_buttons_margin_right"
             style="@style/Feedback.Form.CancelButton"
             android:text="@string/feedback_form_button_cancel"
         />
@@ -83,7 +83,7 @@
             android:id="@+id/confirmButton"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/touchable_area_minimum_dimension"
-            android:layout_marginRight="@dimen/feedback_form_buttons_margin_right"
+            android:layout_marginEnd="@dimen/feedback_form_buttons_margin_right"
             style="@style/Feedback.Form.ConfirmButton"
             android:enabled="false"
             android:text="@string/feedback_form_button_confirm"

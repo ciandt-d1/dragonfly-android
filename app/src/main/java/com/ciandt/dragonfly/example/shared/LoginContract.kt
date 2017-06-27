@@ -1,6 +1,6 @@
 package com.ciandt.dragonfly.example.shared
 
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseUser
 
 /**
  * Created by iluz on 6/20/17.

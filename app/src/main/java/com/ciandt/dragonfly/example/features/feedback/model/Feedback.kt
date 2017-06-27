@@ -80,7 +80,7 @@ data class Feedback(
 
         val identifiedLabelsBundle = Bundle()
         identifiedLabels.keys.forEach { key ->
-            identifiedLabelsBundle.putFloat(key, identifiedLabels.get(key)!!)
+            identifiedLabelsBundle.putFloat(key, identifiedLabels[key]!!)
         }
         dest.writeBundle(identifiedLabelsBundle)
 

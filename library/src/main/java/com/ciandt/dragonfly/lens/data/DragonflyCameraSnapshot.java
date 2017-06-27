@@ -9,9 +9,9 @@ import android.os.Parcelable;
 
 public class DragonflyCameraSnapshot implements Parcelable {
 
-    private String path;
-    private int width;
-    private int height;
+    private final String path;
+    private final int width;
+    private final int height;
 
     private DragonflyCameraSnapshot(Builder builder) {
         path = builder.path;

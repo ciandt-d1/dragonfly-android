@@ -189,6 +189,7 @@ public class DragonflyLensFeedbackView extends FrameLayout implements DragonflyL
         SavedState ss = new SavedState(superState);
         ss.childrenStates = new SparseArray();
         for (int i = 0; i < getChildCount(); i++) {
+            //noinspection unchecked
             getChildAt(i).saveHierarchyState(ss.childrenStates);
         }
         return ss;
@@ -199,6 +200,7 @@ public class DragonflyLensFeedbackView extends FrameLayout implements DragonflyL
         SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
         for (int i = 0; i < getChildCount(); i++) {
+            //noinspection unchecked
             getChildAt(i).restoreHierarchyState(ss.childrenStates);
         }
     }
@@ -229,6 +231,7 @@ public class DragonflyLensFeedbackView extends FrameLayout implements DragonflyL
         @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
+            //noinspection unchecked
             out.writeSparseArray(childrenStates);
         }
 
