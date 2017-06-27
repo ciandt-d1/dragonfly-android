@@ -178,11 +178,11 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
                 .setMessage(message)
                 .setCancelable(false)
                 .setNegativeButton(android.R.string.cancel, {
-                    dialog, which ->
+                    _, _ ->
                     finish()
                 })
                 .setPositiveButton(R.string.permissions_open_settings, {
-                    dialog, which ->
+                    dialog, _ ->
                     dialog.dismiss()
 
                     // https://stackoverflow.com/a/27575063/1120207
