@@ -1,6 +1,6 @@
 package com.ciandt.dragonfly.example.shared
 
-interface BasePresenterContract<V> {
+interface BasePresenterContract<in V> {
 
     fun attachView(view: V)
 

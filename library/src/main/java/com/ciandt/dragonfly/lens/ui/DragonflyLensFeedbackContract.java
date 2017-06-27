@@ -16,7 +16,7 @@ import java.util.List;
  * Created by iluz on 6/9/17.
  */
 
-public interface DragonflyLensFeedbackContract {
+interface DragonflyLensFeedbackContract {
 
     interface FeedbackView extends BaseViewContract {
 

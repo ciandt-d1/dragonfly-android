@@ -38,13 +38,11 @@ public class ImageUtils {
      * @param bitmap   The bitmap to save.
      * @param filename The location to save the bitmap to.
      */
-    public static boolean saveBitmap(final Bitmap bitmap, final String filename) throws IOException {
+    public static void saveBitmap(final Bitmap bitmap, final String filename) throws IOException {
         final String root = DragonflyConfig.getDropboxPath();
         if (root == null) {
             throw new IllegalStateException("DragonflyConfig.setDropboxPath() should be called with a writable system path");
         }
-
-        boolean wasSuccessful;
 
         Log.i(LOG_TAG, String.format("Saving %dx%d bitmap to %s.", bitmap.getWidth(), bitmap.getHeight(), root));
         final File myDir = new File(root);
@@ -60,20 +58,13 @@ public class ImageUtils {
 
         final FileOutputStream out = new FileOutputStream(file);
         try {
-            bitmap.compress(Bitmap.CompressFormat.WEBP, 99, out);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, out);
             out.flush();
-
-            wasSuccessful = true;
         } catch (final Exception e) {
             throw new IOException(e);
         } finally {
-            if (out != null) {
-                out.close();
-            }
+            out.close();
         }
-
-
-        return wasSuccessful;
     }
 
     public static Bitmap loadBitmapFromDisk(String path) {

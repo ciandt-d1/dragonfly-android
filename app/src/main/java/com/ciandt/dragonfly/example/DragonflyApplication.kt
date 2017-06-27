@@ -21,9 +21,9 @@ class DragonflyApplication : Application() {
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
-            return;
+            return
         }
-        LeakCanary.install(this);
+        LeakCanary.install(this)
 
         setupCrashlytics()
         setupCalligraphy()
@@ -59,7 +59,7 @@ class DragonflyApplication : Application() {
         DragonflyLogger.setLogLevel(DragonflyLogger.LOG_LEVEL_DEBUG)
         DragonflyConfig.shouldSaveBitmapsInDebugMode(Features.SAVE_CAPTURED_IMAGES_TO_DEVICE)
 
-        val dropboxPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + BuildConfig.APPLICATION_ID;
+        val dropboxPath = Environment.getExternalStorageDirectory().absolutePath + File.separator + BuildConfig.APPLICATION_ID
         DragonflyConfig.setDropboxPath(dropboxPath)
 
         DragonflyConfig.setMaxModelLoadingRetryAttempts(5)

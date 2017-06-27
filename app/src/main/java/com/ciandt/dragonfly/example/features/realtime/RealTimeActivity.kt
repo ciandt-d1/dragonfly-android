@@ -24,7 +24,9 @@ import com.ciandt.dragonfly.lens.ui.DragonflyLensRealtimeView
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.*
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_real_time.*
@@ -160,11 +162,9 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
                         token.continuePermissionRequest()
                     }
                 })
-                .withErrorListener(object : PermissionRequestErrorListener {
-                    override fun onError(error: DexterError) {
-                        DragonflyLogger.debug(LOG_TAG, "${CLASS_NAME}.onError(): ${error}")
-                    }
-                })
+                .withErrorListener { error ->
+                    DragonflyLogger.debug(LOG_TAG, "${CLASS_NAME}.onError(): ${error}")
+                }
                 .check()
     }
 

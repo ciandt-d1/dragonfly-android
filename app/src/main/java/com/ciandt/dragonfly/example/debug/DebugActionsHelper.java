@@ -74,7 +74,7 @@ public class DebugActionsHelper {
     }
 
     public static Action[] getAllDebugActions(final DebuggableActivity target) {
-        List<Action> actions = new ArrayList<Action>();
+        List<Action> actions = new ArrayList<>();
 
         actions.addAll(getButtonActions(target));
         actions.addAll(getSwitchActions());
@@ -84,7 +84,7 @@ public class DebugActionsHelper {
     }
 
     public static List<ButtonAction> getButtonActions(final DebuggableActivity target) {
-        final List<ButtonAction> actions = new ArrayList<ButtonAction>();
+        final List<ButtonAction> actions = new ArrayList<>();
 
         actions.add(new ButtonAction("Copy model from assets", new ButtonAction.Listener() {
 
@@ -116,13 +116,13 @@ public class DebugActionsHelper {
     }
 
     public static List<SwitchAction> getSwitchActions() {
-        List<SwitchAction> actions = new ArrayList<SwitchAction>();
+        List<SwitchAction> actions = new ArrayList<>();
 
         return actions;
     }
 
     public static List<SpinnerAction> getSpinnerActions() {
-        List<SpinnerAction> actions = new ArrayList<SpinnerAction>();
+        List<SpinnerAction> actions = new ArrayList<>();
 
         return actions;
     }
@@ -170,7 +170,7 @@ public class DebugActionsHelper {
                 InputStream is = null;
                 OutputStream os = null;
 
-                boolean result = false;
+                boolean result;
                 try {
                     is = target.getActivityInstance().getAssets().open(srcFilePath);
                     os = new FileOutputStream(outputFile);

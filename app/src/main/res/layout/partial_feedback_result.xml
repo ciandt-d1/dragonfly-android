@@ -24,7 +24,7 @@
             android:layout_weight="1"
             android:layout_marginTop="@dimen/feedback_result_text_vertical_margin"
             android:layout_marginBottom="@dimen/feedback_result_text_vertical_margin"
-            android:paddingLeft="@dimen/feedback_result_text_padding_left"
+            android:paddingStart="@dimen/feedback_result_text_padding_left"
             style="@style/Feedback.Result.Title"
             tools:text="@string/feedback_classification"
         />

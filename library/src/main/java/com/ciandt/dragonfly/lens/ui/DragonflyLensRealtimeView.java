@@ -45,8 +45,6 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     private CameraView cameraView;
     private ImageView ornamentView;
 
-    private ImageButton btnSnapshot;
-
     private DragonflyLensRealTimeContract.LensRealTimePresenter lensRealTimePresenter;
 
     private CameraOrnamentVisibilityCallback cameraOrnamentVisibilityCallback;
@@ -170,7 +168,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
         ornamentView = (ImageView) this.findViewById(R.id.ornamentView);
 
-        btnSnapshot = (TakePhotoButton) this.findViewById(R.id.btnSnapshot);
+        ImageButton btnSnapshot = (TakePhotoButton) this.findViewById(R.id.btnSnapshot);
         btnSnapshot.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -277,6 +275,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         SavedState ss = new SavedState(superState);
         ss.childrenStates = new SparseArray();
         for (int i = 0; i < getChildCount(); i++) {
+            //noinspection unchecked
             getChildAt(i).saveHierarchyState(ss.childrenStates);
         }
         return ss;
@@ -287,6 +286,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
         for (int i = 0; i < getChildCount(); i++) {
+            //noinspection unchecked
             getChildAt(i).restoreHierarchyState(ss.childrenStates);
         }
     }
@@ -317,6 +317,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
+            //noinspection unchecked
             out.writeSparseArray(childrenStates);
         }
 

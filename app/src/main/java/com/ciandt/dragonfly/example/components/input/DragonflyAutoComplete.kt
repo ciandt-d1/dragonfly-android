@@ -17,7 +17,6 @@ import android.widget.TextView.OnEditorActionListener
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.infrastructure.extensions.getLayoutInflaterService
 import com.ciandt.dragonfly.example.infrastructure.extensions.toPx
-import kotlinx.android.synthetic.main.component_autocomplete_textview.*
 import kotlinx.android.synthetic.main.component_autocomplete_textview.view.*
 
 
