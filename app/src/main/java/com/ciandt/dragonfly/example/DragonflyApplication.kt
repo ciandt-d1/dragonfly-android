@@ -59,8 +59,11 @@ class DragonflyApplication : Application() {
         DragonflyLogger.setLogLevel(DragonflyLogger.LOG_LEVEL_DEBUG)
         DragonflyConfig.shouldSaveBitmapsInDebugMode(Features.SAVE_CAPTURED_IMAGES_TO_DEVICE)
 
-        val dropboxPath = Environment.getExternalStorageDirectory().absolutePath + File.separator + BuildConfig.APPLICATION_ID
-        DragonflyConfig.setDropboxPath(dropboxPath)
+        val stagingPath = Environment.getExternalStorageDirectory().absolutePath + File.separator + BuildConfig.APPLICATION_ID
+        DragonflyConfig.setStagingPath(stagingPath)
+
+        val userSavedImagePath = Environment.getExternalStorageDirectory().absolutePath + File.separator + getString(R.string.app_name)
+        DragonflyConfig.setUserSavedImagesPath(userSavedImagePath)
 
         DragonflyConfig.setMaxModelLoadingRetryAttempts(5)
     }

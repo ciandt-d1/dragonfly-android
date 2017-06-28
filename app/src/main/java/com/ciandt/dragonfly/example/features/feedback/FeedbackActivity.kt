@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.text.Editable
@@ -20,6 +21,7 @@ import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
 import com.ciandt.dragonfly.example.shared.BaseActivity
+import com.ciandt.dragonfly.infrastructure.PermissionsMapping
 import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException
@@ -28,6 +30,11 @@ import com.ciandt.dragonfly.tensorflow.Classifier
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import kotlinx.android.synthetic.main.activity_feedback.*
 import kotlinx.android.synthetic.main.partial_feedback_form.*
 import kotlinx.android.synthetic.main.partial_feedback_result.*
@@ -61,8 +68,10 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             userFeedback = null
         }
 
-        val interactor = FeedbackInteractor(FirebaseStorage.getInstance(), FirebaseDatabase.getInstance())
-        presenter = FeedbackPresenter(model, cameraSnapshot, interactor, FirebaseAuth.getInstance())
+        val feedbackInteractor = FeedbackInteractor(FirebaseStorage.getInstance(), FirebaseDatabase.getInstance())
+        val saveImageToGalleryInteractor = SaveImageToGalleryInteractor(applicationContext)
+
+        presenter = FeedbackPresenter(model, cameraSnapshot, feedbackInteractor, saveImageToGalleryInteractor, FirebaseAuth.getInstance())
         presenter.attachView(this)
         presenter.setUserFeedback(userFeedback)
 
@@ -80,9 +89,29 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         dragonFlyLensFeedbackView.setSnapshot(cameraSnapshot)
     }
 
+    override fun showSaveImageSuccessMessage(@StringRes message: Int) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showSaveImageErrorMessage(@StringRes message: Int) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
     private fun setupSaveImageButton() {
         btnSaveImage.setOnClickListener({
-            Toast.makeText(this, "Save image", Toast.LENGTH_SHORT).show()
+            Dexter
+                    .withActivity(this)
+                    .withPermissions(PermissionsMapping.SAVE_IMAGE_TO_GALLERY)
+                    .withListener(object : MultiplePermissionsListener {
+                        override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                            presenter.saveImageToGallery(cameraSnapshot)
+                        }
+
+                        override fun onPermissionRationaleShouldBeShown(permissions: MutableList<PermissionRequest>, token: PermissionToken) {
+                            token.continuePermissionRequest()
+                        }
+                    })
+                    .check()
         })
     }
 

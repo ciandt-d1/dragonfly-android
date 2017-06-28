@@ -49,4 +49,7 @@
     <string name="feedback_form_hint">Type here what is this</string>
     <string name="feedback_form_button_cancel">CANCEL</string>
     <string name="feedback_form_button_confirm">CONFIRM</string>
+
+    <string name="feedback_save_image_success">Image saved successfully.</string>
+    <string name="feedback_save_image_error">Something was wrong. Please try again.</string>
 </resources>

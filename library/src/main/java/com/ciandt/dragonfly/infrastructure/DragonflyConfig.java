@@ -10,7 +10,9 @@ public class DragonflyConfig {
 
     private static boolean saveBitmapsInDebugMode = false;
 
-    private static String dropboxPath;
+    private static String stagingPath;
+
+    private static String userSavedImagesPath;
 
     private static int maxModelLoadingRetryAttempts;
 
@@ -22,12 +24,20 @@ public class DragonflyConfig {
         DragonflyConfig.saveBitmapsInDebugMode = BuildConfig.DEBUG && saveBitmapsInDebugMode;
     }
 
-    public static String getDropboxPath() {
-        return dropboxPath;
+    public static String getStagingPath() {
+        return stagingPath;
     }
 
-    public static void setDropboxPath(String dropboxPath) {
-        DragonflyConfig.dropboxPath = dropboxPath;
+    public static void setStagingPath(String stagingPath) {
+        DragonflyConfig.stagingPath = stagingPath;
+    }
+
+    public static String getUserSavedImagesPath() {
+        return userSavedImagesPath;
+    }
+
+    public static void setUserSavedImagesPath(String userSavedImagesPath) {
+        DragonflyConfig.userSavedImagesPath = userSavedImagesPath;
     }
 
     public static int getMaxModelLoadingRetryAttempts() {

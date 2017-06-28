@@ -1,6 +1,7 @@
 package com.ciandt.dragonfly.example.features.feedback
 
 import com.ciandt.dragonfly.data.model.Model
+import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.config.Tenant
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
@@ -13,14 +14,21 @@ import com.ciandt.dragonfly.tensorflow.Classifier
 import com.google.firebase.auth.FirebaseAuth
 
 
-class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSnapshot, val feedbackInteractor: FeedbackContract.Interactor, val firebaseAuth: FirebaseAuth) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
-
+class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSnapshot, val feedbackInteractor: FeedbackContract.Interactor, val saveImageToGalleryInteractor: SaveImageToGalleryContract.Interactor, val firebaseAuth: FirebaseAuth) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
     private val results = ArrayList<Classifier.Recognition>()
     private var userFeedback: Feedback? = null
 
     init {
         feedbackInteractor.setOnFeedbackSavedCallback { feedback ->
             DragonflyLogger.debug(LOG_TAG, "setUserFeedback(${feedback})")
+        }
+
+        saveImageToGalleryInteractor.setOnSaveImageSuccessCallback {
+            view?.showSaveImageSuccessMessage(R.string.feedback_save_image_success)
+        }
+
+        saveImageToGalleryInteractor.setOnSaveImageErrorCallback {
+            view?.showSaveImageSuccessMessage(R.string.feedback_save_image_error)
         }
     }
 
@@ -64,6 +72,10 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
 
     override fun setUserFeedback(userFeedback: Feedback?) {
         this.userFeedback = userFeedback
+    }
+
+    override fun saveImageToGallery(cameraSnapshot: DragonflyCameraSnapshot) {
+        saveImageToGalleryInteractor.save(cameraSnapshot)
     }
 
     private fun saveFeedback(label: String, value: Int) {

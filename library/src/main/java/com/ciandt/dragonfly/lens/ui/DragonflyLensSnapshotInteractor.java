@@ -1,5 +1,6 @@
 package com.ciandt.dragonfly.lens.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -14,6 +15,7 @@ import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 /**
@@ -29,6 +31,9 @@ public class DragonflyLensSnapshotInteractor implements DragonflyLensRealTimeCon
 
     private final YUVNV21ToRGBA888Converter yuvToRgbConverter;
     private SnapshotCallbacks snapshotCallbacks;
+
+    @SuppressLint("SimpleDateFormat")
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 
     public DragonflyLensSnapshotInteractor(Context context) {
         this.yuvToRgbConverter = new YUVNV21ToRGBA888Converter(context);
@@ -78,13 +83,13 @@ public class DragonflyLensSnapshotInteractor implements DragonflyLensRealTimeCon
                 Bitmap bitmap = interactor.yuvToRgbConverter.convert(taskParams.getData(), taskParams.getWidth(), taskParams.getHeight(), Bitmap.Config.ARGB_8888, taskParams.getRotation());
                 timings.addSplit("Convert YUV to RGB");
 
-                String fileName = String.format("%s.jpg", UUID.nameUUIDFromBytes(taskParams.data).toString());
-                ImageUtils.saveBitmap(bitmap, String.format(fileName, System.currentTimeMillis(), UUID.randomUUID().toString()));
+                String fileName = String.format("%s-%s.jpg", interactor.simpleDateFormat.format(System.currentTimeMillis()), UUID.nameUUIDFromBytes(taskParams.data).toString());
+                ImageUtils.saveBitmapToStagingArea(bitmap, String.format(fileName, System.currentTimeMillis(), UUID.randomUUID().toString()));
                 timings.addSplit("Saved snapshot to disk.");
 
                 timings.dumpToLog();
 
-                String filePath = DragonflyConfig.getDropboxPath() + File.separator + fileName;
+                String filePath = DragonflyConfig.getStagingPath() + File.separator + fileName;
                 DragonflyCameraSnapshot snapshot = DragonflyCameraSnapshot.newBuilder()
                         .withPath(filePath)
                         .withWidth(taskParams.width)
