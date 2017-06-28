@@ -17,9 +17,9 @@ package com.ciandt.dragonfly.image_processing;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
+import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,7 +46,7 @@ public class ImageUtils {
             throw new IllegalStateException("DragonflyConfig.setStagingPath() should be called with a writable system path");
         }
 
-        Log.i(LOG_TAG, String.format("Saving %dx%d bitmap to %s.", bitmap.getWidth(), bitmap.getHeight(), stagingPath));
+        DragonflyLogger.info(LOG_TAG, String.format("Saving %dx%d bitmap to %s.", bitmap.getWidth(), bitmap.getHeight(), stagingPath));
         final File stagingDir = new File(stagingPath);
 
         if (!stagingDir.exists() && !stagingDir.mkdirs()) {
