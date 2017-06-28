@@ -1,5 +1,6 @@
 package com.ciandt.dragonfly.lens.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -31,6 +32,7 @@ public class DragonflyLensSnapshotInteractor implements DragonflyLensRealTimeCon
     private final YUVNV21ToRGBA888Converter yuvToRgbConverter;
     private SnapshotCallbacks snapshotCallbacks;
 
+    @SuppressLint("SimpleDateFormat")
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 
     public DragonflyLensSnapshotInteractor(Context context) {

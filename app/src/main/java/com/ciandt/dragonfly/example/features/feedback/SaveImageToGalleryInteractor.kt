@@ -54,7 +54,7 @@ class SaveImageToGalleryInteractor(val context: Context) : SaveImageToGalleryCon
                     values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis())
                     values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
 
-                    taskParams.context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+                    taskParams.context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
 
                     return BaseInteractorContract.AsyncTaskResult(true, null)
                 } catch (e: Exception) {
@@ -64,9 +64,9 @@ class SaveImageToGalleryInteractor(val context: Context) : SaveImageToGalleryCon
 
             override fun onPostExecute(result: BaseInteractorContract.AsyncTaskResult<Boolean, Exception?>) {
                 if (result.hasError()) {
-                    interactor?.onSaveImageErrorCallback?.invoke()
+                    interactor.onSaveImageErrorCallback?.invoke()
                 } else {
-                    interactor?.onSaveImageSuccessCallback?.invoke()
+                    interactor.onSaveImageSuccessCallback?.invoke()
                 }
             }
 

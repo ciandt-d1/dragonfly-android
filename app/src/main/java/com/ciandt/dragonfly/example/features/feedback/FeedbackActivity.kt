@@ -104,7 +104,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                     .withPermissions(PermissionsMapping.SAVE_IMAGE_TO_GALLERY)
                     .withListener(object : MultiplePermissionsListener {
                         override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                            presenter.saveImageToGallery(cameraSnapshot);
+                            presenter.saveImageToGallery(cameraSnapshot)
                         }
 
                         override fun onPermissionRationaleShouldBeShown(permissions: MutableList<PermissionRequest>, token: PermissionToken) {
