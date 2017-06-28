@@ -1,32 +1,37 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/about_title_height"
-        android:layout_alignParentTop="true"
         style="@style/About.Title"
-        android:text="@string/about_title"
-    />
+        android:text="@string/about_title"/>
 
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/title"
-        style="@style/About.Description"
-        android:text="@string/about_description"/>
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent"
+                android:layout_weight="1">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/privacy"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/description"
-        style="@style/About.Privacy"
-        android:text="@string/about_privacy"/>
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/About.Description"
+                android:autoLink="web"
+                android:text="@string/about_description"/>
+
+            <TextView
+                android:id="@+id/privacy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/description"
+                style="@style/About.Privacy"
+                android:text="@string/about_privacy"/>
+        </RelativeLayout>
+    </ScrollView>
 
     <View
         android:id="@+id/line"
@@ -34,20 +39,16 @@
         android:layout_height="@dimen/about_line_height"
         android:layout_marginLeft="@dimen/about_line_horizontal_margin"
         android:layout_marginRight="@dimen/about_line_horizontal_margin"
-        android:layout_above="@+id/about"
         android:background="@color/about_line"/>
-
     <Button
         android:id="@+id/about"
         android:layout_width="match_parent"
         android:layout_height="@dimen/about_powered_height"
         android:layout_marginLeft="@dimen/about_powered_horizontal_margin"
         android:layout_marginRight="@dimen/about_powered_horizontal_margin"
-        android:layout_alignParentBottom="true"
         android:background="@android:color/transparent"
         android:drawablePadding="@dimen/about_powered_drawable_padding"
         android:drawableStart="@drawable/ciandt_logo"
         android:text="@string/about_powered"
-        android:textColor="@color/about_powered"
-    />
-</RelativeLayout>
+        android:textColor="@color/about_powered"/>
+</LinearLayout>

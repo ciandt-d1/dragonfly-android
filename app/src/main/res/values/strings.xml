@@ -14,11 +14,16 @@
     <string name="model_selection_error_message">Uh-oh, an error occurred!</string>
     <string name="model_selection_retry">Try again</string>
 
-    <string name="about_title">About Us</string>
-    <string name="about_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-        id elementum neque. Nulla eu libero at tellus egestas euismod nec sit amet justo. Sed quis
-        aliquam enim. Interdum et malesuada fames ac ante ipsum primis in faucibus. Proin euismod
-        nisl sit amet facilisis dapibus.
+    <string name="about_title">Thoughtfully Fast. Purposely Lean.</string>
+    <string name="about_description">CI&amp;T is a digital technology agency focused on creating
+        digital
+        experiences that people love.\n
+        We are pioneers at combining design thinking, data-led strategy, lean principles, and
+        advanced tech with years of industry and vertical expertise to create radically practical
+        solutions for our clients.\n
+        We see Machine Learning as a strong force allowing us to take bold ideas to the market with
+        speed and agility.\n\n
+        Read more at ciandt.com
     </string>
     <string name="about_privacy">
         <u>Privacy &amp; Policy</u>
