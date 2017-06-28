@@ -1,7 +1,9 @@
 package com.ciandt.dragonfly.example.features.feedback
 
+import android.support.annotation.StringRes
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.shared.BasePresenterContract
+import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
 import com.ciandt.dragonfly.tensorflow.Classifier
 
 /**
@@ -22,6 +24,10 @@ interface FeedbackContract {
         fun showNegativeForm(otherRecognitions: List<Classifier.Recognition>)
 
         fun setUserFeedback(feedback: Feedback)
+
+        fun showSaveImageSuccessMessage(@StringRes message: Int)
+
+        fun showSaveImageErrorMessage(@StringRes message: Int)
     }
 
     interface Presenter : BasePresenterContract<View> {
@@ -35,6 +41,8 @@ interface FeedbackContract {
         fun submitNegative(label: String)
 
         fun setUserFeedback(userFeedback: Feedback?)
+
+        fun saveImageToGallery(cameraSnapshot: DragonflyCameraSnapshot)
     }
 
     interface Interactor {

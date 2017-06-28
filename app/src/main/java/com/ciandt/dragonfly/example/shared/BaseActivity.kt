@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.support.annotation.LayoutRes
@@ -110,6 +111,17 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
         return window.decorView.findViewById(android.R.id.content) as ViewGroup
     }
 
+    fun checkPendingPermissions(permissions: List<String>): List<String> {
+        val pendingPermissions = ArrayList<String>()
+        permissions.forEach {
+            val isPermissionGranted = ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+            if (!isPermissionGranted) {
+                pendingPermissions.add(it)
+            }
+        }
+
+        return pendingPermissions
+    }
 
     private var icLauncher: Bitmap? = null
 

@@ -260,8 +260,8 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                 if (DragonflyConfig.shouldSaveBitmapsInDebugMode()) {
                     DragonflyLogger.warn(LOG_TAG, "Saving bitmaps for debugging.");
 
-                    ImageUtils.saveBitmap(bitmap, String.format("original-%s%s.png", System.currentTimeMillis(), UUID.randomUUID().toString()));
-                    ImageUtils.saveBitmap(croppedBitmap, String.format("cropped-%s%s.png", System.currentTimeMillis(), UUID.randomUUID().toString()));
+                    ImageUtils.saveBitmapToStagingArea(bitmap, String.format("original-%s%s.png", System.currentTimeMillis(), UUID.randomUUID().toString()));
+                    ImageUtils.saveBitmapToStagingArea(croppedBitmap, String.format("cropped-%s%s.png", System.currentTimeMillis(), UUID.randomUUID().toString()));
                 }
 
                 return new AsyncTaskResult<>(results, null);

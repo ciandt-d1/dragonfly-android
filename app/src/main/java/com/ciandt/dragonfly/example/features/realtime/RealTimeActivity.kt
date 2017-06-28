@@ -4,10 +4,8 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.annotation.StringRes
-import android.support.v4.content.ContextCompat
 import android.view.View.VISIBLE
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
@@ -73,13 +71,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
                 throw InvalidParameterException("Empty permissions list provided.")
             }
 
-            val pendingPermissions = ArrayList<String>()
-            permissions.forEach {
-                val isPermissionGranted = ContextCompat.checkSelfPermission(this@RealTimeActivity, it) == PackageManager.PERMISSION_GRANTED
-                if (!isPermissionGranted) {
-                    pendingPermissions.add(it)
-                }
-            }
+            val pendingPermissions = checkPendingPermissions(permissions)
 
             if (pendingPermissions.isEmpty()) {
                 return@PermissionsCallback true
