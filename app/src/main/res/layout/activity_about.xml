@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
@@ -9,7 +10,8 @@
         style="@style/About.Title"
         android:text="@string/about_title"/>
 
-    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent"
+    <ScrollView android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
         <RelativeLayout
             android:layout_width="match_parent"
