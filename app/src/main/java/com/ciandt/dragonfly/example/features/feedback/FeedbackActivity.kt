@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
@@ -186,7 +187,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         input.setText("")
         input.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                currentFocus.hideSoftInputView()
+                getRootView().hideSoftInputView()
                 return@OnEditorActionListener true
             }
             false
@@ -360,9 +361,13 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     private fun hideNegativeForm() {
-        feedbackFormView.visibility = View.GONE
-        feedbackView.visibility = View.VISIBLE
-        currentFocus.hideSoftInputView()
+        getRootView().hideSoftInputView()
+
+        // wait for the keyboard to disappear to show the view, otherwise a flicking occurs.
+        Handler().postDelayed({
+            feedbackFormView.visibility = View.GONE
+            feedbackView.visibility = View.VISIBLE
+        }, 100)
     }
 
     private fun expandResults() {
