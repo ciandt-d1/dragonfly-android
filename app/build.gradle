@@ -277,7 +277,7 @@ android.applicationVariants.all { variant ->
         output.versionCodeOverride = archVersionCode * appVersionArchsMultiplier + variant.versionCode
 
         // Change filename of apk file
-        def version = variant.versionName + "-" + archVersionCode
+        def version = variant.versionName.replace(".", "-") + "-" + archVersionCode
         def file = output.outputFile
         output.outputFile = new File(file.parent, file.name.replace("app-", "app-" + version + "-"))
 
