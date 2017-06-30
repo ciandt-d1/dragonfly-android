@@ -3,6 +3,7 @@ package com.ciandt.dragonfly.lens.ui;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.media.MediaActionSound;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ciandt.dragonfly.CameraView;
@@ -44,6 +46,8 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     private TextView labelView;
     private CameraView cameraView;
     private ImageView ornamentView;
+    private ImageButton btnSnapshot;
+    private ProgressBar progressBar;
 
     private DragonflyLensRealTimeContract.LensRealTimePresenter lensRealTimePresenter;
 
@@ -88,7 +92,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     @Override
     public void onModelReady(Model model) {
-        // TODO: define if we should use this info locally (avoid calling the presenter while the model is not ready?)
+        hideLoading();
     }
 
     @Override
@@ -161,21 +165,24 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.dragonfly_lens_realtime_view, this);
 
-        labelView = (TextView) this.findViewById(R.id.labelView);
+        labelView = (TextView) this.findViewById(R.id.dragonflyLensLabelView);
 
-        cameraView = (CameraView) this.findViewById(R.id.cameraView);
+        cameraView = (CameraView) this.findViewById(R.id.dragonflyLensCameraView);
         cameraView.setOrientation(orientation);
 
-        ornamentView = (ImageView) this.findViewById(R.id.ornamentView);
+        ornamentView = (ImageView) this.findViewById(R.id.dragonflyLensOrnamentView);
 
-        ImageButton btnSnapshot = (TakePhotoButton) this.findViewById(R.id.btnSnapshot);
+        btnSnapshot = (TakePhotoButton) this.findViewById(R.id.dragonflyLensBtnSnapshot);
         btnSnapshot.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
+                new MediaActionSound().play(MediaActionSound.SHUTTER_CLICK);
                 lensRealTimePresenter.takeSnapshot();
             }
         });
+
+        progressBar = (ProgressBar) this.findViewById(R.id.dragonflyLensLoading);
 
         lensRealTimePresenter = new DragonflyLensRealTimePresenter(new DragonflyLensClassificatorInteractor(getContext()), new DragonflyLensSnapshotInteractor(getContext()));
 
@@ -205,6 +212,8 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     @Override
     public void start(Model model) {
+        showLoading();
+
         loadModel(model);
         lensRealTimePresenter.attachView(this);
         startCameraView();
@@ -267,6 +276,16 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     @Override
     public void onPreviewStarted(Size previewSize, int rotation) {
 
+    }
+
+    private void showLoading() {
+        progressBar.setVisibility(VISIBLE);
+        btnSnapshot.setVisibility(INVISIBLE);
+    }
+
+    private void hideLoading() {
+        progressBar.setVisibility(INVISIBLE);
+        btnSnapshot.setVisibility(VISIBLE);
     }
 
     @Override

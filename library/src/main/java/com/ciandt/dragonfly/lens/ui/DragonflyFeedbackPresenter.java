@@ -63,12 +63,12 @@ public class DragonflyFeedbackPresenter extends AbstractPresenter<DragonflyLensF
         }
 
         if (model.equals(this.loadedModel)) {
-            DragonflyLogger.info(LOG_TAG, "This loadedModel is already currently setup. Ignoring it.");
+            DragonflyLogger.info(LOG_TAG, "This model is already currently setup. Ignoring it.");
             return;
         }
 
         modelLoadingAttempts = 0;
-        lensClassificatorInteractor.loadModel(model);
+//        lensClassificatorInteractor.loadModel(model);
     }
 
     @Override

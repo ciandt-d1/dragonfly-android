@@ -119,7 +119,7 @@ public class DragonflyLensFeedbackView extends FrameLayout implements DragonflyL
 
     @Override
     public void start(Model model) {
-        loadModel(model);
+//        loadModel(model);
         feedbackPresenter.attachView(this);
     }
 
@@ -140,7 +140,7 @@ public class DragonflyLensFeedbackView extends FrameLayout implements DragonflyL
         inflater.inflate(R.layout.dragonfly_lens_feedback_view, this);
 
         previewView = (ImageView) this.findViewById(R.id.previewImageView);
-        ornamentView = (ImageView) this.findViewById(R.id.ornamentView);
+        ornamentView = (ImageView) this.findViewById(R.id.dragonflyLensOrnamentView);
 
         feedbackPresenter = new DragonflyFeedbackPresenter(new DragonflyLensClassificatorInteractor(getContext()));
 
