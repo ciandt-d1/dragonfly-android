@@ -8,9 +8,9 @@ ext {
     SONAR_HOST = sonarProperties['host']
     SONAR_PROJECT_NAME = "DragonflyAndroid"
     SONAR_PROJECT_KEY = "DragonflyAndroid"
-    SONAR_BINARIES = "/intermediates/classes/devDragonfly/debug"
-    SONAR_JAVA_BINARIES = "${project.buildDir}/intermediates/classes/devDragonfly/debug"
-    SONAR_JAVA_TEST_BINARIES = "${project.buildDir}/intermediates/classes/devDragonfly/debug"
+    SONAR_BINARIES = "/intermediates/classes/debug"
+    SONAR_JAVA_BINARIES = "${project.buildDir}/intermediates/classes/debug"
+    SONAR_JAVA_TEST_BINARIES = "${project.buildDir}/intermediates/classes/debug"
 }
 
 sonarqube() {
