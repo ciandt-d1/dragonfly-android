@@ -9,6 +9,9 @@ ext {
 
     SONAR_PROJECT_NAME = "Dragonfly Android Library"
     SONAR_PROJECT_KEY = "DragonflyAndroidLibrary"
+    SONAR_BINARIES = "/intermediates/classes/debug"
+    SONAR_JAVA_BINARIES = "${project.buildDir}/intermediates/classes/debug"
+    SONAR_JAVA_TEST_BINARIES = "${project.buildDir}/intermediates/classes/debug"
 }
 
 android {
