@@ -29,6 +29,7 @@ import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
+import com.ciandt.dragonfly.tensorflow.Classifier;
 
 import java.util.List;
 
@@ -55,6 +56,8 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     private SnapshotCallbacks snapshotCallbacks;
     private PermissionsCallback permissionsCallback;
 
+    private List<Classifier.Recognition> lastClassifications;
+
     public void setCameraOrnamentVisibilityCallback(CameraOrnamentVisibilityCallback cameraOrnamentVisibilityCallback) {
         this.cameraOrnamentVisibilityCallback = cameraOrnamentVisibilityCallback;
     }
@@ -65,6 +68,16 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     public void setPermissionsCallback(PermissionsCallback permissionsCallback) {
         this.permissionsCallback = permissionsCallback;
+    }
+
+    @Override
+    public List<Classifier.Recognition> getLastClassifications() {
+        return lastClassifications;
+    }
+
+    @Override
+    public void setLastClassifications(List<Classifier.Recognition> classifications) {
+        lastClassifications = classifications;
     }
 
     @Override
@@ -92,7 +105,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     @Override
     public void onModelReady(Model model) {
-        hideLoading();
+
     }
 
     @Override
@@ -211,10 +224,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     }
 
     @Override
-    public void start(Model model) {
-        showLoading();
-
-        loadModel(model);
+    public void start() {
         lensRealTimePresenter.attachView(this);
         startCameraView();
 
@@ -239,10 +249,18 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         cameraView.setVisibility(GONE);
     }
 
-    private void loadModel(Model model) {
+    @Override
+    public void loadModel(Model model) {
         DragonflyLogger.debug(LOG_TAG, String.format("%s.loadModel(%s)", LOG_TAG, model));
 
         lensRealTimePresenter.loadModel(model);
+    }
+
+    @Override
+    public void unloadModel() {
+        DragonflyLogger.debug(LOG_TAG, String.format("%s.unloadModel", LOG_TAG));
+
+        lensRealTimePresenter.unloadModel();
     }
 
     private void startCameraView() {
@@ -278,12 +296,14 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     }
 
-    private void showLoading() {
+    @Override
+    public void showLoading() {
         progressBar.setVisibility(VISIBLE);
         btnSnapshot.setVisibility(INVISIBLE);
     }
 
-    private void hideLoading() {
+    @Override
+    public void hideLoading() {
         progressBar.setVisibility(INVISIBLE);
         btnSnapshot.setVisibility(VISIBLE);
     }
