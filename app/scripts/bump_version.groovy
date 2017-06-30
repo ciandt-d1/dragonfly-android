@@ -80,7 +80,11 @@ if (!(option in options)) {
     return
 }
 
+def git_current_branch = "git rev-parse --abbrev-ref HEAD"
+println "Current branch: ${git_current_branch.execute().text}"
+
 int[] versions = findVersions()
+println "Found versions: ${versions}"
 if (versions.length != 3) {
     println "An error occured while trying to read current versions"
     return
