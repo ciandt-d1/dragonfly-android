@@ -8,6 +8,9 @@ ext {
     SONAR_HOST = sonarProperties['host']
     SONAR_PROJECT_NAME = "DragonflyAndroid"
     SONAR_PROJECT_KEY = "DragonflyAndroid"
+    SONAR_BINARIES = "/intermediates/classes/debug"
+    SONAR_JAVA_BINARIES = "${project.buildDir}/intermediates/classes/debug"
+    SONAR_JAVA_TEST_BINARIES = "${project.buildDir}/intermediates/classes/debug"
 }
 
 sonarqube() {
@@ -27,8 +30,8 @@ sonarqube() {
 
         property "sonar.sources", "./src/main/"
         property "sonar.libraries", libraries
-        property "sonar.binaries", "/intermediates/classes/debug"
-        property "sonar.java.binaries", "${project.buildDir}/intermediates/classes/debug"
+        property "sonar.binaries", SONAR_BINARIES
+        property "sonar.java.binaries", SONAR_JAVA_BINARIES
         property "sonar.java.libraries", libraries
         property "sonar.exclusions", "build/**,**/*.png,*.iml, **/*generated*, "
 
@@ -37,7 +40,7 @@ sonarqube() {
         property "sonar.host.url", SONAR_HOST
         property "sonar.tests", "./src/test/, ./src/androidTest/"
         property "sonar.jacoco.reportPath", fileTree(dir: project.projectDir, includes: ['**/*.exec'])
-        property "sonar.java.test.binaries", "${project.buildDir}/intermediates/classes/debug"
+        property "sonar.java.test.binaries", SONAR_JAVA_TEST_BINARIES
         property "sonar.jacoco.itReportPath", fileTree(dir: project.projectDir, includes: ['**/*.ec'])
         property "sonar.java.test.libraries", libraries
 

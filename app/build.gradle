@@ -39,6 +39,9 @@ ext {
 
     SONAR_PROJECT_NAME = "Dragonfly Android Example App"
     SONAR_PROJECT_KEY = "DragonflyAndroidExampleApp"
+    SONAR_BINARIES = "/intermediates/classes/devDragonfly/debug"
+    SONAR_JAVA_BINARIES = "${project.buildDir}/intermediates/classes/devDragonfly/debug"
+    SONAR_JAVA_TEST_BINARIES = "${project.buildDir}/intermediates/classes/devDragonfly/debug"
 }
 
 def keystoreProperties = new Properties()
