@@ -10,7 +10,7 @@
                android:contentDescription="@string/content_description_captured_image"
                android:scaleType="fitXY"/>
 
-    <ImageView android:id="@+id/ornamentView"
+    <ImageView android:id="@+id/dragonflyLensOrnamentView"
                android:layout_width="match_parent"
                android:layout_height="match_parent"
                android:layout_centerInParent="true"

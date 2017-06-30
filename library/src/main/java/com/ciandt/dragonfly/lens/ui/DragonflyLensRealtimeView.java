@@ -3,6 +3,7 @@ package com.ciandt.dragonfly.lens.ui;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.media.MediaActionSound;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ciandt.dragonfly.CameraView;
@@ -27,6 +29,7 @@ import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
+import com.ciandt.dragonfly.tensorflow.Classifier;
 
 import java.util.List;
 
@@ -44,12 +47,16 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     private TextView labelView;
     private CameraView cameraView;
     private ImageView ornamentView;
+    private ImageButton btnSnapshot;
+    private ProgressBar progressBar;
 
     private DragonflyLensRealTimeContract.LensRealTimePresenter lensRealTimePresenter;
 
     private CameraOrnamentVisibilityCallback cameraOrnamentVisibilityCallback;
     private SnapshotCallbacks snapshotCallbacks;
     private PermissionsCallback permissionsCallback;
+
+    private List<Classifier.Recognition> lastClassifications;
 
     public void setCameraOrnamentVisibilityCallback(CameraOrnamentVisibilityCallback cameraOrnamentVisibilityCallback) {
         this.cameraOrnamentVisibilityCallback = cameraOrnamentVisibilityCallback;
@@ -61,6 +68,16 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     public void setPermissionsCallback(PermissionsCallback permissionsCallback) {
         this.permissionsCallback = permissionsCallback;
+    }
+
+    @Override
+    public List<Classifier.Recognition> getLastClassifications() {
+        return lastClassifications;
+    }
+
+    @Override
+    public void setLastClassifications(List<Classifier.Recognition> classifications) {
+        lastClassifications = classifications;
     }
 
     @Override
@@ -88,7 +105,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     @Override
     public void onModelReady(Model model) {
-        // TODO: define if we should use this info locally (avoid calling the presenter while the model is not ready?)
+
     }
 
     @Override
@@ -161,21 +178,24 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.dragonfly_lens_realtime_view, this);
 
-        labelView = (TextView) this.findViewById(R.id.labelView);
+        labelView = (TextView) this.findViewById(R.id.dragonflyLensLabelView);
 
-        cameraView = (CameraView) this.findViewById(R.id.cameraView);
+        cameraView = (CameraView) this.findViewById(R.id.dragonflyLensCameraView);
         cameraView.setOrientation(orientation);
 
-        ornamentView = (ImageView) this.findViewById(R.id.ornamentView);
+        ornamentView = (ImageView) this.findViewById(R.id.dragonflyLensOrnamentView);
 
-        ImageButton btnSnapshot = (TakePhotoButton) this.findViewById(R.id.btnSnapshot);
+        btnSnapshot = (TakePhotoButton) this.findViewById(R.id.dragonflyLensBtnSnapshot);
         btnSnapshot.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
+                new MediaActionSound().play(MediaActionSound.SHUTTER_CLICK);
                 lensRealTimePresenter.takeSnapshot();
             }
         });
+
+        progressBar = (ProgressBar) this.findViewById(R.id.dragonflyLensLoading);
 
         lensRealTimePresenter = new DragonflyLensRealTimePresenter(new DragonflyLensClassificatorInteractor(getContext()), new DragonflyLensSnapshotInteractor(getContext()));
 
@@ -204,8 +224,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     }
 
     @Override
-    public void start(Model model) {
-        loadModel(model);
+    public void start() {
         lensRealTimePresenter.attachView(this);
         startCameraView();
 
@@ -230,10 +249,18 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         cameraView.setVisibility(GONE);
     }
 
-    private void loadModel(Model model) {
+    @Override
+    public void loadModel(Model model) {
         DragonflyLogger.debug(LOG_TAG, String.format("%s.loadModel(%s)", LOG_TAG, model));
 
         lensRealTimePresenter.loadModel(model);
+    }
+
+    @Override
+    public void unloadModel() {
+        DragonflyLogger.debug(LOG_TAG, String.format("%s.unloadModel", LOG_TAG));
+
+        lensRealTimePresenter.unloadModel();
     }
 
     private void startCameraView() {
@@ -267,6 +294,18 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     @Override
     public void onPreviewStarted(Size previewSize, int rotation) {
 
+    }
+
+    @Override
+    public void showLoading() {
+        progressBar.setVisibility(VISIBLE);
+        btnSnapshot.setVisibility(INVISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        progressBar.setVisibility(INVISIBLE);
+        btnSnapshot.setVisibility(VISIBLE);
     }
 
     @Override

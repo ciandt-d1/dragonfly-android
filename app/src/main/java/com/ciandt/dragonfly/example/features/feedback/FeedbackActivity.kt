@@ -19,14 +19,10 @@ import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
-import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
 import com.ciandt.dragonfly.example.shared.BaseActivity
 import com.ciandt.dragonfly.infrastructure.PermissionsMapping
 import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
-import com.ciandt.dragonfly.lens.exception.DragonflyModelException
-import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException
-import com.ciandt.dragonfly.lens.ui.DragonflyLensFeedbackView
 import com.ciandt.dragonfly.tensorflow.Classifier
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -50,8 +46,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     private lateinit var model: Model
     private var userFeedback: Feedback? = null
 
-    private var lastRecognizedObjects: ArrayList<Classifier.Recognition>? = null
-
+    private lateinit var classifications: ArrayList<Classifier.Recognition>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,12 +55,12 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         if (savedInstanceState != null) {
             model = savedInstanceState.getParcelable(MODEL_BUNDLE)
             cameraSnapshot = savedInstanceState.getParcelable(SNAPSHOT_BUNDLE)
-            lastRecognizedObjects = savedInstanceState.getParcelableArrayList(RECOGNITIONS_BUNDLE)
+            classifications = savedInstanceState.getParcelableArrayList(CLASSIFICATIONS_BUNDLE)
             userFeedback = savedInstanceState.getParcelable<Feedback>(USER_FEEDBACK)
         } else {
             cameraSnapshot = intent.extras.getParcelable<DragonflyCameraSnapshot>(SNAPSHOT_BUNDLE)
             model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
-            lastRecognizedObjects = null
+            classifications = intent.extras.getParcelableArrayList(CLASSIFICATIONS_BUNDLE)
             userFeedback = null
         }
 
@@ -74,16 +69,11 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
         presenter = FeedbackPresenter(model, cameraSnapshot, feedbackInteractor, saveImageToGalleryInteractor, FirebaseAuth.getInstance())
         presenter.attachView(this)
+        presenter.setClassifications(classifications)
         presenter.setUserFeedback(userFeedback)
 
         setupBackButton()
         setupSaveImageButton()
-
-        if (!hasRecognizedObjectsCached()) {
-            setupModelCallbacks()
-            setupBitmapAnalysisCallbacks()
-        }
-
         setupResultsView()
         setupNegativeFeedbackView()
 
@@ -119,41 +109,6 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     private fun setupBackButton() {
         btnBack.setOnClickListener({
             super.onBackPressed()
-        })
-    }
-
-    private fun setupModelCallbacks() {
-        dragonFlyLensFeedbackView.setModelCallbacks(object : DragonflyLensFeedbackView.ModelCallbacks {
-            override fun onStartedLoadingModel(model: Model?) {
-                DragonflyLogger.debug(LOG_TAG, "DragonflyLensFeedbackView.ModelCallbacks.onStartedLoadingModel(${model})")
-            }
-
-            override fun onModelReady(model: Model?) {
-                DragonflyLogger.debug(LOG_TAG, "DragonflyLensFeedbackView.ModelCallbacks.onModelReady(${model})")
-
-                dragonFlyLensFeedbackView.analyzeSnapshot()
-            }
-
-            override fun onModelFailure(e: DragonflyModelException?) {
-                DragonflyLogger.debug(LOG_TAG, "DragonflyLensFeedbackView.ModelCallbacks.onModelFailure(${e})")
-            }
-        })
-    }
-
-    private fun setupBitmapAnalysisCallbacks() {
-        dragonFlyLensFeedbackView.setSnapshotAnalysisCallbacks(object : DragonflyLensFeedbackView.SnapshotAnalysisCallbacks {
-            override fun onSnapshotAnalyzed(results: MutableList<Classifier.Recognition>) {
-                DragonflyLogger.debug(LOG_TAG, "DragonflyLensFeedbackView.SnapshotAnalysisCallbacks.onSnapshotAnalyzed(${results})")
-
-                lastRecognizedObjects = ArrayList(results)
-                presenter.setRecognitions(results)
-            }
-
-            override fun onSnapshotAnalysisFailed(e: DragonflyRecognitionException?) {
-                DragonflyLogger.debug(LOG_TAG, "DragonflyLensFeedbackView.SnapshotAnalysisCallbacks.onSnapshotAnalysisFailed(${e})")
-
-                lastRecognizedObjects = null
-            }
         })
     }
 
@@ -222,33 +177,26 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
     override fun onResume() {
         super.onResume()
-        presenter.attachView(this)
-
-        presenter.setUserFeedback(userFeedback)
-
-        if (hasRecognizedObjectsCached()) {
-            presenter.setRecognitions(lastRecognizedObjects!!)
-        } else {
-            dragonFlyLensFeedbackView.start(model)
+        presenter.apply {
+            attachView(this@FeedbackActivity)
+            setClassifications(classifications)
+            setUserFeedback(userFeedback)
         }
     }
 
     override fun onPause() {
         super.onPause()
         presenter.detachView()
-
-        dragonFlyLensFeedbackView.stop()
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
 
-        outState?.putParcelable(MODEL_BUNDLE, model)
-        outState?.putParcelable(SNAPSHOT_BUNDLE, cameraSnapshot)
-        outState?.putParcelable(USER_FEEDBACK, userFeedback)
-
-        if (lastRecognizedObjects != null) {
-            outState?.putParcelableArrayList(RECOGNITIONS_BUNDLE, lastRecognizedObjects)
+        outState?.apply {
+            putParcelable(MODEL_BUNDLE, model)
+            putParcelable(SNAPSHOT_BUNDLE, cameraSnapshot)
+            putParcelable(USER_FEEDBACK, userFeedback)
+            putParcelableArrayList(CLASSIFICATIONS_BUNDLE, classifications)
         }
     }
 
@@ -257,7 +205,6 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     override fun showRecognitions(mainRecognitionLabel: String, otherRecognitions: List<Classifier.Recognition>) {
-
         result.text = getString(R.string.feedback_classification, mainRecognitionLabel)
 
         showOtherRecognitions(otherRecognitions)
@@ -379,17 +326,20 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
                         super.onAnimationEnd(animation)
-                        toggleButton.text = getString(R.string.feedback_close)
-                        toggleButton.setTextColor(ContextCompat.getColor(this@FeedbackActivity, R.color.feedback_close))
-                        toggleButton.animate()
-                                .alpha(1.0f)
-                                .setDuration(HIDE_SHOW_ANIMATION_DURATION)
-                                .setListener(object : AnimatorListenerAdapter() {
-                                    override fun onAnimationEnd(animation: Animator?) {
-                                        super.onAnimationEnd(animation)
-                                        toggleButton.isClickable = true
-                                    }
-                                })
+
+                        toggleButton.apply {
+                            text = getString(R.string.feedback_close)
+                            setTextColor(ContextCompat.getColor(this@FeedbackActivity, R.color.feedback_close))
+                            animate()
+                                    .alpha(1.0f)
+                                    .setDuration(HIDE_SHOW_ANIMATION_DURATION)
+                                    .setListener(object : AnimatorListenerAdapter() {
+                                        override fun onAnimationEnd(animation: Animator?) {
+                                            super.onAnimationEnd(animation)
+                                            toggleButton.isClickable = true
+                                        }
+                                    })
+                        }
                     }
                 })
 
@@ -420,18 +370,21 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
                         super.onAnimationEnd(animation)
-                        toggleButton.text = getString(R.string.feedback_more_info)
-                        toggleButton.setTextColor(ContextCompat.getColor(this@FeedbackActivity, R.color.feedback_more_info))
-                        toggleButton.animate()
-                                .alpha(1.0f)
-                                .setDuration(HIDE_SHOW_ANIMATION_DURATION)
-                                .setListener(object : AnimatorListenerAdapter() {
-                                    override fun onAnimationEnd(animation: Animator?) {
-                                        super.onAnimationEnd(animation)
 
-                                        toggleButton.isClickable = true
-                                    }
-                                })
+                        toggleButton.apply {
+                            text = getString(R.string.feedback_more_info)
+                            setTextColor(ContextCompat.getColor(this@FeedbackActivity, R.color.feedback_more_info))
+                            animate()
+                                    .alpha(1.0f)
+                                    .setDuration(HIDE_SHOW_ANIMATION_DURATION)
+                                    .setListener(object : AnimatorListenerAdapter() {
+                                        override fun onAnimationEnd(animation: Animator?) {
+                                            super.onAnimationEnd(animation)
+
+                                            toggleButton.isClickable = true
+                                        }
+                                    })
+                        }
 
                     }
                 })
@@ -471,20 +424,19 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                 })
     }
 
-    private fun hasRecognizedObjectsCached() = lastRecognizedObjects != null
-
     companion object {
         private val LOG_TAG = FeedbackActivity::class.java.simpleName
 
         private val MODEL_BUNDLE = String.format("%s.model_bundle", BuildConfig.APPLICATION_ID)
         private val SNAPSHOT_BUNDLE = String.format("%s.snapshot_bundle", BuildConfig.APPLICATION_ID)
-        private val RECOGNITIONS_BUNDLE = String.format("%s.recognitions", BuildConfig.APPLICATION_ID)
+        private val CLASSIFICATIONS_BUNDLE = String.format("%s.classifications", BuildConfig.APPLICATION_ID)
         private val USER_FEEDBACK = String.format("%s.user_feedback", BuildConfig.APPLICATION_ID)
 
-        fun newIntent(context: Context, model: Model, snapshot: DragonflyCameraSnapshot): Intent {
+        fun newIntent(context: Context, model: Model, snapshot: DragonflyCameraSnapshot, classifications: List<Classifier.Recognition>): Intent {
             val intent = Intent(context, FeedbackActivity::class.java)
             intent.putExtra(MODEL_BUNDLE, model)
             intent.putExtra(SNAPSHOT_BUNDLE, snapshot)
+            intent.putParcelableArrayListExtra(CLASSIFICATIONS_BUNDLE, ArrayList<Classifier.Recognition>(classifications))
 
             return intent
         }

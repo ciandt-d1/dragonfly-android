@@ -32,7 +32,7 @@ interface FeedbackContract {
 
     interface Presenter : BasePresenterContract<View> {
 
-        fun setRecognitions(recognitions: List<Classifier.Recognition>)
+        fun setClassifications(recognitions: List<Classifier.Recognition>)
 
         fun markAsPositive()
 

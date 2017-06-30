@@ -61,14 +61,6 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
     }
 
     @Override
-    public void detachView() {
-        super.detachView();
-
-        loadedModel = null;
-        lensClassificatorInteractor.releaseModel();
-    }
-
-    @Override
     public void loadModel(Model model) {
         if (model == null) {
             DragonflyLogger.warn(LOG_TAG, "loadModel() called with null argument.");
@@ -80,8 +72,18 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
             return;
         }
 
+        if (hasViewAttached()) {
+            view.showLoading();
+        }
+
         modelLoadingAttempts = 0;
         lensClassificatorInteractor.loadModel(model);
+    }
+
+    @Override
+    public void unloadModel() {
+        loadedModel = null;
+        lensClassificatorInteractor.releaseModel();
     }
 
     @Override
@@ -99,6 +101,9 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
         if (!hasViewAttached()) {
             return;
         }
+
+        view.setLastClassifications(results);
+        view.hideLoading();
 
         if (results == null || results.size() == 0) {
             view.setLabel("");

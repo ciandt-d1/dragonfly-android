@@ -23,9 +23,21 @@ public interface DragonflyLensRealTimeContract {
 
     interface LensRealTimeView extends BaseViewContract {
 
-        void start(Model model);
+        void start();
 
         void stop();
+
+        void loadModel(Model model);
+
+        void unloadModel();
+
+        void showLoading();
+
+        void hideLoading();
+
+        List<Classifier.Recognition> getLastClassifications();
+
+        void setLastClassifications(List<Classifier.Recognition> classifications);
 
         void setLabel(String label);
 
@@ -51,6 +63,8 @@ public interface DragonflyLensRealTimeContract {
     interface LensRealTimePresenter extends BasePresenterContract<LensRealTimeView> {
 
         void loadModel(Model model);
+
+        void unloadModel();
 
         void analyzeBitmap(Bitmap bitmap);
 

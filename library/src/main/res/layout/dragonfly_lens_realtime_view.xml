@@ -5,11 +5,11 @@
        android:layout_height="match_parent">
 
     <com.ciandt.dragonfly.CameraView
-        android:id="@+id/cameraView"
+        android:id="@+id/dragonflyLensCameraView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <ImageView android:id="@+id/ornamentView"
+    <ImageView android:id="@+id/dragonflyLensOrnamentView"
                android:layout_width="match_parent"
                android:layout_height="match_parent"
                android:layout_centerInParent="true"
@@ -20,7 +20,7 @@
                tools:tint="@android:color/white"
                tools:visibility="visible"/>
 
-    <TextView android:id="@+id/labelView"
+    <TextView android:id="@+id/dragonflyLensLabelView"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               style="@style/Dragonfly.Lens.Label"
@@ -31,12 +31,27 @@
               tools:visibility="visible"/>
 
     <com.ciandt.dragonfly.lens.ui.TakePhotoButton
-        android:id="@+id/btnSnapshot"
+        android:id="@+id/dragonflyLensBtnSnapshot"
         android:layout_width="@dimen/dragonfly_lens_snapshot_button_size"
         android:layout_height="@dimen/dragonfly_lens_snapshot_button_size"
         android:layout_marginBottom="@dimen/dragonfly_lens_snapshot_button_margin_bottom"
         android:background="@drawable/circle_frame_background"
+        android:clickable="false"
         android:layout_gravity="bottom|center_horizontal"
         android:src="@drawable/take_photo_button"
-        android:visibility="visible"/>
+        android:visibility="invisible"/>
+
+    <ProgressBar
+        android:id="@+id/dragonflyLensLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dragonfly_lens_snapshot_loading_margin_bottom"
+        style="?android:attr/progressBarStyle"
+        android:background="@drawable/progress_background"
+        android:backgroundTint="@android:color/white"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/dragonfly_lens_loading_color"
+        android:layout_gravity="bottom|center_horizontal"
+        android:visibility="visible"
+        tools:ignore="UnusedAttribute"/>
 </merge>

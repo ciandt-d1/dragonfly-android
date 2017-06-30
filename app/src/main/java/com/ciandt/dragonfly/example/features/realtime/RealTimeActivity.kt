@@ -46,18 +46,24 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         val preferencesRepository: PreferencesRepository = SharedPreferencesRepository.get(applicationContext)
         presenter = RealTimePresenter(preferencesRepository)
 
-        setupDragonflyLens()
-
         if (savedInstanceState != null) {
             model = savedInstanceState.getParcelable(MODEL_BUNDLE)
         } else {
             model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
         }
+
+        setupDragonflyLens()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        dragonFlyLens.unloadModel();
     }
 
     private fun setupDragonflyLens() {
         setupDragonflyLensCameraOrnament()
 
+        dragonFlyLens.loadModel(model)
         dragonFlyLens.setSnapshotCallbacks(this)
 
         setupDragonflyLensPermissionsCallback()
@@ -161,7 +167,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
     }
 
     override fun startRecognition() {
-        dragonFlyLens.start(model)
+        dragonFlyLens.start()
     }
 
     override fun showRealTimePermissionsRequiredAlert(@StringRes title: Int, @StringRes message: Int) {
@@ -195,7 +201,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
     override fun onSnapshotTaken(snapshot: DragonflyCameraSnapshot) {
         DragonflyLogger.debug(LOG_TAG, "onSnapshotTaken(${snapshot})")
 
-        intent = FeedbackActivity.newIntent(this, model, snapshot)
+        intent = FeedbackActivity.newIntent(this, model, snapshot, dragonFlyLens.lastClassifications)
         startActivity(intent)
     }
 

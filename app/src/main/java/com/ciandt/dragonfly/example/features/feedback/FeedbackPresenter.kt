@@ -32,7 +32,7 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
         }
     }
 
-    override fun setRecognitions(recognitions: List<Classifier.Recognition>) {
+    override fun setClassifications(recognitions: List<Classifier.Recognition>) {
 
         results.clearAndAddAll(recognitions)
 
