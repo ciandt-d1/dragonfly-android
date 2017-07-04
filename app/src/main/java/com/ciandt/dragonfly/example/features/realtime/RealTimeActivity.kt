@@ -13,7 +13,6 @@ import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.features.feedback.FeedbackActivity
 import com.ciandt.dragonfly.example.helpers.IntentHelper
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
-import com.ciandt.dragonfly.example.infrastructure.PreferencesRepository
 import com.ciandt.dragonfly.example.infrastructure.SharedPreferencesRepository
 import com.ciandt.dragonfly.example.shared.FullScreenActivity
 import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
@@ -43,7 +42,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_real_time)
 
-        val preferencesRepository: PreferencesRepository = SharedPreferencesRepository.get(applicationContext)
+        val preferencesRepository = SharedPreferencesRepository.get(applicationContext)
         presenter = RealTimePresenter(preferencesRepository)
 
         if (savedInstanceState != null) {
@@ -52,12 +51,19 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
             model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
         }
 
+        setupBackButton()
         setupDragonflyLens()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         dragonFlyLens.unloadModel();
+    }
+
+    private fun setupBackButton() {
+        btnBack.setOnClickListener({
+            super.onBackPressed()
+        })
     }
 
     private fun setupDragonflyLens() {
