@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.ViewGroup
+import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.config.CommonBundleNames
 import com.ciandt.dragonfly.example.config.Features
@@ -140,6 +141,8 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
     }
 
     override fun onLoginFailure() {
-        Snackbar.make(getRootView(), "Login failed", Snackbar.LENGTH_LONG).show()
+        if (BuildConfig.DEBUG) {
+            Snackbar.make(getRootView(), "Login failed", Snackbar.LENGTH_LONG).show()
+        }
     }
 }
