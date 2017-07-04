@@ -38,6 +38,8 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
     private var missingPermissionsAlertDialog: AlertDialog? = null
     private var comingFromSettings = false
 
+    private var wasOrnamentAnimated = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_real_time)
@@ -46,7 +48,10 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         presenter = RealTimePresenter(preferencesRepository)
 
         if (savedInstanceState != null) {
-            model = savedInstanceState.getParcelable(MODEL_BUNDLE)
+            savedInstanceState.apply {
+                model = getParcelable(MODEL_BUNDLE)
+                wasOrnamentAnimated = getBoolean(ORNAMENT_ANIMATED_BUNDLE, false)
+            }
         } else {
             model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
         }
@@ -110,11 +115,17 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
 
     private fun setupDragonflyLensCameraOrnament() {
         dragonFlyLens.setCameraOrnamentVisibilityCallback { ornament ->
-            ornament.alpha = 0f
-            ornament.visibility = VISIBLE
-            ornament.animate()
-                    .alpha(1.0f)
-                    .setDuration(3000)
+            if (wasOrnamentAnimated) {
+                ornament.visibility = VISIBLE
+            } else {
+                wasOrnamentAnimated = true
+
+                ornament.alpha = 0f
+                ornament.visibility = VISIBLE
+                ornament.animate()
+                        .alpha(1.0f)
+                        .setDuration(2500)
+            }
         }
     }
 
@@ -139,8 +150,10 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        model.let {
-            outState?.putParcelable(MODEL_BUNDLE, it)
+
+        outState?.apply {
+            putParcelable(MODEL_BUNDLE, model)
+            putBoolean(ORNAMENT_ANIMATED_BUNDLE, wasOrnamentAnimated)
         }
     }
 
@@ -220,6 +233,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         private val LOG_TAG = RealTimeActivity::class.java.simpleName
 
         private val MODEL_BUNDLE = "${BuildConfig.APPLICATION_ID}.model_bundle"
+        private val ORNAMENT_ANIMATED_BUNDLE = "${BuildConfig.APPLICATION_ID}.ornament_animated_bundle"
 
         fun create(context: Context, model: Model): Intent {
             val intent = Intent(context, RealTimeActivity::class.java)
