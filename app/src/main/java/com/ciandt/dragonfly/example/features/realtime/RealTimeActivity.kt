@@ -6,13 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.StringRes
-import android.support.v4.content.ContextCompat
 import android.view.View.VISIBLE
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.features.feedback.FeedbackActivity
-import com.ciandt.dragonfly.example.helpers.DrawableHelper
 import com.ciandt.dragonfly.example.helpers.IntentHelper
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.ciandt.dragonfly.example.infrastructure.SharedPreferencesRepository
@@ -66,9 +64,6 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         btnBack.setOnClickListener({
             super.onBackPressed()
         })
-
-        val backDrawable = DrawableHelper.getTintedDrawable(btnBack.getDrawable().mutate(), ContextCompat.getColor(this, R.color.real_time_back_button))
-        btnBack.setImageDrawable(backDrawable)
     }
 
     private fun setupDragonflyLens() {

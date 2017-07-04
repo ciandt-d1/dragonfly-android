@@ -23,5 +23,5 @@
         style="@style/AppTheme.Toolbar.Button.Navigation"
         android:contentDescription="@string/real_time_back_button"
         android:layout_gravity="left|top"
-        android:src="@drawable/ic_back_arrow"/>
+        android:src="@drawable/ic_back_arrow_shadowed"/>
 </merge>
