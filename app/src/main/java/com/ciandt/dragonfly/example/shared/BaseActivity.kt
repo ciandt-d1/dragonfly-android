@@ -137,12 +137,12 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
     }
 
     override fun onLoginSuccess(user: FirebaseUser) {
-        Snackbar.make(getRootView(), user.uid, Snackbar.LENGTH_LONG).show()
+        if (BuildConfig.DEBUG) {
+            Snackbar.make(getRootView(), user.uid, Snackbar.LENGTH_LONG).show()
+        }
     }
 
     override fun onLoginFailure() {
-        if (BuildConfig.DEBUG) {
-            Snackbar.make(getRootView(), "Login failed", Snackbar.LENGTH_LONG).show()
-        }
+        Snackbar.make(getRootView(), "Login failed", Snackbar.LENGTH_LONG).show()
     }
 }
