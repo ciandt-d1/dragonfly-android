@@ -50,15 +50,13 @@
                 style="@style/AppTheme.Toolbar.TextAppearance.Title"
                 android:text="@string/feedback_title"/>
 
-            <ImageButton
+            <Button
                 android:id="@+id/btnSaveImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 style="@style/AppTheme.Toolbar.Button.Flat"
-                android:contentDescription="@string/feedback_save_content_description"
-                android:src="@drawable/ic_save"
                 android:text="@string/feedback_save"/>
 
         </RelativeLayout>
