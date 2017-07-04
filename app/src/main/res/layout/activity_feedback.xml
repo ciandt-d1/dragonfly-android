@@ -31,8 +31,11 @@
 
             <ImageButton
                 android:id="@+id/btnBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/back_button_width"
+                android:layout_height="@dimen/back_button_height"
+                android:layout_marginTop="@dimen/back_button_margin_top"
+                android:layout_marginLeft="@dimen/back_button_margin_left"
+                android:padding="@dimen/back_button_padding"
                 android:layout_centerVertical="true"
                 style="@style/AppTheme.Toolbar.Button.Navigation"
                 android:contentDescription="@string/feedback_back_content_description"

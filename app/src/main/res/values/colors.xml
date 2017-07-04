@@ -36,6 +36,8 @@
 
     <color name="task_description">@color/colorPrimaryDark</color>
 
+    <color name="real_time_back_button">#ffffff</color>
+
     <color name="feedback_background">#000000</color>
     <color name="feedback_submitted">#19d0a3</color>
     <color name="feedback_more_info">#89000000</color>

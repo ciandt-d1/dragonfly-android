@@ -123,15 +123,11 @@
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="contentInsetStart">0dp</item>
         <item name="android:background">@color/toolbar_background</item>
-        <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingRight">8dp</item>
     </style>
 
     <style name="AppTheme.Toolbar.Button.Navigation"
            parent="Widget.AppCompat.Toolbar.Button.Navigation">
-        <item name="android:padding">8dp</item>
-        <item name="android:width">48dp</item>
-        <item name="android:height">48dp</item>
     </style>
 
     <style name="AppTheme.Toolbar.TextAppearance.Title"

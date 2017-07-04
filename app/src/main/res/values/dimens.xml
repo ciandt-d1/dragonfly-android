@@ -53,6 +53,12 @@
 
     <dimen name="chip_height">32dp</dimen>
 
+    <dimen name="back_button_padding">8dp</dimen>
+    <dimen name="back_button_height">48dp</dimen>
+    <dimen name="back_button_width">48dp</dimen>
+    <dimen name="back_button_margin_left">8dp</dimen>
+    <dimen name="back_button_margin_top">8dp</dimen>
+
     <dimen name="feedback_cardview_margin">8dp</dimen>
     <dimen name="feedback_cardview_corner_radius">2dp</dimen>
 
