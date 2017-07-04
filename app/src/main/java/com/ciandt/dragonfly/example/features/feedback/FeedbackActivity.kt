@@ -225,7 +225,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     override fun showPositiveRecognition(mainRecognitionLabel: String, otherRecognitions: List<Classifier.Recognition>, collapseResults: Boolean) {
-
+        positiveButton.isEnabled = false
         positiveButton.isActivated = true
         negativeButton.isActivated = false
 
