@@ -69,8 +69,8 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
         presenter = FeedbackPresenter(model, cameraSnapshot, feedbackInteractor, saveImageToGalleryInteractor, FirebaseAuth.getInstance())
         presenter.attachView(this)
-        presenter.setClassifications(classifications)
         presenter.setUserFeedback(userFeedback)
+        presenter.setClassifications(classifications)
 
         setupBackButton()
         setupSaveImageButton()
@@ -179,8 +179,8 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         super.onResume()
         presenter.apply {
             attachView(this@FeedbackActivity)
-            setClassifications(classifications)
             setUserFeedback(userFeedback)
+            setClassifications(classifications)
         }
     }
 
