@@ -155,9 +155,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
         // Preview Size
         previewSize = getBestPreviewSize(width, height, parameters);
+        DragonflyLogger.debug(LOG_TAG, String.format("getBestPreviewSize - width: %s, height: %s", previewSize.width, previewSize.height));
+
         parameters.setPreviewSize(previewSize.width, previewSize.height);
-        DragonflyLogger.debug(LOG_TAG, "getBestPreviewSize: " + previewSize.width);
-        DragonflyLogger.debug(LOG_TAG, "getBestPreviewSize: " + previewSize.height);
 
         camera.setParameters(parameters);
     }

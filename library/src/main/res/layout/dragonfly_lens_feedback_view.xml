@@ -8,7 +8,7 @@
                android:layout_width="match_parent"
                android:layout_height="match_parent"
                android:contentDescription="@string/lens_content_description_captured_image"
-               android:scaleType="fitXY"/>
+               android:scaleType="centerCrop"/>
 
     <ImageView android:id="@+id/dragonflyLensOrnamentView"
                android:layout_width="match_parent"
