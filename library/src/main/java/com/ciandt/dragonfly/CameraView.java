@@ -153,7 +153,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         }
 
-        // PreviewSize
+        // Preview Size
         previewSize = getBestPreviewSize(width, height, parameters);
         DragonflyLogger.debug(LOG_TAG, String.format("getBestPreviewSize - width: %s, height: %s", previewSize.width, previewSize.height));
 
