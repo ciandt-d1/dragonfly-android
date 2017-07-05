@@ -160,25 +160,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
     override fun checkRealTimeRequiredPermissions() {
         Dexter.withActivity(this)
                 .withPermission(Manifest.permission.CAMERA)
-                .withListener(object : PermissionListener {
-                    override fun onPermissionGranted(response: PermissionGrantedResponse) {
-                        DragonflyLogger.debug(LOG_TAG, "checkRealTimeRequiredPermissions() - onPermissionGranted()")
-
-                        presenter.onRealTimePermissionsGranted()
-                    }
-
-                    override fun onPermissionDenied(response: PermissionDeniedResponse) {
-                        DragonflyLogger.debug(LOG_TAG, "checkRealTimeRequiredPermissions() - onPermissionDenied() - permanently? ${response.isPermanentlyDenied}")
-
-                        presenter.onRealTimePermissionsDenied(response.isPermanentlyDenied)
-                    }
-
-                    override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {
-                        DragonflyLogger.debug(LOG_TAG, "${CLASS_NAME}.onPermissionRationaleShouldBeShown()")
-
-                        token.continuePermissionRequest()
-                    }
-                })
+                .withListener(CameraPermissionListener(presenter))
                 .withErrorListener { error ->
                     DragonflyLogger.debug(LOG_TAG, "${CLASS_NAME}.onError(): ${error}")
                 }
@@ -239,6 +221,26 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
             val intent = Intent(context, RealTimeActivity::class.java)
             intent.putExtra(MODEL_BUNDLE, model)
             return intent
+        }
+
+        class CameraPermissionListener(val presenter: RealTimeContract.Presenter) : PermissionListener {
+            override fun onPermissionGranted(response: PermissionGrantedResponse) {
+                DragonflyLogger.debug(LOG_TAG, "checkRealTimeRequiredPermissions() - onPermissionGranted()")
+
+                presenter.onRealTimePermissionsGranted()
+            }
+
+            override fun onPermissionDenied(response: PermissionDeniedResponse) {
+                DragonflyLogger.debug(LOG_TAG, "checkRealTimeRequiredPermissions() - onPermissionDenied() - permanently? ${response.isPermanentlyDenied}")
+
+                presenter.onRealTimePermissionsDenied(response.isPermanentlyDenied)
+            }
+
+            override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {
+                DragonflyLogger.debug(LOG_TAG, "${CLASS_NAME}.onPermissionRationaleShouldBeShown()")
+
+                token.continuePermissionRequest()
+            }
         }
     }
 }
