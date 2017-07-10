@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ChipsView">
+        <attr format="reference" name="chipLayout"/>
+        <attr format="dimension" name="chipSpaceBetween"/>
+        <attr format="dimension" name="chipSpaceBefore"/>
+        <attr format="dimension" name="chipSpaceAfter"/>
+        <attr format="boolean" name="fadingEdges"/>
+        <attr format="reference" name="fadingEdgesDrawable"/>
+        <attr format="dimension" name="fadingEdgesWidth"/>
+        <attr format="boolean" name="selectable"/>
+        <attr format="boolean" name="multipleSelection"/>
+    </declare-styleable>
+
+    <declare-styleable name="DragonflyAutoComplete">
+        <attr format="string" name="hint"/>
+        <attr format="reference" name="hintTextAppearance"/>
+        <attr format="string" name="text"/>
+        <attr format="reference" name="textAppearance"/>
+        <attr format="dimension" name="textMarginTop"/>
+        <attr format="dimension" name="textMarginBottom"/>
+        <attr format="color" name="lineColor"/>
+        <attr format="color" name="lineColorFocused"/>
+    </declare-styleable>
+
+</resources>

@@ -1,4 +1,4 @@
-package com.ciandt.dragonfly.data;
+package com.ciandt.dragonfly.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

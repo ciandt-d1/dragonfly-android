@@ -12,6 +12,7 @@ import com.ciandt.dragonfly.base.ui.Size;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -34,6 +35,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
     private boolean isPreviewActive = false;
 
+    private boolean snapshoting = false;
 
     public CameraView(Context context) {
         super(context);
@@ -86,11 +88,17 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         this.frameTimeInterval = frameTimeInterval;
     }
 
+    public void takeSnapshot() {
+        snapshoting = true;
+    }
+
     /**
      * Internal methods
      */
     private void startPreview() {
         DragonflyLogger.debug(LOG_TAG, String.format("%s - startPreview()", LOG_TAG));
+
+        snapshoting = false;
 
         if (isPreviewActive) {
             DragonflyLogger.debug(LOG_TAG, String.format("%s - startPreview() - preview is already active. Skipping", LOG_TAG));
@@ -147,32 +155,48 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
         // Preview Size
         previewSize = getBestPreviewSize(width, height, parameters);
+        DragonflyLogger.debug(LOG_TAG, String.format("getBestPreviewSize - width: %s, height: %s", previewSize.width, previewSize.height));
+
         parameters.setPreviewSize(previewSize.width, previewSize.height);
-        DragonflyLogger.debug(LOG_TAG, "getBestPreviewSize: " + previewSize.width);
-        DragonflyLogger.debug(LOG_TAG, "getBestPreviewSize: " + previewSize.height);
 
         camera.setParameters(parameters);
     }
 
+    // Credits:
+    // https://github.com/florent37/CameraFragment/blob/master/camerafragment/src/main/java/com/github/florent37/camerafragment/internal/utils/CameraHelper.java
     private Camera.Size getBestPreviewSize(int width, int height, Camera.Parameters parameters) {
-        Camera.Size result = null;
+        final double ASPECT_TOLERANCE = 0.1;
+        double targetRatio = (double) height / width;
+        Camera.Size optimalSize = null;
+        double minDiff = Double.MAX_VALUE;
 
-        for (Camera.Size size : parameters.getSupportedPreviewSizes()) {
-            if (size.width <= width && size.height <= height) {
-                if (result == null) {
-                    result = size;
-                } else {
-                    int resultArea = result.width * result.height;
-                    int newArea = size.width * size.height;
+        int targetHeight = height;
 
-                    if (newArea > resultArea) {
-                        result = size;
-                    }
+        List<Camera.Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
+        for (Camera.Size size : supportedPreviewSizes) {
+            double ratio = (double) size.width / size.height;
+
+            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) {
+                continue;
+            }
+
+            if (Math.abs(size.height - targetHeight) < minDiff) {
+                optimalSize = size;
+                minDiff = Math.abs(size.height - targetHeight);
+            }
+        }
+
+        if (optimalSize == null) {
+            minDiff = Double.MAX_VALUE;
+            for (Camera.Size size : supportedPreviewSizes) {
+                if (Math.abs(size.height - targetHeight) < minDiff) {
+                    optimalSize = size;
+                    minDiff = Math.abs(size.height - targetHeight);
                 }
             }
         }
 
-        return result;
+        return optimalSize;
     }
 
     /**
@@ -220,6 +244,15 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         }
 
         Camera.Parameters parameters = camera.getParameters();
+
+        if (snapshoting) {
+            stopPreview();
+            snapshoting = false;
+
+            callback.onSnapshotCaptured(data, convertSize(parameters.getPreviewSize()), getOrientationDegrees());
+            return;
+        }
+
         callback.onFrameReady(data, convertSize(parameters.getPreviewSize()), getOrientationDegrees());
 
         new Timer().schedule(new TimerTask() {
@@ -249,6 +282,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
     public interface LensViewCallback {
 
         void onFrameReady(byte[] data, Size previewSize, int rotation);
+
+        void onSnapshotCaptured(byte[] data, Size previewSize, int rotation);
 
         void onPreviewStarted(Size previewSize, int rotation);
     }

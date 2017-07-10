@@ -1,16 +1,17 @@
 package com.ciandt.dragonfly.example
 
 import android.app.Application
+import android.os.Environment
 import com.ciandt.dragonfly.example.config.Features
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger
-
 import com.crashlytics.android.Crashlytics
 import com.facebook.stetho.Stetho
+import com.google.firebase.FirebaseApp
 import com.squareup.leakcanary.LeakCanary
-
 import io.fabric.sdk.android.Fabric
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
+import java.io.File
 
 class DragonflyApplication : Application() {
 
@@ -20,14 +21,15 @@ class DragonflyApplication : Application() {
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
-            return;
+            return
         }
-        LeakCanary.install(this);
+        LeakCanary.install(this)
 
         setupCrashlytics()
         setupCalligraphy()
         setupStetho()
         setupDragonflyLib()
+        setupFirebase()
     }
 
     private fun setupCrashlytics() {
@@ -56,5 +58,17 @@ class DragonflyApplication : Application() {
     private fun setupDragonflyLib() {
         DragonflyLogger.setLogLevel(DragonflyLogger.LOG_LEVEL_DEBUG)
         DragonflyConfig.shouldSaveBitmapsInDebugMode(Features.SAVE_CAPTURED_IMAGES_TO_DEVICE)
+
+        val stagingPath = Environment.getExternalStorageDirectory().absolutePath + File.separator + BuildConfig.APPLICATION_ID
+        DragonflyConfig.setStagingPath(stagingPath)
+
+        val userSavedImagePath = Environment.getExternalStorageDirectory().absolutePath + File.separator + getString(R.string.app_name)
+        DragonflyConfig.setUserSavedImagesPath(userSavedImagePath)
+
+        DragonflyConfig.setMaxModelLoadingRetryAttempts(5)
+    }
+
+    private fun setupFirebase() {
+        FirebaseApp.initializeApp(this)
     }
 }

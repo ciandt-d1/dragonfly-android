@@ -3,32 +3,43 @@ package com.ciandt.dragonfly.lens.ui;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.media.MediaActionSound;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ciandt.dragonfly.CameraView;
 import com.ciandt.dragonfly.R;
+import com.ciandt.dragonfly.base.ui.ImageScaleTypes;
 import com.ciandt.dragonfly.base.ui.Orientation;
 import com.ciandt.dragonfly.base.ui.Size;
-import com.ciandt.dragonfly.data.Model;
+import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
+import com.ciandt.dragonfly.infrastructure.PermissionsMapping;
+import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
+import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
+import com.ciandt.dragonfly.tensorflow.Classifier;
+
+import java.util.List;
 
 /**
  * Created by iluz on 5/22/17.
  */
 
-public class DragonflyLensView extends FrameLayout implements DragonflyLensContract.LensView, CameraView.LensViewCallback {
+public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyLensRealTimeContract.LensRealTimeView, CameraView.LensViewCallback {
 
-    private static final String LOG_TAG = DragonflyLensView.class.getSimpleName();
+    private static final String LOG_TAG = DragonflyLensRealtimeView.class.getSimpleName();
 
     @Orientation.Mode
     private int orientation;
@@ -36,24 +47,37 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
     private TextView labelView;
     private CameraView cameraView;
     private ImageView ornamentView;
+    private ImageButton btnSnapshot;
+    private ProgressBar progressBar;
 
-    private DragonflyLensContract.LensPresenter lensPresenter;
+    private DragonflyLensRealTimeContract.LensRealTimePresenter lensRealTimePresenter;
 
     private CameraOrnamentVisibilityCallback cameraOrnamentVisibilityCallback;
+    private SnapshotCallbacks snapshotCallbacks;
+    private PermissionsCallback permissionsCallback;
 
-    private static final ImageView.ScaleType[] SCALE_TYPES = {
-            ImageView.ScaleType.MATRIX,
-            ImageView.ScaleType.FIT_XY,
-            ImageView.ScaleType.FIT_START,
-            ImageView.ScaleType.FIT_CENTER,
-            ImageView.ScaleType.FIT_END,
-            ImageView.ScaleType.CENTER,
-            ImageView.ScaleType.CENTER_CROP,
-            ImageView.ScaleType.CENTER_INSIDE
-    };
+    private List<Classifier.Recognition> lastClassifications;
 
     public void setCameraOrnamentVisibilityCallback(CameraOrnamentVisibilityCallback cameraOrnamentVisibilityCallback) {
         this.cameraOrnamentVisibilityCallback = cameraOrnamentVisibilityCallback;
+    }
+
+    public void setSnapshotCallbacks(SnapshotCallbacks snapshotCallbacks) {
+        this.snapshotCallbacks = snapshotCallbacks;
+    }
+
+    public void setPermissionsCallback(PermissionsCallback permissionsCallback) {
+        this.permissionsCallback = permissionsCallback;
+    }
+
+    @Override
+    public List<Classifier.Recognition> getLastClassifications() {
+        return lastClassifications;
+    }
+
+    @Override
+    public void setLastClassifications(List<Classifier.Recognition> classifications) {
+        lastClassifications = classifications;
     }
 
     @Override
@@ -81,7 +105,7 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
 
     @Override
     public void onModelReady(Model model) {
-        // TODO: define if we should use this info locally (avoid calling the presenter while the model is not ready?)
+
     }
 
     @Override
@@ -94,19 +118,51 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
         // TODO: handle the error in a user friendly way.
     }
 
-    public DragonflyLensView(Context context) {
+    @Override
+    public void captureCameraFrame() {
+        if (permissionsCallback == null) {
+            throw new IllegalStateException("setPermissionsCallback() should be called with a valid PermissionsCallback instance");
+        }
+
+        if (permissionsCallback.checkPermissions(PermissionsMapping.CAPTURE_FRAME)) {
+            cameraView.takeSnapshot();
+        }
+    }
+
+    @Override
+    public void onStartTakingSnapshot() {
+        if (snapshotCallbacks != null) {
+            snapshotCallbacks.onStartTakingSnapshot();
+        }
+    }
+
+    @Override
+    public void onSnapshotTaken(DragonflyCameraSnapshot snapshot) {
+        if (snapshotCallbacks != null) {
+            snapshotCallbacks.onSnapshotTaken(snapshot);
+        }
+    }
+
+    @Override
+    public void onSnapshotError(DragonflySnapshotException e) {
+        if (snapshotCallbacks != null) {
+            snapshotCallbacks.onSnapshotError(e);
+        }
+    }
+
+    public DragonflyLensRealtimeView(Context context) {
         super(context);
         initialize(context, null);
     }
 
-    public DragonflyLensView(Context context, AttributeSet attrs) {
+    public DragonflyLensRealtimeView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize(context, attrs);
     }
 
-    public DragonflyLensView(Context context,
-                             AttributeSet attrs,
-                             int defStyle) {
+    public DragonflyLensRealtimeView(Context context,
+                                     AttributeSet attrs,
+                                     int defStyle) {
         super(context, attrs, defStyle);
         initialize(context, attrs);
     }
@@ -120,16 +176,28 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
         DragonflyLogger.debug(LOG_TAG, "initialize()");
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.dragonfly_lens_view, this);
+        inflater.inflate(R.layout.dragonfly_lens_realtime_view, this);
 
-        labelView = (TextView) this.findViewById(R.id.labelView);
+        labelView = (TextView) this.findViewById(R.id.dragonflyLensLabelView);
 
-        cameraView = (CameraView) this.findViewById(R.id.cameraView);
+        cameraView = (CameraView) this.findViewById(R.id.dragonflyLensCameraView);
         cameraView.setOrientation(orientation);
 
-        ornamentView = (ImageView) this.findViewById(R.id.ornamentView);
+        ornamentView = (ImageView) this.findViewById(R.id.dragonflyLensOrnamentView);
 
-        lensPresenter = new DragonflyLensPresenter(new DragonflyLensInteractor(getContext()));
+        btnSnapshot = (TakePhotoButton) this.findViewById(R.id.dragonflyLensBtnSnapshot);
+        btnSnapshot.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                new MediaActionSound().play(MediaActionSound.SHUTTER_CLICK);
+                lensRealTimePresenter.takeSnapshot();
+            }
+        });
+
+        progressBar = (ProgressBar) this.findViewById(R.id.dragonflyLensLoading);
+
+        lensRealTimePresenter = new DragonflyLensRealTimePresenter(new DragonflyLensClassificatorInteractor(getContext()), new DragonflyLensSnapshotInteractor(getContext()));
 
         processAttributeSet(context, attrs);
     }
@@ -139,16 +207,16 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
             return;
         }
 
-        TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.DragonflyLensView, 0, 0);
+        TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.DragonflyLensRealtimeView, 0, 0);
         try {
-            Drawable ornamentDrawable = typedArray.getDrawable(R.styleable.DragonflyLensView_cameraOrnament);
+            Drawable ornamentDrawable = typedArray.getDrawable(R.styleable.DragonflyLensRealtimeView_dlvCameraOrnament);
             if (ornamentDrawable != null) {
                 ornamentView.setImageDrawable(ornamentDrawable);
             }
 
-            final int scaleTypeIndex = typedArray.getInt(R.styleable.DragonflyLensView_cameraOrnamentScaleType, -1);
-            if (scaleTypeIndex >= 0 && scaleTypeIndex <= SCALE_TYPES.length) {
-                ornamentView.setScaleType(SCALE_TYPES[scaleTypeIndex]);
+            final int scaleTypeIndex = typedArray.getInt(R.styleable.DragonflyLensRealtimeView_dlvCameraOrnamentScaleType, -1);
+            if (scaleTypeIndex >= 0 && scaleTypeIndex <= ImageScaleTypes.VALUES.length) {
+                ornamentView.setScaleType(ImageScaleTypes.VALUES[scaleTypeIndex]);
             }
         } finally {
             typedArray.recycle();
@@ -156,9 +224,8 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
     }
 
     @Override
-    public void start(Model model) {
-        loadModel(model);
-        lensPresenter.attach(this);
+    public void start() {
+        lensRealTimePresenter.attachView(this);
         startCameraView();
 
         // Not sure why, but this guarantees the camera works after turning the screen off and then
@@ -176,16 +243,24 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
 
     @Override
     public void stop() {
-        lensPresenter.detach();
+        lensRealTimePresenter.detachView();
         stopCameraView();
 
         cameraView.setVisibility(GONE);
     }
 
-    private void loadModel(Model model) {
+    @Override
+    public void loadModel(Model model) {
         DragonflyLogger.debug(LOG_TAG, String.format("%s.loadModel(%s)", LOG_TAG, model));
 
-        lensPresenter.loadModel(model);
+        lensRealTimePresenter.loadModel(model);
+    }
+
+    @Override
+    public void unloadModel() {
+        DragonflyLogger.debug(LOG_TAG, String.format("%s.unloadModel", LOG_TAG));
+
+        lensRealTimePresenter.unloadModel();
     }
 
     private void startCameraView() {
@@ -208,7 +283,12 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
 
     @Override
     public void onFrameReady(byte[] data, Size previewSize, int rotation) {
-        lensPresenter.analyzeYUVNV21(data, previewSize.getWidth(), previewSize.getHeight(), rotation);
+        lensRealTimePresenter.analyzeYUVNV21(data, previewSize.getWidth(), previewSize.getHeight(), rotation);
+    }
+
+    @Override
+    public void onSnapshotCaptured(byte[] data, Size previewSize, int rotation) {
+        lensRealTimePresenter.onSnapshotCaptured(data, previewSize.getWidth(), previewSize.getHeight(), rotation);
     }
 
     @Override
@@ -217,11 +297,24 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
     }
 
     @Override
+    public void showLoading() {
+        progressBar.setVisibility(VISIBLE);
+        btnSnapshot.setVisibility(INVISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        progressBar.setVisibility(INVISIBLE);
+        btnSnapshot.setVisibility(VISIBLE);
+    }
+
+    @Override
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         SavedState ss = new SavedState(superState);
         ss.childrenStates = new SparseArray();
         for (int i = 0; i < getChildCount(); i++) {
+            //noinspection unchecked
             getChildAt(i).saveHierarchyState(ss.childrenStates);
         }
         return ss;
@@ -232,6 +325,7 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
         SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
         for (int i = 0; i < getChildCount(); i++) {
+            //noinspection unchecked
             getChildAt(i).restoreHierarchyState(ss.childrenStates);
         }
     }
@@ -262,6 +356,7 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
         @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
+            //noinspection unchecked
             out.writeSparseArray(childrenStates);
         }
 
@@ -287,5 +382,19 @@ public class DragonflyLensView extends FrameLayout implements DragonflyLensContr
     public interface CameraOrnamentVisibilityCallback {
 
         void onMakingCameraOrnamentVisible(ImageView ornament);
+    }
+
+    public interface SnapshotCallbacks {
+
+        void onStartTakingSnapshot();
+
+        void onSnapshotTaken(DragonflyCameraSnapshot snapshot);
+
+        void onSnapshotError(DragonflySnapshotException e);
+    }
+
+    public interface PermissionsCallback {
+
+        boolean checkPermissions(List<String> permissions);
     }
 }

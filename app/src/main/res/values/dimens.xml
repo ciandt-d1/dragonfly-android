@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="toolbar_elevation">4dp</dimen>
+    <dimen name="touchable_area_minimum_dimension">48dp</dimen>
+
     <dimen name="model_selection_title_margin_top">56dp</dimen>
     <dimen name="model_selection_title_horizontal_margin">30dp</dimen>
 
@@ -42,5 +45,62 @@
     <dimen name="about_powered_height">56dp</dimen>
     <dimen name="about_powered_horizontal_margin">10dp</dimen>
     <dimen name="about_powered_drawable_padding">-32dp</dimen>
+
+    <dimen name="chip_space_before">16dp</dimen>
+    <dimen name="chip_space_between">4dp</dimen>
+    <dimen name="chip_space_after">16dp</dimen>
+    <dimen name="fading_edges_width">16dp</dimen>
+
+    <dimen name="chip_height">32dp</dimen>
+
+    <dimen name="back_button_padding">8dp</dimen>
+    <dimen name="back_button_height">48dp</dimen>
+    <dimen name="back_button_width">48dp</dimen>
+    <dimen name="back_button_margin_left">8dp</dimen>
+    <dimen name="back_button_margin_top">8dp</dimen>
+
+    <dimen name="feedback_cardview_margin">8dp</dimen>
+    <dimen name="feedback_cardview_corner_radius">2dp</dimen>
+
+    <dimen name="feedback_result_text_vertical_margin">16dp</dimen>
+    <dimen name="feedback_result_text_padding_left">16dp</dimen>
+
+    <dimen name="feedback_result_positive_button_width">48dp</dimen>
+    <dimen name="feedback_result_positive_button_margin_left">8dp</dimen>
+
+    <dimen name="feedback_result_negative_button_width">48dp</dimen>
+    <dimen name="feedback_result_negative_button_margin_right">8dp</dimen>
+
+    <dimen name="feedback_result_under_revision_margin_left">8dp</dimen>
+    <dimen name="feedback_result_under_revision_padding_right">16dp</dimen>
+
+    <dimen name="feedback_result_line_horizontal_margin">8dp</dimen>
+    <dimen name="feedback_result_line_height">1dp</dimen>
+
+    <dimen name="feedback_result_other_text_vertical_margin">16dp</dimen>
+    <dimen name="feedback_result_other_text_horizontal_margin">16dp</dimen>
+
+    <dimen name="feedback_result_chips_margin_top">8dp</dimen>
+    <dimen name="feedback_result_chips_margin_bottom">16dp</dimen>
+
+    <dimen name="feedback_result_more_info_height">48dp</dimen>
+    <dimen name="feedback_result_more_info_padding_left">16dp</dimen>
+
+    <dimen name="feedback_form_title_margin_top">20dp</dimen>
+    <dimen name="feedback_form_title_horizontal_margin">16dp</dimen>
+
+    <dimen name="feedback_form_other_options_margin_top">24dp</dimen>
+    <dimen name="feedback_form_other_options_horizontal_margin">16dp</dimen>
+
+    <dimen name="feedback_form_chips_margin_top">8dp</dimen>
+
+    <dimen name="feedback_form_input_margin_top">24dp</dimen>
+    <dimen name="feedback_form_input_horizontal_margin">16dp</dimen>
+    <dimen name="feedback_form_input_text_margin_top">28dp</dimen>
+    <dimen name="feedback_form_input_text_margin_bottom">4dp</dimen>
+
+    <dimen name="feedback_form_buttons_margin_top">24dp</dimen>
+    <dimen name="feedback_form_buttons_margin_right">4dp</dimen>
+    <dimen name="feedback_form_buttons_horizontal_padding">16dp</dimen>
 
 </resources>

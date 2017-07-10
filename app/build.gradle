@@ -17,6 +17,7 @@ repositories {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: "kotlin-noarg"
 apply plugin: 'io.fabric'
 
 apply from: '../versions.gradle'
@@ -24,8 +25,8 @@ apply from: '../sonarqube.gradle'
 apply from: '../quality.gradle'
 
 ext {
-    // The order is based on way the Play store works with multiple APKs. Remember, if a users
-    // device is compatible with more than one APK for an application the device will receive the
+    // The order is based on way the Play store works with multiple APKs. Remember, if a user's
+    // device is compatible with more than one APK for an application, the device will receive the
     // version with the highest version code. This is why an armeabi build will be given a prefix
     // of 1 as this build will also be able to run a armeabi-v7a device (2) and in some cases a x86
     // device (8) due to a proprietary ARM translation layer called libhoudini.
@@ -38,6 +39,9 @@ ext {
 
     SONAR_PROJECT_NAME = "Dragonfly Android Example App"
     SONAR_PROJECT_KEY = "DragonflyAndroidExampleApp"
+    SONAR_BINARIES = "/intermediates/classes/prdDragonfly/debug"
+    SONAR_JAVA_BINARIES = "${project.buildDir}/intermediates/classes/prdDragonfly/debug"
+    SONAR_JAVA_TEST_BINARIES = "${project.buildDir}/intermediates/classes/prdDragonfly/debug"
 }
 
 def keystoreProperties = new Properties()
@@ -61,11 +65,15 @@ android {
         versionName "${appVersionMajor}.${appVersionMinor}.${appVersionPatch}"
         versionCode appVersionMajor * appVersionMajorMultiplier + appVersionMinor * appVersionMinorMultiplier + appVersionPatch * appVersionPatchMultiplier
 
+        resValue "string", "app_name", "Dragonfly"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         resConfigs "en"
 
         buildConfigField 'int', 'LOG_LEVEL', '4' // DragonflyLogger.LOG_LEVEL_DEBUG = 4;
+
+        buildConfigField 'String', 'TENANT', '"ciandt"'
 
         manifestPlaceholders = [
                 FABRIC_API_KEY: fabricProperties['apiKey']
@@ -98,6 +106,24 @@ android {
         }
     }
 
+    flavorDimensions "environment", "tenant"
+
+    productFlavors {
+        dragonfly {
+            dimension "tenant"
+        }
+
+        dev {
+            dimension "environment"
+
+            applicationId "com.ciandt.dragonfly.example.dev"
+        }
+
+        prd {
+            dimension "environment"
+        }
+    }
+
     splits {
         // Configures multiple APKs based on ABI.
         abi {
@@ -119,12 +145,11 @@ android {
 
 dependencies {
 
-    def supportLibraryVersion = '25.3.1'
-
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:${kotlin_version}"
 
+    def supportLibraryVersion = '25.4.0'
     compile "com.android.support:appcompat-v7:${supportLibraryVersion}"
     compile "com.android.support:cardview-v7:${supportLibraryVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibraryVersion}"
@@ -146,6 +171,12 @@ dependencies {
     debugCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
     testCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
+
+    def firebaseVersion = '11.0.1'
+    compile "com.google.firebase:firebase-core:${firebaseVersion}"
+    compile "com.google.firebase:firebase-auth:${firebaseVersion}"
+    compile "com.google.firebase:firebase-storage:${firebaseVersion}"
+    compile "com.google.firebase:firebase-database:${firebaseVersion}"
 
     compile 'com.facebook.stetho:stetho:1.5.0'
 
@@ -169,8 +200,69 @@ dependencies {
     })
 
     testCompile 'junit:junit:4.12'
-    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:${kotlin_version}"
     testCompile 'org.amshove.kluent:kluent:1.20'
+}
+
+// - google-services.json
+task copyGoogleServicesJson(type: Copy) {
+    from "../.configs/google-services"
+    into "src"
+
+    doLast {
+        tasks.each { task ->
+            def matches
+            if ((matches = task.name =~ /process(.+?)(Debug|Release)GoogleServices/)) {
+                def flavor = matches.group(1).uncapitalize()
+
+                task.quickstartFile = project.file("./src/${flavor}/google-services.json")
+            }
+        }
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name ==~ /process.*GoogleServices/) {
+        task.dependsOn copyGoogleServicesJson
+    }
+}
+
+
+apply plugin: 'com.google.gms.google-services'
+
+/**
+ * Fix versionName and applicationId attributes of the variant.
+ * For the default flavor, the only thing done is to add the environment as suffix, if it's not prd.
+ * For example:
+ * - 2.0.2.dev
+ * If the environment is prd, nothing changes. For example:
+ * - 2.0.2
+ *
+ * For other flavors, the following is done:
+ * - If the environment is prd, only the tenant name is appended to the versionName. For example:
+ * -- 2.0.2.tenant
+ *
+ * - If the environment is any other than prd, then both the tenant and the environment are appended.
+ * For example:
+ * -- 2.0.2.tenant.dev
+ *
+ * This also add a suffix " (<ENVIRONMENT_NAME>)" to the app name if it points to the development environment.
+ */
+android.applicationVariants.all { variant ->
+    def tenant = variant.getProductFlavors().get(1).name
+    if (tenant != 'dragonfly') {
+        variant.mergedFlavor.versionName += '.' + tenant
+
+        variant.mergedFlavor.applicationId += '.' + tenant
+    }
+
+    def environment = variant.getProductFlavors().get(0).name
+    if (environment != 'prd') {
+        variant.mergedFlavor.versionName += '.' + environment
+
+        def appName = variant.mergedFlavor.resValues.get('app_name').getValue()
+        variant.resValue 'string', 'app_name', sprintf('%1$s (%2$s)', [appName, environment.toUpperCase()])
+    }
 }
 
 android.applicationVariants.all { variant ->
@@ -188,7 +280,7 @@ android.applicationVariants.all { variant ->
         output.versionCodeOverride = archVersionCode * appVersionArchsMultiplier + variant.versionCode
 
         // Change filename of apk file
-        def version = variant.versionName + "-" + archVersionCode
+        def version = variant.versionName.replace(".", "-") + "-" + archVersionCode
         def file = output.outputFile
         output.outputFile = new File(file.parent, file.name.replace("app-", "app-" + version + "-"))
 
@@ -206,7 +298,6 @@ android.applicationVariants.all { variant ->
         }
     }
 }
-
 
 task setupFabric(type: Exec) {
     commandLine 'sh', './scripts/setup_fabric.sh'
@@ -232,6 +323,6 @@ task copySdkClasses(type: Copy) {
 }
 
 afterEvaluate {
-    compileDebugUnitTestSources.dependsOn copyTestClasses
-    compileDebugAndroidTestSources.dependsOn copySdkClasses
+    compileDevDragonflyDebugUnitTestSources.dependsOn copyTestClasses
+    compileDevDragonflyDebugAndroidTestSources.dependsOn copySdkClasses
 }

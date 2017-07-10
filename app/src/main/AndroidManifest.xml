@@ -18,8 +18,9 @@
             android:name="io.fabric.ApiKey"
             android:value="${FABRIC_API_KEY}"/>
 
-        <activity android:name=".features.modelselection.ModelSelectionActivity"
-                  android:screenOrientation="portrait">
+        <activity
+            android:name=".features.modelselection.ModelSelectionActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -27,11 +28,17 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".features.about.AboutActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".features.about.AboutActivity"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".features.realtime.RealTimeActivity"
-                  android:screenOrientation="portrait"/>
+        <activity
+            android:name=".features.realtime.RealTimeActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".features.feedback.FeedbackActivity"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="adjustResize"/>
+
     </application>
-
 </manifest>

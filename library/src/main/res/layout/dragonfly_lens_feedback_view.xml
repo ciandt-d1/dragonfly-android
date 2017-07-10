@@ -4,12 +4,13 @@
        android:layout_width="match_parent"
        android:layout_height="match_parent">
 
-    <com.ciandt.dragonfly.CameraView
-        android:id="@+id/cameraView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <ImageView android:id="@+id/previewImageView"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:contentDescription="@string/lens_content_description_captured_image"
+               android:scaleType="centerCrop"/>
 
-    <ImageView android:id="@+id/ornamentView"
+    <ImageView android:id="@+id/dragonflyLensOrnamentView"
                android:layout_width="match_parent"
                android:layout_height="match_parent"
                android:layout_centerInParent="true"
@@ -20,13 +21,4 @@
                tools:tint="@android:color/white"
                tools:visibility="visible"/>
 
-    <TextView android:id="@+id/labelView"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              style="@style/Dragonfly.Lens.Label"
-              android:background="@drawable/dragonfly_label_background"
-              android:layout_gravity="center"
-              android:visibility="gone"
-              tools:text="Hammer 25%"
-              tools:visibility="visible"/>
 </merge>

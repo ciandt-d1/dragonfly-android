@@ -1,6 +1,6 @@
 package com.ciandt.dragonfly.example.features.modelselection
 
-import com.ciandt.dragonfly.data.Model
+import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.shared.BasePresenter
 
 class ModelSelectionPresenter(private var interactor: ModelSelectionContract.Interactor) : BasePresenter<ModelSelectionContract.View>(), ModelSelectionContract.Presenter {

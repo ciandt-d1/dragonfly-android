@@ -6,7 +6,9 @@ import android.os.AsyncTask;
 import android.support.v4.os.AsyncTaskCompat;
 import android.util.TimingLogger;
 
-import com.ciandt.dragonfly.data.Model;
+import com.ciandt.dragonfly.base.ui.BaseInteractorContract.AsyncTaskResult;
+import com.ciandt.dragonfly.base.ui.ClassificatorInteractor;
+import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.image_processing.ImageUtils;
 import com.ciandt.dragonfly.image_processing.YUVNV21ToRGBA888Converter;
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
@@ -23,13 +25,14 @@ import java.util.UUID;
  * Created by iluz on 5/26/17.
  */
 
-public class DragonflyLensInteractor implements DragonflyLensContract.LensInteractorContract {
+public class DragonflyLensClassificatorInteractor implements ClassificatorInteractor {
 
-    private static final String LOG_TAG = DragonflyLensInteractor.class.getSimpleName();
+    // Manually set to avoid '"DragonflyLensClassificatorInteractor" exceeds limit of 23 characters'
+    private static final String LOG_TAG = "ClassificatorInteractor";
 
     private final Context context;
 
-    private DragonflyLensContract.LensPresenter presenter;
+    private LensClassificatorInteractorCallbacks classificationCallbacks;
 
     private Classifier classifier;
     private Model model;
@@ -40,14 +43,14 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
     private final YUVNV21ToRGBA888Converter yuvToRgbConverter;
 
-    public DragonflyLensInteractor(Context context) {
+    public DragonflyLensClassificatorInteractor(Context context) {
         this.context = context.getApplicationContext();
         this.yuvToRgbConverter = new YUVNV21ToRGBA888Converter(context);
     }
 
     @Override
-    public void setPresenter(DragonflyLensContract.LensPresenter presenter) {
-        this.presenter = presenter;
+    public void setClassificationCallbacks(LensClassificatorInteractorCallbacks classificationCallbacks) {
+        this.classificationCallbacks = classificationCallbacks;
     }
 
     @Override
@@ -128,9 +131,9 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
     private static class LoadModelTask extends AsyncTask<Model, Void, AsyncTaskResult<Model, DragonflyModelException>> {
 
-        private final DragonflyLensInteractor interactor;
+        private final DragonflyLensClassificatorInteractor interactor;
 
-        public LoadModelTask(DragonflyLensInteractor interactor) {
+        public LoadModelTask(DragonflyLensClassificatorInteractor interactor) {
             this.interactor = interactor;
         }
 
@@ -165,23 +168,23 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("LoadModelTask.onPostExecute() - error | exception: %s", result.getError()));
 
-                interactor.presenter.onModelFailure(result.getError());
+                interactor.classificationCallbacks.onModelFailure(result.getError());
             } else {
                 Model model = result.getResult();
 
                 DragonflyLogger.debug(LOG_TAG, String.format("LoadModelTask.onPostExecute() - success | model: %s", result.getResult()));
 
                 interactor.model = model;
-                interactor.presenter.onModelReady(model);
+                interactor.classificationCallbacks.onModelReady(model);
             }
         }
     }
 
     private static class AnalyzeBitmapTask extends AsyncTask<Bitmap, Void, AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException>> {
 
-        private final DragonflyLensInteractor interactor;
+        private final DragonflyLensClassificatorInteractor interactor;
 
-        public AnalyzeBitmapTask(DragonflyLensInteractor interactor) {
+        public AnalyzeBitmapTask(DragonflyLensClassificatorInteractor interactor) {
             this.interactor = interactor;
         }
 
@@ -191,8 +194,16 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
 
             DragonflyLogger.debug(LOG_TAG, "AnalyzeBitmapTask.doInBackground() - start");
 
+            // To see the log ouput, make sure to run the command below:
+            // adb shell setprop log.tag.<LOG_TAG> VERBOSE
+            TimingLogger timings = new TimingLogger(LOG_TAG, "AnalyzeBitmapTask.doInBackground()");
+
             try {
-                List<Classifier.Recognition> results = interactor.classifier.recognizeImage(bitmap);
+                Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, interactor.model.getInputSize(), interactor.model.getInputSize(), false);
+                timings.addSplit("Scale bitmap");
+
+                List<Classifier.Recognition> results = interactor.classifier.recognizeImage(croppedBitmap);
+                timings.addSplit("Classify image");
 
                 return new AsyncTaskResult<>(results, null);
             } catch (Exception e) {
@@ -207,20 +218,20 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeBitmapTask.onPostExecute() - error | exception: %s", result.getError()));
 
-                interactor.presenter.onImageAnalysisFailed(result.getError());
+                interactor.classificationCallbacks.onImageAnalysisFailed(result.getError());
             } else {
                 DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeBitmapTask.onPostExecute() - success | recognitions: %s", result.getResult()));
 
-                interactor.presenter.onImageAnalyzed(result.getResult());
+                interactor.classificationCallbacks.onImageAnalyzed(result.getResult());
             }
         }
     }
 
     private static class AnalyzeYUVN21Task extends AsyncTask<AnalyzeYUVN21Task.TaskParams, Void, AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException>> {
 
-        private final DragonflyLensInteractor interactor;
+        private final DragonflyLensClassificatorInteractor interactor;
 
-        public AnalyzeYUVN21Task(DragonflyLensInteractor interactor) {
+        public AnalyzeYUVN21Task(DragonflyLensClassificatorInteractor interactor) {
             this.interactor = interactor;
         }
 
@@ -249,8 +260,9 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
                 if (DragonflyConfig.shouldSaveBitmapsInDebugMode()) {
                     DragonflyLogger.warn(LOG_TAG, "Saving bitmaps for debugging.");
 
-                    ImageUtils.saveBitmap(bitmap, String.format("original-%s%s.png", System.currentTimeMillis(), UUID.randomUUID().toString()));
-                    ImageUtils.saveBitmap(croppedBitmap, String.format("cropped-%s%s.png", System.currentTimeMillis(), UUID.randomUUID().toString()));
+                    String baseName = String.format("%s-%s", System.currentTimeMillis(), UUID.randomUUID().toString());
+                    ImageUtils.saveBitmapToStagingArea(bitmap, String.format("original-%s.png", baseName));
+                    ImageUtils.saveBitmapToStagingArea(croppedBitmap, String.format("cropped-%s.png", baseName));
                 }
 
                 return new AsyncTaskResult<>(results, null);
@@ -269,11 +281,11 @@ public class DragonflyLensInteractor implements DragonflyLensContract.LensIntera
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeYUVN21Task.onPostExecute() - error | exception: %s", result.getError()));
 
-                interactor.presenter.onImageAnalysisFailed(result.getError());
+                interactor.classificationCallbacks.onImageAnalysisFailed(result.getError());
             } else {
                 DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeYUVN21Task.onPostExecute() - success | recognitions: %s", result.getResult()));
 
-                interactor.presenter.onImageAnalyzed(result.getResult());
+                interactor.classificationCallbacks.onImageAnalyzed(result.getResult());
             }
         }
 

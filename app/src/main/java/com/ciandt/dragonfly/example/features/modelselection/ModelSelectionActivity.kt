@@ -7,7 +7,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
-import com.ciandt.dragonfly.data.Model
+import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.features.about.AboutActivity
 import com.ciandt.dragonfly.example.features.realtime.RealTimeActivity
@@ -42,14 +42,16 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
 
         if (savedInstanceState != null) {
             update(savedInstanceState.getParcelableArrayList(MODELS_BUNDLE))
-        } else {
-            presenter.loadModels()
         }
     }
 
     override fun onResume() {
         super.onResume()
         presenter.attachView(this)
+
+        if (models.isEmpty()) {
+            presenter.loadModels()
+        }
     }
 
     override fun onPause() {

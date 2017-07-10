@@ -17,6 +17,8 @@ package com.ciandt.dragonfly.tensorflow;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.List;
 
@@ -28,7 +30,7 @@ public interface Classifier {
     /**
      * An immutable result returned by a Classifier describing what was recognized.
      */
-    class Recognition {
+    class Recognition implements Parcelable {
 
         /**
          * A unique identifier for what has been recognized. Specific to the class, not the instance
@@ -108,13 +110,43 @@ public interface Classifier {
 
             return resultString.trim();
         }
+
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.id);
+            dest.writeString(this.title);
+            dest.writeValue(this.confidence);
+            dest.writeParcelable(this.location, flags);
+        }
+
+        protected Recognition(Parcel in) {
+            this.id = in.readString();
+            this.title = in.readString();
+            this.confidence = (Float) in.readValue(Float.class.getClassLoader());
+            this.location = in.readParcelable(RectF.class.getClassLoader());
+        }
+
+        public static final Parcelable.Creator<Recognition> CREATOR = new Parcelable.Creator<Recognition>() {
+
+            @Override
+            public Recognition createFromParcel(Parcel source) {
+                return new Recognition(source);
+            }
+
+            @Override
+            public Recognition[] newArray(int size) {
+                return new Recognition[size];
+            }
+        };
     }
 
     List<Recognition> recognizeImage(Bitmap bitmap);
-
-    void enableStatLogging(final boolean debug);
-
-    String getStatString();
 
     void close();
 }

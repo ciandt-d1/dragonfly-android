@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:chipsView="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/feedbackResultContainer"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/feedback_result_background"
+              android:animateLayoutChanges="true"
+              android:orientation="vertical"
+              tools:showIn="@layout/activity_feedback">
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/touchable_area_minimum_dimension"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/result"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/feedback_result_text_vertical_margin"
+            android:layout_marginBottom="@dimen/feedback_result_text_vertical_margin"
+            android:paddingStart="@dimen/feedback_result_text_padding_left"
+            style="@style/Feedback.Result.Title"
+            tools:text="@string/feedback_classification"
+        />
+
+        <ImageButton
+            android:id="@+id/positiveButton"
+            android:layout_width="@dimen/feedback_result_positive_button_width"
+            android:layout_height="match_parent"
+            android:minWidth="@dimen/touchable_area_minimum_dimension"
+            android:layout_marginStart="@dimen/feedback_result_positive_button_margin_left"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/feedback_positive_button_content_description"
+            android:scaleType="center"
+            android:src="@drawable/thumbs_up_selector"
+        />
+
+        <ImageButton
+            android:id="@+id/negativeButton"
+            android:layout_width="@dimen/feedback_result_negative_button_width"
+            android:layout_height="match_parent"
+            android:minWidth="@dimen/touchable_area_minimum_dimension"
+            android:layout_marginEnd="@dimen/feedback_result_negative_button_margin_right"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/feedback_negative_button_content_description"
+            android:scaleType="center"
+            android:src="@drawable/thumbs_down_selector"
+        />
+
+        <TextView
+            android:id="@+id/underRevision"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/feedback_result_under_revision_margin_left"
+            android:paddingEnd="@dimen/feedback_result_under_revision_padding_right"
+            style="@style/Feedback.Result.UnderRevision"
+            android:gravity="center"
+            android:text="@string/feedback_under_revision"
+            android:visibility="gone"
+            tools:visibility="visible"
+        />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true">
+
+        <LinearLayout
+            android:id="@+id/chipsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <View
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/feedback_result_line_height"
+                android:layout_marginLeft="@dimen/feedback_result_line_horizontal_margin"
+                android:layout_marginRight="@dimen/feedback_result_line_horizontal_margin"
+                android:background="@color/feedback_result_line"
+            />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/feedback_result_other_text_vertical_margin"
+                android:layout_marginLeft="@dimen/feedback_result_other_text_horizontal_margin"
+                android:layout_marginRight="@dimen/feedback_result_other_text_horizontal_margin"
+                style="@style/Feedback.Result.Others"
+                android:text="@string/feedback_also_identify"
+            />
+
+            <com.ciandt.dragonfly.example.components.chips.ChipsView
+                android:id="@+id/chipsViews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/feedback_result_chips_margin_top"
+                android:layout_marginBottom="@dimen/feedback_result_chips_margin_bottom"
+                chipsView:chipLayout="@layout/item_chip"
+                chipsView:chipSpaceAfter="@dimen/chip_space_after"
+                chipsView:chipSpaceBefore="@dimen/chip_space_before"
+                chipsView:chipSpaceBetween="@dimen/chip_space_between"
+                chipsView:fadingEdges="true"
+                chipsView:fadingEdgesDrawable="@drawable/chip_gradient"
+                chipsView:fadingEdgesWidth="@dimen/fading_edges_width"
+                chipsView:selectable="false"
+            />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/line2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/feedback_result_line_height"
+            android:layout_marginLeft="@dimen/feedback_result_line_horizontal_margin"
+            android:layout_marginRight="@dimen/feedback_result_line_horizontal_margin"
+            android:layout_below="@id/chipsContainer"
+            android:background="@color/feedback_result_line"
+        />
+
+        <ImageView
+            android:id="@+id/arrow"
+            android:layout_width="@dimen/feedback_result_more_info_height"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/toggleButton"
+            android:layout_alignBottom="@+id/toggleButton"
+            android:layout_alignParentEnd="true"
+            android:contentDescription="@null"
+            android:scaleType="center"
+            android:src="@drawable/ic_arrow_up"
+        />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/toggleButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/feedback_result_more_info_height"
+            android:minHeight="@dimen/touchable_area_minimum_dimension"
+            android:paddingStart="@dimen/feedback_result_more_info_padding_left"
+            android:layout_below="@id/line2"
+            style="@style/Feedback.Result.MoreInfo"
+            android:gravity="center_vertical"
+            android:text="@string/feedback_more_info"
+        />
+
+    </RelativeLayout>
+
+</LinearLayout>

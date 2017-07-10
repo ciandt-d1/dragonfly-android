@@ -6,6 +6,13 @@
     <color name="colorPrimaryDark">#009175</color>
     <color name="colorAccent">#7C67E8</color>
 
+    <color name="black_87">#de000000</color>
+
+    <color name="white">#ffffff</color>
+
+    <color name="toolbar_background">@color/white</color>
+    <color name="toolbar_button_text">@color/colorAccent</color>
+
     <color name="model_selection_title">#414141</color>
     <color name="model_selection_subtitle">#757575</color>
     <color name="model_selection_line">#e0e0e0</color>
@@ -29,4 +36,26 @@
     <color name="dragonfly_lens_view_background">@android:color/black</color>
 
     <color name="task_description">@color/colorPrimaryDark</color>
+
+    <color name="real_time_back_button">#ffffff</color>
+
+    <color name="feedback_background">#000000</color>
+    <color name="feedback_submitted">#19d0a3</color>
+    <color name="feedback_more_info">#89000000</color>
+    <color name="feedback_close">#dd000000</color>
+
+    <color name="feedback_result_title">#dd000000</color>
+    <color name="feedback_result_under_revision">#60000000</color>
+    <color name="feedback_result_background">#ffffff</color>
+    <color name="feedback_result_line">#1e000000</color>
+    <color name="feedback_others">#89000000</color>
+
+    <color name="feedback_form_title">#ffffff</color>
+    <color name="feedback_form_others">#89ffffff</color>
+    <color name="feedback_form_input_line">#ffffff</color>
+    <color name="feedback_form_input_line_focused">#1de9b6</color>
+    <color name="feedback_form_cancel">#ffffff</color>
+    <color name="feedback_form_confirm">#18f7b6</color>
+    <color name="feedback_form_confirm_disabled">#33ffffff</color>
+
 </resources>

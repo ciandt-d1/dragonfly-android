@@ -6,9 +6,9 @@ package com.ciandt.dragonfly.base.ui;
 
 public interface BasePresenterContract<V> {
 
-    void attach(V view);
+    void attachView(V view);
 
-    void detach();
+    void detachView();
 
     boolean hasViewAttached();
 }

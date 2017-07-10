@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/feedback_background"
+    android:animateLayoutChanges="true"
+    tools:context="com.ciandt.dragonfly.example.features.feedback.FeedbackActivity">
+
+    <com.ciandt.dragonfly.feedback.ui.DragonflyLensFeedbackView
+        android:id="@+id/dragonFlyLensFeedbackView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:dlfvCameraOrnament="@drawable/dragonfly_lens_grid"
+        app:dlfvCameraOrnamentScaleType="center"/>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        style="@style/AppTheme.Toolbar"
+        android:elevation="@dimen/toolbar_elevation"
+        tools:ignore="UnusedAttribute">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="@dimen/back_button_width"
+                android:layout_height="@dimen/back_button_height"
+                android:layout_marginTop="@dimen/back_button_margin_top"
+                android:layout_marginLeft="@dimen/back_button_margin_left"
+                android:padding="@dimen/back_button_padding"
+                android:layout_centerVertical="true"
+                style="@style/AppTheme.Toolbar.Button.Navigation"
+                android:contentDescription="@string/feedback_back_content_description"
+                android:src="@drawable/ic_back_arrow"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/btnSaveImage"
+                android:layout_toEndOf="@id/btnBack"
+                android:layout_centerInParent="true"
+                style="@style/AppTheme.Toolbar.TextAppearance.Title"
+                android:text="@string/feedback_title"/>
+
+            <Button
+                android:id="@+id/btnSaveImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                style="@style/AppTheme.Toolbar.Button.Flat"
+                android:text="@string/feedback_save"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:layout_alignParentBottom="true"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:id="@+id/feedbackContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/feedbackFormView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/feedback_cardview_margin"
+                android:layout_alignParentBottom="true"
+                android:animateLayoutChanges="true"
+                android:visibility="gone"
+                card_view:cardCornerRadius="@dimen/feedback_cardview_corner_radius"
+                tools:visibility="visible">
+
+                <include layout="@layout/partial_feedback_form"/>
+
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/feedbackView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/feedback_cardview_margin"
+                android:layout_alignParentBottom="true"
+                android:alpha="0.0"
+                android:animateLayoutChanges="true"
+                card_view:cardCornerRadius="@dimen/feedback_cardview_corner_radius"
+                tools:alpha="1.0">
+
+                <include layout="@layout/partial_feedback_result"/>
+
+            </android.support.v7.widget.CardView>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

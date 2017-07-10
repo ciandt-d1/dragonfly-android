@@ -1,6 +1,6 @@
 package com.ciandt.dragonfly.lens.exception;
 
-import com.ciandt.dragonfly.data.Model;
+import com.ciandt.dragonfly.data.model.Model;
 
 /**
  * Created by iluz on 5/26/17.
