@@ -32,11 +32,11 @@
 
     <string name="permissions_open_settings">Settings</string>
     <string name="permissions_required_title">Permissions required</string>
-    <string name="permissions_required_description_realtime">Camera permission is required for this
-        functionality.
+    <string name="permissions_required_description">Please provide the required permissions.
     </string>
 
     <string name="real_time_back_button">Back to previous screen</string>
+    <string name="real_time_from_existing_picture">Select an existing picture</string>
 
     <string name="feedback_title">Results</string>
     <string name="feedback_save">Save</string>

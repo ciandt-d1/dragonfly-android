@@ -46,6 +46,9 @@
     <dimen name="about_powered_horizontal_margin">10dp</dimen>
     <dimen name="about_powered_drawable_padding">-32dp</dimen>
 
+    <dimen name="real_time_from_existing_picture_margin_right">64dp</dimen>
+    <dimen name="real_time_from_existing_picture_margin_bottom">24dp</dimen>
+
     <dimen name="chip_space_before">16dp</dimen>
     <dimen name="chip_space_between">4dp</dimen>
     <dimen name="chip_space_after">16dp</dimen>

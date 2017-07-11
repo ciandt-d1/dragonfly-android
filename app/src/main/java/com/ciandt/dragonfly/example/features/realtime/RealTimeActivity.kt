@@ -1,15 +1,15 @@
 package com.ciandt.dragonfly.example.features.realtime
 
-import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.StringRes
-import android.view.View.VISIBLE
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
+import com.ciandt.dragonfly.example.config.PermissionsMapping
 import com.ciandt.dragonfly.example.features.feedback.FeedbackActivity
 import com.ciandt.dragonfly.example.helpers.IntentHelper
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
@@ -58,6 +58,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
 
         setupBackButton()
         setupDragonflyLens()
+        setupSelectExistingImageButton()
     }
 
     override fun onDestroy() {
@@ -78,6 +79,12 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         dragonFlyLens.setSnapshotCallbacks(this)
 
         setupDragonflyLensPermissionsCallback()
+    }
+
+    private fun setupSelectExistingImageButton() {
+        btnSelectExistingPicture.setOnClickListener({
+            presenter.classifyExistingPicture()
+        })
     }
 
     private fun setupDragonflyLensPermissionsCallback() {
@@ -157,12 +164,38 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode != Activity.RESULT_OK) {
+            return
+        }
+
+        if (data == null) {
+            return
+        }
+
+        when (requestCode) {
+            REQUEST_CODE_SELECT_IMAGE -> {
+                DragonflyLogger.debug(LOG_TAG, "requestCode: ${requestCode}")
+
+                val originalUri = data.getData()
+                val takeFlags = data.getFlags() and
+                        (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+
+                contentResolver.takePersistableUriPermission(originalUri, takeFlags);
+
+                DragonflyLogger.debug(LOG_TAG, "imageUri: ${originalUri}")
+            }
+        }
+    }
+
     override fun checkRealTimeRequiredPermissions() {
         Dexter.withActivity(this)
-                .withPermission(Manifest.permission.CAMERA)
+                .withPermission(PermissionsMapping.REAL_TIME)
                 .withListener(CameraPermissionListener(presenter))
                 .withErrorListener { error ->
-                    DragonflyLogger.debug(LOG_TAG, "${CLASS_NAME}.onError(): ${error}")
+                    DragonflyLogger.debug(LOG_TAG, "Dexter error: ${error}")
                 }
                 .check()
     }
@@ -171,7 +204,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         dragonFlyLens.start()
     }
 
-    override fun showRealTimePermissionsRequiredAlert(@StringRes title: Int, @StringRes message: Int) {
+    override fun showPermissionsRequiredAlert(@StringRes title: Int, @StringRes message: Int) {
         missingPermissionsAlertDialog = AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
@@ -199,6 +232,11 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         DragonflyLogger.debug(LOG_TAG, "onStartTakingSnapshot()")
     }
 
+    override fun selectImageFromLibrary() {
+        val intent = IntentHelper.selectImageFromLibrary()
+        startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
+    }
+
     override fun onSnapshotTaken(snapshot: DragonflyCameraSnapshot) {
         DragonflyLogger.debug(LOG_TAG, "onSnapshotTaken(${snapshot})")
 
@@ -211,11 +249,12 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
     }
 
     companion object {
-        private val CLASS_NAME = RealTimeActivity::class.java.simpleName
         private val LOG_TAG = RealTimeActivity::class.java.simpleName
 
         private val MODEL_BUNDLE = "${BuildConfig.APPLICATION_ID}.model_bundle"
         private val ORNAMENT_ANIMATED_BUNDLE = "${BuildConfig.APPLICATION_ID}.ornament_animated_bundle"
+
+        private val REQUEST_CODE_SELECT_IMAGE = 1
 
         fun create(context: Context, model: Model): Intent {
             val intent = Intent(context, RealTimeActivity::class.java)
@@ -225,19 +264,19 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
 
         class CameraPermissionListener(val presenter: RealTimeContract.Presenter) : PermissionListener {
             override fun onPermissionGranted(response: PermissionGrantedResponse) {
-                DragonflyLogger.debug(LOG_TAG, "checkRealTimeRequiredPermissions() - onPermissionGranted()")
+                DragonflyLogger.debug(LOG_TAG, "CameraPermissionListener.onPermissionGranted()")
 
                 presenter.onRealTimePermissionsGranted()
             }
 
             override fun onPermissionDenied(response: PermissionDeniedResponse) {
-                DragonflyLogger.debug(LOG_TAG, "checkRealTimeRequiredPermissions() - onPermissionDenied() - permanently? ${response.isPermanentlyDenied}")
+                DragonflyLogger.debug(LOG_TAG, "CameraPermissionListener.onPermissionDenied() - permanently? ${response.isPermanentlyDenied}")
 
                 presenter.onRealTimePermissionsDenied(response.isPermanentlyDenied)
             }
 
             override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {
-                DragonflyLogger.debug(LOG_TAG, "${CLASS_NAME}.onPermissionRationaleShouldBeShown()")
+                DragonflyLogger.debug(LOG_TAG, "CameraPermissionListener.onPermissionRationaleShouldBeShown()")
 
                 token.continuePermissionRequest()
             }

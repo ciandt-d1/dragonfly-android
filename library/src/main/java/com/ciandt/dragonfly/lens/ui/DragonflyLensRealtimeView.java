@@ -184,6 +184,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         cameraView.setOrientation(orientation);
 
         ornamentView = (ImageView) this.findViewById(R.id.dragonflyLensOrnamentView);
+        ornamentView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         btnSnapshot = (TakePhotoButton) this.findViewById(R.id.dragonflyLensBtnSnapshot);
         btnSnapshot.setOnClickListener(new OnClickListener() {

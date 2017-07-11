@@ -10,7 +10,9 @@ interface RealTimeContract {
 
         fun startRecognition()
 
-        fun showRealTimePermissionsRequiredAlert(@StringRes title: Int, @StringRes message: Int)
+        fun showPermissionsRequiredAlert(@StringRes title: Int, @StringRes message: Int)
+
+        fun selectImageFromLibrary()
     }
 
     interface Presenter : BasePresenterContract<View> {
@@ -18,5 +20,7 @@ interface RealTimeContract {
         fun onRealTimePermissionsGranted()
 
         fun onRealTimePermissionsDenied(permanently: Boolean)
+
+        fun classifyExistingPicture()
     }
 }
