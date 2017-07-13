@@ -10,7 +10,9 @@ interface RealTimeContract {
 
         fun startRealTimeClassification()
 
-        fun showPermissionsRequiredAlert(@StringRes title: Int, @StringRes message: Int)
+        fun showPermissionsRequiredAlert(@StringRes title: Int, @StringRes message: Int, finishActivityOnCancel: Boolean = false)
+
+        fun checkSelectImageFromLibraryRequiredPermissions()
 
         fun selectImageFromLibrary()
     }

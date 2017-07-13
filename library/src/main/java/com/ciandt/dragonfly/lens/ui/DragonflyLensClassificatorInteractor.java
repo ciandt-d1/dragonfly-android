@@ -72,7 +72,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         }
 
         if (loadModelTask != null && !loadModelTask.isCancelled()) {
-            DragonflyLogger.debug(LOG_TAG, "LoadModelTask is not cancelled. Cancelling it..");
+            DragonflyLogger.debug(LOG_TAG, "LoadModelTask is not cancelled. Cancelling it.");
             loadModelTask.cancel(true);
         }
 

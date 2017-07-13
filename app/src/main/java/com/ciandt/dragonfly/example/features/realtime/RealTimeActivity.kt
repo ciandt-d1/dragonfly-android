@@ -20,8 +20,8 @@ import com.ciandt.dragonfly.example.infrastructure.SharedPreferencesRepository
 import com.ciandt.dragonfly.example.shared.FullScreenActivity
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
-import com.ciandt.dragonfly.lens.exception.DragonflyModelException
 import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException
+import com.ciandt.dragonfly.lens.exception.DragonflyModelException
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException
 import com.ciandt.dragonfly.lens.ui.DragonflyLensRealtimeView
 import com.ciandt.dragonfly.tensorflow.Classifier
@@ -34,11 +34,9 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_real_time.*
-import java.security.InvalidParameterException
 
 
 class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyLensRealtimeView.ModelCallbacks, DragonflyLensRealtimeView.SnapshotCallbacks, DragonflyLensRealtimeView.UriAnalysisCallbacks {
-
     private lateinit var presenter: RealTimeContract.Presenter
 
     lateinit private var model: Model
@@ -99,7 +97,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
             permissions ->
 
             if (permissions == null || permissions.size == 0) {
-                throw InvalidParameterException("Empty permissions list provided.")
+                throw IllegalArgumentException("Empty permissions list provided.")
             }
 
             val pendingPermissions = checkPendingPermissions(permissions)
@@ -194,18 +192,53 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
                 .check()
     }
 
+    override fun checkSelectImageFromLibraryRequiredPermissions() {
+        Dexter.withActivity(this)
+                .withPermission(PermissionsMapping.SELECT_IMAGE_FROM_LIBRARY)
+                .withListener(object : PermissionListener {
+                    override fun onPermissionGranted(response: PermissionGrantedResponse) {
+                        DragonflyLogger.debug(LOG_TAG, "SelectImageFromLibraryPermissionListener.onPermissionGranted()")
+
+                        this@RealTimeActivity.selectImageFromLibrary()
+                    }
+
+                    override fun onPermissionDenied(response: PermissionDeniedResponse) {
+                        DragonflyLogger.debug(LOG_TAG, "SelectImageFromLibraryPermissionListener.onPermissionDenied() - permanently? ${response.isPermanentlyDenied}")
+
+                        if (response.isPermanentlyDenied) {
+                            this@RealTimeActivity.showPermissionsRequiredAlert(R.string.permissions_required_title, R.string.permissions_required_description, false)
+                        }
+                    }
+
+                    override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {
+                        DragonflyLogger.debug(LOG_TAG, "SelectImageFromLibraryPermissionListener.onPermissionRationaleShouldBeShown()")
+
+                        token.continuePermissionRequest()
+                    }
+
+                })
+                .withErrorListener { error ->
+                    DragonflyLogger.debug("tag", "Dexter error: ${error}")
+                }
+                .check()
+    }
+
     override fun startRealTimeClassification() {
         dragonFlyLens.start()
     }
 
-    override fun showPermissionsRequiredAlert(@StringRes title: Int, @StringRes message: Int) {
+    override fun showPermissionsRequiredAlert(@StringRes title: Int, @StringRes message: Int, finishActivityOnCancel: Boolean) {
         missingPermissionsAlertDialog = AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
                 .setCancelable(false)
                 .setNegativeButton(android.R.string.cancel, {
-                    _, _ ->
-                    finish()
+                    dialog, _ ->
+                    if (finishActivityOnCancel) {
+                        finish()
+                    } else {
+                        dialog.dismiss()
+                    }
                 })
                 .setPositiveButton(R.string.permissions_open_settings, {
                     dialog, _ ->

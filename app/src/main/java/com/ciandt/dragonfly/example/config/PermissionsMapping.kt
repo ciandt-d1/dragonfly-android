@@ -8,6 +8,7 @@ import android.Manifest
 interface PermissionsMapping {
     companion object {
         val SAVE_IMAGE_TO_GALLERY = listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val SELECT_IMAGE_FROM_LIBRARY = Manifest.permission.READ_EXTERNAL_STORAGE
         val REAL_TIME: String = Manifest.permission.CAMERA
     }
 }

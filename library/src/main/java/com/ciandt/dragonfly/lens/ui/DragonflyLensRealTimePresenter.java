@@ -8,8 +8,8 @@ import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
-import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException;
+import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
@@ -82,6 +82,7 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
         }
 
         modelLoadingAttempts = 0;
+
         lensClassificatorInteractor.loadModel(model);
     }
 
