@@ -21,7 +21,7 @@ import com.ciandt.dragonfly.example.shared.FullScreenActivity
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException
-import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException
+import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException
 import com.ciandt.dragonfly.lens.ui.DragonflyLensRealtimeView
 import com.ciandt.dragonfly.tensorflow.Classifier
@@ -254,16 +254,16 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         DragonflyLogger.debug(LOG_TAG, "onSnapshotError(${e})")
     }
 
-    override fun onUriAnalysisFinished(uri: Uri, classificationInput: DragonflyClassificationInput, recognitions: List<Classifier.Recognition>) {
-        DragonflyLogger.debug(LOG_TAG, "onUriAnalysisFinished(${recognitions})")
+    override fun onUriAnalysisFinished(uri: Uri, classificationInput: DragonflyClassificationInput, classifications: List<Classifier.Classification>) {
+        DragonflyLogger.debug(LOG_TAG, "onUriAnalysisFinished(${classifications})")
 
-        intent = FeedbackActivity.newIntent(this, model, classificationInput, recognitions)
+        intent = FeedbackActivity.newIntent(this, model, classificationInput, classifications)
         startActivity(intent)
 
         showActionButtons()
     }
 
-    override fun onUriAnalysisFailed(e: DragonflyRecognitionException) {
+    override fun onUriAnalysisFailed(e: DragonflyClassificationException) {
         DragonflyLogger.error(LOG_TAG, e)
         hideActionButtons()
     }

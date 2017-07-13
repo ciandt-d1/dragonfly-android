@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 
 class FeedbackPresenter(val model: Model, val classificationInput: DragonflyClassificationInput, val feedbackInteractor: FeedbackContract.Interactor, val saveImageToGalleryInteractor: SaveImageToGalleryContract.Interactor, val firebaseAuth: FirebaseAuth) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
-    private val results = ArrayList<Classifier.Recognition>()
+    private val results = ArrayList<Classifier.Classification>()
     private var userFeedback: Feedback? = null
 
     init {
@@ -32,30 +32,30 @@ class FeedbackPresenter(val model: Model, val classificationInput: DragonflyClas
         }
     }
 
-    override fun setClassifications(recognitions: List<Classifier.Recognition>) {
+    override fun setClassifications(classifications: List<Classifier.Classification>) {
 
-        results.clearAndAddAll(recognitions)
+        results.clearAndAddAll(classifications)
 
         if (results.isEmpty()) {
-            view?.showNoRecognitions()
+            view?.showNoClassifications()
             return
         }
 
         if (userFeedback == null) {
-            view?.showRecognitions(results.head().title, results.tail())
+            view?.showClassifications(results.head().title, results.tail())
         } else {
             userFeedback!!.let {
                 if (it.isPositive()) {
-                    view?.showPositiveRecognition(it.actualLabel, results.tail(), false)
+                    view?.showPositiveClassification(it.actualLabel, results.tail(), false)
                 } else {
-                    view?.showNegativeRecognition(it.actualLabel, results.tail())
+                    view?.showNegativeClassification(it.actualLabel, results.tail())
                 }
             }
         }
     }
 
     override fun markAsPositive() {
-        view?.showPositiveRecognition(results.head().title, results.tail())
+        view?.showPositiveClassification(results.head().title, results.tail())
 
         saveFeedback(results.head().title, Feedback.POSITIVE)
     }
@@ -65,7 +65,7 @@ class FeedbackPresenter(val model: Model, val classificationInput: DragonflyClas
     }
 
     override fun submitNegative(label: String) {
-        view?.showNegativeRecognition(label, results.tail())
+        view?.showNegativeClassification(label, results.tail())
 
         saveFeedback(label, Feedback.NEGATIVE)
     }
@@ -80,8 +80,8 @@ class FeedbackPresenter(val model: Model, val classificationInput: DragonflyClas
 
     private fun saveFeedback(label: String, value: Int) {
         val identifiedLabels = HashMap<String, Float>()
-        for (recognition in results) {
-            identifiedLabels.put(recognition.title, recognition.confidence)
+        for (classification in results) {
+            identifiedLabels.put(classification.title, classification.confidence)
         }
 
         val feedback = Feedback(

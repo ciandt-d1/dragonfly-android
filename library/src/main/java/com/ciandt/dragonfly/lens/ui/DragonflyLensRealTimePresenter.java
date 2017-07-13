@@ -9,7 +9,7 @@ import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
-import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
+import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
@@ -106,7 +106,7 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
     }
 
     @Override
-    public void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Recognition> classifications) {
+    public void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Classification> classifications) {
         if (!hasViewAttached()) {
             return;
         }
@@ -115,7 +115,7 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
     }
 
     @Override
-    public void onUriAnalysisFailed(Uri uri, DragonflyRecognitionException e) {
+    public void onUriAnalysisFailed(Uri uri, DragonflyClassificationException e) {
         if (!hasViewAttached()) {
             return;
         }
@@ -124,7 +124,7 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
     }
 
     @Override
-    public void onYuvNv21Analyzed(List<Classifier.Recognition> classifications) {
+    public void onYuvNv21Analyzed(List<Classifier.Classification> classifications) {
         if (!hasViewAttached()) {
             return;
         }
@@ -136,7 +136,7 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
             return;
         }
 
-        Classifier.Recognition mainResult = classifications.get(0);
+        Classifier.Classification mainResult = classifications.get(0);
 
         if (!mainResult.hasTitle()) {
             view.setLabel("");
@@ -152,7 +152,7 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
     }
 
     @Override
-    public void onYuvNv21AnalysisFailed(DragonflyRecognitionException e) {
+    public void onYuvNv21AnalysisFailed(DragonflyClassificationException e) {
         if (!hasViewAttached()) {
             return;
         }

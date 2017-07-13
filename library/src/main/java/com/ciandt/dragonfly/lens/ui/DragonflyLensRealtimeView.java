@@ -30,7 +30,7 @@ import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.infrastructure.PermissionsMapping;
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
-import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
+import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
@@ -61,7 +61,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     private PermissionsCallback permissionsCallback;
     private UriAnalysisCallbacks uriAnalysisCallbacks;
 
-    private List<Classifier.Recognition> lastClassifications;
+    private List<Classifier.Classification> lastClassifications;
 
     public DragonflyLensRealtimeView(Context context) {
         super(context);
@@ -156,12 +156,12 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     }
 
     @Override
-    public List<Classifier.Recognition> getLastClassifications() {
+    public List<Classifier.Classification> getLastClassifications() {
         return lastClassifications;
     }
 
     @Override
-    public void setLastClassifications(List<Classifier.Recognition> classifications) {
+    public void setLastClassifications(List<Classifier.Classification> classifications) {
         lastClassifications = classifications;
     }
 
@@ -244,7 +244,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     }
 
     @Override
-    public void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Recognition> classifications) {
+    public void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Classification> classifications) {
         if (uriAnalysisCallbacks != null) {
             uriAnalysisCallbacks.onUriAnalysisFinished(uri, classificationInput, classifications);
         }
@@ -253,7 +253,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     }
 
     @Override
-    public void onUriAnalysisFailed(Uri uri, DragonflyRecognitionException e) {
+    public void onUriAnalysisFailed(Uri uri, DragonflyClassificationException e) {
         if (uriAnalysisCallbacks != null) {
             uriAnalysisCallbacks.onUriAnalysisFailed(e);
         }
@@ -262,7 +262,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     }
 
     @Override
-    public void onYuvNv21AnalysisFailed(DragonflyRecognitionException e) {
+    public void onYuvNv21AnalysisFailed(DragonflyClassificationException e) {
         // TODO: handle the error in a user friendly way.
     }
 
@@ -486,8 +486,8 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     public interface UriAnalysisCallbacks {
 
-        void onUriAnalysisFinished(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Recognition> recognitions);
+        void onUriAnalysisFinished(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Classification> classifications);
 
-        void onUriAnalysisFailed(DragonflyRecognitionException e);
+        void onUriAnalysisFailed(DragonflyClassificationException e);
     }
 }

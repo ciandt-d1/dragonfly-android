@@ -17,8 +17,8 @@ import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.infrastructure.Hashing;
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
+import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
-import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 import com.ciandt.dragonfly.tensorflow.TensorFlowImageClassifier;
 
@@ -197,7 +197,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         }
     }
 
-    private static class AnalyzeFromUriTask extends AsyncTask<AnalyzeFromUriTask.TaskParams, Void, AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException>> {
+    private static class AnalyzeFromUriTask extends AsyncTask<AnalyzeFromUriTask.TaskParams, Void, AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException>> {
 
         private final DragonflyLensClassificatorInteractor interactor;
         private TaskParams taskParams;
@@ -209,7 +209,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         }
 
         @Override
-        protected AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException> doInBackground(AnalyzeFromUriTask.TaskParams... params) {
+        protected AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException> doInBackground(AnalyzeFromUriTask.TaskParams... params) {
             this.taskParams = params[0];
 
             DragonflyLogger.debug(LOG_TAG, "AnalyzeFromUriTask.doInBackground() - start");
@@ -236,25 +236,25 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                     ImageUtils.saveBitmapToStagingArea(croppedBitmap, String.format("selected-cropped-%s.jpg", filename));
                 }
 
-                List<Classifier.Recognition> results = interactor.classifier.recognizeImage(croppedBitmap);
+                List<Classifier.Classification> results = interactor.classifier.classifyImage(croppedBitmap);
                 timings.addSplit("Classify image");
 
                 return new AsyncTaskResult<>(results, null);
             } catch (Exception e) {
                 String errorMessage = String.format("Failed to analyze bitmap with error: %s", e.getMessage());
 
-                return new AsyncTaskResult<>(null, new DragonflyRecognitionException(errorMessage, e));
+                return new AsyncTaskResult<>(null, new DragonflyClassificationException(errorMessage, e));
             }
         }
 
         @Override
-        protected void onPostExecute(AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException> result) {
+        protected void onPostExecute(AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException> result) {
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeFromUriTask.onPostExecute() - error | exception: %s", result.getError()));
 
                 interactor.classificationCallbacks.onUriAnalysisFailed(taskParams.uri, result.getError());
             } else {
-                DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeFromUriTask.onPostExecute() - success | recognitions: %s", result.getResult()));
+                DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeFromUriTask.onPostExecute() - success | classifications: %s", result.getResult()));
 
                 DragonflyClassificationInput classificationInput = DragonflyClassificationInput.newBuilder().withImagePath(savedImagePath).build();
                 interactor.classificationCallbacks.onUriAnalyzed(taskParams.uri, classificationInput, result.getResult());
@@ -275,7 +275,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         }
     }
 
-    private static class AnalyzeYUVN21Task extends AsyncTask<AnalyzeYUVN21Task.TaskParams, Void, AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException>> {
+    private static class AnalyzeYUVN21Task extends AsyncTask<AnalyzeYUVN21Task.TaskParams, Void, AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException>> {
 
         private final DragonflyLensClassificatorInteractor interactor;
 
@@ -284,7 +284,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         }
 
         @Override
-        protected AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException> doInBackground(AnalyzeYUVN21Task.TaskParams... params) {
+        protected AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException> doInBackground(AnalyzeYUVN21Task.TaskParams... params) {
             AnalyzeYUVN21Task.TaskParams taskParams = params[0];
 
             DragonflyLogger.debug(LOG_TAG, "AnalyzeYUVN21Task.doInBackground() - start");
@@ -300,7 +300,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                 Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, interactor.model.getInputSize(), interactor.model.getInputSize(), false);
                 timings.addSplit("Scale bitmap");
 
-                List<Classifier.Recognition> results = interactor.classifier.recognizeImage(croppedBitmap);
+                List<Classifier.Classification> results = interactor.classifier.classifyImage(croppedBitmap);
                 timings.addSplit("Classify image");
 
                 timings.dumpToLog();
@@ -320,12 +320,12 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                 timings.addSplit(e.getMessage());
                 timings.dumpToLog();
 
-                return new AsyncTaskResult<>(null, new DragonflyRecognitionException(errorMessage, e));
+                return new AsyncTaskResult<>(null, new DragonflyClassificationException(errorMessage, e));
             }
         }
 
         @Override
-        protected void onPostExecute(AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException> result) {
+        protected void onPostExecute(AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException> result) {
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeYUVN21Task.onPostExecute() - error | exception: %s", result.getError()));
 

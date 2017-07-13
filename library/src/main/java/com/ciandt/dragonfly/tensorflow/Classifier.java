@@ -23,17 +23,17 @@ import android.os.Parcelable;
 import java.util.List;
 
 /**
- * Generic interface for interacting with different recognition engines.
+ * Generic interface for interacting with different classification engines.
  */
 public interface Classifier {
 
     /**
      * An immutable result returned by a Classifier describing what was recognized.
      */
-    class Recognition implements Parcelable {
+    class Classification implements Parcelable {
 
         /**
-         * A unique identifier for what has been recognized. Specific to the class, not the instance
+         * A unique identifier for what has been classified. Specific to the class, not the instance
          * of
          * the object.
          */
@@ -45,7 +45,7 @@ public interface Classifier {
         private final String title;
 
         /**
-         * A sortable score for how good the recognition is relative to others. Higher should be
+         * A sortable score for how good the classification is relative to others. Higher should be
          * better.
          */
         private final Float confidence;
@@ -53,7 +53,7 @@ public interface Classifier {
         /** Optional location within the source image for the location of the recognized object. */
         private RectF location;
 
-        public Recognition(
+        public Classification(
                 final String id, final String title, final Float confidence, final RectF location) {
             this.id = id;
             this.title = title;
@@ -125,28 +125,28 @@ public interface Classifier {
             dest.writeParcelable(this.location, flags);
         }
 
-        protected Recognition(Parcel in) {
+        protected Classification(Parcel in) {
             this.id = in.readString();
             this.title = in.readString();
             this.confidence = (Float) in.readValue(Float.class.getClassLoader());
             this.location = in.readParcelable(RectF.class.getClassLoader());
         }
 
-        public static final Parcelable.Creator<Recognition> CREATOR = new Parcelable.Creator<Recognition>() {
+        public static final Parcelable.Creator<Classification> CREATOR = new Parcelable.Creator<Classification>() {
 
             @Override
-            public Recognition createFromParcel(Parcel source) {
-                return new Recognition(source);
+            public Classification createFromParcel(Parcel source) {
+                return new Classification(source);
             }
 
             @Override
-            public Recognition[] newArray(int size) {
-                return new Recognition[size];
+            public Classification[] newArray(int size) {
+                return new Classification[size];
             }
         };
     }
 
-    List<Recognition> recognizeImage(Bitmap bitmap);
+    List<Classification> classifyImage(Bitmap bitmap);
 
     void close();
 }

@@ -46,7 +46,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     private lateinit var model: Model
     private var userFeedback: Feedback? = null
 
-    private lateinit var classifications: ArrayList<Classifier.Recognition>
+    private lateinit var classifications: ArrayList<Classifier.Classification>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -168,7 +168,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         confirmButton.setOnClickListener {
             val selected = formChipsViews.getSelectedItems().firstOrNull()
             if (selected != null && selected is FeedbackChip) {
-                presenter.submitNegative(selected.recognition.title)
+                presenter.submitNegative(selected.classification.title)
             } else {
                 presenter.submitNegative(input.getText())
             }
@@ -200,23 +200,23 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         }
     }
 
-    override fun showNoRecognitions() {
-        Snackbar.make(getRootView(), "No recognitions found.", Snackbar.LENGTH_LONG).show()
+    override fun showNoClassifications() {
+        Snackbar.make(getRootView(), R.string.feedback_no_classifications_found, Snackbar.LENGTH_LONG).show()
     }
 
-    override fun showRecognitions(mainRecognitionLabel: String, otherRecognitions: List<Classifier.Recognition>) {
-        result.text = getString(R.string.feedback_classification, mainRecognitionLabel)
+    override fun showClassifications(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>) {
+        result.text = getString(R.string.feedback_classification, mainClassificationLabel)
 
-        showOtherRecognitions(otherRecognitions)
+        showOtherClassifications(otherClassifications)
         showFeedbackView()
     }
 
-    private fun showOtherRecognitions(otherRecognitions: List<Classifier.Recognition>) {
-        if (otherRecognitions.isEmpty()) {
+    private fun showOtherClassifications(otherClassifications: List<Classifier.Classification>) {
+        if (otherClassifications.isEmpty()) {
             footer.visibility = View.GONE
         } else {
             val chips = ArrayList<FeedbackChip>()
-            otherRecognitions.forEach {
+            otherClassifications.forEach {
                 chips.add(FeedbackChip(it))
             }
 
@@ -224,12 +224,12 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         }
     }
 
-    override fun showPositiveRecognition(mainRecognitionLabel: String, otherRecognitions: List<Classifier.Recognition>, collapseResults: Boolean) {
+    override fun showPositiveClassification(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>, collapseResults: Boolean) {
         positiveButton.isEnabled = false
         positiveButton.isActivated = true
         negativeButton.isActivated = false
 
-        result.text = mainRecognitionLabel
+        result.text = mainClassificationLabel
         result.setTextColor(ContextCompat.getColor(this, R.color.feedback_submitted))
 
         if (collapseResults) {
@@ -237,19 +237,19 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         }
     }
 
-    override fun showNegativeRecognition(mainRecognitionLabel: String, otherRecognitions: List<Classifier.Recognition>) {
-        showOtherRecognitions(otherRecognitions)
+    override fun showNegativeClassification(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>) {
+        showOtherClassifications(otherClassifications)
         hideNegativeForm()
         showUnderRevision()
 
-        result.text = mainRecognitionLabel
+        result.text = mainClassificationLabel
         result.setTextColor(ContextCompat.getColor(this, R.color.feedback_submitted))
     }
 
-    override fun showNegativeForm(otherRecognitions: List<Classifier.Recognition>) {
+    override fun showNegativeForm(otherClassifications: List<Classifier.Classification>) {
 
         val chips = ArrayList<FeedbackChip>()
-        otherRecognitions.forEach {
+        otherClassifications.forEach {
             chips.add(FeedbackChip(it))
         }
 
@@ -432,11 +432,11 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         private val CLASSIFICATIONS_BUNDLE = String.format("%s.classifications", BuildConfig.APPLICATION_ID)
         private val USER_FEEDBACK = String.format("%s.user_feedback", BuildConfig.APPLICATION_ID)
 
-        fun newIntent(context: Context, model: Model, classificationInput: DragonflyClassificationInput, classifications: List<Classifier.Recognition>): Intent {
+        fun newIntent(context: Context, model: Model, classificationInput: DragonflyClassificationInput, classifications: List<Classifier.Classification>): Intent {
             val intent = Intent(context, FeedbackActivity::class.java)
             intent.putExtra(MODEL_BUNDLE, model)
             intent.putExtra(CLASSIFICATION_INPUT_BUNDLE, classificationInput)
-            intent.putParcelableArrayListExtra(CLASSIFICATIONS_BUNDLE, ArrayList<Classifier.Recognition>(classifications))
+            intent.putParcelableArrayListExtra(CLASSIFICATIONS_BUNDLE, ArrayList<Classifier.Classification>(classifications))
 
             return intent
         }

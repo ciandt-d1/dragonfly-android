@@ -5,7 +5,7 @@ import android.net.Uri;
 import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
-import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
+import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
 import java.util.List;
@@ -32,12 +32,12 @@ public interface ClassificatorInteractor {
 
         void onModelFailure(DragonflyModelException e);
 
-        void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Recognition> classifications);
+        void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Classification> classifications);
 
-        void onUriAnalysisFailed(Uri uri, DragonflyRecognitionException e);
+        void onUriAnalysisFailed(Uri uri, DragonflyClassificationException e);
 
-        void onYuvNv21Analyzed(List<Classifier.Recognition> results);
+        void onYuvNv21Analyzed(List<Classifier.Classification> results);
 
-        void onYuvNv21AnalysisFailed(DragonflyRecognitionException e);
+        void onYuvNv21AnalysisFailed(DragonflyClassificationException e);
     }
 }

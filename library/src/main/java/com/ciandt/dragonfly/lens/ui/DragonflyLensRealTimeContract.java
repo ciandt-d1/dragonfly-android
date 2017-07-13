@@ -10,7 +10,7 @@ import com.ciandt.dragonfly.base.ui.Orientation;
 import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
-import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
+import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
@@ -36,9 +36,9 @@ public interface DragonflyLensRealTimeContract {
 
         void hideLoading(boolean animateControls);
 
-        List<Classifier.Recognition> getLastClassifications();
+        List<Classifier.Classification> getLastClassifications();
 
-        void setLastClassifications(List<Classifier.Recognition> classifications);
+        void setLastClassifications(List<Classifier.Classification> classifications);
 
         void setLabel(String label);
 
@@ -54,11 +54,11 @@ public interface DragonflyLensRealTimeContract {
 
         void onModelLoadFailure(DragonflyModelException e);
 
-        void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Recognition> classifications);
+        void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Classification> classifications);
 
-        void onUriAnalysisFailed(Uri uri, DragonflyRecognitionException e);
+        void onUriAnalysisFailed(Uri uri, DragonflyClassificationException e);
 
-        void onYuvNv21AnalysisFailed(DragonflyRecognitionException e);
+        void onYuvNv21AnalysisFailed(DragonflyClassificationException e);
 
         void captureCameraFrame();
 
