@@ -57,7 +57,8 @@ class DragonflyApplication : Application() {
 
     private fun setupDragonflyLib() {
         DragonflyLogger.setLogLevel(DragonflyLogger.LOG_LEVEL_DEBUG)
-        DragonflyConfig.shouldSaveBitmapsInDebugMode(Features.SAVE_CAPTURED_IMAGES_TO_DEVICE)
+        DragonflyConfig.shouldSaveCapturedCameraFramesInDebugMode(Features.SAVE_CAPTURED_IMAGES_FOR_DEBUGGING)
+        DragonflyConfig.shouldSaveSelectedExistingBitmapsInDebugMode(Features.SAVE_SELECTED_IMAGE_FOR_DEBUGGING)
 
         val stagingPath = Environment.getExternalStorageDirectory().absolutePath + File.separator + BuildConfig.APPLICATION_ID
         DragonflyConfig.setStagingPath(stagingPath)

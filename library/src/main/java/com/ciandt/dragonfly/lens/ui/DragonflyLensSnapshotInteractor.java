@@ -8,10 +8,10 @@ import android.support.v4.os.AsyncTaskCompat;
 import android.util.TimingLogger;
 
 import com.ciandt.dragonfly.image_processing.ImageUtils;
-import com.ciandt.dragonfly.image_processing.YUVNV21ToRGBA888Converter;
+import com.ciandt.dragonfly.image_processing.YuvNv21ToRGBA888Converter;
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
-import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
 
 import java.io.File;
@@ -29,14 +29,14 @@ public class DragonflyLensSnapshotInteractor implements DragonflyLensRealTimeCon
 
     private SaveSnapshotTask saveSnapshotTask;
 
-    private final YUVNV21ToRGBA888Converter yuvToRgbConverter;
+    private final YuvNv21ToRGBA888Converter yuvToRgbConverter;
     private SnapshotCallbacks snapshotCallbacks;
 
     @SuppressLint("SimpleDateFormat")
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 
     public DragonflyLensSnapshotInteractor(Context context) {
-        this.yuvToRgbConverter = new YUVNV21ToRGBA888Converter(context);
+        this.yuvToRgbConverter = new YuvNv21ToRGBA888Converter(context);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class DragonflyLensSnapshotInteractor implements DragonflyLensRealTimeCon
         this.snapshotCallbacks = callbacks;
     }
 
-    private static class SaveSnapshotTask extends AsyncTask<SaveSnapshotTask.TaskParams, Void, AsyncTaskResult<DragonflyCameraSnapshot, DragonflySnapshotException>> {
+    private static class SaveSnapshotTask extends AsyncTask<SaveSnapshotTask.TaskParams, Void, AsyncTaskResult<DragonflyClassificationInput, DragonflySnapshotException>> {
 
         private final DragonflyLensSnapshotInteractor interactor;
 
@@ -70,7 +70,7 @@ public class DragonflyLensSnapshotInteractor implements DragonflyLensRealTimeCon
         }
 
         @Override
-        protected AsyncTaskResult<DragonflyCameraSnapshot, DragonflySnapshotException> doInBackground(TaskParams... params) {
+        protected AsyncTaskResult<DragonflyClassificationInput, DragonflySnapshotException> doInBackground(TaskParams... params) {
             TaskParams taskParams = params[0];
 
             DragonflyLogger.debug(LOG_TAG, "SaveSnapshotTask.doInBackground() - start");
@@ -90,8 +90,8 @@ public class DragonflyLensSnapshotInteractor implements DragonflyLensRealTimeCon
                 timings.dumpToLog();
 
                 String filePath = DragonflyConfig.getStagingPath() + File.separator + fileName;
-                DragonflyCameraSnapshot snapshot = DragonflyCameraSnapshot.newBuilder()
-                        .withPath(filePath)
+                DragonflyClassificationInput snapshot = DragonflyClassificationInput.newBuilder()
+                        .withImagePath(filePath)
                         .withWidth(taskParams.width)
                         .withHeight(taskParams.height)
                         .build();
@@ -108,7 +108,7 @@ public class DragonflyLensSnapshotInteractor implements DragonflyLensRealTimeCon
         }
 
         @Override
-        protected void onPostExecute(AsyncTaskResult<DragonflyCameraSnapshot, DragonflySnapshotException> result) {
+        protected void onPostExecute(AsyncTaskResult<DragonflyClassificationInput, DragonflySnapshotException> result) {
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("SaveSnapshotTask.onPostExecute() - error | exception: %s", result.getError()));
 

@@ -22,7 +22,7 @@ import com.ciandt.dragonfly.example.config.PermissionsMapping
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
 import com.ciandt.dragonfly.example.shared.BaseActivity
-import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.tensorflow.Classifier
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -42,7 +42,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     private val FIRST_APPEAR_ANIMATION_DURATION = 1000L
 
     private lateinit var presenter: FeedbackContract.Presenter
-    private lateinit var cameraSnapshot: DragonflyCameraSnapshot
+    private lateinit var classificationInput: DragonflyClassificationInput
     private lateinit var model: Model
     private var userFeedback: Feedback? = null
 
@@ -54,11 +54,11 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
         if (savedInstanceState != null) {
             model = savedInstanceState.getParcelable(MODEL_BUNDLE)
-            cameraSnapshot = savedInstanceState.getParcelable(SNAPSHOT_BUNDLE)
+            classificationInput = savedInstanceState.getParcelable(CLASSIFICATION_INPUT_BUNDLE)
             classifications = savedInstanceState.getParcelableArrayList(CLASSIFICATIONS_BUNDLE)
             userFeedback = savedInstanceState.getParcelable<Feedback>(USER_FEEDBACK)
         } else {
-            cameraSnapshot = intent.extras.getParcelable<DragonflyCameraSnapshot>(SNAPSHOT_BUNDLE)
+            classificationInput = intent.extras.getParcelable<DragonflyClassificationInput>(CLASSIFICATION_INPUT_BUNDLE)
             model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
             classifications = intent.extras.getParcelableArrayList(CLASSIFICATIONS_BUNDLE)
             userFeedback = null
@@ -67,7 +67,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         val feedbackInteractor = FeedbackInteractor(FirebaseStorage.getInstance(), FirebaseDatabase.getInstance())
         val saveImageToGalleryInteractor = SaveImageToGalleryInteractor(applicationContext)
 
-        presenter = FeedbackPresenter(model, cameraSnapshot, feedbackInteractor, saveImageToGalleryInteractor, FirebaseAuth.getInstance())
+        presenter = FeedbackPresenter(model, classificationInput, feedbackInteractor, saveImageToGalleryInteractor, FirebaseAuth.getInstance())
         presenter.attachView(this)
         presenter.setUserFeedback(userFeedback)
         presenter.setClassifications(classifications)
@@ -77,7 +77,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         setupResultsView()
         setupNegativeFeedbackView()
 
-        dragonFlyLensFeedbackView.setSnapshot(cameraSnapshot)
+        dragonFlyLensFeedbackView.setClassificationInput(classificationInput)
     }
 
     override fun showSaveImageSuccessMessage(@StringRes message: Int) {
@@ -95,7 +95,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                     .withPermissions(PermissionsMapping.SAVE_IMAGE_TO_GALLERY)
                     .withListener(object : MultiplePermissionsListener {
                         override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                            presenter.saveImageToGallery(cameraSnapshot)
+                            presenter.saveImageToGallery(classificationInput)
                         }
 
                         override fun onPermissionRationaleShouldBeShown(permissions: MutableList<PermissionRequest>, token: PermissionToken) {
@@ -194,7 +194,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
         outState?.apply {
             putParcelable(MODEL_BUNDLE, model)
-            putParcelable(SNAPSHOT_BUNDLE, cameraSnapshot)
+            putParcelable(CLASSIFICATION_INPUT_BUNDLE, classificationInput)
             putParcelable(USER_FEEDBACK, userFeedback)
             putParcelableArrayList(CLASSIFICATIONS_BUNDLE, classifications)
         }
@@ -428,14 +428,14 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         private val LOG_TAG = FeedbackActivity::class.java.simpleName
 
         private val MODEL_BUNDLE = String.format("%s.model_bundle", BuildConfig.APPLICATION_ID)
-        private val SNAPSHOT_BUNDLE = String.format("%s.snapshot_bundle", BuildConfig.APPLICATION_ID)
+        private val CLASSIFICATION_INPUT_BUNDLE = String.format("%s.classification_input_bundle", BuildConfig.APPLICATION_ID)
         private val CLASSIFICATIONS_BUNDLE = String.format("%s.classifications", BuildConfig.APPLICATION_ID)
         private val USER_FEEDBACK = String.format("%s.user_feedback", BuildConfig.APPLICATION_ID)
 
-        fun newIntent(context: Context, model: Model, snapshot: DragonflyCameraSnapshot, classifications: List<Classifier.Recognition>): Intent {
+        fun newIntent(context: Context, model: Model, classificationInput: DragonflyClassificationInput, classifications: List<Classifier.Recognition>): Intent {
             val intent = Intent(context, FeedbackActivity::class.java)
             intent.putExtra(MODEL_BUNDLE, model)
-            intent.putExtra(SNAPSHOT_BUNDLE, snapshot)
+            intent.putExtra(CLASSIFICATION_INPUT_BUNDLE, classificationInput)
             intent.putParcelableArrayListExtra(CLASSIFICATIONS_BUNDLE, ArrayList<Classifier.Recognition>(classifications))
 
             return intent

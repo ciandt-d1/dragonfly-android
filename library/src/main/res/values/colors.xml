@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="black_alpha_54">#8A000000</color>
+
     <color name="dragonfly_lens_label_text_color">#B2FFFFFF</color>
     <color name="dragonfly_lens_loading_color">#0dffbd</color>
 </resources>

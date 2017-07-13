@@ -12,12 +12,12 @@ import android.renderscript.Type;
 /**
  * Created by iluz on 5/27/17.
  */
-public class YUVNV21ToRGBA888Converter {
+public class YuvNv21ToRGBA888Converter {
 
     private final BitmapManager bitmapManager;
     private final RenderScript renderScript;
 
-    public YUVNV21ToRGBA888Converter(Context context) {
+    public YuvNv21ToRGBA888Converter(Context context) {
         renderScript = RenderScript.create(context.getApplicationContext());
         bitmapManager = new BitmapManager();
     }

@@ -9,12 +9,12 @@ import com.ciandt.dragonfly.example.infrastructure.extensions.clearAndAddAll
 import com.ciandt.dragonfly.example.infrastructure.extensions.head
 import com.ciandt.dragonfly.example.infrastructure.extensions.tail
 import com.ciandt.dragonfly.example.shared.BasePresenter
-import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.tensorflow.Classifier
 import com.google.firebase.auth.FirebaseAuth
 
 
-class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSnapshot, val feedbackInteractor: FeedbackContract.Interactor, val saveImageToGalleryInteractor: SaveImageToGalleryContract.Interactor, val firebaseAuth: FirebaseAuth) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
+class FeedbackPresenter(val model: Model, val classificationInput: DragonflyClassificationInput, val feedbackInteractor: FeedbackContract.Interactor, val saveImageToGalleryInteractor: SaveImageToGalleryContract.Interactor, val firebaseAuth: FirebaseAuth) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
     private val results = ArrayList<Classifier.Recognition>()
     private var userFeedback: Feedback? = null
 
@@ -74,8 +74,8 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
         this.userFeedback = userFeedback
     }
 
-    override fun saveImageToGallery(cameraSnapshot: DragonflyCameraSnapshot) {
-        saveImageToGalleryInteractor.save(cameraSnapshot)
+    override fun saveImageToGallery(classificationInput: DragonflyClassificationInput) {
+        saveImageToGalleryInteractor.save(classificationInput)
     }
 
     private fun saveFeedback(label: String, value: Int) {
@@ -92,7 +92,7 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
                 value = value,
                 actualLabel = label,
                 identifiedLabels = identifiedLabels,
-                imageLocalPath = cameraSnapshot.path
+                imageLocalPath = classificationInput.imagePath
         )
 
         view?.setUserFeedback(feedback)

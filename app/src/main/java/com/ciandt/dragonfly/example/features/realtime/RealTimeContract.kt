@@ -8,7 +8,7 @@ interface RealTimeContract {
     interface View {
         fun checkRealTimeRequiredPermissions()
 
-        fun startRecognition()
+        fun startRealTimeClassification()
 
         fun showPermissionsRequiredAlert(@StringRes title: Int, @StringRes message: Int)
 

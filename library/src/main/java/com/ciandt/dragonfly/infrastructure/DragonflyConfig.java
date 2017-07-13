@@ -8,7 +8,9 @@ import com.ciandt.dragonfly.BuildConfig;
 
 public class DragonflyConfig {
 
-    private static boolean saveBitmapsInDebugMode = false;
+    private static boolean saveCapturedCameraFramesInDebugMode = false;
+
+    private static boolean saveSelectedExistingBitmapsInDebugMode = false;
 
     private static String stagingPath;
 
@@ -16,12 +18,22 @@ public class DragonflyConfig {
 
     private static int maxModelLoadingRetryAttempts;
 
-    public static boolean shouldSaveBitmapsInDebugMode() {
-        return saveBitmapsInDebugMode;
+    private static long realTimeControlsVisibilityAnimationDuration = 2500;
+
+    public static boolean shouldSaveCapturedCameraFramesInDebugMode() {
+        return saveCapturedCameraFramesInDebugMode;
     }
 
-    public static void shouldSaveBitmapsInDebugMode(boolean saveBitmapsInDebugMode) {
-        DragonflyConfig.saveBitmapsInDebugMode = BuildConfig.DEBUG && saveBitmapsInDebugMode;
+    public static void shouldSaveCapturedCameraFramesInDebugMode(boolean saveBitmapsInDebugMode) {
+        DragonflyConfig.saveCapturedCameraFramesInDebugMode = BuildConfig.DEBUG && saveBitmapsInDebugMode;
+    }
+
+    public static boolean shouldSaveSelectedExistingBitmapsInDebugMode() {
+        return saveSelectedExistingBitmapsInDebugMode;
+    }
+
+    public static void shouldSaveSelectedExistingBitmapsInDebugMode(boolean saveForDebugging) {
+        DragonflyConfig.saveSelectedExistingBitmapsInDebugMode = saveForDebugging;
     }
 
     public static String getStagingPath() {
@@ -46,5 +58,13 @@ public class DragonflyConfig {
 
     public static void setMaxModelLoadingRetryAttempts(int maxModelLoadingRetryAttempts) {
         DragonflyConfig.maxModelLoadingRetryAttempts = maxModelLoadingRetryAttempts;
+    }
+
+    public static long getRealTimeControlsVisibilityAnimationDuration() {
+        return realTimeControlsVisibilityAnimationDuration;
+    }
+
+    public static void setRealTimeControlsVisibilityAnimationDuration(long realTimeControlsVisibilityAnimationDuration) {
+        DragonflyConfig.realTimeControlsVisibilityAnimationDuration = realTimeControlsVisibilityAnimationDuration;
     }
 }

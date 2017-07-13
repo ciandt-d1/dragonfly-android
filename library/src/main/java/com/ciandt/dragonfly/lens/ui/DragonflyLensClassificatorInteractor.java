@@ -2,6 +2,8 @@ package com.ciandt.dragonfly.lens.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.os.AsyncTaskCompat;
 import android.util.TimingLogger;
@@ -10,14 +12,17 @@ import com.ciandt.dragonfly.base.ui.BaseInteractorContract.AsyncTaskResult;
 import com.ciandt.dragonfly.base.ui.ClassificatorInteractor;
 import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.image_processing.ImageUtils;
-import com.ciandt.dragonfly.image_processing.YUVNV21ToRGBA888Converter;
+import com.ciandt.dragonfly.image_processing.YuvNv21ToRGBA888Converter;
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
+import com.ciandt.dragonfly.infrastructure.Hashing;
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 import com.ciandt.dragonfly.tensorflow.TensorFlowImageClassifier;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,14 +43,16 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
     private Model model;
 
     private LoadModelTask loadModelTask;
-    private AnalyzeBitmapTask analyzeBitmapTask;
+    private AnalyzeFromUriTask analyzeFromUriTask;
     private AnalyzeYUVN21Task analyzeYUVN21Task;
 
-    private final YUVNV21ToRGBA888Converter yuvToRgbConverter;
+    private final YuvNv21ToRGBA888Converter yuvToRgbConverter;
+
+    private boolean isAnalyzingFromUri = false;
 
     public DragonflyLensClassificatorInteractor(Context context) {
         this.context = context.getApplicationContext();
-        this.yuvToRgbConverter = new YUVNV21ToRGBA888Converter(context);
+        this.yuvToRgbConverter = new YuvNv21ToRGBA888Converter(context);
     }
 
     @Override
@@ -83,34 +90,40 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
     }
 
     @Override
-    public void analyzeBitmap(final Bitmap bitmap) {
+    public void analyzeFromUri(final Uri uri) {
         if (!isModelLoaded()) {
-            DragonflyLogger.warn(LOG_TAG, "No model loaded. Skipping analyzeBitmap() call.");
+            DragonflyLogger.warn(LOG_TAG, "No model loaded. Skipping analyzeFromUri() call.");
             return;
         }
 
-        if (bitmap == null) {
-            throw new IllegalArgumentException("bitmap can't be null.");
+        if (uri == null) {
+            throw new IllegalArgumentException("uri can't be null.");
         }
 
-        if (analyzeBitmapTask != null && AsyncTask.Status.RUNNING.equals(analyzeBitmapTask.getStatus())) {
-            DragonflyLogger.debug(LOG_TAG, "AnalyzeBitmapTask is running. Skipping this round.");
+        if (analyzeFromUriTask != null && AsyncTask.Status.RUNNING.equals(analyzeFromUriTask.getStatus())) {
+            DragonflyLogger.debug(LOG_TAG, "AnalyzeFromUriTask is running. Skipping this round.");
             return;
         }
 
-        analyzeBitmapTask = new AnalyzeBitmapTask(this);
-        AsyncTaskCompat.executeParallel(analyzeBitmapTask, bitmap);
+        AnalyzeFromUriTask.TaskParams taskParams = new AnalyzeFromUriTask.TaskParams(uri);
+        analyzeFromUriTask = new AnalyzeFromUriTask(this);
+        AsyncTaskCompat.executeParallel(analyzeFromUriTask, taskParams);
     }
 
     @Override
-    public void analyzeYUVNV21Picture(byte[] data, int width, int height, int rotation) {
+    public void analyzeYuvNv21Frame(byte[] data, int width, int height, int rotation) {
         if (!isModelLoaded()) {
-            DragonflyLogger.warn(LOG_TAG, "No model loaded. Skipping analyzeYUVNV21Picture() call.");
+            DragonflyLogger.warn(LOG_TAG, "No model loaded. Skipping analyzeYuvNv21Frame() call.");
             return;
         }
 
         if (data == null) {
             throw new IllegalArgumentException("data can't be null.");
+        }
+
+        if (isAnalyzingFromUri) {
+            DragonflyLogger.debug(LOG_TAG, "isAnalyzingFromUri is true. Skipping this round.");
+            return;
         }
 
         if (analyzeYUVN21Task != null && AsyncTask.Status.RUNNING.equals(analyzeYUVN21Task.getStatus())) {
@@ -139,6 +152,8 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
         @Override
         protected AsyncTaskResult<Model, DragonflyModelException> doInBackground(Model... models) {
+            interactor.isAnalyzingFromUri = true;
+
             Model model = models[0];
 
             DragonflyLogger.debug(LOG_TAG, String.format("LoadModelTask.doInBackground() - start | model: %s", model));
@@ -165,6 +180,8 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
         @Override
         protected void onPostExecute(AsyncTaskResult<Model, DragonflyModelException> result) {
+            interactor.isAnalyzingFromUri = false;
+
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("LoadModelTask.onPostExecute() - error | exception: %s", result.getError()));
 
@@ -180,27 +197,44 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         }
     }
 
-    private static class AnalyzeBitmapTask extends AsyncTask<Bitmap, Void, AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException>> {
+    private static class AnalyzeFromUriTask extends AsyncTask<AnalyzeFromUriTask.TaskParams, Void, AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException>> {
 
         private final DragonflyLensClassificatorInteractor interactor;
+        private TaskParams taskParams;
 
-        public AnalyzeBitmapTask(DragonflyLensClassificatorInteractor interactor) {
+        private String savedImagePath;
+
+        public AnalyzeFromUriTask(DragonflyLensClassificatorInteractor interactor) {
             this.interactor = interactor;
         }
 
         @Override
-        protected AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException> doInBackground(Bitmap... bitmaps) {
-            Bitmap bitmap = bitmaps[0];
+        protected AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException> doInBackground(AnalyzeFromUriTask.TaskParams... params) {
+            this.taskParams = params[0];
 
-            DragonflyLogger.debug(LOG_TAG, "AnalyzeBitmapTask.doInBackground() - start");
+            DragonflyLogger.debug(LOG_TAG, "AnalyzeFromUriTask.doInBackground() - start");
 
             // To see the log ouput, make sure to run the command below:
             // adb shell setprop log.tag.<LOG_TAG> VERBOSE
-            TimingLogger timings = new TimingLogger(LOG_TAG, "AnalyzeBitmapTask.doInBackground()");
+            TimingLogger timings = new TimingLogger(LOG_TAG, "AnalyzeFromUriTask.doInBackground()");
 
             try {
+                InputStream inputStream = interactor.context.getContentResolver().openInputStream(taskParams.uri);
+
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                String filename = Hashing.SHA1(taskParams.uri.toString());
+                savedImagePath = ImageUtils.saveBitmapToStagingArea(bitmap, filename);
+
                 Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, interactor.model.getInputSize(), interactor.model.getInputSize(), false);
                 timings.addSplit("Scale bitmap");
+
+                if (DragonflyConfig.shouldSaveSelectedExistingBitmapsInDebugMode()) {
+                    DragonflyLogger.warn(LOG_TAG, "Saving bitmaps for debugging.");
+
+                    ImageUtils.saveBitmapToStagingArea(bitmap, String.format("selected-original-%s.jpg", filename));
+                    ImageUtils.saveBitmapToStagingArea(croppedBitmap, String.format("selected-cropped-%s.jpg", filename));
+                }
 
                 List<Classifier.Recognition> results = interactor.classifier.recognizeImage(croppedBitmap);
                 timings.addSplit("Classify image");
@@ -216,13 +250,27 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         @Override
         protected void onPostExecute(AsyncTaskResult<List<Classifier.Recognition>, DragonflyRecognitionException> result) {
             if (result.hasError()) {
-                DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeBitmapTask.onPostExecute() - error | exception: %s", result.getError()));
+                DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeFromUriTask.onPostExecute() - error | exception: %s", result.getError()));
 
-                interactor.classificationCallbacks.onImageAnalysisFailed(result.getError());
+                interactor.classificationCallbacks.onUriAnalysisFailed(taskParams.uri, result.getError());
             } else {
-                DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeBitmapTask.onPostExecute() - success | recognitions: %s", result.getResult()));
+                DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeFromUriTask.onPostExecute() - success | recognitions: %s", result.getResult()));
 
-                interactor.classificationCallbacks.onImageAnalyzed(result.getResult());
+                DragonflyClassificationInput classificationInput = DragonflyClassificationInput.newBuilder().withImagePath(savedImagePath).build();
+                interactor.classificationCallbacks.onUriAnalyzed(taskParams.uri, classificationInput, result.getResult());
+            }
+        }
+
+        public static class TaskParams {
+
+            private final Uri uri;
+
+            public TaskParams(Uri uri) {
+                this.uri = uri;
+            }
+
+            public Uri getUri() {
+                return uri;
             }
         }
     }
@@ -257,12 +305,12 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
                 timings.dumpToLog();
 
-                if (DragonflyConfig.shouldSaveBitmapsInDebugMode()) {
+                if (DragonflyConfig.shouldSaveCapturedCameraFramesInDebugMode()) {
                     DragonflyLogger.warn(LOG_TAG, "Saving bitmaps for debugging.");
 
                     String baseName = String.format("%s-%s", System.currentTimeMillis(), UUID.randomUUID().toString());
-                    ImageUtils.saveBitmapToStagingArea(bitmap, String.format("original-%s.png", baseName));
-                    ImageUtils.saveBitmapToStagingArea(croppedBitmap, String.format("cropped-%s.png", baseName));
+                    ImageUtils.saveBitmapToStagingArea(bitmap, String.format("captured-original-%s.png", baseName));
+                    ImageUtils.saveBitmapToStagingArea(croppedBitmap, String.format("captured-cropped-%s.png", baseName));
                 }
 
                 return new AsyncTaskResult<>(results, null);
@@ -281,11 +329,11 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeYUVN21Task.onPostExecute() - error | exception: %s", result.getError()));
 
-                interactor.classificationCallbacks.onImageAnalysisFailed(result.getError());
+                interactor.classificationCallbacks.onYuvNv21AnalysisFailed(result.getError());
             } else {
                 DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeYUVN21Task.onPostExecute() - success | recognitions: %s", result.getResult()));
 
-                interactor.classificationCallbacks.onImageAnalyzed(result.getResult());
+                interactor.classificationCallbacks.onYuvNv21Analyzed(result.getResult());
             }
         }
 

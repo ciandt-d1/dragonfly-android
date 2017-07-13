@@ -1,13 +1,13 @@
 package com.ciandt.dragonfly.lens.ui;
 
-import android.graphics.Bitmap;
+import android.net.Uri;
 
 import com.ciandt.dragonfly.base.ui.AbstractPresenter;
 import com.ciandt.dragonfly.base.ui.ClassificatorInteractor;
 import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
-import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
@@ -69,11 +69,16 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
 
         if (model.equals(this.loadedModel)) {
             DragonflyLogger.info(LOG_TAG, "This loadedModel is already currently setup. Ignoring it.");
+
+            if (hasViewAttached()) {
+                view.onModelReady(model);
+            }
+
             return;
         }
 
         if (hasViewAttached()) {
-            view.showLoading();
+            view.onStartLoadingModel(model);
         }
 
         modelLoadingAttempts = 0;
@@ -87,30 +92,51 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
     }
 
     @Override
-    public void analyzeBitmap(Bitmap bitmap) {
-        lensClassificatorInteractor.analyzeBitmap(bitmap);
+    public void analyzeFromUri(Uri uri) {
+        DragonflyLogger.debug(LOG_TAG, "analyzeFromUri()");
+
+        lensClassificatorInteractor.analyzeFromUri(uri);
     }
 
     @Override
-    public void analyzeYUVNV21(byte[] data, int width, int height, int rotation) {
-        lensClassificatorInteractor.analyzeYUVNV21Picture(data, width, height, rotation);
+    public void analyzeYuvNv21Frame(byte[] data, int width, int height, int rotation) {
+        DragonflyLogger.debug(LOG_TAG, "analyzeYuvNv21Frame()");
+
+        lensClassificatorInteractor.analyzeYuvNv21Frame(data, width, height, rotation);
     }
 
     @Override
-    public void onImageAnalyzed(List<Classifier.Recognition> results) {
+    public void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Recognition> classifications) {
         if (!hasViewAttached()) {
             return;
         }
 
-        view.setLastClassifications(results);
-        view.hideLoading();
+        view.onUriAnalyzed(uri, classificationInput, classifications);
+    }
 
-        if (results == null || results.size() == 0) {
+    @Override
+    public void onUriAnalysisFailed(Uri uri, DragonflyRecognitionException e) {
+        if (!hasViewAttached()) {
+            return;
+        }
+
+        view.onUriAnalysisFailed(uri, e);
+    }
+
+    @Override
+    public void onYuvNv21Analyzed(List<Classifier.Recognition> classifications) {
+        if (!hasViewAttached()) {
+            return;
+        }
+
+        view.setLastClassifications(classifications);
+
+        if (classifications == null || classifications.size() == 0) {
             view.setLabel("");
             return;
         }
 
-        Classifier.Recognition mainResult = results.get(0);
+        Classifier.Recognition mainResult = classifications.get(0);
 
         if (!mainResult.hasTitle()) {
             view.setLabel("");
@@ -126,12 +152,12 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
     }
 
     @Override
-    public void onImageAnalysisFailed(DragonflyRecognitionException e) {
+    public void onYuvNv21AnalysisFailed(DragonflyRecognitionException e) {
         if (!hasViewAttached()) {
             return;
         }
 
-        view.onBitmapAnalysisFailed(e);
+        view.onYuvNv21AnalysisFailed(e);
     }
 
     @Override
@@ -157,7 +183,7 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
             lensClassificatorInteractor.loadModel(e.getModel());
         } else {
             if (hasViewAttached()) {
-                view.onModelFailure(e);
+                view.onModelLoadFailure(e);
             }
         }
     }
@@ -178,7 +204,7 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
     }
 
     @Override
-    public void onSnapshotSaved(DragonflyCameraSnapshot snapshot) {
+    public void onSnapshotSaved(DragonflyClassificationInput snapshot) {
         view.onSnapshotTaken(snapshot);
     }
 

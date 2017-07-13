@@ -1,11 +1,14 @@
 package com.ciandt.dragonfly.lens.ui;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.media.MediaActionSound;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -14,7 +17,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ciandt.dragonfly.CameraView;
@@ -23,9 +25,10 @@ import com.ciandt.dragonfly.base.ui.ImageScaleTypes;
 import com.ciandt.dragonfly.base.ui.Orientation;
 import com.ciandt.dragonfly.base.ui.Size;
 import com.ciandt.dragonfly.data.model.Model;
+import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.infrastructure.PermissionsMapping;
-import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
@@ -48,107 +51,17 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     private CameraView cameraView;
     private ImageView ornamentView;
     private ImageButton btnSnapshot;
-    private ProgressBar progressBar;
+
+    private ProgressDialog progressDialog;
 
     private DragonflyLensRealTimeContract.LensRealTimePresenter lensRealTimePresenter;
 
-    private CameraOrnamentVisibilityCallback cameraOrnamentVisibilityCallback;
+    private ModelCallbacks modelCallbacks;
     private SnapshotCallbacks snapshotCallbacks;
     private PermissionsCallback permissionsCallback;
+    private UriAnalysisCallbacks uriAnalysisCallbacks;
 
     private List<Classifier.Recognition> lastClassifications;
-
-    public void setCameraOrnamentVisibilityCallback(CameraOrnamentVisibilityCallback cameraOrnamentVisibilityCallback) {
-        this.cameraOrnamentVisibilityCallback = cameraOrnamentVisibilityCallback;
-    }
-
-    public void setSnapshotCallbacks(SnapshotCallbacks snapshotCallbacks) {
-        this.snapshotCallbacks = snapshotCallbacks;
-    }
-
-    public void setPermissionsCallback(PermissionsCallback permissionsCallback) {
-        this.permissionsCallback = permissionsCallback;
-    }
-
-    @Override
-    public List<Classifier.Recognition> getLastClassifications() {
-        return lastClassifications;
-    }
-
-    @Override
-    public void setLastClassifications(List<Classifier.Recognition> classifications) {
-        lastClassifications = classifications;
-    }
-
-    @Override
-    public void setLabel(String label) {
-        labelView.setVisibility(TextUtils.isEmpty(label) ? GONE : VISIBLE);
-
-        String formattedLabel = getContext().getString(R.string.label_without_confidence, label);
-
-        labelView.setText(formattedLabel);
-    }
-
-    @Override
-    public void setLabel(String label, int confidence) {
-        labelView.setVisibility(TextUtils.isEmpty(label) ? GONE : VISIBLE);
-
-        String formattedLabel = getContext().getString(R.string.label_with_confidence, label, confidence);
-
-        labelView.setText(formattedLabel);
-    }
-
-    @Override
-    public void setOrientation(@Orientation.Mode int orientation) {
-        this.orientation = orientation;
-    }
-
-    @Override
-    public void onModelReady(Model model) {
-
-    }
-
-    @Override
-    public void onModelFailure(DragonflyModelException e) {
-        // TODO: handle the error in a user friendly way.
-    }
-
-    @Override
-    public void onBitmapAnalysisFailed(DragonflyRecognitionException e) {
-        // TODO: handle the error in a user friendly way.
-    }
-
-    @Override
-    public void captureCameraFrame() {
-        if (permissionsCallback == null) {
-            throw new IllegalStateException("setPermissionsCallback() should be called with a valid PermissionsCallback instance");
-        }
-
-        if (permissionsCallback.checkPermissions(PermissionsMapping.CAPTURE_FRAME)) {
-            cameraView.takeSnapshot();
-        }
-    }
-
-    @Override
-    public void onStartTakingSnapshot() {
-        if (snapshotCallbacks != null) {
-            snapshotCallbacks.onStartTakingSnapshot();
-        }
-    }
-
-    @Override
-    public void onSnapshotTaken(DragonflyCameraSnapshot snapshot) {
-        if (snapshotCallbacks != null) {
-            snapshotCallbacks.onSnapshotTaken(snapshot);
-        }
-    }
-
-    @Override
-    public void onSnapshotError(DragonflySnapshotException e) {
-        if (snapshotCallbacks != null) {
-            snapshotCallbacks.onSnapshotError(e);
-        }
-    }
 
     public DragonflyLensRealtimeView(Context context) {
         super(context);
@@ -184,7 +97,6 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         cameraView.setOrientation(orientation);
 
         ornamentView = (ImageView) this.findViewById(R.id.dragonflyLensOrnamentView);
-        ornamentView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         btnSnapshot = (TakePhotoButton) this.findViewById(R.id.dragonflyLensBtnSnapshot);
         btnSnapshot.setOnClickListener(new OnClickListener() {
@@ -195,8 +107,6 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
                 lensRealTimePresenter.takeSnapshot();
             }
         });
-
-        progressBar = (ProgressBar) this.findViewById(R.id.dragonflyLensLoading);
 
         lensRealTimePresenter = new DragonflyLensRealTimePresenter(new DragonflyLensClassificatorInteractor(getContext()), new DragonflyLensSnapshotInteractor(getContext()));
 
@@ -224,6 +134,170 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         }
     }
 
+    public void setModelCallbacks(ModelCallbacks callbacks) {
+        this.modelCallbacks = callbacks;
+    }
+
+    public void setSnapshotCallbacks(SnapshotCallbacks snapshotCallbacks) {
+        this.snapshotCallbacks = snapshotCallbacks;
+    }
+
+    public void setPermissionsCallback(PermissionsCallback permissionsCallback) {
+        this.permissionsCallback = permissionsCallback;
+    }
+
+    public void setUriAnalysisCallbacks(UriAnalysisCallbacks uriAnalysisCallbacks) {
+        this.uriAnalysisCallbacks = uriAnalysisCallbacks;
+    }
+
+    public void analyzeFromUri(Uri uri) {
+        showLoading(R.string.lens_loading_message_classifying_image);
+        lensRealTimePresenter.analyzeFromUri(uri);
+    }
+
+    @Override
+    public List<Classifier.Recognition> getLastClassifications() {
+        return lastClassifications;
+    }
+
+    @Override
+    public void setLastClassifications(List<Classifier.Recognition> classifications) {
+        lastClassifications = classifications;
+    }
+
+    @Override
+    public void setLabel(String label) {
+        labelView.setVisibility(TextUtils.isEmpty(label) ? GONE : VISIBLE);
+
+        String formattedLabel = getContext().getString(R.string.label_without_confidence, label);
+
+        labelView.setText(formattedLabel);
+    }
+
+    @Override
+    public void setLabel(String label, int confidence) {
+        labelView.setVisibility(TextUtils.isEmpty(label) ? GONE : VISIBLE);
+
+        String formattedLabel = getContext().getString(R.string.label_with_confidence, label, confidence);
+
+        labelView.setText(formattedLabel);
+    }
+
+    @Override
+    public void hideLabel() {
+        labelView.setVisibility(GONE);
+    }
+
+    private void hideControls() {
+        btnSnapshot.setVisibility(GONE);
+        hideLabel();
+    }
+
+    public void showControls(boolean animateControls) {
+        makeViewVisible(btnSnapshot, animateControls);
+    }
+
+    @Override
+    public void setOrientation(@Orientation.Mode int orientation) {
+        this.orientation = orientation;
+    }
+
+    @Override
+    public void onStartLoadingModel(Model model) {
+        if (modelCallbacks != null) {
+            modelCallbacks.onStartLoadingModel(model);
+        }
+    }
+
+    @Override
+    public void onModelReady(Model model) {
+        hideLoading(true);
+
+        if (modelCallbacks != null) {
+            modelCallbacks.onModelReady(model);
+        }
+
+        if (ornamentView.getDrawable() != null) {
+            makeViewVisible(ornamentView, true);
+        }
+    }
+
+    private void makeViewVisible(View view, boolean animate) {
+        if (animate) {
+            long duration = DragonflyConfig.getRealTimeControlsVisibilityAnimationDuration();
+
+            view.setAlpha(0f);
+            view.setVisibility(VISIBLE);
+            view.animate()
+                    .alpha(1.0f)
+                    .setDuration(duration);
+        } else {
+            view.setVisibility(VISIBLE);
+        }
+    }
+
+    @Override
+    public void onModelLoadFailure(DragonflyModelException e) {
+        if (modelCallbacks != null) {
+            modelCallbacks.onModelLoadFailure(e);
+        }
+    }
+
+    @Override
+    public void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Recognition> classifications) {
+        if (uriAnalysisCallbacks != null) {
+            uriAnalysisCallbacks.onUriAnalysisFinished(uri, classificationInput, classifications);
+        }
+
+        hideLoading(false);
+    }
+
+    @Override
+    public void onUriAnalysisFailed(Uri uri, DragonflyRecognitionException e) {
+        if (uriAnalysisCallbacks != null) {
+            uriAnalysisCallbacks.onUriAnalysisFailed(e);
+        }
+
+        hideLoading(false);
+    }
+
+    @Override
+    public void onYuvNv21AnalysisFailed(DragonflyRecognitionException e) {
+        // TODO: handle the error in a user friendly way.
+    }
+
+    @Override
+    public void captureCameraFrame() {
+        if (permissionsCallback == null) {
+            throw new IllegalStateException("setPermissionsCallback() should be called with a valid PermissionsCallback instance");
+        }
+
+        if (permissionsCallback.checkPermissions(PermissionsMapping.CAPTURE_FRAME)) {
+            cameraView.takeSnapshot();
+        }
+    }
+
+    @Override
+    public void onStartTakingSnapshot() {
+        if (snapshotCallbacks != null) {
+            snapshotCallbacks.onStartTakingSnapshot();
+        }
+    }
+
+    @Override
+    public void onSnapshotTaken(DragonflyClassificationInput snapshot) {
+        if (snapshotCallbacks != null) {
+            snapshotCallbacks.onSnapshotTaken(snapshot);
+        }
+    }
+
+    @Override
+    public void onSnapshotError(DragonflySnapshotException e) {
+        if (snapshotCallbacks != null) {
+            snapshotCallbacks.onSnapshotError(e);
+        }
+    }
+
     @Override
     public void start() {
         lensRealTimePresenter.attachView(this);
@@ -232,14 +306,6 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         // Not sure why, but this guarantees the camera works after turning the screen off and then
         // back on.
         cameraView.setVisibility(VISIBLE);
-
-        if (ornamentView.getDrawable() != null) {
-            if (cameraOrnamentVisibilityCallback == null) {
-                ornamentView.setVisibility(VISIBLE);
-            } else {
-                cameraOrnamentVisibilityCallback.onMakingCameraOrnamentVisible(ornamentView);
-            }
-        }
     }
 
     @Override
@@ -253,6 +319,8 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     @Override
     public void loadModel(Model model) {
         DragonflyLogger.debug(LOG_TAG, String.format("%s.loadModel(%s)", LOG_TAG, model));
+
+        showLoading(R.string.lens_loading_message_loading_model);
 
         lensRealTimePresenter.loadModel(model);
     }
@@ -284,7 +352,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     @Override
     public void onFrameReady(byte[] data, Size previewSize, int rotation) {
-        lensRealTimePresenter.analyzeYUVNV21(data, previewSize.getWidth(), previewSize.getHeight(), rotation);
+        lensRealTimePresenter.analyzeYuvNv21Frame(data, previewSize.getWidth(), previewSize.getHeight(), rotation);
     }
 
     @Override
@@ -298,15 +366,28 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     }
 
     @Override
-    public void showLoading() {
-        progressBar.setVisibility(VISIBLE);
-        btnSnapshot.setVisibility(INVISIBLE);
+    public void showLoading(@StringRes int messageRes) {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage(getContext().getString(messageRes));
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        hideControls();
     }
 
     @Override
-    public void hideLoading() {
-        progressBar.setVisibility(INVISIBLE);
-        btnSnapshot.setVisibility(VISIBLE);
+    public void hideLoading(boolean animateControls) {
+        if (progressDialog != null) {
+            progressDialog.hide();
+        }
+
+        showControls(animateControls);
     }
 
     @Override
@@ -380,16 +461,20 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         };
     }
 
-    public interface CameraOrnamentVisibilityCallback {
+    public interface ModelCallbacks {
 
-        void onMakingCameraOrnamentVisible(ImageView ornament);
+        void onStartLoadingModel(Model model);
+
+        void onModelReady(Model model);
+
+        void onModelLoadFailure(DragonflyModelException e);
     }
 
     public interface SnapshotCallbacks {
 
         void onStartTakingSnapshot();
 
-        void onSnapshotTaken(DragonflyCameraSnapshot snapshot);
+        void onSnapshotTaken(DragonflyClassificationInput snapshot);
 
         void onSnapshotError(DragonflySnapshotException e);
     }
@@ -397,5 +482,12 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     public interface PermissionsCallback {
 
         boolean checkPermissions(List<String> permissions);
+    }
+
+    public interface UriAnalysisCallbacks {
+
+        void onUriAnalysisFinished(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Recognition> recognitions);
+
+        void onUriAnalysisFailed(DragonflyRecognitionException e);
     }
 }

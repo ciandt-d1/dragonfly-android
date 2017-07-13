@@ -4,8 +4,10 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.StringRes
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
@@ -16,9 +18,13 @@ import com.ciandt.dragonfly.example.helpers.IntentHelper
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.ciandt.dragonfly.example.infrastructure.SharedPreferencesRepository
 import com.ciandt.dragonfly.example.shared.FullScreenActivity
-import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
+import com.ciandt.dragonfly.infrastructure.DragonflyConfig
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
+import com.ciandt.dragonfly.lens.exception.DragonflyModelException
+import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException
 import com.ciandt.dragonfly.lens.ui.DragonflyLensRealtimeView
+import com.ciandt.dragonfly.tensorflow.Classifier
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -31,15 +37,14 @@ import kotlinx.android.synthetic.main.activity_real_time.*
 import java.security.InvalidParameterException
 
 
-class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyLensRealtimeView.SnapshotCallbacks {
+class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyLensRealtimeView.ModelCallbacks, DragonflyLensRealtimeView.SnapshotCallbacks, DragonflyLensRealtimeView.UriAnalysisCallbacks {
+
     private lateinit var presenter: RealTimeContract.Presenter
 
     lateinit private var model: Model
 
     private var missingPermissionsAlertDialog: AlertDialog? = null
     private var comingFromSettings = false
-
-    private var wasOrnamentAnimated = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +56,6 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         if (savedInstanceState != null) {
             savedInstanceState.apply {
                 model = getParcelable(MODEL_BUNDLE)
-                wasOrnamentAnimated = getBoolean(ORNAMENT_ANIMATED_BUNDLE, false)
             }
         } else {
             model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
@@ -74,10 +78,12 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
     }
 
     private fun setupDragonflyLens() {
-        setupDragonflyLensCameraOrnament()
+        hideActionButtons()
 
+        dragonFlyLens.setModelCallbacks(this)
         dragonFlyLens.loadModel(model)
         dragonFlyLens.setSnapshotCallbacks(this)
+        dragonFlyLens.setUriAnalysisCallbacks(this)
 
         setupDragonflyLensPermissionsCallback()
     }
@@ -121,22 +127,6 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         })
     }
 
-    private fun setupDragonflyLensCameraOrnament() {
-        dragonFlyLens.setCameraOrnamentVisibilityCallback { ornament ->
-            if (wasOrnamentAnimated) {
-                ornament.visibility = VISIBLE
-            } else {
-                wasOrnamentAnimated = true
-
-                ornament.alpha = 0f
-                ornament.visibility = VISIBLE
-                ornament.animate()
-                        .alpha(1.0f)
-                        .setDuration(2500)
-            }
-        }
-    }
-
     override fun onResume() {
         super.onResume()
 
@@ -161,7 +151,6 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
 
         outState?.apply {
             putParcelable(MODEL_BUNDLE, model)
-            putBoolean(ORNAMENT_ANIMATED_BUNDLE, wasOrnamentAnimated)
         }
     }
 
@@ -178,15 +167,19 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
 
         when (requestCode) {
             REQUEST_CODE_SELECT_IMAGE -> {
+                hideActionButtons()
+
                 DragonflyLogger.debug(LOG_TAG, "requestCode: ${requestCode}")
 
-                val originalUri = data.getData()
+                val fileUri = data.getData()
                 val takeFlags = data.getFlags() and
                         (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
-                contentResolver.takePersistableUriPermission(originalUri, takeFlags);
+                contentResolver.takePersistableUriPermission(fileUri, takeFlags);
 
-                DragonflyLogger.debug(LOG_TAG, "imageUri: ${originalUri}")
+                dragonFlyLens.analyzeFromUri(fileUri)
+
+                DragonflyLogger.debug(LOG_TAG, "imageUri: ${fileUri}")
             }
         }
     }
@@ -201,7 +194,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
                 .check()
     }
 
-    override fun startRecognition() {
+    override fun startRealTimeClassification() {
         dragonFlyLens.start()
     }
 
@@ -229,6 +222,18 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         missingPermissionsAlertDialog?.show()
     }
 
+    override fun onStartLoadingModel(model: Model?) {
+        hideActionButtons()
+    }
+
+    override fun onModelReady(model: Model?) {
+        showActionButtons(true)
+    }
+
+    override fun onModelLoadFailure(e: DragonflyModelException?) {
+        showActionButtons(true)
+    }
+
     override fun onStartTakingSnapshot() {
         DragonflyLogger.debug(LOG_TAG, "onStartTakingSnapshot()")
     }
@@ -238,7 +243,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
     }
 
-    override fun onSnapshotTaken(snapshot: DragonflyCameraSnapshot) {
+    override fun onSnapshotTaken(snapshot: DragonflyClassificationInput) {
         DragonflyLogger.debug(LOG_TAG, "onSnapshotTaken(${snapshot})")
 
         intent = FeedbackActivity.newIntent(this, model, snapshot, dragonFlyLens.lastClassifications)
@@ -249,11 +254,42 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         DragonflyLogger.debug(LOG_TAG, "onSnapshotError(${e})")
     }
 
+    override fun onUriAnalysisFinished(uri: Uri, classificationInput: DragonflyClassificationInput, recognitions: List<Classifier.Recognition>) {
+        DragonflyLogger.debug(LOG_TAG, "onUriAnalysisFinished(${recognitions})")
+
+        intent = FeedbackActivity.newIntent(this, model, classificationInput, recognitions)
+        startActivity(intent)
+
+        showActionButtons()
+    }
+
+    override fun onUriAnalysisFailed(e: DragonflyRecognitionException) {
+        DragonflyLogger.error(LOG_TAG, e)
+        hideActionButtons()
+    }
+
+    private fun hideActionButtons() {
+        btnSelectExistingPicture.visibility = GONE
+    }
+
+    private fun showActionButtons(animate: Boolean = false) {
+        if (animate) {
+            val duration = DragonflyConfig.getRealTimeControlsVisibilityAnimationDuration()
+
+            btnSelectExistingPicture.alpha = 0f
+            btnSelectExistingPicture.visibility = VISIBLE
+            btnSelectExistingPicture.animate()
+                    .alpha(1.0f)
+                    .setDuration(duration)
+        } else {
+            btnSelectExistingPicture.visibility = VISIBLE
+        }
+    }
+
     companion object {
         private val LOG_TAG = RealTimeActivity::class.java.simpleName
 
         private val MODEL_BUNDLE = "${BuildConfig.APPLICATION_ID}.model_bundle"
-        private val ORNAMENT_ANIMATED_BUNDLE = "${BuildConfig.APPLICATION_ID}.ornament_animated_bundle"
 
         private val REQUEST_CODE_SELECT_IMAGE = 1
 

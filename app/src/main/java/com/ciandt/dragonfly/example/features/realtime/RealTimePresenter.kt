@@ -20,7 +20,7 @@ class RealTimePresenter(preferencesRepository: PreferencesRepository) : BasePres
 
     override fun onRealTimePermissionsGranted() {
         preferenceRepository.remove(PreferenceKeys.REAL_TIME_PERMISSIONS_PERMANENTLY_DENIED)
-        view?.startRecognition()
+        view?.startRealTimeClassification()
     }
 
     override fun onRealTimePermissionsDenied(permanently: Boolean) {

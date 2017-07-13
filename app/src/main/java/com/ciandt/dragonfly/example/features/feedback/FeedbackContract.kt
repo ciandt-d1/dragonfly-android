@@ -3,7 +3,7 @@ package com.ciandt.dragonfly.example.features.feedback
 import android.support.annotation.StringRes
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.shared.BasePresenterContract
-import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.tensorflow.Classifier
 
 /**
@@ -42,7 +42,7 @@ interface FeedbackContract {
 
         fun setUserFeedback(userFeedback: Feedback?)
 
-        fun saveImageToGallery(cameraSnapshot: DragonflyCameraSnapshot)
+        fun saveImageToGallery(classificationInput: DragonflyClassificationInput)
     }
 
     interface Interactor {
