@@ -5,7 +5,6 @@ import android.net.Uri
 import android.provider.Settings
 import com.ciandt.dragonfly.example.BuildConfig
 
-
 object IntentHelper {
 
     fun openUrl(url: String): Intent {

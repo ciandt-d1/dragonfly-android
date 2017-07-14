@@ -3,7 +3,6 @@ package com.ciandt.dragonfly.example.infrastructure
 import android.content.Context
 import android.content.SharedPreferences
 
-
 /**
  * Created by iluz on 5/30/17.
  */

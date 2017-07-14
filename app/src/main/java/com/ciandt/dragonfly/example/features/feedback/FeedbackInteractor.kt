@@ -11,7 +11,6 @@ import com.google.firebase.storage.StorageMetadata
 import java.io.File
 import java.io.FileInputStream
 
-
 /**
  * Created by iluz on 6/23/17.
  */

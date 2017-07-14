@@ -3,7 +3,6 @@ package com.ciandt.dragonfly.example.shared
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger
 import com.google.firebase.auth.FirebaseAuth
 
-
 /**
  * Created by iluz on 6/20/17.
  */

@@ -11,7 +11,6 @@ import com.ciandt.dragonfly.image_processing.ImageUtils
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import java.io.File
 
-
 /**
  * Created by iluz on 6/28/17.
  */
