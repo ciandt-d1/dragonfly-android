@@ -80,7 +80,7 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
                             interactor.onFeedbackSavedCallback?.invoke(taskParams.feedback)
                         }
                     })
-                } catch(e: Exception) {
+                } catch (e: Exception) {
                     stream.close()
                 }
 
