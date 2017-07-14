@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ciandt.dragonfly.CameraView;
 import com.ciandt.dragonfly.R;
@@ -103,8 +104,12 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
             @Override
             public void onClick(View v) {
-                new MediaActionSound().play(MediaActionSound.SHUTTER_CLICK);
-                lensRealTimePresenter.takeSnapshot();
+                if (lastClassifications == null || lastClassifications.isEmpty()) {
+                    Toast.makeText(getContext(), R.string.lens_no_classifications_available, Toast.LENGTH_SHORT).show();
+                } else {
+                    new MediaActionSound().play(MediaActionSound.SHUTTER_CLICK);
+                    lensRealTimePresenter.takeSnapshot();
+                }
             }
         });
 

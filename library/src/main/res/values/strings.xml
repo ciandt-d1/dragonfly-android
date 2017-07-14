@@ -7,4 +7,5 @@
 
     <string name="lens_loading_message_loading_model">Starting engines...</string>
     <string name="lens_loading_message_classifying_image">Classifying image...</string>
+    <string name="lens_no_classifications_available">Please try again in a few seconds...</string>
 </resources>
