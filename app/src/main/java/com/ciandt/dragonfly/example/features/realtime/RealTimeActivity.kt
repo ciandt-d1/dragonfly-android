@@ -70,7 +70,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
 
     override fun onDestroy() {
         super.onDestroy()
-        dragonFlyLens.unloadModel();
+        dragonFlyLens.unloadModel()
     }
 
     private fun setupBackButton() {
@@ -182,7 +182,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
                 val takeFlags = data.getFlags() and
                         (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
-                contentResolver.takePersistableUriPermission(fileUri, takeFlags);
+                contentResolver.takePersistableUriPermission(fileUri, takeFlags)
 
                 dragonFlyLens.analyzeFromUri(fileUri)
 
@@ -322,7 +322,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
 
     private fun showActionButtons(animate: Boolean = false) {
         if (btnSelectExistingPicture.isVisible()) {
-            return;
+            return
         }
 
         if (animate) {
