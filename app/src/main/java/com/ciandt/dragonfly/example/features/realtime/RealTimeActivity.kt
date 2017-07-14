@@ -39,7 +39,7 @@ import kotlinx.android.synthetic.main.activity_real_time.*
 class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyLensRealtimeView.ModelCallbacks, DragonflyLensRealtimeView.SnapshotCallbacks, DragonflyLensRealtimeView.UriAnalysisCallbacks {
     private lateinit var presenter: RealTimeContract.Presenter
 
-    lateinit private var model: Model
+    private lateinit var model: Model
 
     private var missingPermissionsAlertDialog: AlertDialog? = null
     private var comingFromSettings = false
