@@ -39,8 +39,6 @@ public interface DragonflyLensRealTimeContract {
 
         void setLabel(String label, int confidence);
 
-        void hideLabel();
-
         void setOrientation(@Orientation.Mode int orientation);
 
         void onStartLoadingModel(Model model);

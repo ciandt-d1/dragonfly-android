@@ -425,8 +425,8 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     companion object {
         private val LOG_TAG = FeedbackActivity::class.java.simpleName
 
-        private val MODEL_BUNDLE = String.format("%s.model_bundle", BuildConfig.APPLICATION_ID)
-        private val CLASSIFICATION_INPUT_BUNDLE = String.format("%s.classification_input_bundle", BuildConfig.APPLICATION_ID)
+        private val MODEL_BUNDLE = String.format("%s.model", BuildConfig.APPLICATION_ID)
+        private val CLASSIFICATION_INPUT_BUNDLE = String.format("%s.classification_input", BuildConfig.APPLICATION_ID)
         private val ALLOW_SAVE_TO_GALLERY_BUNDLE = String.format("%s.allow_save_to_gallery", BuildConfig.APPLICATION_ID)
         private val CLASSIFICATIONS_BUNDLE = String.format("%s.classifications", BuildConfig.APPLICATION_ID)
         private val USER_FEEDBACK = String.format("%s.user_feedback", BuildConfig.APPLICATION_ID)

@@ -31,7 +31,6 @@
         android:layout_height="@dimen/touchable_area_minimum_dimension"
         android:layout_marginBottom="@dimen/real_time_from_existing_picture_margin_bottom"
         android:layout_marginRight="@dimen/real_time_from_existing_picture_margin_right"
-        android:padding="8dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/real_time_from_existing_picture"
         android:layout_gravity="bottom|right"

@@ -188,8 +188,8 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         labelView.setText(formattedLabel);
     }
 
-    @Override
-    public void hideLabel() {
+
+    private void hideLabel() {
         labelView.setVisibility(GONE);
     }
 
