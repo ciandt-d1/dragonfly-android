@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.view.View.GONE
-import android.view.View.VISIBLE
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
@@ -17,6 +16,8 @@ import com.ciandt.dragonfly.example.features.feedback.FeedbackActivity
 import com.ciandt.dragonfly.example.helpers.IntentHelper
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.ciandt.dragonfly.example.infrastructure.SharedPreferencesRepository
+import com.ciandt.dragonfly.example.infrastructure.extensions.isVisible
+import com.ciandt.dragonfly.example.infrastructure.extensions.makeVisible
 import com.ciandt.dragonfly.example.shared.FullScreenActivity
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
@@ -306,16 +307,20 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
     }
 
     private fun showActionButtons(animate: Boolean = false) {
+        if (btnSelectExistingPicture.isVisible()) {
+            return;
+        }
+
         if (animate) {
             val duration = DragonflyConfig.getRealTimeControlsVisibilityAnimationDuration()
 
             btnSelectExistingPicture.alpha = 0f
-            btnSelectExistingPicture.visibility = VISIBLE
+            btnSelectExistingPicture.makeVisible()
             btnSelectExistingPicture.animate()
                     .alpha(1.0f)
                     .setDuration(duration)
         } else {
-            btnSelectExistingPicture.visibility = VISIBLE
+            btnSelectExistingPicture.makeVisible()
         }
     }
 

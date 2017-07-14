@@ -8,7 +8,6 @@ import android.media.MediaActionSound;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -29,8 +28,8 @@ import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.infrastructure.PermissionsMapping;
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
-import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException;
+import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
@@ -52,7 +51,8 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     private ImageView ornamentView;
     private ImageButton btnSnapshot;
 
-    private ProgressDialog progressDialog;
+    private ProgressDialog progressDialogModelLoading;
+    private ProgressDialog progressDialogUriAnalysis;
 
     private DragonflyLensRealTimeContract.LensRealTimePresenter lensRealTimePresenter;
 
@@ -151,7 +151,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     }
 
     public void analyzeFromUri(Uri uri) {
-        showLoading(R.string.lens_loading_message_classifying_image);
+        showUriAnalysisProgress();
         lensRealTimePresenter.analyzeFromUri(uri);
     }
 
@@ -211,7 +211,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     @Override
     public void onModelReady(Model model) {
-        hideLoading(true);
+        hideModelLoadingProgress(true);
 
         if (modelCallbacks != null) {
             modelCallbacks.onModelReady(model);
@@ -223,6 +223,10 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     }
 
     private void makeViewVisible(View view, boolean animate) {
+        if (View.VISIBLE == view.getVisibility()) {
+            return;
+        }
+
         if (animate) {
             long duration = DragonflyConfig.getRealTimeControlsVisibilityAnimationDuration();
 
@@ -249,7 +253,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
             uriAnalysisCallbacks.onUriAnalysisFinished(uri, classificationInput, classifications);
         }
 
-        hideLoading(false);
+        hideUriAnalysisProgress(false);
     }
 
     @Override
@@ -258,7 +262,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
             uriAnalysisCallbacks.onUriAnalysisFailed(e);
         }
 
-        hideLoading(false);
+        hideUriAnalysisProgress(false);
     }
 
     @Override
@@ -301,6 +305,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     @Override
     public void start() {
         lensRealTimePresenter.attachView(this);
+
         startCameraView();
 
         // Not sure why, but this guarantees the camera works after turning the screen off and then
@@ -320,7 +325,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     public void loadModel(Model model) {
         DragonflyLogger.debug(LOG_TAG, String.format("%s.loadModel(%s)", LOG_TAG, model));
 
-        showLoading(R.string.lens_loading_message_loading_model);
+        showModelLoadingProgress();
 
         lensRealTimePresenter.loadModel(model);
     }
@@ -365,26 +370,49 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     }
 
-    @Override
-    public void showLoading(@StringRes int messageRes) {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
+    private void showModelLoadingProgress() {
+        if (progressDialogModelLoading != null) {
+            return;
         }
 
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage(getContext().getString(messageRes));
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+        progressDialogModelLoading = new ProgressDialog(getContext());
+        progressDialogModelLoading.setMessage(getContext().getString(R.string.lens_loading_message_loading_model));
+        progressDialogModelLoading.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialogModelLoading.setIndeterminate(true);
+        progressDialogModelLoading.setCancelable(false);
+        progressDialogModelLoading.show();
 
         hideControls();
     }
 
-    @Override
-    public void hideLoading(boolean animateControls) {
-        if (progressDialog != null) {
-            progressDialog.hide();
+    private void hideModelLoadingProgress(boolean animateControls) {
+        if (progressDialogModelLoading != null) {
+            progressDialogModelLoading.hide();
+            progressDialogModelLoading = null;
+        }
+
+        showControls(animateControls);
+    }
+
+    private void showUriAnalysisProgress() {
+        if (progressDialogUriAnalysis != null) {
+            return;
+        }
+
+        progressDialogUriAnalysis = new ProgressDialog(getContext());
+        progressDialogUriAnalysis.setMessage(getContext().getString(R.string.lens_loading_message_classifying_image));
+        progressDialogUriAnalysis.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialogUriAnalysis.setIndeterminate(true);
+        progressDialogUriAnalysis.setCancelable(false);
+        progressDialogUriAnalysis.show();
+
+        hideControls();
+    }
+
+    private void hideUriAnalysisProgress(boolean animateControls) {
+        if (progressDialogUriAnalysis != null) {
+            progressDialogUriAnalysis.hide();
+            progressDialogUriAnalysis = null;
         }
 
         showControls(animateControls);

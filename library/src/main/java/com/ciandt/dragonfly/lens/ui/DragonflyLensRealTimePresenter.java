@@ -61,6 +61,15 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
     }
 
     @Override
+    public void attachView(DragonflyLensRealTimeContract.LensRealTimeView view) {
+        super.attachView(view);
+
+        if (loadedModel != null) {
+            view.onModelReady(loadedModel);
+        }
+    }
+
+    @Override
     public void loadModel(Model model) {
         if (model == null) {
             DragonflyLogger.warn(LOG_TAG, "loadModel() called with null argument.");
@@ -163,12 +172,11 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
 
     @Override
     public void onModelReady(Model model) {
-        if (!hasViewAttached()) {
-            return;
-        }
-
         loadedModel = model;
-        view.onModelReady(model);
+
+        if (hasViewAttached()) {
+            view.onModelReady(model);
+        }
     }
 
     @Override

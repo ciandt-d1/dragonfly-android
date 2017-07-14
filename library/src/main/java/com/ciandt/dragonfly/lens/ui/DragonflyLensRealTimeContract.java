@@ -1,7 +1,6 @@
 package com.ciandt.dragonfly.lens.ui;
 
 import android.net.Uri;
-import android.support.annotation.StringRes;
 
 import com.ciandt.dragonfly.base.ui.BaseInteractorContract;
 import com.ciandt.dragonfly.base.ui.BasePresenterContract;
@@ -9,8 +8,8 @@ import com.ciandt.dragonfly.base.ui.BaseViewContract;
 import com.ciandt.dragonfly.base.ui.Orientation;
 import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
-import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException;
+import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
@@ -31,10 +30,6 @@ public interface DragonflyLensRealTimeContract {
         void loadModel(Model model);
 
         void unloadModel();
-
-        void showLoading(@StringRes int messageRes);
-
-        void hideLoading(boolean animateControls);
 
         List<Classifier.Classification> getLastClassifications();
 
