@@ -1,6 +1,5 @@
 package com.ciandt.dragonfly.example.infrastructure
 
-
 /**
  * Created by iluz on 5/30/17.
  */

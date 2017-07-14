@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.ciandt.dragonfly.example.R
 
-
 class ChipAdapter(var context: Context, var list: ArrayList<out Chip>, val onClick: (chip: Chip, activated: Boolean) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val UNINITIALIZED_LAYOUT_RESOURCE = -1
@@ -17,7 +16,6 @@ class ChipAdapter(var context: Context, var list: ArrayList<out Chip>, val onCli
     private var layout = UNINITIALIZED_LAYOUT_RESOURCE
 
     private val selectedPositions = ArrayList<Int>()
-
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
 

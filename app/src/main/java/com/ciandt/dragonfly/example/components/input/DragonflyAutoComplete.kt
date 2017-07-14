@@ -19,7 +19,6 @@ import com.ciandt.dragonfly.example.infrastructure.extensions.getLayoutInflaterS
 import com.ciandt.dragonfly.example.infrastructure.extensions.toPx
 import kotlinx.android.synthetic.main.component_autocomplete_textview.view.*
 
-
 class DragonflyAutoComplete : RelativeLayout {
 
     private var lineColor = Color.TRANSPARENT

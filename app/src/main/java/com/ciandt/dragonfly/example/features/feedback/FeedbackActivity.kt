@@ -36,7 +36,6 @@ import kotlinx.android.synthetic.main.activity_feedback.*
 import kotlinx.android.synthetic.main.partial_feedback_form.*
 import kotlinx.android.synthetic.main.partial_feedback_result.*
 
-
 class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     private val HIDE_SHOW_ANIMATION_DURATION = 150L
     private val FIRST_APPEAR_ANIMATION_DURATION = 1000L

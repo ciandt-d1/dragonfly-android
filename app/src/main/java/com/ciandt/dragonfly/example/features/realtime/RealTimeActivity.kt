@@ -36,11 +36,10 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_real_time.*
 
-
 class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyLensRealtimeView.ModelCallbacks, DragonflyLensRealtimeView.SnapshotCallbacks, DragonflyLensRealtimeView.UriAnalysisCallbacks {
     private lateinit var presenter: RealTimeContract.Presenter
 
-    lateinit private var model: Model
+    private lateinit var model: Model
 
     private var missingPermissionsAlertDialog: AlertDialog? = null
     private var comingFromSettings = false
@@ -71,7 +70,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
 
     override fun onDestroy() {
         super.onDestroy()
-        dragonFlyLens.unloadModel();
+        dragonFlyLens.unloadModel()
     }
 
     private fun setupBackButton() {
@@ -183,7 +182,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
                 val takeFlags = data.getFlags() and
                         (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
-                contentResolver.takePersistableUriPermission(fileUri, takeFlags);
+                contentResolver.takePersistableUriPermission(fileUri, takeFlags)
 
                 dragonFlyLens.analyzeFromUri(fileUri)
 
@@ -323,7 +322,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
 
     private fun showActionButtons(animate: Boolean = false) {
         if (btnSelectExistingPicture.isVisible()) {
-            return;
+            return
         }
 
         if (animate) {

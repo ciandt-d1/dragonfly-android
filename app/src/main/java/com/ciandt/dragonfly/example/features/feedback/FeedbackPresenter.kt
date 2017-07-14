@@ -13,7 +13,6 @@ import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.tensorflow.Classifier
 import com.google.firebase.auth.FirebaseAuth
 
-
 class FeedbackPresenter(val model: Model, val classificationInput: DragonflyClassificationInput, val feedbackInteractor: FeedbackContract.Interactor, val saveImageToGalleryInteractor: SaveImageToGalleryContract.Interactor, val firebaseAuth: FirebaseAuth) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
     private val results = ArrayList<Classifier.Classification>()
     private var userFeedback: Feedback? = null

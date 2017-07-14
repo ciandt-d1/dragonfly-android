@@ -23,7 +23,6 @@ import com.google.firebase.auth.FirebaseUser
 import io.palaima.debugdrawer.DebugDrawer
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 
-
 /**
  * Created by iluz on 5/15/17.
  */
