@@ -319,6 +319,9 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         stopCameraView();
 
         cameraView.setVisibility(GONE);
+
+        hideModelLoadingProgress(false);
+        hideUriAnalysisProgress(false);
     }
 
     @Override

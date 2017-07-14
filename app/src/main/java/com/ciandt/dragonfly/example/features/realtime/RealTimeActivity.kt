@@ -45,6 +45,8 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
     private var missingPermissionsAlertDialog: AlertDialog? = null
     private var comingFromSettings = false
 
+    private var uriUnderAnalysis: Uri? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_real_time)
@@ -55,9 +57,11 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         if (savedInstanceState != null) {
             savedInstanceState.apply {
                 model = getParcelable(MODEL_BUNDLE)
+                uriUnderAnalysis = getParcelable(IMAGE_URI_BUNDLE)
             }
         } else {
             model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
+            uriUnderAnalysis = null
         }
 
         setupBackButton()
@@ -135,6 +139,10 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         }
 
         presenter.attachView(this)
+
+        uriUnderAnalysis?.let {
+            dragonFlyLens.analyzeFromUri(it)
+        }
     }
 
     override fun onPause() {
@@ -150,6 +158,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
 
         outState?.apply {
             putParcelable(MODEL_BUNDLE, model)
+            putParcelable(IMAGE_URI_BUNDLE, uriUnderAnalysis)
         }
     }
 
@@ -177,6 +186,8 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
                 contentResolver.takePersistableUriPermission(fileUri, takeFlags);
 
                 dragonFlyLens.analyzeFromUri(fileUri)
+
+                uriUnderAnalysis = fileUri
 
                 DragonflyLogger.debug(LOG_TAG, "imageUri: ${fileUri}")
             }
@@ -289,6 +300,8 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
     }
 
     override fun onUriAnalysisFinished(uri: Uri, classificationInput: DragonflyClassificationInput, classifications: List<Classifier.Classification>) {
+        uriUnderAnalysis = null
+
         DragonflyLogger.debug(LOG_TAG, "onUriAnalysisFinished(${classifications})")
 
         intent = FeedbackActivity.newIntent(this, model, classificationInput, classifications)
@@ -298,6 +311,8 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
     }
 
     override fun onUriAnalysisFailed(e: DragonflyClassificationException) {
+        uriUnderAnalysis = null
+
         DragonflyLogger.error(LOG_TAG, e)
         hideActionButtons()
     }
@@ -328,6 +343,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         private val LOG_TAG = RealTimeActivity::class.java.simpleName
 
         private val MODEL_BUNDLE = "${BuildConfig.APPLICATION_ID}.model_bundle"
+        private val IMAGE_URI_BUNDLE = "${BuildConfig.APPLICATION_ID}.image_uri"
 
         private val REQUEST_CODE_SELECT_IMAGE = 1
 
