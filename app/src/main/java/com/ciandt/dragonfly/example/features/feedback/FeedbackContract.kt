@@ -3,7 +3,7 @@ package com.ciandt.dragonfly.example.features.feedback
 import android.support.annotation.StringRes
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.shared.BasePresenterContract
-import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.tensorflow.Classifier
 
 /**
@@ -13,15 +13,15 @@ interface FeedbackContract {
 
     interface View {
 
-        fun showNoRecognitions()
+        fun showNoClassifications()
 
-        fun showRecognitions(mainRecognitionLabel: String, otherRecognitions: List<Classifier.Recognition>)
+        fun showClassifications(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>)
 
-        fun showPositiveRecognition(mainRecognitionLabel: String, otherRecognitions: List<Classifier.Recognition>, collapseResults: Boolean = true)
+        fun showPositiveClassification(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>, collapseResults: Boolean = true)
 
-        fun showNegativeRecognition(mainRecognitionLabel: String, otherRecognitions: List<Classifier.Recognition>)
+        fun showNegativeClassification(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>)
 
-        fun showNegativeForm(otherRecognitions: List<Classifier.Recognition>)
+        fun showNegativeForm(otherClassifications: List<Classifier.Classification>)
 
         fun setUserFeedback(feedback: Feedback)
 
@@ -32,7 +32,7 @@ interface FeedbackContract {
 
     interface Presenter : BasePresenterContract<View> {
 
-        fun setClassifications(recognitions: List<Classifier.Recognition>)
+        fun setClassifications(classifications: List<Classifier.Classification>)
 
         fun markAsPositive()
 
@@ -42,7 +42,7 @@ interface FeedbackContract {
 
         fun setUserFeedback(userFeedback: Feedback?)
 
-        fun saveImageToGallery(cameraSnapshot: DragonflyCameraSnapshot)
+        fun saveImageToGallery(classificationInput: DragonflyClassificationInput)
     }
 
     interface Interactor {

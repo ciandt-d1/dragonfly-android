@@ -1,10 +1,11 @@
 package com.ciandt.dragonfly.base.ui;
 
-import android.graphics.Bitmap;
+import android.net.Uri;
 
 import com.ciandt.dragonfly.data.model.Model;
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
-import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
+import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
 import java.util.List;
@@ -21,9 +22,9 @@ public interface ClassificatorInteractor {
 
     void releaseModel();
 
-    void analyzeBitmap(Bitmap bitmap);
+    void analyzeFromUri(Uri uri);
 
-    void analyzeYUVNV21Picture(byte[] data, int width, int height, int rotation);
+    void analyzeYuvNv21Frame(byte[] data, int width, int height, int rotation);
 
     interface LensClassificatorInteractorCallbacks {
 
@@ -31,8 +32,12 @@ public interface ClassificatorInteractor {
 
         void onModelFailure(DragonflyModelException e);
 
-        void onImageAnalyzed(List<Classifier.Recognition> results);
+        void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Classification> classifications);
 
-        void onImageAnalysisFailed(DragonflyRecognitionException e);
+        void onUriAnalysisFailed(Uri uri, DragonflyClassificationException e);
+
+        void onYuvNv21Analyzed(List<Classifier.Classification> results);
+
+        void onYuvNv21AnalysisFailed(DragonflyClassificationException e);
     }
 }

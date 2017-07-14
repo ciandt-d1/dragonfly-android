@@ -131,9 +131,9 @@ public class TensorFlowImageClassifier implements Classifier {
         return c;
     }
 
-    public List<Recognition> recognizeImage(final Bitmap bitmap) {
+    public List<Classification> classifyImage(final Bitmap bitmap) {
         // Log this method so that it can be analyzed with systrace.
-        Trace.beginSection("recognizeImage");
+        Trace.beginSection("classifyImage");
 
         Trace.beginSection("preprocessBitmap");
         // Preprocess the image data from 0-255 int to normalized float based
@@ -163,13 +163,13 @@ public class TensorFlowImageClassifier implements Classifier {
         Trace.endSection();
 
         // Find the best classifications.
-        PriorityQueue<Recognition> pq =
+        PriorityQueue<Classification> pq =
                 new PriorityQueue<>(
                         3,
-                        new Comparator<Recognition>() {
+                        new Comparator<Classification>() {
 
                             @Override
-                            public int compare(Recognition lhs, Recognition rhs) {
+                            public int compare(Classification lhs, Classification rhs) {
                                 // Intentionally reversed to put high confidence at the head of the queue.
                                 return Float.compare(rhs.getConfidence(), lhs.getConfidence());
                             }
@@ -177,17 +177,17 @@ public class TensorFlowImageClassifier implements Classifier {
         for (int i = 0; i < outputs.length; ++i) {
             if (outputs[i] > THRESHOLD) {
                 pq.add(
-                        new Recognition(
+                        new Classification(
                                 Integer.toString(i), labels.size() > i ? labels.get(i) : "unknown", outputs[i], null));
             }
         }
-        final ArrayList<Recognition> recognitions = new ArrayList<>();
-        int recognitionsSize = Math.min(pq.size(), MAX_RESULTS);
-        for (int i = 0; i < recognitionsSize; ++i) {
-            recognitions.add(pq.poll());
+        final ArrayList<Classification> classifications = new ArrayList<>();
+        int classificationsSize = Math.min(pq.size(), MAX_RESULTS);
+        for (int i = 0; i < classificationsSize; ++i) {
+            classifications.add(pq.poll());
         }
-        Trace.endSection(); // "recognizeImage"
-        return recognitions;
+        Trace.endSection(); // "classifyImage"
+        return classifications;
     }
 
     public void enableStatLogging(boolean debug) {

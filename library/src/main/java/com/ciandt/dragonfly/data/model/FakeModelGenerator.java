@@ -49,7 +49,7 @@ class FakeModelGenerator {
                 .setName("Flowers")
                 .setVersion(1)
                 .setSize(88481067L)
-                .setDescription("This model recognize 130 plants")
+                .setDescription("This model classifies 130 plants")
                 .setColors(new String[]{"#9BCE4F", "#228B22"})
                 .setInputSize(299)
                 .setImageMean(128)

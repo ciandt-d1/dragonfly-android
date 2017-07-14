@@ -12,23 +12,27 @@ class RealTimePresenter(preferencesRepository: PreferencesRepository) : BasePres
         super.attachView(view)
 
         if (preferenceRepository.getBoolean(PreferenceKeys.REAL_TIME_PERMISSIONS_PERMANENTLY_DENIED, false)) {
-            view.showRealTimePermissionsRequiredAlert(R.string.permissions_required_title, R.string.permissions_required_description_realtime)
+            view.showPermissionsRequiredAlert(R.string.permissions_required_title, R.string.permissions_required_description, true)
         } else {
             view.checkRealTimeRequiredPermissions()
         }
     }
 
+    override fun onRealTimePermissionsGranted() {
+        preferenceRepository.remove(PreferenceKeys.REAL_TIME_PERMISSIONS_PERMANENTLY_DENIED)
+        view?.startRealTimeClassification()
+    }
+
     override fun onRealTimePermissionsDenied(permanently: Boolean) {
         if (permanently) {
             preferenceRepository.putBoolean(PreferenceKeys.REAL_TIME_PERMISSIONS_PERMANENTLY_DENIED, true)
-            view?.showRealTimePermissionsRequiredAlert(R.string.permissions_required_title, R.string.permissions_required_description_realtime)
+            view?.showPermissionsRequiredAlert(R.string.permissions_required_title, R.string.permissions_required_description, true)
         } else {
             view?.checkRealTimeRequiredPermissions()
         }
     }
 
-    override fun onRealTimePermissionsGranted() {
-        preferenceRepository.remove(PreferenceKeys.REAL_TIME_PERMISSIONS_PERMANENTLY_DENIED)
-        view?.startRecognition()
+    override fun classifyExistingPicture() {
+        view?.checkSelectImageFromLibraryRequiredPermissions()
     }
 }

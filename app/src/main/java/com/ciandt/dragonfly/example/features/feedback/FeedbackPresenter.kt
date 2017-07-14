@@ -9,13 +9,13 @@ import com.ciandt.dragonfly.example.infrastructure.extensions.clearAndAddAll
 import com.ciandt.dragonfly.example.infrastructure.extensions.head
 import com.ciandt.dragonfly.example.infrastructure.extensions.tail
 import com.ciandt.dragonfly.example.shared.BasePresenter
-import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.tensorflow.Classifier
 import com.google.firebase.auth.FirebaseAuth
 
 
-class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSnapshot, val feedbackInteractor: FeedbackContract.Interactor, val saveImageToGalleryInteractor: SaveImageToGalleryContract.Interactor, val firebaseAuth: FirebaseAuth) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
-    private val results = ArrayList<Classifier.Recognition>()
+class FeedbackPresenter(val model: Model, val classificationInput: DragonflyClassificationInput, val feedbackInteractor: FeedbackContract.Interactor, val saveImageToGalleryInteractor: SaveImageToGalleryContract.Interactor, val firebaseAuth: FirebaseAuth) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
+    private val results = ArrayList<Classifier.Classification>()
     private var userFeedback: Feedback? = null
 
     init {
@@ -32,30 +32,30 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
         }
     }
 
-    override fun setClassifications(recognitions: List<Classifier.Recognition>) {
+    override fun setClassifications(classifications: List<Classifier.Classification>) {
 
-        results.clearAndAddAll(recognitions)
+        results.clearAndAddAll(classifications)
 
         if (results.isEmpty()) {
-            view?.showNoRecognitions()
+            view?.showNoClassifications()
             return
         }
 
         if (userFeedback == null) {
-            view?.showRecognitions(results.head().title, results.tail())
+            view?.showClassifications(results.head().title, results.tail())
         } else {
             userFeedback!!.let {
                 if (it.isPositive()) {
-                    view?.showPositiveRecognition(it.actualLabel, results.tail(), false)
+                    view?.showPositiveClassification(it.actualLabel, results.tail(), false)
                 } else {
-                    view?.showNegativeRecognition(it.actualLabel, results.tail())
+                    view?.showNegativeClassification(it.actualLabel, results.tail())
                 }
             }
         }
     }
 
     override fun markAsPositive() {
-        view?.showPositiveRecognition(results.head().title, results.tail())
+        view?.showPositiveClassification(results.head().title, results.tail())
 
         saveFeedback(results.head().title, Feedback.POSITIVE)
     }
@@ -65,7 +65,7 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
     }
 
     override fun submitNegative(label: String) {
-        view?.showNegativeRecognition(label, results.tail())
+        view?.showNegativeClassification(label, results.tail())
 
         saveFeedback(label, Feedback.NEGATIVE)
     }
@@ -74,14 +74,14 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
         this.userFeedback = userFeedback
     }
 
-    override fun saveImageToGallery(cameraSnapshot: DragonflyCameraSnapshot) {
-        saveImageToGalleryInteractor.save(cameraSnapshot)
+    override fun saveImageToGallery(classificationInput: DragonflyClassificationInput) {
+        saveImageToGalleryInteractor.save(classificationInput)
     }
 
     private fun saveFeedback(label: String, value: Int) {
         val identifiedLabels = HashMap<String, Float>()
-        for (recognition in results) {
-            identifiedLabels.put(recognition.title, recognition.confidence)
+        for (classification in results) {
+            identifiedLabels.put(classification.title, classification.confidence)
         }
 
         val feedback = Feedback(
@@ -92,7 +92,7 @@ class FeedbackPresenter(val model: Model, val cameraSnapshot: DragonflyCameraSna
                 value = value,
                 actualLabel = label,
                 identifiedLabels = identifiedLabels,
-                imageLocalPath = cameraSnapshot.path
+                imageLocalPath = classificationInput.imagePath
         )
 
         view?.setUserFeedback(feedback)

@@ -23,4 +23,12 @@ object IntentHelper {
 
         return intent
     }
+
+    fun selectImageFromLibrary(): Intent {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "image/jpeg"
+
+        return intent
+    }
 }

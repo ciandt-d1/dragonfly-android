@@ -17,7 +17,7 @@ import com.ciandt.dragonfly.R;
 import com.ciandt.dragonfly.base.ui.ImageScaleTypes;
 import com.ciandt.dragonfly.image_processing.ImageUtils;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
-import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
 
 /**
  * Created by iluz on 6/9/17.
@@ -45,13 +45,13 @@ public class DragonflyLensFeedbackView extends FrameLayout {
         initialize(context, attrs);
     }
 
-    public void setSnapshot(DragonflyCameraSnapshot snapshot) {
-        if (snapshot == null || TextUtils.isEmpty(snapshot.getPath())) {
+    public void setClassificationInput(DragonflyClassificationInput classificationInput) {
+        if (classificationInput == null || TextUtils.isEmpty(classificationInput.getImagePath())) {
             previewView.setImageDrawable(null);
             return;
         }
 
-        Bitmap bitmap = ImageUtils.loadBitmapFromDisk(snapshot.getPath());
+        Bitmap bitmap = ImageUtils.loadBitmapFromDisk(classificationInput.getImagePath());
         previewView.setImageBitmap(bitmap);
     }
 

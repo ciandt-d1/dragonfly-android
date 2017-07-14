@@ -40,18 +40,4 @@
         android:layout_gravity="bottom|center_horizontal"
         android:src="@drawable/take_photo_button"
         android:visibility="invisible"/>
-
-    <ProgressBar
-        android:id="@+id/dragonflyLensLoading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dragonfly_lens_snapshot_loading_margin_bottom"
-        style="?android:attr/progressBarStyle"
-        android:background="@drawable/progress_background"
-        android:backgroundTint="@android:color/white"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/dragonfly_lens_loading_color"
-        android:layout_gravity="bottom|center_horizontal"
-        android:visibility="visible"
-        tools:ignore="UnusedAttribute"/>
 </merge>

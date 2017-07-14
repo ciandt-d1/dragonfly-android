@@ -7,20 +7,20 @@ import android.os.Parcelable;
  * Created by iluz on 6/9/17.
  */
 
-public class DragonflyCameraSnapshot implements Parcelable {
+public class DragonflyClassificationInput implements Parcelable {
 
-    private final String path;
+    private final String imagePath;
     private final int width;
     private final int height;
 
-    private DragonflyCameraSnapshot(Builder builder) {
-        path = builder.path;
+    private DragonflyClassificationInput(Builder builder) {
+        imagePath = builder.imagePath;
         width = builder.width;
         height = builder.height;
     }
 
-    public String getPath() {
-        return path;
+    public String getImagePath() {
+        return imagePath;
     }
 
     public int getWidth() {
@@ -37,15 +37,15 @@ public class DragonflyCameraSnapshot implements Parcelable {
 
     public static final class Builder {
 
-        private String path;
+        private String imagePath;
         private int width;
         private int height;
 
         private Builder() {
         }
 
-        public Builder withPath(String path) {
-            this.path = path;
+        public Builder withImagePath(String path) {
+            this.imagePath = path;
             return this;
         }
 
@@ -59,8 +59,8 @@ public class DragonflyCameraSnapshot implements Parcelable {
             return this;
         }
 
-        public DragonflyCameraSnapshot build() {
-            return new DragonflyCameraSnapshot(this);
+        public DragonflyClassificationInput build() {
+            return new DragonflyClassificationInput(this);
         }
     }
 
@@ -71,34 +71,34 @@ public class DragonflyCameraSnapshot implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.path);
+        dest.writeString(this.imagePath);
         dest.writeInt(this.width);
         dest.writeInt(this.height);
     }
 
-    protected DragonflyCameraSnapshot(Parcel in) {
-        this.path = in.readString();
+    protected DragonflyClassificationInput(Parcel in) {
+        this.imagePath = in.readString();
         this.width = in.readInt();
         this.height = in.readInt();
     }
 
-    public static final Parcelable.Creator<DragonflyCameraSnapshot> CREATOR = new Parcelable.Creator<DragonflyCameraSnapshot>() {
+    public static final Parcelable.Creator<DragonflyClassificationInput> CREATOR = new Parcelable.Creator<DragonflyClassificationInput>() {
 
         @Override
-        public DragonflyCameraSnapshot createFromParcel(Parcel source) {
-            return new DragonflyCameraSnapshot(source);
+        public DragonflyClassificationInput createFromParcel(Parcel source) {
+            return new DragonflyClassificationInput(source);
         }
 
         @Override
-        public DragonflyCameraSnapshot[] newArray(int size) {
-            return new DragonflyCameraSnapshot[size];
+        public DragonflyClassificationInput[] newArray(int size) {
+            return new DragonflyClassificationInput[size];
         }
     };
 
     @Override
     public String toString() {
-        return "DragonflyCameraSnapshot{" +
-                "path='" + path + '\'' +
+        return "DragonflyClassificationInput{" +
+                "imagePath='" + imagePath + '\'' +
                 ", width=" + width +
                 ", height=" + height +
                 '}';

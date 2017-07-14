@@ -1,15 +1,15 @@
 package com.ciandt.dragonfly.lens.ui;
 
-import android.graphics.Bitmap;
+import android.net.Uri;
 
 import com.ciandt.dragonfly.base.ui.BaseInteractorContract;
 import com.ciandt.dragonfly.base.ui.BasePresenterContract;
 import com.ciandt.dragonfly.base.ui.BaseViewContract;
 import com.ciandt.dragonfly.base.ui.Orientation;
 import com.ciandt.dragonfly.data.model.Model;
-import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot;
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
+import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
-import com.ciandt.dragonfly.lens.exception.DragonflyRecognitionException;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
@@ -31,13 +31,9 @@ public interface DragonflyLensRealTimeContract {
 
         void unloadModel();
 
-        void showLoading();
+        List<Classifier.Classification> getLastClassifications();
 
-        void hideLoading();
-
-        List<Classifier.Recognition> getLastClassifications();
-
-        void setLastClassifications(List<Classifier.Recognition> classifications);
+        void setLastClassifications(List<Classifier.Classification> classifications);
 
         void setLabel(String label);
 
@@ -45,17 +41,23 @@ public interface DragonflyLensRealTimeContract {
 
         void setOrientation(@Orientation.Mode int orientation);
 
+        void onStartLoadingModel(Model model);
+
         void onModelReady(Model model);
 
-        void onModelFailure(DragonflyModelException e);
+        void onModelLoadFailure(DragonflyModelException e);
 
-        void onBitmapAnalysisFailed(DragonflyRecognitionException e);
+        void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Classification> classifications);
+
+        void onUriAnalysisFailed(Uri uri, DragonflyClassificationException e);
+
+        void onYuvNv21AnalysisFailed(DragonflyClassificationException e);
 
         void captureCameraFrame();
 
         void onStartTakingSnapshot();
 
-        void onSnapshotTaken(DragonflyCameraSnapshot snapshot);
+        void onSnapshotTaken(DragonflyClassificationInput snapshot);
 
         void onSnapshotError(DragonflySnapshotException e);
     }
@@ -66,17 +68,9 @@ public interface DragonflyLensRealTimeContract {
 
         void unloadModel();
 
-        void analyzeBitmap(Bitmap bitmap);
+        void analyzeFromUri(Uri uri);
 
-        void analyzeYUVNV21(byte[] data, int width, int height, int rotation);
-
-        void onImageAnalyzed(List<Classifier.Recognition> results);
-
-        void onImageAnalysisFailed(DragonflyRecognitionException e);
-
-        void onModelReady(Model model);
-
-        void onModelFailure(DragonflyModelException e);
+        void analyzeYuvNv21Frame(byte[] data, int width, int height, int rotation);
 
         void takeSnapshot();
 
@@ -93,7 +87,7 @@ public interface DragonflyLensRealTimeContract {
 
             void onFailedToSaveSnapshot(DragonflySnapshotException e);
 
-            void onSnapshotSaved(DragonflyCameraSnapshot snapshot);
+            void onSnapshotSaved(DragonflyClassificationInput snapshot);
         }
     }
 }

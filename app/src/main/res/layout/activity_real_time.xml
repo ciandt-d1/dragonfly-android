@@ -24,4 +24,16 @@
         android:contentDescription="@string/real_time_back_button"
         android:layout_gravity="left|top"
         android:src="@drawable/ic_back_arrow_shadowed"/>
+
+    <ImageButton
+        android:id="@+id/btnSelectExistingPicture"
+        android:layout_width="@dimen/touchable_area_minimum_dimension"
+        android:layout_height="@dimen/touchable_area_minimum_dimension"
+        android:layout_marginBottom="@dimen/real_time_from_existing_picture_margin_bottom"
+        android:layout_marginRight="@dimen/real_time_from_existing_picture_margin_right"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/real_time_from_existing_picture"
+        android:layout_gravity="bottom|right"
+        android:scaleType="center"
+        android:src="@drawable/ic_photo_library"/>
 </merge>

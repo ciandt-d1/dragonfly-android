@@ -6,3 +6,10 @@ fun View.hideSoftInputView() {
     context.getInputMethodService().hideSoftInputFromWindow(windowToken, 0)
     clearFocus()
 }
+
+fun View.isVisible() = View.VISIBLE == this.visibility
+
+fun View.makeVisible() {
+    this.visibility = View.VISIBLE
+}
+

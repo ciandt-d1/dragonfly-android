@@ -8,7 +8,7 @@ import android.support.v4.os.AsyncTaskCompat
 import com.ciandt.dragonfly.base.ui.BaseInteractorContract
 import com.ciandt.dragonfly.example.infrastructure.extensions.lastSegment
 import com.ciandt.dragonfly.image_processing.ImageUtils
-import com.ciandt.dragonfly.lens.data.DragonflyCameraSnapshot
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import java.io.File
 
 
@@ -20,8 +20,8 @@ class SaveImageToGalleryInteractor(val context: Context) : SaveImageToGalleryCon
     private var onSaveImageSuccessCallback: (() -> Unit)? = null
     private var onSaveImageErrorCallback: (() -> Unit)? = null
 
-    override fun save(cameraSnapshot: DragonflyCameraSnapshot) {
-        val params = SaveImageToGalleryTask.TaskParams(context, cameraSnapshot)
+    override fun save(classificationInput: DragonflyClassificationInput) {
+        val params = SaveImageToGalleryTask.TaskParams(context, classificationInput)
         AsyncTaskCompat.executeParallel(SaveImageToGalleryTask(this), params)
     }
 
@@ -41,7 +41,7 @@ class SaveImageToGalleryInteractor(val context: Context) : SaveImageToGalleryCon
                 try {
                     val values = ContentValues()
 
-                    val name = taskParams.cameraSnapshot.path.lastSegment(File.separator)
+                    val name = taskParams.classificationInput.imagePath.lastSegment(File.separator)
 
                     val publicPath = ImageUtils.saveBitmapToGallery(name)
 
@@ -70,7 +70,7 @@ class SaveImageToGalleryInteractor(val context: Context) : SaveImageToGalleryCon
                 }
             }
 
-            class TaskParams(val context: Context, val cameraSnapshot: DragonflyCameraSnapshot)
+            class TaskParams(val context: Context, val classificationInput: DragonflyClassificationInput)
         }
     }
 }

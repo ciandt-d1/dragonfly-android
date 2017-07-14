@@ -40,7 +40,7 @@ public class ImageUtils {
      * @param bitmap   The bitmap to save.
      * @param fileName The location to save the bitmap to.
      */
-    public static void saveBitmapToStagingArea(final Bitmap bitmap, final String fileName) throws IOException {
+    public static String saveBitmapToStagingArea(final Bitmap bitmap, final String fileName) throws IOException {
         final String stagingPath = DragonflyConfig.getStagingPath();
         if (stagingPath == null) {
             throw new IllegalStateException("DragonflyConfig.setStagingPath() should be called with a writable system path");
@@ -72,6 +72,8 @@ public class ImageUtils {
         } finally {
             out.close();
         }
+
+        return file.getAbsolutePath();
     }
 
     public static String saveBitmapToGallery(final String fileName) throws IOException {
