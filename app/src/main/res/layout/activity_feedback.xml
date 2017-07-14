@@ -48,7 +48,8 @@
                 android:layout_toEndOf="@id/btnBack"
                 android:layout_centerInParent="true"
                 style="@style/AppTheme.Toolbar.TextAppearance.Title"
-                android:text="@string/feedback_title"/>
+                android:text="@string/feedback_title"
+                android:textAlignment="center"/>
 
             <Button
                 android:id="@+id/btnSaveImage"

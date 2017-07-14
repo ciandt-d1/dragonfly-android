@@ -44,6 +44,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     private lateinit var presenter: FeedbackContract.Presenter
     private lateinit var classificationInput: DragonflyClassificationInput
     private lateinit var model: Model
+    private var allowSaveToGallery: Boolean = false
     private var userFeedback: Feedback? = null
 
     private lateinit var classifications: ArrayList<Classifier.Classification>
@@ -53,16 +54,15 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         setContentView(R.layout.activity_feedback)
 
         if (savedInstanceState != null) {
-            model = savedInstanceState.getParcelable(MODEL_BUNDLE)
-            classificationInput = savedInstanceState.getParcelable(CLASSIFICATION_INPUT_BUNDLE)
-            classifications = savedInstanceState.getParcelableArrayList(CLASSIFICATIONS_BUNDLE)
             userFeedback = savedInstanceState.getParcelable<Feedback>(USER_FEEDBACK)
         } else {
-            classificationInput = intent.extras.getParcelable<DragonflyClassificationInput>(CLASSIFICATION_INPUT_BUNDLE)
-            model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
-            classifications = intent.extras.getParcelableArrayList(CLASSIFICATIONS_BUNDLE)
             userFeedback = null
         }
+
+        classifications = intent.extras.getParcelableArrayList(CLASSIFICATIONS_BUNDLE)
+        classificationInput = intent.extras.getParcelable<DragonflyClassificationInput>(CLASSIFICATION_INPUT_BUNDLE)
+        model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
+        allowSaveToGallery = intent.extras.getBoolean(ALLOW_SAVE_TO_GALLERY_BUNDLE, false)
 
         val feedbackInteractor = FeedbackInteractor(FirebaseStorage.getInstance(), FirebaseDatabase.getInstance())
         val saveImageToGalleryInteractor = SaveImageToGalleryInteractor(applicationContext)
@@ -89,6 +89,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     private fun setupSaveImageButton() {
+        btnSaveImage.visibility = if (allowSaveToGallery) View.VISIBLE else View.INVISIBLE
         btnSaveImage.setOnClickListener({
             Dexter
                     .withActivity(this)
@@ -193,10 +194,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         super.onSaveInstanceState(outState)
 
         outState?.apply {
-            putParcelable(MODEL_BUNDLE, model)
-            putParcelable(CLASSIFICATION_INPUT_BUNDLE, classificationInput)
             putParcelable(USER_FEEDBACK, userFeedback)
-            putParcelableArrayList(CLASSIFICATIONS_BUNDLE, classifications)
         }
     }
 
@@ -429,13 +427,15 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
         private val MODEL_BUNDLE = String.format("%s.model_bundle", BuildConfig.APPLICATION_ID)
         private val CLASSIFICATION_INPUT_BUNDLE = String.format("%s.classification_input_bundle", BuildConfig.APPLICATION_ID)
+        private val ALLOW_SAVE_TO_GALLERY_BUNDLE = String.format("%s.allow_save_to_gallery", BuildConfig.APPLICATION_ID)
         private val CLASSIFICATIONS_BUNDLE = String.format("%s.classifications", BuildConfig.APPLICATION_ID)
         private val USER_FEEDBACK = String.format("%s.user_feedback", BuildConfig.APPLICATION_ID)
 
-        fun newIntent(context: Context, model: Model, classificationInput: DragonflyClassificationInput, classifications: List<Classifier.Classification>): Intent {
+        fun newIntent(context: Context, model: Model, classificationInput: DragonflyClassificationInput, allowSavingToGallery: Boolean, classifications: List<Classifier.Classification>): Intent {
             val intent = Intent(context, FeedbackActivity::class.java)
             intent.putExtra(MODEL_BUNDLE, model)
             intent.putExtra(CLASSIFICATION_INPUT_BUNDLE, classificationInput)
+            intent.putExtra(ALLOW_SAVE_TO_GALLERY_BUNDLE, allowSavingToGallery)
             intent.putParcelableArrayListExtra(CLASSIFICATIONS_BUNDLE, ArrayList<Classifier.Classification>(classifications))
 
             return intent

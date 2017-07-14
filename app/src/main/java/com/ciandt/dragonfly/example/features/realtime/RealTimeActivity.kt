@@ -291,7 +291,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
     override fun onSnapshotTaken(snapshot: DragonflyClassificationInput) {
         DragonflyLogger.debug(LOG_TAG, "onSnapshotTaken(${snapshot})")
 
-        intent = FeedbackActivity.newIntent(this, model, snapshot, dragonFlyLens.lastClassifications)
+        intent = FeedbackActivity.newIntent(this, model, snapshot, true, dragonFlyLens.lastClassifications)
         startActivity(intent)
     }
 
@@ -304,7 +304,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
 
         DragonflyLogger.debug(LOG_TAG, "onUriAnalysisFinished(${classifications})")
 
-        intent = FeedbackActivity.newIntent(this, model, classificationInput, classifications)
+        intent = FeedbackActivity.newIntent(this, model, classificationInput, false, classifications)
         startActivity(intent)
 
         showActionButtons()
