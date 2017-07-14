@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
 
-
 fun Context.getLayoutInflaterService(): LayoutInflater {
     return getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 }

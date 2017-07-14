@@ -67,11 +67,17 @@ android {
     }
 }
 
+task ktlint(type: Exec) {
+    executable = 'ktlint'
+    args = ['src/**/*.kt']
+}
+
 task checkApp {
     group = "Quality"
 
     dependsOn ':app:findbugs'
     dependsOn ':app:pmd'
+    dependsOn ':app:ktlint'
 }
 
 task checkLibrary {
