@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/hexagons"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_login"/>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/login_title_margin_top"
+        android:layout_marginLeft="@dimen/login_title_horizontal_margin"
+        android:layout_marginRight="@dimen/login_title_horizontal_margin"
+        android:layout_marginStart="@dimen/login_title_horizontal_margin"
+        android:layout_marginEnd="@dimen/login_title_horizontal_margin"
+        style="@style/Login.Title"
+        android:text="@string/login_title"
+    />
+
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/login_subtitle_margin_top"
+        android:layout_marginLeft="@dimen/login_subtitle_horizontal_margin"
+        android:layout_marginRight="@dimen/login_subtitle_horizontal_margin"
+        android:layout_marginStart="@dimen/login_subtitle_horizontal_margin"
+        android:layout_marginEnd="@dimen/login_subtitle_horizontal_margin"
+        android:layout_below="@+id/title"
+        style="@style/Login.Subtitle"
+        android:text="@string/login_subtitle"
+    />
+
+    <Button
+        android:id="@+id/withGoogle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/login_google_height"
+        android:layout_marginTop="@dimen/login_google_margin_top"
+        android:layout_marginLeft="@dimen/login_google_horizontal_margin"
+        android:layout_marginRight="@dimen/login_google_horizontal_margin"
+        android:layout_marginStart="@dimen/login_google_horizontal_margin"
+        android:layout_marginEnd="@dimen/login_google_horizontal_margin"
+        android:layout_below="@id/subtitle"
+        style="@style/Login.Google"
+        android:text="@string/login_with_google"
+    />
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/login_footer_line_height"
+        android:layout_above="@+id/footer"
+        android:background="@color/login_footer_line"/>
+
+    <Button
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/login_footer_height"
+        android:paddingLeft="@dimen/login_footer_horizontal_padding"
+        android:paddingRight="@dimen/login_footer_horizontal_padding"
+        android:layout_alignParentBottom="true"
+        style="@style/Login.Footer"
+        android:drawablePadding="@dimen/login_footer_drawable_padding"
+        android:drawableStart="@drawable/ciandt_logo"
+        android:text="@string/login_terms_and_conditions"
+    />
+</RelativeLayout>

@@ -106,4 +106,16 @@
     <dimen name="feedback_form_buttons_margin_right">4dp</dimen>
     <dimen name="feedback_form_buttons_horizontal_padding">16dp</dimen>
 
+    <dimen name="login_title_margin_top">120dp</dimen>
+    <dimen name="login_title_horizontal_margin">48dp</dimen>
+    <dimen name="login_subtitle_margin_top">56dp</dimen>
+    <dimen name="login_subtitle_horizontal_margin">30dp</dimen>
+    <dimen name="login_google_height">48dp</dimen>
+    <dimen name="login_google_margin_top">32dp</dimen>
+    <dimen name="login_google_horizontal_margin">32dp</dimen>
+    <dimen name="login_footer_line_height">1dp</dimen>
+    <dimen name="login_footer_height">56dp</dimen>
+    <dimen name="login_footer_horizontal_padding">16dp</dimen>
+    <dimen name="login_footer_drawable_padding">-32dp</dimen>
+
 </resources>
