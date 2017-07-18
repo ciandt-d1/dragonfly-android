@@ -1,6 +1,6 @@
 package com.ciandt.dragonfly.example.features.modelselection
 
-import com.ciandt.dragonfly.data.Model
+import com.ciandt.dragonfly.data.model.Model
 import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.verify
 import org.amshove.kluent.any

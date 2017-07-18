@@ -58,7 +58,7 @@ class RealTimePresenterTest {
 
         presenter.attachView(view)
 
-        verify(view).showRealTimePermissionsRequiredAlert(any(), any())
+        verify(view).showPermissionsRequiredAlert(any(), any(), any())
     }
 
     @Test
@@ -96,7 +96,7 @@ class RealTimePresenterTest {
 
         verify(preferencesRepository).putBoolean(PreferenceKeys.REAL_TIME_PERMISSIONS_PERMANENTLY_DENIED, true)
 
-        verify(view).showRealTimePermissionsRequiredAlert(any(), any())
+        verify(view).showPermissionsRequiredAlert(any(), any(), any())
     }
 
     @Test
@@ -115,6 +115,6 @@ class RealTimePresenterTest {
 
         verify(preferencesRepository).remove(PreferenceKeys.REAL_TIME_PERMISSIONS_PERMANENTLY_DENIED)
 
-        verify(view).startRecognition()
+        verify(view).startRealTimeClassification()
     }
 }
