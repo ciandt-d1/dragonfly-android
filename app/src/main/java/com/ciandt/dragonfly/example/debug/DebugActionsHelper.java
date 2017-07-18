@@ -1,7 +1,11 @@
 package com.ciandt.dragonfly.example.debug;
 
+import com.ciandt.dragonfly.example.features.login.LoginActivity;
+
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.os.AsyncTaskCompat;
@@ -109,6 +113,15 @@ public class DebugActionsHelper {
                                 Log.d(LOG_TAG, String.format("onPermissionRationaleShouldBeShown() - PermissionRequest: %s, PermissionToken: %s", permission, token));
                             }
                         }).check();
+            }
+        }));
+
+        actions.add(new ButtonAction("Go to login screen", new ButtonAction.Listener() {
+
+            @Override
+            public void onClick() {
+                Context context = target.getActivityInstance();
+                context.startActivity(LoginActivity.Companion.create(context));
             }
         }));
 

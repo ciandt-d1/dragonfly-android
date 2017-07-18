@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme" parent="Base.V0.AppTheme"/>
 
@@ -254,4 +254,38 @@
         <item name="android:textColor">@drawable/confirm_button_selector</item>
     </style>
 
+    <style name="Login.Footer" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+        <item name="android:textColor">@color/login_footer</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@color/login_footer_background</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="Login.Title" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+        <item name="android:textColor">@color/login_title</item>
+        <item name="android:textSize">36sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Login.Subtitle" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+        <item name="android:textColor">@color/login_subtitle</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Login.Google" parent="Widget.AppCompat.Button.Borderless">
+        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+        <item name="android:textColor">@color/login_google</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:background">@drawable/login_google_background</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item tools:ignore="NewApi" name="android:elevation">2dp</item>
+    </style>
 </resources>
