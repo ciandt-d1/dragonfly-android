@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -16,6 +17,8 @@ import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.config.CommonBundleNames
 import com.ciandt.dragonfly.example.config.Features
 import com.ciandt.dragonfly.example.debug.DebugActionsHelper
+import com.ciandt.dragonfly.example.helpers.IntentHelper
+import com.google.firebase.auth.FirebaseAuth
 import io.palaima.debugdrawer.DebugDrawer
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 
@@ -26,6 +29,12 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppCompatActivity(), DebugActionsHelper.DebuggableActivity {
 
     protected var debugDrawer: DebugDrawer? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        enforceLoginIfNeeded()
+    }
 
     override fun onStart() {
         super.onStart()
@@ -112,6 +121,21 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
         }
 
         return pendingPermissions
+    }
+
+    open fun requiresUserToBeSignedIn(): Boolean {
+        return true
+    }
+
+    private fun enforceLoginIfNeeded() {
+        if (requiresUserToBeSignedIn() && !isUserLogged()) {
+            startActivity(IntentHelper.openLogin(this))
+            finish()
+        }
+    }
+
+    private fun isUserLogged(): Boolean {
+        return FirebaseAuth.getInstance().currentUser != null
     }
 
     private var icLauncher: Bitmap? = null

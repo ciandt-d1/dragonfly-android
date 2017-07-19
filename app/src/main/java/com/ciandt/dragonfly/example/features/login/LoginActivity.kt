@@ -80,6 +80,10 @@ class LoginActivity : BaseActivity(), LoginContract.View, GoogleApiClient.OnConn
         presenter.signInWithGoogleFailed(connectionResult.errorCode, connectionResult.errorMessage)
     }
 
+    override fun requiresUserToBeSignedIn(): Boolean {
+        return false
+    }
+
     override fun goToMain() {
         startActivity(ModelSelectionActivity.create(this))
         finish()
