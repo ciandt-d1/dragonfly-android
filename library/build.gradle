@@ -41,5 +41,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.4.0'
     testCompile 'junit:junit:4.12'
 
-    compile files('libs/libandroid_tensorflow_inference_java_1.1.0-rc2.jar')
+    compile files('libs/libandroid_tensorflow_inference_java_1.0.0.jar')
 }
