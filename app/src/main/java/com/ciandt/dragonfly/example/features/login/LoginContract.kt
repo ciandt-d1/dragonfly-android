@@ -19,7 +19,7 @@ interface LoginContract {
 
         fun showLoading()
 
-        fun showError()
+        fun showError(exception: Exception)
     }
 
     interface Presenter : BasePresenterContract<View> {

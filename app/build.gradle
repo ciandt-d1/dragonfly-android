@@ -141,6 +141,12 @@ android {
             universalApk true
         }
     }
+
+    testOptions {
+        unitTests.all {
+            jvmArgs '-noverify'
+        }
+    }
 }
 
 dependencies {
