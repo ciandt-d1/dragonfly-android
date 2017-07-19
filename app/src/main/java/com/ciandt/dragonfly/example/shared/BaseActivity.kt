@@ -8,18 +8,14 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.support.annotation.LayoutRes
-import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.ViewGroup
-import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.config.CommonBundleNames
 import com.ciandt.dragonfly.example.config.Features
 import com.ciandt.dragonfly.example.debug.DebugActionsHelper
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import io.palaima.debugdrawer.DebugDrawer
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
 
@@ -27,10 +23,9 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
  * Created by iluz on 5/15/17.
  */
 
-abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppCompatActivity(), DebugActionsHelper.DebuggableActivity, LoginContract.View {
+abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppCompatActivity(), DebugActionsHelper.DebuggableActivity {
 
     protected var debugDrawer: DebugDrawer? = null
-    protected var loginPresenter = LoginPresenter(FirebaseAuth.getInstance())
 
     override fun onStart() {
         super.onStart()
@@ -42,16 +37,12 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
         super.onResume()
 
         debugDrawer?.onResume()
-        loginPresenter.attachView(this)
-
-        loginPresenter.signInAnonymously()
     }
 
     override fun onPause() {
         super.onPause()
 
         debugDrawer?.onPause()
-        loginPresenter.detachView()
     }
 
     override fun onStop() {
@@ -135,13 +126,4 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
         }
     }
 
-    override fun onLoginSuccess(user: FirebaseUser) {
-        if (BuildConfig.DEBUG) {
-            Snackbar.make(getRootView(), user.uid, Snackbar.LENGTH_LONG).show()
-        }
-    }
-
-    override fun onLoginFailure() {
-        Snackbar.make(getRootView(), "Login failed", Snackbar.LENGTH_LONG).show()
-    }
 }

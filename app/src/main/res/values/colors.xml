@@ -66,4 +66,6 @@
     <color name="login_footer">#89000000</color>
     <color name="login_footer_background">#f5f5f5</color>
 
+    <color name="login_progress_background">#deffffff</color>
+
 </resources>

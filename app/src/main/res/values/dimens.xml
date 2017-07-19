@@ -117,5 +117,6 @@
     <dimen name="login_footer_height">56dp</dimen>
     <dimen name="login_footer_horizontal_padding">16dp</dimen>
     <dimen name="login_footer_drawable_padding">-32dp</dimen>
+    <dimen name="login_progress_dimension">48dp</dimen>
 
 </resources>
