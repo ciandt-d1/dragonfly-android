@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.features.modelselection.ModelSelectionActivity
+import com.ciandt.dragonfly.example.infrastructure.extensions.isNetworkAvailable
 import com.ciandt.dragonfly.example.infrastructure.extensions.makeGone
 import com.ciandt.dragonfly.example.infrastructure.extensions.makeVisible
 import com.ciandt.dragonfly.example.shared.BaseActivity
@@ -70,9 +71,13 @@ class LoginActivity : BaseActivity(), LoginContract.View, GoogleApiClient.OnConn
 
         presenter.attachView(this)
 
-        if (requestCode == RESULT_CODE_SIGN_IN && resultCode == Activity.RESULT_OK) {
-            val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
-            presenter.checkSignInWithGoogle(result)
+        if (requestCode == RESULT_CODE_SIGN_IN) {
+            if (resultCode == Activity.RESULT_OK) {
+                val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
+                presenter.checkSignInWithGoogle(result)
+            } else {
+                presenter.signInWithGoogleCanceled(isNetworkAvailable())
+            }
         }
     }
 
@@ -87,6 +92,10 @@ class LoginActivity : BaseActivity(), LoginContract.View, GoogleApiClient.OnConn
     override fun goToMain() {
         startActivity(ModelSelectionActivity.create(this))
         finish()
+    }
+
+    override fun cancel() {
+        progress.makeGone()
     }
 
     override fun showLoading() {

@@ -9,6 +9,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult
  */
 class LoginPresenter(val interactor: LoginContract.Interactor) : BasePresenter<LoginContract.View>(), LoginContract.Presenter {
 
+    override fun signInWithGoogle() {
+        view?.showLoading()
+        view?.startSignInWithGoogle()
+    }
+
     override fun checkSignInWithGoogle(result: GoogleSignInResult) {
         if (result.isSuccess && result.signInAccount != null) {
             signInWithGoogleOnFirebase(result.signInAccount!!.idToken ?: "")
@@ -19,14 +24,17 @@ class LoginPresenter(val interactor: LoginContract.Interactor) : BasePresenter<L
         }
     }
 
-    override fun signInWithGoogle() {
-        view?.showLoading()
-        view?.startSignInWithGoogle()
-    }
-
     override fun signInWithGoogleFailed(errorCode: Int, errorMessage: String?) {
         DragonflyLogger.warn(LOG_TAG, "onConnectionFailed: $errorCode - $errorMessage")
         view?.showError()
+    }
+
+    override fun signInWithGoogleCanceled(networkAvailable: Boolean) {
+        if (!networkAvailable) {
+            view?.showError()
+        } else {
+            view?.cancel()
+        }
     }
 
     private fun signInWithGoogleOnFirebase(token: String) = interactor.signInWithGoogle(token, onSuccess = {
