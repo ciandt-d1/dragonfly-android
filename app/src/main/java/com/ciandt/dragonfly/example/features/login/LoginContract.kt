@@ -15,6 +15,8 @@ interface LoginContract {
 
         fun goToMain()
 
+        fun cancel()
+
         fun showLoading()
 
         fun showError()
@@ -22,11 +24,13 @@ interface LoginContract {
 
     interface Presenter : BasePresenterContract<View> {
 
+        fun signInWithGoogle()
+
         fun checkSignInWithGoogle(result: GoogleSignInResult)
 
         fun signInWithGoogleFailed(errorCode: Int, errorMessage: String?)
 
-        fun signInWithGoogle()
+        fun signInWithGoogleCanceled(networkAvailable: Boolean)
     }
 
     interface Interactor {
