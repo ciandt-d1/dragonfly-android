@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.features.modelselection.ModelSelectionActivity
+import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.ciandt.dragonfly.example.infrastructure.extensions.isNetworkAvailable
 import com.ciandt.dragonfly.example.infrastructure.extensions.makeGone
 import com.ciandt.dragonfly.example.infrastructure.extensions.makeVisible
@@ -102,12 +103,15 @@ class LoginActivity : BaseActivity(), LoginContract.View, GoogleApiClient.OnConn
         progress.makeVisible()
     }
 
-    override fun showError() {
+    override fun showError(exception: Exception) {
+        DragonflyLogger.warn(LOG_TAG, exception.message ?: "")
         progress.makeGone()
         Snackbar.make(getRootView(), getString(R.string.login_error), Snackbar.LENGTH_LONG).show()
     }
 
     companion object {
+        private val LOG_TAG = LoginActivity::class.java.simpleName
+
         fun create(context: Context): Intent {
             val intent = Intent(context, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

@@ -1,6 +1,5 @@
 package com.ciandt.dragonfly.example.features.login
 
-import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.ciandt.dragonfly.example.shared.BasePresenter
 import com.google.android.gms.auth.api.signin.GoogleSignInResult
 
@@ -19,19 +18,17 @@ class LoginPresenter(val interactor: LoginContract.Interactor) : BasePresenter<L
             signInWithGoogleOnFirebase(result.signInAccount!!.idToken ?: "")
 
         } else {
-            DragonflyLogger.warn(LOG_TAG, "getSignInResultFromIntent: Google Sign In failed")
-            view?.showError()
+            view?.showError(RuntimeException("Google Sign In failed"))
         }
     }
 
     override fun signInWithGoogleFailed(errorCode: Int, errorMessage: String?) {
-        DragonflyLogger.warn(LOG_TAG, "onConnectionFailed: $errorCode - $errorMessage")
-        view?.showError()
+        view?.showError(RuntimeException("Google Sign In - ConnectionFailed: $errorCode - $errorMessage"))
     }
 
     override fun signInWithGoogleCanceled(networkAvailable: Boolean) {
         if (!networkAvailable) {
-            view?.showError()
+            view?.showError(RuntimeException("No network available"))
         } else {
             view?.cancel()
         }
@@ -39,17 +36,12 @@ class LoginPresenter(val interactor: LoginContract.Interactor) : BasePresenter<L
 
     private fun signInWithGoogleOnFirebase(token: String) = interactor.signInWithGoogle(token, onSuccess = {
 
-        DragonflyLogger.debug(LOG_TAG, "signInWithGoogle: success")
         view?.goToMain()
 
     }, onFailure = { exception ->
 
-        DragonflyLogger.warn(LOG_TAG, "signInAnonymously: failure $exception")
-        view?.showError()
+        view?.showError(RuntimeException("Firebase Sign In failed", exception))
 
     })
 
-    companion object {
-        private val LOG_TAG = LoginPresenter::class.java.simpleName
-    }
 }
