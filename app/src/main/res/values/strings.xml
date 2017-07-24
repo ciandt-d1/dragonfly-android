@@ -67,5 +67,7 @@
     <string name="login_terms_and_conditions">TERMS AND CONDITIONS</string>
     <string name="login_error">There was an error when trying to connect. Please try again.</string>
 
+    <string name="download_processing">Processing…</string>
+    <string name="download_finished">Download finished</string>
     <string name="download_failed">Oops… The download has failed</string>
 </resources>
