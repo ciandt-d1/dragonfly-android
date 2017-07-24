@@ -6,9 +6,9 @@ import android.os.AsyncTask
 import android.support.v4.os.AsyncTaskCompat
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.data.model.ModelManager
+import com.ciandt.dragonfly.example.features.download.DownloadHelper
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.FirebaseStorage
-
 
 class ModelSelectionInteractor(val context: Context, val firebaseStorage: FirebaseStorage) : ModelSelectionContract.Interactor {
 
@@ -49,7 +49,11 @@ class ModelSelectionInteractor(val context: Context, val firebaseStorage: Fireba
 
         storageRef.downloadUrl.addOnCompleteListener { task: Task<Uri> ->
 
-            onFailure(task.exception!!)
+            if (task.isSuccessful) {
+                DownloadHelper.download(context, model.name, task.result)
+            } else {
+                onFailure(task.exception!!)
+            }
         }
 
     }
