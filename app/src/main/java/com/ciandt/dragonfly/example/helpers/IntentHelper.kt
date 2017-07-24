@@ -1,9 +1,11 @@
 package com.ciandt.dragonfly.example.helpers
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import com.ciandt.dragonfly.example.BuildConfig
+import com.ciandt.dragonfly.example.features.login.LoginActivity
 
 object IntentHelper {
 
@@ -29,5 +31,9 @@ object IntentHelper {
         intent.type = "image/jpeg"
 
         return intent
+    }
+
+    fun openLogin(context: Context): Intent {
+        return LoginActivity.create(context)
     }
 }

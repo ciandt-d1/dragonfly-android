@@ -11,10 +11,12 @@ import org.amshove.kluent.any
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-
+@RunWith(JUnit4::class)
 class RealTimePresenterTest {
 
     lateinit var presenter: RealTimePresenter
@@ -72,7 +74,6 @@ class RealTimePresenterTest {
 
         verify(view).checkRealTimeRequiredPermissions()
 
-
         presenter.onRealTimePermissionsDenied(false)
 
         verify(preferencesRepository, never()).putBoolean(PreferenceKeys.REAL_TIME_PERMISSIONS_PERMANENTLY_DENIED, true)
@@ -91,7 +92,6 @@ class RealTimePresenterTest {
 
         verify(view).checkRealTimeRequiredPermissions()
 
-
         presenter.onRealTimePermissionsDenied(true)
 
         verify(preferencesRepository).putBoolean(PreferenceKeys.REAL_TIME_PERMISSIONS_PERMANENTLY_DENIED, true)
@@ -109,7 +109,6 @@ class RealTimePresenterTest {
         presenter.attachView(view)
 
         verify(view).checkRealTimeRequiredPermissions()
-
 
         presenter.onRealTimePermissionsGranted()
 
