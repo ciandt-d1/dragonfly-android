@@ -41,6 +41,8 @@ public class Model implements Parcelable {
     private String inputName;
     private String outputName;
 
+    private String downloadUrl;
+
     public Model(String id) {
         this.id = id;
     }
@@ -175,6 +177,15 @@ public class Model implements Parcelable {
         return this;
     }
 
+    public String getDownloadUrl() {
+        return downloadUrl;
+    }
+
+    public Model setDownloadUrl(String downloadUrl) {
+        this.downloadUrl = downloadUrl;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -211,6 +222,7 @@ public class Model implements Parcelable {
                 ", imageStd=" + imageStd +
                 ", inputName='" + inputName + '\'' +
                 ", outputName='" + outputName + '\'' +
+                ", downloadUrl='" + downloadUrl + '\'' +
                 '}';
     }
 
@@ -235,6 +247,7 @@ public class Model implements Parcelable {
         dest.writeFloat(this.imageStd);
         dest.writeString(this.inputName);
         dest.writeString(this.outputName);
+        dest.writeString(this.downloadUrl);
     }
 
     protected Model(Parcel in) {
@@ -252,6 +265,7 @@ public class Model implements Parcelable {
         this.imageStd = in.readFloat();
         this.inputName = in.readString();
         this.outputName = in.readString();
+        this.downloadUrl = in.readString();
     }
 
     public static final Creator<Model> CREATOR = new Creator<Model>() {
