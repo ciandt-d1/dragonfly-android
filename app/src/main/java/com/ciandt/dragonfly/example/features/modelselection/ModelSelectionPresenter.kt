@@ -36,6 +36,14 @@ class ModelSelectionPresenter(private var interactor: ModelSelectionContract.Int
         } else {
             model.status = Model.STATUS_DOWNLOADING
             view?.update(model)
+
+            interactor.downloadModel(model) { exception ->
+
+                model.status = Model.STATUS_DEFAULT
+                view?.update(model)
+
+                view?.showDownloadError(exception)
+            }
         }
     }
 }

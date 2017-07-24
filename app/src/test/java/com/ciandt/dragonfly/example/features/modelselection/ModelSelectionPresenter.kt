@@ -2,6 +2,7 @@ package com.ciandt.dragonfly.example.features.modelselection
 
 import com.ciandt.dragonfly.data.model.Model
 import com.nhaarman.mockito_kotlin.argumentCaptor
+import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.verify
 import org.amshove.kluent.any
 import org.junit.After
@@ -93,7 +94,7 @@ class ModelSelectionPresenterTest {
     }
 
     @Test
-    fun selectModel() {
+    fun selectModelNotDownloaded() {
         val model = Model("not-downloaded")
 
         presenter.selectModel(model)
@@ -103,6 +104,34 @@ class ModelSelectionPresenterTest {
         }
 
         verify(view).update(model)
+
+        verify(interactor).downloadModel(eq(model), any())
+    }
+
+    @Test
+    fun handleModelNotDownloadedWithError() {
+        val model = Model("not-downloaded")
+
+        presenter.selectModel(model)
+
+        assertTrue {
+            model.isDownloading
+        }
+
+        verify(view).update(model)
+
+        val exception = RuntimeException("test")
+
+        argumentCaptor<(Exception) -> Unit>().apply {
+            verify(interactor).downloadModel(eq(model), capture())
+            firstValue.invoke(exception)
+        }
+
+        assertTrue {
+            model.status == Model.STATUS_DEFAULT
+        }
+
+        verify(view).showDownloadError(exception)
     }
 
     @Test
