@@ -4,9 +4,6 @@ import com.ciandt.dragonfly.example.shared.BasePresenterContract
 import com.google.android.gms.auth.api.signin.GoogleSignInResult
 import com.google.firebase.auth.FirebaseUser
 
-/**
- * Created by iluz on 6/20/17.
- */
 interface LoginContract {
 
     interface View {

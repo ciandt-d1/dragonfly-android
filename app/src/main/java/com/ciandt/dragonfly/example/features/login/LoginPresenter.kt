@@ -3,9 +3,6 @@ package com.ciandt.dragonfly.example.features.login
 import com.ciandt.dragonfly.example.shared.BasePresenter
 import com.google.android.gms.auth.api.signin.GoogleSignInResult
 
-/**
- * Created by iluz on 6/20/17.
- */
 class LoginPresenter(val interactor: LoginContract.Interactor) : BasePresenter<LoginContract.View>(), LoginContract.Presenter {
 
     override fun signInWithGoogle() {
