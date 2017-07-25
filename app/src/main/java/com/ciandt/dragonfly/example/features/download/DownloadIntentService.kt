@@ -4,7 +4,7 @@ import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import com.ciandt.dragonfly.example.BuildConfig
-import com.ciandt.dragonfly.example.helpers.NotificationHelper
+import com.ciandt.dragonfly.example.helpers.DownloadNotificationHelper
 import com.ciandt.dragonfly.example.infrastructure.extensions.getDownloadManager
 import java.io.File
 import java.io.FileOutputStream
@@ -38,7 +38,7 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
 
     private fun handleSuccess(downloadedFile: DownloadedFile) {
 
-        NotificationHelper.showProcessing(this, downloadedFile)
+        DownloadNotificationHelper.showProcessing(this, downloadedFile)
 
         val downloadManager = getDownloadManager()
         val uri = downloadManager.getUriForDownloadedFile(downloadedFile.id)
@@ -58,11 +58,11 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
         outputStream.close()
         inputStream.close()
 
-        NotificationHelper.showFinished(this, downloadedFile)
+        DownloadNotificationHelper.showFinished(this, downloadedFile)
     }
 
     private fun handleError(file: DownloadedFile) {
-        NotificationHelper.showError(this, file)
+        DownloadNotificationHelper.showError(this, file)
     }
 
     private fun handleNotFound(file: DownloadedFile) {

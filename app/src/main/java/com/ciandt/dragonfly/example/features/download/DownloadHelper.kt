@@ -11,8 +11,8 @@ import com.ciandt.dragonfly.example.infrastructure.extensions.getDownloadManager
 
 object DownloadHelper {
 
-    private val PREFERENCES_NAME = "${BuildConfig.APPLICATION_ID}.preferences"
-    private val DOWNLOADS_KEY = "$PREFERENCES_NAME.downloads"
+    private val PREFERENCES_PREFIX = "${BuildConfig.APPLICATION_ID}.preferences"
+    private val DOWNLOADS_KEY = "$PREFERENCES_PREFIX.downloads"
 
     fun download(context: Context, title: String, uri: Uri) {
 
@@ -57,17 +57,11 @@ object DownloadHelper {
         return DownloadedFile(id, title, status, reason, totalSize, downloadedSize, lastModifiedAt)
     }
 
-    fun getDownloads(context: Context): Set<Long> {
-
-        val longs = HashSet<Long>()
-
+    fun isValid(context: Context, id: Long): Boolean {
         val preferencesRepository = SharedPreferencesRepository.get(context)
         val downloads = preferencesRepository.getStringSet(DOWNLOADS_KEY, emptySet())
-        downloads.forEach { it ->
-            longs.add(it.toLong())
-        }
 
-        return longs
+        return id.toString() in downloads
     }
 
     fun removeDownload(context: Context, id: Long) {

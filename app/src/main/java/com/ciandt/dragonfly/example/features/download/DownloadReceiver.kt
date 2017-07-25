@@ -10,7 +10,7 @@ class DownloadReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
 
         val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0)
-        if (id !in DownloadHelper.getDownloads(context)) {
+        if (!DownloadHelper.isValid(context, id)) {
             return
         }
 
