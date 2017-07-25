@@ -11,32 +11,33 @@ import java.io.FileOutputStream
 
 class DownloadIntentService : IntentService("DownloadIntentService") {
 
+    private lateinit var downloadedFile: DownloadedFile
+
     override fun onHandleIntent(intent: Intent?) {
 
         if (intent == null) {
             return
         }
 
-        val downloadedFile = intent.getParcelableExtra<DownloadedFile>(DOWNLOAD_BUNDLE)
+        downloadedFile = intent.getParcelableExtra<DownloadedFile>(DOWNLOAD_FILE_BUNDLE)
 
         if (downloadedFile.isSuccessful()) {
-            handleSuccess(downloadedFile)
+            handleSuccess()
 
         } else if (downloadedFile.isFailed()) {
 
             when (downloadedFile.reason) {
-                401, 403 -> handleUnauth(downloadedFile)
-                404 -> handleNotFound(downloadedFile)
-                else -> handleError(downloadedFile)
+                401, 403 -> handleUnauth()
+                404 -> handleNotFound()
+                else -> handleError()
             }
-
         }
 
         val downloadManager = getDownloadManager()
         downloadManager.remove(downloadedFile.id)
     }
 
-    private fun handleSuccess(downloadedFile: DownloadedFile) {
+    private fun handleSuccess() {
 
         DownloadNotificationHelper.showProcessing(this, downloadedFile)
 
@@ -61,25 +62,25 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
         DownloadNotificationHelper.showFinished(this, downloadedFile)
     }
 
-    private fun handleError(file: DownloadedFile) {
-        DownloadNotificationHelper.showError(this, file)
+    private fun handleError() {
+        DownloadNotificationHelper.showError(this, downloadedFile)
     }
 
-    private fun handleNotFound(file: DownloadedFile) {
-        handleError(file)
+    private fun handleNotFound() {
+        handleError()
     }
 
-    private fun handleUnauth(file: DownloadedFile) {
-        handleError(file)
+    private fun handleUnauth() {
+        handleError()
     }
 
     companion object {
 
-        private val DOWNLOAD_BUNDLE = "${BuildConfig.APPLICATION_ID}.download_bundle"
+        private val DOWNLOAD_FILE_BUNDLE = "${BuildConfig.APPLICATION_ID}.download_file_bundle"
 
         fun create(context: Context, file: DownloadedFile): Intent {
             val intent = Intent(context, DownloadIntentService::class.java)
-            intent.putExtra(DOWNLOAD_BUNDLE, file)
+            intent.putExtra(DOWNLOAD_FILE_BUNDLE, file)
             return intent
         }
     }
