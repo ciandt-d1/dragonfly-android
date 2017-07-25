@@ -14,6 +14,7 @@ import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.features.about.AboutActivity
 import com.ciandt.dragonfly.example.features.realtime.RealTimeActivity
 import com.ciandt.dragonfly.example.shared.BaseActivity
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_model_selection.*
 
 class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
@@ -28,7 +29,7 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_model_selection)
 
-        presenter = ModelSelectionPresenter(ModelSelectionInteractor())
+        presenter = ModelSelectionPresenter(ModelSelectionInteractor(applicationContext, FirebaseStorage.getInstance()))
         presenter.attachView(this)
 
         setupList()
@@ -136,6 +137,10 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
 
     override fun showDownloading(model: Model) {
         Snackbar.make(getRootView(), getString(R.string.model_selection_item_wait), Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun showDownloadError(exception: Exception) {
+        Snackbar.make(getRootView(), getString(R.string.download_failed), Snackbar.LENGTH_LONG).show()
     }
 
     companion object {

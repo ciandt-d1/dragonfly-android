@@ -1,5 +1,6 @@
 package com.ciandt.dragonfly.example.infrastructure.extensions
 
+import android.app.DownloadManager
 import android.content.Context
 import android.net.ConnectivityManager
 import android.view.LayoutInflater
@@ -11,6 +12,10 @@ fun Context.getLayoutInflaterService(): LayoutInflater {
 
 fun Context.getInputMethodService(): InputMethodManager {
     return getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+}
+
+fun Context.getDownloadManager(): DownloadManager {
+    return getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 }
 
 fun Context.isNetworkAvailable(): Boolean {

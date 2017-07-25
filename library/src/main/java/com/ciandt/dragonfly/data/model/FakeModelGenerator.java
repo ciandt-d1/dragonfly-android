@@ -29,6 +29,10 @@ class FakeModelGenerator {
             return getHPModel();
         }
 
+        if (id.equals("4")) {
+            return getDownloadModel();
+        }
+
         return new Model(id)
                 .setName(getName(id))
                 .setVersion(getVersion(id))
@@ -93,6 +97,24 @@ class FakeModelGenerator {
                 .setModelPath("file:///android_asset/models/hp/model.pb")
                 .setLabelsPath("file:///android_asset/models/hp/labels.txt")
                 .setStatus(Model.STATUS_DOWNLOADED);
+    }
+
+    private static Model getDownloadModel() {
+        return new Model("to-download")
+                .setName("Model X")
+                .setVersion(1)
+                .setSize(87164854L)
+                .setDescription("Model to test download")
+                .setColors(new String[]{"#33D7FF", "#009900"})
+                .setInputSize(299)
+                .setImageMean(128)
+                .setImageStd(128)
+                .setInputName("Mul")
+                .setOutputName("final_result")
+                .setModelPath("file:///android_asset/models/hp/model.pb")
+                .setLabelsPath("file:///android_asset/models/hp/labels.txt")
+                .setStatus(Model.STATUS_DEFAULT)
+                .setDownloadUrl("gs://dragonfly-dev-fe5c3.appspot.com/models/v1.zip");
     }
 
     private static String getName(String id) {

@@ -1,11 +1,16 @@
 package com.ciandt.dragonfly.example.features.modelselection
 
+import android.content.Context
+import android.net.Uri
 import android.os.AsyncTask
 import android.support.v4.os.AsyncTaskCompat
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.data.model.ModelManager
+import com.ciandt.dragonfly.example.features.download.DownloadHelper
+import com.google.android.gms.tasks.Task
+import com.google.firebase.storage.FirebaseStorage
 
-class ModelSelectionInteractor : ModelSelectionContract.Interactor {
+class ModelSelectionInteractor(val context: Context, val firebaseStorage: FirebaseStorage) : ModelSelectionContract.Interactor {
 
     override fun loadModels(onSuccess: (List<Model>) -> Unit, onFailure: (Exception) -> Unit) {
         val task = LoadModelsTask(onSuccess, onFailure)
@@ -36,5 +41,20 @@ class ModelSelectionInteractor : ModelSelectionContract.Interactor {
                 onFailure(result.exception!!)
             }
         }
+    }
+
+    override fun downloadModel(model: Model, onFailure: (Exception) -> Unit) {
+
+        val storageRef = firebaseStorage.getReferenceFromUrl(model.downloadUrl)
+
+        storageRef.downloadUrl.addOnCompleteListener { task: Task<Uri> ->
+
+            if (task.isSuccessful) {
+                DownloadHelper.download(context, model.name, task.result)
+            } else {
+                onFailure(task.exception!!)
+            }
+        }
+
     }
 }

@@ -20,6 +20,8 @@ interface ModelSelectionContract {
         fun run(model: Model)
 
         fun showDownloading(model: Model)
+
+        fun showDownloadError(exception: Exception)
     }
 
     interface Presenter : BasePresenterContract<View> {
@@ -33,5 +35,6 @@ interface ModelSelectionContract {
 
         fun loadModels(onSuccess: (List<Model>) -> Unit, onFailure: (Exception) -> Unit)
 
+        fun downloadModel(model: Model, onFailure: (Exception) -> Unit)
     }
 }

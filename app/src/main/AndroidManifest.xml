@@ -44,5 +44,18 @@
             android:name=".features.login.LoginActivity"
             android:screenOrientation="portrait"/>
 
+        <receiver
+            android:name=".features.download.DownloadReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".features.download.DownloadIntentService"
+            android:exported="false"/>
+
     </application>
 </manifest>
