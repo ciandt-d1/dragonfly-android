@@ -7,10 +7,14 @@ import android.support.v4.os.AsyncTaskCompat
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.data.model.ModelManager
 import com.ciandt.dragonfly.example.features.download.DownloadHelper
+import com.ciandt.dragonfly.example.features.download.ModelChangedReceiver
+import com.ciandt.dragonfly.example.infrastructure.extensions.getLocalBroadcastManager
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.FirebaseStorage
 
 class ModelSelectionInteractor(val context: Context, val firebaseStorage: FirebaseStorage) : ModelSelectionContract.Interactor {
+
+    private var receiver: ModelChangedReceiver? = null
 
     override fun loadModels(onSuccess: (List<Model>) -> Unit, onFailure: (Exception) -> Unit) {
         val task = LoadModelsTask(onSuccess, onFailure)
@@ -55,6 +59,16 @@ class ModelSelectionInteractor(val context: Context, val firebaseStorage: Fireba
                 onFailure(task.exception!!)
             }
         }
+    }
 
+    override fun registerModelsObserver(onChanged: (Model) -> Unit) {
+        receiver = ModelChangedReceiver(onChanged)
+        context.getLocalBroadcastManager().registerReceiver(receiver, ModelChangedReceiver.getIntentFilter())
+    }
+
+    override fun unregisterModelsObserver() {
+        receiver?.let {
+            context.getLocalBroadcastManager().unregisterReceiver(it)
+        }
     }
 }

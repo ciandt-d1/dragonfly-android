@@ -5,6 +5,8 @@ import com.ciandt.dragonfly.example.shared.BasePresenter
 
 class ModelSelectionPresenter(private var interactor: ModelSelectionContract.Interactor) : BasePresenter<ModelSelectionContract.View>(), ModelSelectionContract.Presenter {
 
+    private val updateQueue = ArrayList<Model>()
+
     override fun loadModels() {
 
         view?.showLoading()
@@ -45,5 +47,29 @@ class ModelSelectionPresenter(private var interactor: ModelSelectionContract.Int
                 view?.showDownloadError(exception)
             }
         }
+    }
+
+    override fun attachView(view: ModelSelectionContract.View) {
+        super.attachView(view)
+
+        updateQueue.forEach {
+            view.update(it)
+            updateQueue.remove(it)
+        }
+    }
+
+    override fun registerModelsObserver() {
+        interactor.registerModelsObserver { model ->
+
+            if (view != null) {
+                view?.update(model)
+            } else {
+                updateQueue.add(model)
+            }
+        }
+    }
+
+    override fun unregisterModelsObserver() {
+        interactor.unregisterModelsObserver()
     }
 }

@@ -29,6 +29,10 @@ interface ModelSelectionContract {
         fun loadModels()
 
         fun selectModel(model: Model)
+
+        fun registerModelsObserver()
+
+        fun unregisterModelsObserver()
     }
 
     interface Interactor {
@@ -36,5 +40,9 @@ interface ModelSelectionContract {
         fun loadModels(onSuccess: (List<Model>) -> Unit, onFailure: (Exception) -> Unit)
 
         fun downloadModel(model: Model, onFailure: (Exception) -> Unit)
+
+        fun registerModelsObserver(onChanged: (Model) -> Unit)
+
+        fun unregisterModelsObserver()
     }
 }

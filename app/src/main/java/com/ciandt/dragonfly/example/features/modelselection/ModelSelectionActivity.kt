@@ -29,9 +29,6 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_model_selection)
 
-        presenter = ModelSelectionPresenter(ModelSelectionInteractor(applicationContext, FirebaseStorage.getInstance()))
-        presenter.attachView(this)
-
         setupList()
 
         messageRetry.setOnClickListener {
@@ -46,6 +43,10 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
         if (savedInstanceState != null) {
             update(savedInstanceState.getParcelableArrayList(MODELS_BUNDLE))
         }
+
+        presenter = ModelSelectionPresenter(ModelSelectionInteractor(applicationContext, FirebaseStorage.getInstance()))
+        presenter.attachView(this)
+        presenter.registerModelsObserver()
     }
 
     override fun onResume() {
@@ -60,6 +61,11 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
     override fun onPause() {
         super.onPause()
         presenter.detachView()
+    }
+
+    override fun onDestroy() {
+        presenter.unregisterModelsObserver()
+        super.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
