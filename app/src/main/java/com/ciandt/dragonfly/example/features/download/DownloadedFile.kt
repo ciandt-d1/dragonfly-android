@@ -2,7 +2,8 @@ package com.ciandt.dragonfly.example.features.download
 
 import android.app.DownloadManager
 import android.os.Parcel
-import android.os.Parcelable
+import com.ciandt.dragonfly.example.shared.KParcelable
+import com.ciandt.dragonfly.example.shared.parcelableCreator
 
 data class DownloadedFile(
         val id: Long,
@@ -11,7 +12,7 @@ data class DownloadedFile(
         val reason: Int,
         val bytesTotal: Int = 0,
         val bytesDownloaded: Int = 0,
-        val lastModifiedAt: Int = 0) : Parcelable {
+        val lastModifiedAt: Int = 0) : KParcelable {
 
     val statusText: String
         get() {
@@ -74,37 +75,28 @@ data class DownloadedFile(
                 ")"
     }
 
-    constructor(parcel: Parcel) : this(
-            parcel.readLong(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readInt(),
-            parcel.readInt(),
-            parcel.readInt(),
-            parcel.readInt())
+    private constructor(p: Parcel) : this(
+            p.readLong(),
+            p.readString(),
+            p.readInt(),
+            p.readInt(),
+            p.readInt(),
+            p.readInt(),
+            p.readInt())
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(id)
-        parcel.writeString(title)
-        parcel.writeInt(status)
-        parcel.writeInt(reason)
-        parcel.writeInt(bytesTotal)
-        parcel.writeInt(bytesDownloaded)
-        parcel.writeInt(lastModifiedAt)
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeLong(id)
+        writeString(title)
+        writeInt(status)
+        writeInt(reason)
+        writeInt(bytesTotal)
+        writeInt(bytesDownloaded)
+        writeInt(lastModifiedAt)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    companion object {
 
-    companion object CREATOR : Parcelable.Creator<DownloadedFile> {
-        override fun createFromParcel(parcel: Parcel): DownloadedFile {
-            return DownloadedFile(parcel)
-        }
-
-        override fun newArray(size: Int): Array<DownloadedFile?> {
-            return arrayOfNulls(size)
-        }
+        @JvmField val CREATOR = parcelableCreator(::DownloadedFile)
 
         private val STATUS_CANCELLED = -1
 
