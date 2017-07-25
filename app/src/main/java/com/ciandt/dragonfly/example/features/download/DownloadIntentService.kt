@@ -3,9 +3,12 @@ package com.ciandt.dragonfly.example.features.download
 import android.app.IntentService
 import android.content.Context
 import android.content.Intent
+import com.ciandt.dragonfly.data.model.Model
+import com.ciandt.dragonfly.data.model.ModelManager
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.helpers.DownloadNotificationHelper
 import com.ciandt.dragonfly.example.infrastructure.extensions.getDownloadManager
+import com.ciandt.dragonfly.example.infrastructure.extensions.getLocalBroadcastManager
 import java.io.File
 import java.io.FileOutputStream
 
@@ -60,6 +63,13 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
         inputStream.close()
 
         DownloadNotificationHelper.showFinished(this, downloadedFile)
+
+        // MOCKED
+        val model = ModelManager.loadModels().last()
+        model.version = 2
+        model.size = outputFile.length()
+        model.status = Model.STATUS_DOWNLOADED
+        sendBroadcast(model)
     }
 
     private fun handleError() {
@@ -72,6 +82,10 @@ class DownloadIntentService : IntentService("DownloadIntentService") {
 
     private fun handleUnauth() {
         handleError()
+    }
+
+    private fun sendBroadcast(model: Model) {
+        getLocalBroadcastManager().sendBroadcast(ModelChangedReceiver.create(model))
     }
 
     companion object {
