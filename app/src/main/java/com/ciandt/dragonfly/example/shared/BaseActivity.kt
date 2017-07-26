@@ -108,7 +108,7 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
     }
 
     fun getRootView(): ViewGroup {
-        return window.decorView.findViewById(android.R.id.content) as ViewGroup
+        return window.decorView.findViewById(android.R.id.content)
     }
 
     fun checkPendingPermissions(permissions: List<String>): List<String> {
