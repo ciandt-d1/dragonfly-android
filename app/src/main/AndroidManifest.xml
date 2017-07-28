@@ -44,5 +44,9 @@
             android:name=".features.login.LoginActivity"
             android:screenOrientation="portrait"/>
 
+        <service
+            android:name=".data.remote.RemoteModelService"
+            android:exported="false"/>
+
     </application>
 </manifest>

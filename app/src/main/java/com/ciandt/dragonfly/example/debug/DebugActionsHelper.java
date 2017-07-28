@@ -1,11 +1,13 @@
 package com.ciandt.dragonfly.example.debug;
 
 import com.ciandt.dragonfly.example.R;
+import com.ciandt.dragonfly.example.data.remote.RemoteModelService;
 import com.ciandt.dragonfly.example.features.login.LoginActivity;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -169,6 +171,24 @@ public class DebugActionsHelper {
                 });
 
                 context.startActivity(LoginActivity.Companion.create(context));
+            }
+        }));
+
+        actions.add(new ButtonAction("Start Firebase Model Service", new ButtonAction.Listener() {
+
+            @Override
+            public void onClick() {
+                Context context = target.getActivityInstance();
+                context.startService(new Intent(context, RemoteModelService.class));
+            }
+        }));
+
+        actions.add(new ButtonAction("Stop Firebase Model Service", new ButtonAction.Listener() {
+
+            @Override
+            public void onClick() {
+                Context context = target.getActivityInstance();
+                context.stopService(new Intent(context, RemoteModelService.class));
             }
         }));
 
