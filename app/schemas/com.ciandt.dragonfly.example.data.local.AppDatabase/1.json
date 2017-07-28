@@ -1,0 +1,127 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "4630ed447805508523d807125dafadf6",
+    "entities": [
+      {
+        "tableName": "models",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT, `name` TEXT, `description` TEXT, `colors` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "colors",
+            "columnName": "colors",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "versions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idModel` TEXT, `version` INTEGER, `size` INTEGER, `inputSize` INTEGER, `imageMean` INTEGER, `imageStd` REAL, `inputName` TEXT, `outputName` TEXT, `downloadUrl` TEXT, `createdAt` INTEGER, `modelPath` TEXT, `labelPath` TEXT, `status` INTEGER, PRIMARY KEY(`idModel`, `version`))",
+        "fields": [
+          {
+            "fieldPath": "idModel",
+            "columnName": "idModel",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "size",
+            "columnName": "size",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "inputSize",
+            "columnName": "inputSize",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "imageMean",
+            "columnName": "imageMean",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "imageStd",
+            "columnName": "imageStd",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "inputName",
+            "columnName": "inputName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "outputName",
+            "columnName": "outputName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "downloadUrl",
+            "columnName": "downloadUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "modelPath",
+            "columnName": "modelPath",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "labelPath",
+            "columnName": "labelPath",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "idModel",
+            "version"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"4630ed447805508523d807125dafadf6\")"
+    ]
+  }
+}

@@ -78,6 +78,12 @@ android {
         manifestPlaceholders = [
                 FABRIC_API_KEY: fabricProperties['apiKey']
         ]
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     signingConfigs {
@@ -162,7 +168,6 @@ dependencies {
     compile "com.android.support:animated-vector-drawable:${supportLibraryVersion}"
     compile "com.android.support:design:${supportLibraryVersion}"
 
-
     def debugDrawerVersion = '0.7.0'
     debugCompile "io.palaima.debugdrawer:debugdrawer:${debugDrawerVersion}"
     releaseCompile "io.palaima.debugdrawer:debugdrawer-no-op:${debugDrawerVersion}"
@@ -184,6 +189,10 @@ dependencies {
     compile "com.google.firebase:firebase-storage:${firebaseVersion}"
     compile "com.google.firebase:firebase-database:${firebaseVersion}"
     compile "com.google.android.gms:play-services-auth:${firebaseVersion}"
+
+    def androidArch = '1.0.0-alpha6'
+    compile "android.arch.persistence.room:runtime:${androidArch}"
+    kapt "android.arch.persistence.room:compiler:${androidArch}"
 
     compile 'com.facebook.stetho:stetho:1.5.0'
 
