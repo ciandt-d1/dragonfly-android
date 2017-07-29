@@ -12,6 +12,9 @@ interface VersionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(version: Version)
 
+    @Query("DELETE FROM versions WHERE idModel = :arg0")
+    fun delete(idModel: String)
+
     @Query("SELECT * FROM versions WHERE idModel = :arg0 AND version = :arg1 AND status != 0")
     fun downloadingOrDownloaded(idModel: String, version: Int): Version?
 
