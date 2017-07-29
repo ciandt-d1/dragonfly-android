@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import com.ciandt.dragonfly.example.data.local.LocalModelDataSource
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
@@ -18,7 +19,7 @@ class RemoteModelService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        listener = RemoteModelListener()
+        listener = RemoteModelListener(LocalModelDataSource(this))
 
         databaseRef = FirebaseDatabase.getInstance().getReference(MODELS_COLLECTION)
         databaseRef.addChildEventListener(listener)
