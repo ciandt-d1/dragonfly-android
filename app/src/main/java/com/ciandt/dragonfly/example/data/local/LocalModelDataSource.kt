@@ -36,4 +36,9 @@ class LocalModelDataSource(context: Context) {
         }
 
     }
+
+    fun clear() = database.runInTransaction {
+        versionDao.clear()
+        modelDao.clear()
+    }
 }
