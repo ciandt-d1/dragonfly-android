@@ -1,6 +1,7 @@
 package com.ciandt.dragonfly.example.debug;
 
 import com.ciandt.dragonfly.example.R;
+import com.ciandt.dragonfly.example.data.ModelRepository;
 import com.ciandt.dragonfly.example.data.remote.RemoteModelService;
 import com.ciandt.dragonfly.example.features.login.LoginActivity;
 
@@ -171,6 +172,22 @@ public class DebugActionsHelper {
                 });
 
                 context.startActivity(LoginActivity.Companion.create(context));
+            }
+        }));
+
+        actions.add(new ButtonAction("Clear model database", new ButtonAction.Listener() {
+
+            @Override
+            public void onClick() {
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Context context = target.getActivityInstance();
+                        ModelRepository repository = new ModelRepository(context);
+                        repository.clear();
+                    }
+                }).start();
             }
         }));
 
