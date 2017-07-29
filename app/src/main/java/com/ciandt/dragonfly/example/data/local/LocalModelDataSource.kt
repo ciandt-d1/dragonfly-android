@@ -18,7 +18,22 @@ class LocalModelDataSource(context: Context) {
         database.getModelDao()
     }
 
+    private val versionDao by lazy {
+        database.getVersionDao()
+    }
+
     fun save(model: Model) = database.runInTransaction {
+
         modelDao.insert(model)
+
+        model.versions.forEach {
+            with(it) {
+                val downloadingOrDownloaded = (versionDao.downloadingOrDownloaded(idModel, version) != null)
+                if (!downloadingOrDownloaded) {
+                    versionDao.insert(it)
+                }
+            }
+        }
+
     }
 }
