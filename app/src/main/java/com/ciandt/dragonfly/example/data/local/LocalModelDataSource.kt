@@ -37,6 +37,11 @@ class LocalModelDataSource(context: Context) {
 
     }
 
+    fun delete(model: Model) = database.runInTransaction {
+        versionDao.delete(model.id)
+        modelDao.delete(model)
+    }
+
     fun clear() = database.runInTransaction {
         versionDao.clear()
         modelDao.clear()
