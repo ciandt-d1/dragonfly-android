@@ -1,6 +1,7 @@
 package com.ciandt.dragonfly.example.data.local.dao
 
 import android.arch.persistence.room.Dao
+import android.arch.persistence.room.Delete
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
@@ -11,6 +12,9 @@ interface ModelDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(model: Model)
+
+    @Delete
+    fun delete(model: Model)
 
     @Query("SELECT * FROM models")
     fun getAll(): List<Model>
