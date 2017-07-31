@@ -1,9 +1,9 @@
-package com.ciandt.dragonfly.example.features.modelselection
+package com.ciandt.dragonfly.example.features.projectselection
 
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.shared.BasePresenter
 
-class ModelSelectionPresenter(private var interactor: ModelSelectionContract.Interactor) : BasePresenter<ModelSelectionContract.View>(), ModelSelectionContract.Presenter {
+class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract.Interactor) : BasePresenter<ProjectSelectionContract.View>(), ProjectSelectionContract.Presenter {
 
     override fun loadModels() {
 
