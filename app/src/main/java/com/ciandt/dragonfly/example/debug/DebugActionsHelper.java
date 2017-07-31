@@ -175,7 +175,7 @@ public class DebugActionsHelper {
             }
         }));
 
-        actions.add(new ButtonAction("Clear model database", new ButtonAction.Listener() {
+        actions.add(new ButtonAction("Clear projects database", new ButtonAction.Listener() {
 
             @Override
             public void onClick() {
@@ -191,7 +191,7 @@ public class DebugActionsHelper {
             }
         }));
 
-        actions.add(new ButtonAction("Start Firebase Model Service", new ButtonAction.Listener() {
+        actions.add(new ButtonAction("Start Firebase Project Service", new ButtonAction.Listener() {
 
             @Override
             public void onClick() {
@@ -200,7 +200,7 @@ public class DebugActionsHelper {
             }
         }));
 
-        actions.add(new ButtonAction("Stop Firebase Model Service", new ButtonAction.Listener() {
+        actions.add(new ButtonAction("Stop Firebase Project Service", new ButtonAction.Listener() {
 
             @Override
             public void onClick() {
