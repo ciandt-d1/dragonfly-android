@@ -39,6 +39,18 @@ class LocalDataSource(context: Context) {
         projectDao.delete(project)
     }
 
+    fun getProjects(): List<ProjectEntity> {
+        val projects = arrayListOf<ProjectEntity>()
+
+        projectDao.getProjects().forEach {
+            it.map()?.let { mapped ->
+                projects.add(mapped)
+            }
+        }
+
+        return projects
+    }
+
     fun clear() = database.runInTransaction {
         versionDao.clear()
         projectDao.clear()

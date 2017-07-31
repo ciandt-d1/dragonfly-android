@@ -6,6 +6,7 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import com.ciandt.dragonfly.example.data.local.entities.ProjectEntity
+import com.ciandt.dragonfly.example.data.local.relations.ProjectVersions
 
 @Dao
 interface ProjectDao {
@@ -15,6 +16,9 @@ interface ProjectDao {
 
     @Delete
     fun delete(project: ProjectEntity)
+
+    @Query("SELECT * FROM projects")
+    fun getProjects(): List<ProjectVersions>
 
     @Query("DELETE FROM projects")
     fun clear()
