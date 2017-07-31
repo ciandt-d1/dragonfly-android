@@ -10,5 +10,6 @@ data class ProjectEntity(
         var name: String = "",
         var description: String = "",
         var colors: String = "",
-        @Ignore var versions: List<VersionEntity> = emptyList()
+        @Ignore var versions: List<VersionEntity> = emptyList(),
+        var createdAt: Long = 0
 )

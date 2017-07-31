@@ -17,7 +17,7 @@ interface ProjectDao {
     @Delete
     fun delete(project: ProjectEntity)
 
-    @Query("SELECT * FROM projects")
+    @Query("SELECT * FROM projects ORDER BY createdAt ASC")
     fun getProjects(): List<ProjectVersions>
 
     @Query("DELETE FROM projects")
