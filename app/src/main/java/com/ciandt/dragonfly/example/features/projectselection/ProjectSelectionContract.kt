@@ -1,9 +1,10 @@
-package com.ciandt.dragonfly.example.features.modelselection
+package com.ciandt.dragonfly.example.features.projectselection
 
 import com.ciandt.dragonfly.data.model.Model
+import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.shared.BasePresenterContract
 
-interface ModelSelectionContract {
+interface ProjectSelectionContract {
 
     interface View {
 
@@ -32,6 +33,8 @@ interface ModelSelectionContract {
     interface Interactor {
 
         fun loadModels(onSuccess: (List<Model>) -> Unit, onFailure: (Exception) -> Unit)
+
+        fun loadProjects(onSuccess: (List<Project>) -> Unit, onFailure: (Exception) -> Unit)
 
     }
 }

@@ -1,4 +1,4 @@
-package com.ciandt.dragonfly.example.features.modelselection
+package com.ciandt.dragonfly.example.features.projectselection
 
 import com.ciandt.dragonfly.data.model.Model
 import com.nhaarman.mockito_kotlin.argumentCaptor
@@ -14,21 +14,21 @@ import org.mockito.MockitoAnnotations
 import kotlin.test.assertTrue
 
 @RunWith(JUnit4::class)
-class ModelSelectionPresenterTest {
+class ProjectSelectionPresenterTest {
 
-    lateinit var presenter: ModelSelectionPresenter
-
-    @Mock
-    lateinit var view: ModelSelectionContract.View
+    lateinit var presenter: ProjectSelectionPresenter
 
     @Mock
-    lateinit var interactor: ModelSelectionContract.Interactor
+    lateinit var view: ProjectSelectionContract.View
+
+    @Mock
+    lateinit var interactor: ProjectSelectionContract.Interactor
 
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
 
-        presenter = ModelSelectionPresenter(interactor)
+        presenter = ProjectSelectionPresenter(interactor)
         presenter.attachView(view)
     }
 

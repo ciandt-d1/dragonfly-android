@@ -19,7 +19,7 @@
             android:value="${FABRIC_API_KEY}"/>
 
         <activity
-            android:name=".features.modelselection.ModelSelectionActivity"
+            android:name=".features.projectselection.ProjectSelectionActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

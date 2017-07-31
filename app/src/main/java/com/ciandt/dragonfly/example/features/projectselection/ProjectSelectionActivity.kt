@@ -1,4 +1,4 @@
-package com.ciandt.dragonfly.example.features.modelselection
+package com.ciandt.dragonfly.example.features.projectselection
 
 import android.content.Context
 import android.content.Intent
@@ -15,23 +15,23 @@ import com.ciandt.dragonfly.example.data.remote.RemoteProjectService
 import com.ciandt.dragonfly.example.features.about.AboutActivity
 import com.ciandt.dragonfly.example.features.realtime.RealTimeActivity
 import com.ciandt.dragonfly.example.shared.BaseActivity
-import kotlinx.android.synthetic.main.activity_model_selection.*
+import kotlinx.android.synthetic.main.activity_project_selection.*
 
-class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
+class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
 
-    private val MODELS_BUNDLE = "MODELS_BUNDLE"
+    private val PROJECTS_BUNDLE = "PROJECTS_BUNDLE"
 
-    private lateinit var presenter: ModelSelectionContract.Presenter
+    private lateinit var presenter: ProjectSelectionContract.Presenter
 
-    private val models = ArrayList<Model>()
+    private val projects = ArrayList<Model>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_model_selection)
+        setContentView(R.layout.activity_project_selection)
 
         startService(RemoteProjectService.createIntent(this))
-        
-        presenter = ModelSelectionPresenter(ModelSelectionInteractor())
+
+        presenter = ProjectSelectionPresenter(ProjectSelectionInteractor(this))
         presenter.attachView(this)
 
         setupList()
@@ -46,7 +46,7 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
         }
 
         if (savedInstanceState != null) {
-            update(savedInstanceState.getParcelableArrayList(MODELS_BUNDLE))
+            update(savedInstanceState.getParcelableArrayList(PROJECTS_BUNDLE))
         }
     }
 
@@ -54,7 +54,7 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
         super.onResume()
         presenter.attachView(this)
 
-        if (models.isEmpty()) {
+        if (projects.isEmpty()) {
             presenter.loadModels()
         }
     }
@@ -71,7 +71,7 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        outState?.putParcelableArrayList(MODELS_BUNDLE, models)
+        outState?.putParcelableArrayList(PROJECTS_BUNDLE, projects)
     }
 
     private fun setupList() {
@@ -81,7 +81,7 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
 
         (recyclerView.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
-        val adapter = ModelSelectionAdapter(this, models) { model ->
+        val adapter = ProjectSelectionAdapter(this, projects) { model ->
             presenter.selectModel(model)
         }
 
@@ -101,7 +101,7 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
         recyclerView.visibility = INVISIBLE
 
         messageIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_warning))
-        messageText.text = getString(R.string.model_selection_empty_message)
+        messageText.text = getString(R.string.project_selection_empty_message)
         messageContainer.visibility = VISIBLE
     }
 
@@ -110,7 +110,7 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
         recyclerView.visibility = INVISIBLE
 
         messageIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_error))
-        messageText.text = getString(R.string.model_selection_error_message)
+        messageText.text = getString(R.string.project_selection_error_message)
         messageContainer.visibility = VISIBLE
     }
 
@@ -118,8 +118,8 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
         loading.visibility = INVISIBLE
         messageContainer.visibility = INVISIBLE
 
-        this.models.clear()
-        this.models.addAll(models)
+        this.projects.clear()
+        this.projects.addAll(models)
 
         recyclerView.adapter.notifyDataSetChanged()
 
@@ -127,13 +127,13 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
     }
 
     override fun update(model: Model) {
-        if (models.contains(model)) {
-            val index = models.indexOf(model)
-            models[index] = model
+        if (projects.contains(model)) {
+            val index = projects.indexOf(model)
+            projects[index] = model
             recyclerView.adapter.notifyItemChanged(index)
         } else {
-            models.add(model)
-            recyclerView.adapter.notifyItemInserted(models.size - 1)
+            projects.add(model)
+            recyclerView.adapter.notifyItemInserted(projects.size - 1)
         }
     }
 
@@ -143,12 +143,12 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
     }
 
     override fun showDownloading(model: Model) {
-        Snackbar.make(getRootView(), getString(R.string.model_selection_item_wait), Snackbar.LENGTH_LONG).show()
+        Snackbar.make(getRootView(), getString(R.string.project_selection_item_wait), Snackbar.LENGTH_LONG).show()
     }
 
     companion object {
         fun create(context: Context): Intent {
-            return Intent(context, ModelSelectionActivity::class.java)
+            return Intent(context, ProjectSelectionActivity::class.java)
         }
     }
 }
