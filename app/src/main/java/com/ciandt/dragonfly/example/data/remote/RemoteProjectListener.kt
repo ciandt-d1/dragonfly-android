@@ -1,7 +1,7 @@
 package com.ciandt.dragonfly.example.data.remote
 
 import com.ciandt.dragonfly.example.data.local.LocalDataSource
-import com.ciandt.dragonfly.example.data.mapper.DataSnapshotToProjectMapper
+import com.ciandt.dragonfly.example.data.mapper.DataSnapshotToProjectEntityMapper
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
@@ -10,7 +10,7 @@ import com.google.firebase.database.DatabaseError
 class RemoteProjectListener(private val localDataSource: LocalDataSource) : ChildEventListener {
 
     override fun onChildAdded(dataSnapshot: DataSnapshot, prevChildKey: String?) {
-        val project = DataSnapshotToProjectMapper(dataSnapshot).map()
+        val project = DataSnapshotToProjectEntityMapper(dataSnapshot).map()
         project?.let {
             runOnBackgroundThread {
                 localDataSource.save(it)
@@ -23,7 +23,7 @@ class RemoteProjectListener(private val localDataSource: LocalDataSource) : Chil
     }
 
     override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-        val project = DataSnapshotToProjectMapper(dataSnapshot).map()
+        val project = DataSnapshotToProjectEntityMapper(dataSnapshot).map()
         project?.let {
             runOnBackgroundThread {
                 localDataSource.delete(it)

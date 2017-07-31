@@ -5,10 +5,10 @@ import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "projects")
-data class Project(
+data class ProjectEntity(
         @PrimaryKey(autoGenerate = false) var id: String = "",
         var name: String = "",
         var description: String = "",
         var colors: String = "",
-        @Ignore var versions: List<Version> = emptyList()
+        @Ignore var versions: List<VersionEntity> = emptyList()
 )

@@ -3,7 +3,7 @@ package com.ciandt.dragonfly.example.data.local.entities
 import android.arch.persistence.room.Entity
 
 @Entity(tableName = "versions", primaryKeys = arrayOf("project", "version"))
-data class Version(
+data class VersionEntity(
         var project: String = "",
         var version: Int = 0,
         var size: Long = 0L,

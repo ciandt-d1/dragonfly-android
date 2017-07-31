@@ -3,7 +3,7 @@ package com.ciandt.dragonfly.example.data.local
 import android.arch.persistence.room.Room
 import android.content.Context
 import com.ciandt.dragonfly.example.BuildConfig
-import com.ciandt.dragonfly.example.data.local.entities.Project
+import com.ciandt.dragonfly.example.data.local.entities.ProjectEntity
 
 class LocalDataSource(context: Context) {
 
@@ -22,7 +22,7 @@ class LocalDataSource(context: Context) {
         database.getVersionDao()
     }
 
-    fun save(project: Project) = database.runInTransaction {
+    fun save(project: ProjectEntity) = database.runInTransaction {
 
         projectDao.insert(project)
 
@@ -32,10 +32,9 @@ class LocalDataSource(context: Context) {
                 versionDao.insert(version)
             }
         }
-
     }
 
-    fun delete(project: Project) = database.runInTransaction {
+    fun delete(project: ProjectEntity) = database.runInTransaction {
         versionDao.delete(project.id)
         projectDao.delete(project)
     }
