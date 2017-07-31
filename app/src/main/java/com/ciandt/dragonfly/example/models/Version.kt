@@ -1,5 +1,9 @@
 package com.ciandt.dragonfly.example.models
 
+import android.os.Parcel
+import com.ciandt.dragonfly.example.shared.KParcelable
+import com.ciandt.dragonfly.example.shared.parcelableCreator
+
 data class Version(
         var project: String = "",
         var version: Int = 0,
@@ -14,4 +18,42 @@ data class Version(
         var modelPath: String = "",
         var labelPath: String = "",
         var status: Int = 0
-)
+) : KParcelable {
+
+    private constructor(p: Parcel) : this(
+            p.readString(),
+            p.readInt(),
+            p.readLong(),
+            p.readInt(),
+            p.readInt(),
+            p.readFloat(),
+            p.readString(),
+            p.readString(),
+            p.readString(),
+            p.readLong(),
+            p.readString(),
+            p.readString(),
+            p.readInt()
+    )
+
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeString(project)
+        writeInt(version)
+        writeLong(size)
+        writeInt(inputSize)
+        writeInt(imageMean)
+        writeFloat(imageStd)
+        writeString(inputName)
+        writeString(outputName)
+        writeString(downloadUrl)
+        writeLong(createdAt)
+        writeString(modelPath)
+        writeString(labelPath)
+        writeInt(status)
+    }
+
+    companion object {
+
+        @JvmField val CREATOR = parcelableCreator(::Version)
+    }
+}
