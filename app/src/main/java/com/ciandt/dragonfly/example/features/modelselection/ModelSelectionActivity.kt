@@ -11,6 +11,7 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.R
+import com.ciandt.dragonfly.example.data.remote.RemoteModelService
 import com.ciandt.dragonfly.example.features.about.AboutActivity
 import com.ciandt.dragonfly.example.features.realtime.RealTimeActivity
 import com.ciandt.dragonfly.example.shared.BaseActivity
@@ -28,6 +29,8 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_model_selection)
 
+        startService(RemoteModelService.createIntent(this))
+        
         presenter = ModelSelectionPresenter(ModelSelectionInteractor())
         presenter.attachView(this)
 
@@ -59,6 +62,11 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
     override fun onPause() {
         super.onPause()
         presenter.detachView()
+    }
+
+    override fun onDestroy() {
+        stopService(RemoteModelService.createIntent(this))
+        super.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
