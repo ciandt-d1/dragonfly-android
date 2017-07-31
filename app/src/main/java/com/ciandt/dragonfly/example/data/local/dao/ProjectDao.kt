@@ -5,20 +5,17 @@ import android.arch.persistence.room.Delete
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
-import com.ciandt.dragonfly.example.data.local.entities.Model
+import com.ciandt.dragonfly.example.data.local.entities.Project
 
 @Dao
-interface ModelDao {
+interface ProjectDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(model: Model)
+    fun insert(project: Project)
 
     @Delete
-    fun delete(model: Model)
+    fun delete(project: Project)
 
-    @Query("SELECT * FROM models")
-    fun getAll(): List<Model>
-
-    @Query("DELETE FROM models")
+    @Query("DELETE FROM projects")
     fun clear()
 }

@@ -4,8 +4,8 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 
-@Entity(tableName = "models")
-data class Model(
+@Entity(tableName = "projects")
+data class Project(
         @PrimaryKey(autoGenerate = false) var id: String = "",
         var name: String = "",
         var description: String = "",

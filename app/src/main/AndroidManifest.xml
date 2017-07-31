@@ -45,7 +45,7 @@
             android:screenOrientation="portrait"/>
 
         <service
-            android:name=".data.remote.RemoteModelService"
+            android:name=".data.remote.RemoteProjectService"
             android:exported="false"/>
 
     </application>

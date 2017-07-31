@@ -4,24 +4,24 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import com.ciandt.dragonfly.example.data.local.LocalModelDataSource
+import com.ciandt.dragonfly.example.data.local.LocalDataSource
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
-class RemoteModelService : Service() {
+class RemoteProjectService : Service() {
 
-    private val MODELS_COLLECTION = "v1/models"
+    private val PROJECTS_COLLECTION = "v1/projects"
 
     private lateinit var databaseRef: DatabaseReference
 
-    private lateinit var listener: RemoteModelListener
+    private lateinit var listener: RemoteProjectListener
 
     override fun onCreate() {
         super.onCreate()
 
-        listener = RemoteModelListener(LocalModelDataSource(this))
+        listener = RemoteProjectListener(LocalDataSource(this))
 
-        databaseRef = FirebaseDatabase.getInstance().getReference(MODELS_COLLECTION)
+        databaseRef = FirebaseDatabase.getInstance().getReference(PROJECTS_COLLECTION)
         databaseRef.addChildEventListener(listener)
     }
 
@@ -36,7 +36,7 @@ class RemoteModelService : Service() {
 
     companion object {
         fun createIntent(context: Context): Intent {
-            return Intent(context, RemoteModelService::class.java)
+            return Intent(context, RemoteProjectService::class.java)
         }
     }
 }
