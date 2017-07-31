@@ -2,10 +2,10 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4630ed447805508523d807125dafadf6",
+    "identityHash": "d35a3613b50525acc2ca8b35e27a3117",
     "entities": [
       {
-        "tableName": "models",
+        "tableName": "projects",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT, `name` TEXT, `description` TEXT, `colors` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
@@ -40,11 +40,11 @@
       },
       {
         "tableName": "versions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idModel` TEXT, `version` INTEGER, `size` INTEGER, `inputSize` INTEGER, `imageMean` INTEGER, `imageStd` REAL, `inputName` TEXT, `outputName` TEXT, `downloadUrl` TEXT, `createdAt` INTEGER, `modelPath` TEXT, `labelPath` TEXT, `status` INTEGER, PRIMARY KEY(`idModel`, `version`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`project` TEXT, `version` INTEGER, `size` INTEGER, `inputSize` INTEGER, `imageMean` INTEGER, `imageStd` REAL, `inputName` TEXT, `outputName` TEXT, `downloadUrl` TEXT, `createdAt` INTEGER, `modelPath` TEXT, `labelPath` TEXT, `status` INTEGER, PRIMARY KEY(`project`, `version`))",
         "fields": [
           {
-            "fieldPath": "idModel",
-            "columnName": "idModel",
+            "fieldPath": "project",
+            "columnName": "project",
             "affinity": "TEXT"
           },
           {
@@ -110,7 +110,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "idModel",
+            "project",
             "version"
           ],
           "autoGenerate": false
@@ -121,7 +121,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"4630ed447805508523d807125dafadf6\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"d35a3613b50525acc2ca8b35e27a3117\")"
     ]
   }
 }

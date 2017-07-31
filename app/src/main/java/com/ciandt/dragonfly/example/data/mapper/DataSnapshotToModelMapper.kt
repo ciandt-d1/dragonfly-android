@@ -1,13 +1,13 @@
 package com.ciandt.dragonfly.example.data.mapper
 
-import com.ciandt.dragonfly.example.data.local.entities.Model
+import com.ciandt.dragonfly.example.data.local.entities.Project
 import com.ciandt.dragonfly.example.data.local.entities.Version
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.google.firebase.database.DataSnapshot
 
-class DataSnapshotToModelMapper(val dataSnapshot: DataSnapshot) : Mapper<Model>() {
+class DataSnapshotToProjectMapper(val dataSnapshot: DataSnapshot) : Mapper<Project>() {
 
-    override fun map(): Model? {
+    override fun map(): Project? {
 
         listOf("name", "description", "colors", "versions").forEach {
             if (!dataSnapshot.hasChild(it)) {
@@ -17,7 +17,7 @@ class DataSnapshotToModelMapper(val dataSnapshot: DataSnapshot) : Mapper<Model>(
         }
 
         try {
-            val model = Model(
+            val project = Project(
                     id = dataSnapshot.key,
                     name = dataSnapshot.child("name").getValue(String::class.java)!!,
                     description = dataSnapshot.child("description").getValue(String::class.java)!!
@@ -35,9 +35,9 @@ class DataSnapshotToModelMapper(val dataSnapshot: DataSnapshot) : Mapper<Model>(
                 }
             }
 
-            model.colors = colors.joinToString(",")
-            model.versions = versions
-            return model
+            project.colors = colors.joinToString(",")
+            project.versions = versions
+            return project
 
         } catch (e: Exception) {
             DragonflyLogger.error(LOG_TAG, e.message, e)
@@ -45,10 +45,10 @@ class DataSnapshotToModelMapper(val dataSnapshot: DataSnapshot) : Mapper<Model>(
         }
     }
 
-    private fun mapVersion(idModel: String, dataSnapshot: DataSnapshot): Version? {
+    private fun mapVersion(project: String, dataSnapshot: DataSnapshot): Version? {
         try {
             val version = dataSnapshot.getValue(Version::class.java)!!
-            version.idModel = idModel
+            version.project = project
             return version
 
         } catch (e: Exception) {
@@ -58,6 +58,6 @@ class DataSnapshotToModelMapper(val dataSnapshot: DataSnapshot) : Mapper<Model>(
     }
 
     companion object {
-        private val LOG_TAG = DataSnapshotToModelMapper::class.java.simpleName
+        private val LOG_TAG = DataSnapshotToProjectMapper::class.java.simpleName
     }
 }
