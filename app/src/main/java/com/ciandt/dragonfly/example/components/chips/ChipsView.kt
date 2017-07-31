@@ -58,7 +58,7 @@ class ChipsView : RelativeLayout {
         }
         adapter.setHasStableIds(true)
 
-        recyclerView = findViewById(R.id.list) as RecyclerView
+        recyclerView = findViewById(R.id.list)
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         (recyclerView.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         recyclerView.adapter = adapter

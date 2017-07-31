@@ -53,14 +53,14 @@ def fabricPropertiesFile = rootProject.file(".configs/fabric.properties")
 fabricProperties.load(new FileInputStream(fabricPropertiesFile))
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.0"
 
     defaultConfig {
         applicationId "com.ciandt.dragonfly.example"
 
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 26
 
         versionName "${appVersionMajor}.${appVersionMinor}.${appVersionPatch}"
         versionCode appVersionMajor * appVersionMajorMultiplier + appVersionMinor * appVersionMinorMultiplier + appVersionPatch * appVersionPatchMultiplier
@@ -78,6 +78,12 @@ android {
         manifestPlaceholders = [
                 FABRIC_API_KEY: fabricProperties['apiKey']
         ]
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     signingConfigs {
@@ -155,13 +161,12 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:${kotlin_version}"
 
-    def supportLibraryVersion = '25.4.0'
+    def supportLibraryVersion = '26.0.0'
     compile "com.android.support:appcompat-v7:${supportLibraryVersion}"
     compile "com.android.support:cardview-v7:${supportLibraryVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibraryVersion}"
     compile "com.android.support:animated-vector-drawable:${supportLibraryVersion}"
     compile "com.android.support:design:${supportLibraryVersion}"
-
 
     def debugDrawerVersion = '0.7.0'
     debugCompile "io.palaima.debugdrawer:debugdrawer:${debugDrawerVersion}"
@@ -184,6 +189,10 @@ dependencies {
     compile "com.google.firebase:firebase-storage:${firebaseVersion}"
     compile "com.google.firebase:firebase-database:${firebaseVersion}"
     compile "com.google.android.gms:play-services-auth:${firebaseVersion}"
+
+    def androidArch = '1.0.0-alpha6'
+    compile "android.arch.persistence.room:runtime:${androidArch}"
+    kapt "android.arch.persistence.room:compiler:${androidArch}"
 
     compile 'com.facebook.stetho:stetho:1.5.0'
 
