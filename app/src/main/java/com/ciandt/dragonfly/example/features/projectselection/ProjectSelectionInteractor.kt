@@ -21,7 +21,10 @@ class ProjectSelectionInteractor(val context: Context) : ProjectSelectionContrac
 
         override fun doInBackground(vararg params: Void?): LoadProjectsResult {
             try {
-                val projects = repository.getProjects()
+                // REMOVE ON SMTC-1489
+                val projects = FakeProjectGenerator.getProjects()
+                // CHANGE BACK TO:
+                // val projects = repository.getProjects()
                 return LoadProjectsResult(projects, null)
             } catch (e: Exception) {
                 return LoadProjectsResult(emptyList(), e)
