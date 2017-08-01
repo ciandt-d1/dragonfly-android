@@ -20,6 +20,14 @@ data class Version(
         var status: Int = 0
 ) : KParcelable {
 
+    fun isDownloading(): Boolean {
+        return status == STATUS_DOWNLOADING
+    }
+
+    fun isDownloaded(): Boolean {
+        return status == STATUS_DOWNLOADED
+    }
+
     private constructor(p: Parcel) : this(
             p.readString(),
             p.readInt(),
@@ -53,6 +61,10 @@ data class Version(
     }
 
     companion object {
+
+        val STATUS_DEFAULT = 0
+        val STATUS_DOWNLOADING = 1
+        val STATUS_DOWNLOADED = 2
 
         @JvmField val CREATOR = parcelableCreator(::Version)
     }

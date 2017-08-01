@@ -14,6 +14,7 @@ import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.data.remote.RemoteProjectService
 import com.ciandt.dragonfly.example.features.about.AboutActivity
 import com.ciandt.dragonfly.example.features.realtime.RealTimeActivity
+import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.shared.BaseActivity
 import kotlinx.android.synthetic.main.activity_project_selection.*
 
@@ -23,7 +24,7 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
 
     private lateinit var presenter: ProjectSelectionContract.Presenter
 
-    private val projects = ArrayList<Model>()
+    private val projects = ArrayList<Project>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +38,7 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
         setupList()
 
         messageRetry.setOnClickListener {
-            presenter.loadModels()
+            presenter.loadProjects()
         }
 
         about.setOnClickListener {
@@ -55,7 +56,7 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
         presenter.attachView(this)
 
         if (projects.isEmpty()) {
-            presenter.loadModels()
+            presenter.loadProjects()
         }
     }
 
@@ -81,8 +82,8 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
 
         (recyclerView.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
-        val adapter = ProjectSelectionAdapter(this, projects) { model ->
-            presenter.selectModel(model)
+        val adapter = ProjectSelectionAdapter(this, projects) { project ->
+            presenter.selectProject(project)
         }
 
         adapter.setHasStableIds(true)
@@ -114,25 +115,25 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
         messageContainer.visibility = VISIBLE
     }
 
-    override fun update(models: List<Model>) {
+    override fun update(projects: List<Project>) {
         loading.visibility = INVISIBLE
         messageContainer.visibility = INVISIBLE
 
         this.projects.clear()
-        this.projects.addAll(models)
+        this.projects.addAll(projects)
 
         recyclerView.adapter.notifyDataSetChanged()
 
         recyclerView.visibility = VISIBLE
     }
 
-    override fun update(model: Model) {
-        if (projects.contains(model)) {
-            val index = projects.indexOf(model)
-            projects[index] = model
+    override fun update(project: Project) {
+        if (projects.contains(project)) {
+            val index = projects.indexOf(project)
+            projects[index] = project
             recyclerView.adapter.notifyItemChanged(index)
         } else {
-            projects.add(model)
+            projects.add(project)
             recyclerView.adapter.notifyItemInserted(projects.size - 1)
         }
     }
@@ -142,8 +143,12 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
         startActivity(intent)
     }
 
-    override fun showDownloading(model: Model) {
+    override fun showDownloading(project: Project) {
         Snackbar.make(getRootView(), getString(R.string.project_selection_item_wait), Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun showUnavailable(project: Project) {
+        Snackbar.make(getRootView(), getString(R.string.project_selection_item_unavailable), Snackbar.LENGTH_LONG).show()
     }
 
     companion object {
