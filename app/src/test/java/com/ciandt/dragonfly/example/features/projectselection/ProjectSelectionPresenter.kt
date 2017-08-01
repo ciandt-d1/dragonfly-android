@@ -1,6 +1,8 @@
 package com.ciandt.dragonfly.example.features.projectselection
 
 import com.ciandt.dragonfly.data.model.Model
+import com.ciandt.dragonfly.example.models.Project
+import com.ciandt.dragonfly.example.models.Version
 import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.verify
 import org.amshove.kluent.any
@@ -38,22 +40,22 @@ class ProjectSelectionPresenterTest {
     }
 
     @Test
-    fun loadModels() {
-        presenter.loadModels()
+    fun loadProjects() {
+        presenter.loadProjects()
 
         verify(view).showLoading()
-        verify(interactor).loadModels(any(), any())
+        verify(interactor).loadProjects(any(), any())
     }
 
     @Test
-    fun loadModelsHandlingError() {
+    fun loadProjectsHandlingError() {
 
         val exception = RuntimeException("test")
 
-        presenter.loadModels()
+        presenter.loadProjects()
 
         argumentCaptor<(Exception) -> Unit>().apply {
-            verify(interactor).loadModels(any(), capture())
+            verify(interactor).loadProjects(any(), capture())
             firstValue.invoke(exception)
         }
 
@@ -61,14 +63,14 @@ class ProjectSelectionPresenterTest {
     }
 
     @Test
-    fun loadModelsHandlingEmptyList() {
+    fun loadProjectsHandlingEmptyList() {
 
-        val emptyList = ArrayList<Model>()
+        val emptyList = ArrayList<Project>()
 
-        presenter.loadModels()
+        presenter.loadProjects()
 
-        argumentCaptor<(List<Model>) -> Unit>().apply {
-            verify(interactor).loadModels(capture(), any())
+        argumentCaptor<(List<Project>) -> Unit>().apply {
+            verify(interactor).loadProjects(capture(), any())
             firstValue.invoke(emptyList)
         }
 
@@ -76,16 +78,16 @@ class ProjectSelectionPresenterTest {
     }
 
     @Test
-    fun loadModelsHandlingNonEmptyList() {
+    fun loadProjectsHandlingNonEmptyList() {
 
-        val nonEmptyList = ArrayList<Model>()
-        nonEmptyList.add(Model("1"))
-        nonEmptyList.add(Model("2"))
+        val nonEmptyList = ArrayList<Project>()
+        nonEmptyList.add(Project("1"))
+        nonEmptyList.add(Project("2"))
 
-        presenter.loadModels()
+        presenter.loadProjects()
 
-        argumentCaptor<(List<Model>) -> Unit>().apply {
-            verify(interactor).loadModels(capture(), any())
+        argumentCaptor<(List<Project>) -> Unit>().apply {
+            verify(interactor).loadProjects(capture(), any())
             firstValue.invoke(nonEmptyList)
         }
 
@@ -93,35 +95,50 @@ class ProjectSelectionPresenterTest {
     }
 
     @Test
-    fun selectModel() {
-        val model = Model("not-downloaded")
+    fun selectProjectWithoutVersion() {
+        val project = Project("without-versions")
 
-        presenter.selectModel(model)
+        presenter.selectProject(project)
 
-        assertTrue {
-            model.isDownloading
+        verify(view).showUnavailable(project)
+    }
+
+    @Test
+    fun selectProjectWithVersionNotDownloaded() {
+        val project = Project("not-downloaded").apply {
+            versions = listOf(Version())
         }
 
-        verify(view).update(model)
+        presenter.selectProject(project)
+
+        assertTrue {
+            project.isDownloading()
+        }
+
+        verify(view).update(project)
     }
 
     @Test
-    fun selectModelDownloaded() {
-        val model = Model("downloaded")
-        model.status = Model.STATUS_DOWNLOADED
+    fun selectProjectWithVersionDownloading() {
+        val project = Project("downloading").apply {
+            versions = arrayListOf(Version("downloading", status = Version.STATUS_DOWNLOADING))
+        }
 
-        presenter.selectModel(model)
+        presenter.selectProject(project)
 
-        verify(view).run(model)
+        verify(view).showDownloading(project)
     }
 
     @Test
-    fun selectModelDownloading() {
-        val model = Model("downloading")
-        model.status = Model.STATUS_DOWNLOADING
+    fun selectProjectWithVersionDownloaded() {
+        val project = Project("downloaded").apply {
+            versions = arrayListOf(Version("downloaded", status = Version.STATUS_DOWNLOADED))
+        }
 
-        presenter.selectModel(model)
+        val libraryModel = Model("downloaded")
 
-        verify(view).showDownloading(model)
+        presenter.selectProject(project)
+
+        verify(view).run(libraryModel)
     }
 }

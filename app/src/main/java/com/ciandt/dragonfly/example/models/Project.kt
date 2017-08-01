@@ -1,6 +1,8 @@
 package com.ciandt.dragonfly.example.models
 
 import android.os.Parcel
+import com.ciandt.dragonfly.data.model.Model
+import com.ciandt.dragonfly.example.data.mapper.ProjectToLibraryModelMapper
 import com.ciandt.dragonfly.example.shared.KParcelable
 import com.ciandt.dragonfly.example.shared.parcelableCreator
 
@@ -12,18 +14,33 @@ data class Project(
         var versions: List<Version> = emptyList()
 ) : KParcelable {
 
-    fun hasUpdate(): Boolean {
-        return false
-    }
+    val lastVersion: Version?
+        get() {
+            if (versions.isEmpty()) {
+                return null
+            } else {
+                return versions.last()
+            }
+        }
 
-    var status: Int = 0
+    var status: Int
+        get() {
+            return lastVersion?.status ?: 0
+        }
+        set(value) {
+            lastVersion?.status = value
+        }
 
     fun isDownloading(): Boolean {
-        return status == STATUS_DOWNLOADING
+        return lastVersion?.isDownloading() ?: false
     }
 
     fun isDownloaded(): Boolean {
-        return status == STATUS_DOWNLOADED
+        return lastVersion?.isDownloaded() ?: false
+    }
+
+    fun toLibraryModel(): Model {
+        return ProjectToLibraryModelMapper(this).map()
     }
 
     private constructor(p: Parcel) : this(
@@ -43,10 +60,6 @@ data class Project(
     }
 
     companion object {
-
-        val STATUS_DEFAULT = 0
-        val STATUS_DOWNLOADING = 1
-        val STATUS_DOWNLOADED = 2
 
         @JvmField val CREATOR = parcelableCreator(::Project)
     }

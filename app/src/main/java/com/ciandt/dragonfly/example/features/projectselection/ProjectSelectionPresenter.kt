@@ -1,21 +1,22 @@
 package com.ciandt.dragonfly.example.features.projectselection
 
-import com.ciandt.dragonfly.data.model.Model
+import com.ciandt.dragonfly.example.models.Project
+import com.ciandt.dragonfly.example.models.Version
 import com.ciandt.dragonfly.example.shared.BasePresenter
 
 class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract.Interactor) : BasePresenter<ProjectSelectionContract.View>(), ProjectSelectionContract.Presenter {
 
-    override fun loadModels() {
+    override fun loadProjects() {
 
         view?.showLoading()
 
-        interactor.loadModels(
-                onSuccess = { models ->
+        interactor.loadProjects(
+                onSuccess = { projects ->
 
-                    if (models.isEmpty()) {
+                    if (projects.isEmpty()) {
                         view?.showEmpty()
                     } else {
-                        view?.update(models)
+                        view?.update(projects)
                     }
 
                 },
@@ -25,17 +26,22 @@ class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract
         )
     }
 
-    override fun selectModel(model: Model) {
+    override fun selectProject(project: Project) {
 
-        if (model.isDownloaded) {
-            view?.run(model)
+        if (project.versions.isEmpty()) {
+            view?.showUnavailable(project)
+            return
+        }
 
-        } else if (model.isDownloading) {
-            view?.showDownloading(model)
+        if (project.isDownloaded()) {
+            view?.run(project.toLibraryModel())
+
+        } else if (project.isDownloading()) {
+            view?.showDownloading(project)
 
         } else {
-            model.status = Model.STATUS_DOWNLOADING
-            view?.update(model)
+            project.status = Version.STATUS_DOWNLOADING
+            view?.update(project)
         }
     }
 }

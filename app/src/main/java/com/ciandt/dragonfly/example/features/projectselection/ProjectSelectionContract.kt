@@ -14,27 +14,26 @@ interface ProjectSelectionContract {
 
         fun showError(exception: Exception)
 
-        fun update(models: List<Model>)
+        fun update(projects: List<Project>)
 
-        fun update(model: Model)
+        fun update(project: Project)
 
         fun run(model: Model)
 
-        fun showDownloading(model: Model)
+        fun showDownloading(project: Project)
+
+        fun showUnavailable(project: Project)
     }
 
     interface Presenter : BasePresenterContract<View> {
 
-        fun loadModels()
+        fun loadProjects()
 
-        fun selectModel(model: Model)
+        fun selectProject(project: Project)
     }
 
     interface Interactor {
 
-        fun loadModels(onSuccess: (List<Model>) -> Unit, onFailure: (Exception) -> Unit)
-
         fun loadProjects(onSuccess: (List<Project>) -> Unit, onFailure: (Exception) -> Unit)
-
     }
 }
