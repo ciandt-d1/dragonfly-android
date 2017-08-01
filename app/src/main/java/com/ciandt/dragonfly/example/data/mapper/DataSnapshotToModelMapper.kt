@@ -1,15 +1,15 @@
 package com.ciandt.dragonfly.example.data.mapper
 
-import com.ciandt.dragonfly.example.data.local.entities.Model
-import com.ciandt.dragonfly.example.data.local.entities.Version
+import com.ciandt.dragonfly.example.data.local.entities.ProjectEntity
+import com.ciandt.dragonfly.example.data.local.entities.VersionEntity
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.google.firebase.database.DataSnapshot
 
-class DataSnapshotToModelMapper(val dataSnapshot: DataSnapshot) : Mapper<Model>() {
+class DataSnapshotToProjectEntityMapper(val dataSnapshot: DataSnapshot) : Mapper<ProjectEntity>() {
 
-    override fun map(): Model? {
+    override fun map(): ProjectEntity? {
 
-        listOf("name", "description", "colors", "versions").forEach {
+        listOf("name", "description", "colors", "versions", "createdAt").forEach {
             if (!dataSnapshot.hasChild(it)) {
                 DragonflyLogger.error(LOG_TAG, IllegalArgumentException("child '$it' not found"))
                 return null
@@ -17,10 +17,11 @@ class DataSnapshotToModelMapper(val dataSnapshot: DataSnapshot) : Mapper<Model>(
         }
 
         try {
-            val model = Model(
+            val project = ProjectEntity(
                     id = dataSnapshot.key,
                     name = dataSnapshot.child("name").getValue(String::class.java)!!,
-                    description = dataSnapshot.child("description").getValue(String::class.java)!!
+                    description = dataSnapshot.child("description").getValue(String::class.java)!!,
+                    createdAt = dataSnapshot.child("createdAt").getValue(Long::class.java)!!
             )
 
             val colors = ArrayList<String>()
@@ -28,16 +29,16 @@ class DataSnapshotToModelMapper(val dataSnapshot: DataSnapshot) : Mapper<Model>(
                 colors.add(it.getValue(String::class.java)!!)
             }
 
-            val versions = ArrayList<Version>()
+            val versions = ArrayList<VersionEntity>()
             dataSnapshot.child("versions").children.forEach { child ->
                 mapVersion(dataSnapshot.key, child)?.let { version ->
                     versions.add(version)
                 }
             }
 
-            model.colors = colors.joinToString(",")
-            model.versions = versions
-            return model
+            project.colors = colors.joinToString(",")
+            project.versions = versions
+            return project
 
         } catch (e: Exception) {
             DragonflyLogger.error(LOG_TAG, e.message, e)
@@ -45,10 +46,10 @@ class DataSnapshotToModelMapper(val dataSnapshot: DataSnapshot) : Mapper<Model>(
         }
     }
 
-    private fun mapVersion(idModel: String, dataSnapshot: DataSnapshot): Version? {
+    private fun mapVersion(project: String, dataSnapshot: DataSnapshot): VersionEntity? {
         try {
-            val version = dataSnapshot.getValue(Version::class.java)!!
-            version.idModel = idModel
+            val version = dataSnapshot.getValue(VersionEntity::class.java)!!
+            version.project = project
             return version
 
         } catch (e: Exception) {
@@ -58,6 +59,6 @@ class DataSnapshotToModelMapper(val dataSnapshot: DataSnapshot) : Mapper<Model>(
     }
 
     companion object {
-        private val LOG_TAG = DataSnapshotToModelMapper::class.java.simpleName
+        private val LOG_TAG = DataSnapshotToProjectEntityMapper::class.java.simpleName
     }
 }

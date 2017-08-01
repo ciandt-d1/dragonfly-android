@@ -1,19 +1,19 @@
 package com.ciandt.dragonfly.example.data.remote
 
-import com.ciandt.dragonfly.example.data.local.LocalModelDataSource
-import com.ciandt.dragonfly.example.data.mapper.DataSnapshotToModelMapper
+import com.ciandt.dragonfly.example.data.local.LocalDataSource
+import com.ciandt.dragonfly.example.data.mapper.DataSnapshotToProjectEntityMapper
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 
-class RemoteModelListener(private val localModelDataSource: LocalModelDataSource) : ChildEventListener {
+class RemoteProjectListener(private val localDataSource: LocalDataSource) : ChildEventListener {
 
     override fun onChildAdded(dataSnapshot: DataSnapshot, prevChildKey: String?) {
-        val model = DataSnapshotToModelMapper(dataSnapshot).map()
-        model?.let {
+        val project = DataSnapshotToProjectEntityMapper(dataSnapshot).map()
+        project?.let {
             runOnBackgroundThread {
-                localModelDataSource.save(it)
+                localDataSource.save(it)
             }
         }
     }
@@ -23,10 +23,10 @@ class RemoteModelListener(private val localModelDataSource: LocalModelDataSource
     }
 
     override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-        val model = DataSnapshotToModelMapper(dataSnapshot).map()
-        model?.let {
+        val project = DataSnapshotToProjectEntityMapper(dataSnapshot).map()
+        project?.let {
             runOnBackgroundThread {
-                localModelDataSource.delete(it)
+                localDataSource.delete(it)
             }
         }
     }
@@ -43,6 +43,6 @@ class RemoteModelListener(private val localModelDataSource: LocalModelDataSource
     }
 
     companion object {
-        private val LOG_TAG = RemoteModelListener::class.java.simpleName
+        private val LOG_TAG = RemoteProjectListener::class.java.simpleName
     }
 }

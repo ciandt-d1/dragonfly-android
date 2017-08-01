@@ -1,8 +1,8 @@
 package com.ciandt.dragonfly.example.debug;
 
 import com.ciandt.dragonfly.example.R;
-import com.ciandt.dragonfly.example.data.ModelRepository;
-import com.ciandt.dragonfly.example.data.remote.RemoteModelService;
+import com.ciandt.dragonfly.example.data.ProjectRepository;
+import com.ciandt.dragonfly.example.data.remote.RemoteProjectService;
 import com.ciandt.dragonfly.example.features.login.LoginActivity;
 
 import android.Manifest;
@@ -175,7 +175,7 @@ public class DebugActionsHelper {
             }
         }));
 
-        actions.add(new ButtonAction("Clear model database", new ButtonAction.Listener() {
+        actions.add(new ButtonAction("Clear projects database", new ButtonAction.Listener() {
 
             @Override
             public void onClick() {
@@ -184,28 +184,28 @@ public class DebugActionsHelper {
                     @Override
                     public void run() {
                         Context context = target.getActivityInstance();
-                        ModelRepository repository = new ModelRepository(context);
+                        ProjectRepository repository = new ProjectRepository(context);
                         repository.clear();
                     }
                 }).start();
             }
         }));
 
-        actions.add(new ButtonAction("Start Firebase Model Service", new ButtonAction.Listener() {
+        actions.add(new ButtonAction("Start Firebase Project Service", new ButtonAction.Listener() {
 
             @Override
             public void onClick() {
                 Context context = target.getActivityInstance();
-                context.startService(new Intent(context, RemoteModelService.class));
+                context.startService(new Intent(context, RemoteProjectService.class));
             }
         }));
 
-        actions.add(new ButtonAction("Stop Firebase Model Service", new ButtonAction.Listener() {
+        actions.add(new ButtonAction("Stop Firebase Project Service", new ButtonAction.Listener() {
 
             @Override
             public void onClick() {
                 Context context = target.getActivityInstance();
-                context.stopService(new Intent(context, RemoteModelService.class));
+                context.stopService(new Intent(context, RemoteProjectService.class));
             }
         }));
 
