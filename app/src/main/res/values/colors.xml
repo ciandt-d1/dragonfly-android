@@ -25,6 +25,7 @@
     <color name="project_selection_item_download">#8A000000</color>
     <color name="project_selection_item_downloading">#AAAAAA</color>
     <color name="project_selection_item_downloaded">#3DBBC1</color>
+    <color name="project_selection_item_unavailable">#AAAAAA</color>
     <color name="project_selection_item_download_background">#FFFFFF</color>
 
     <color name="about_title">#212121</color>

@@ -144,11 +144,11 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
     }
 
     override fun showDownloading(project: Project) {
-        Snackbar.make(getRootView(), getString(R.string.project_selection_item_wait), Snackbar.LENGTH_LONG).show()
+        Snackbar.make(getRootView(), getString(R.string.project_selection_item_wait_message), Snackbar.LENGTH_LONG).show()
     }
 
     override fun showUnavailable(project: Project) {
-        Snackbar.make(getRootView(), getString(R.string.project_selection_item_unavailable), Snackbar.LENGTH_LONG).show()
+        Snackbar.make(getRootView(), getString(R.string.project_selection_item_unavailable_message), Snackbar.LENGTH_LONG).show()
     }
 
     companion object {

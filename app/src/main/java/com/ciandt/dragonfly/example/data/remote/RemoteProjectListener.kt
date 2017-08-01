@@ -19,7 +19,12 @@ class RemoteProjectListener(private val localDataSource: LocalDataSource) : Chil
     }
 
     override fun onChildChanged(dataSnapshot: DataSnapshot, prevChildKey: String?) {
-        onChildAdded(dataSnapshot, prevChildKey)
+        val project = DataSnapshotToProjectEntityMapper(dataSnapshot).map()
+        project?.let {
+            runOnBackgroundThread {
+                localDataSource.update(it)
+            }
+        }
     }
 
     override fun onChildRemoved(dataSnapshot: DataSnapshot) {
