@@ -14,6 +14,8 @@ data class Project(
         var versions: List<Version> = emptyList()
 ) : KParcelable {
 
+    fun hasAnyVersion(): Boolean = versions.isNotEmpty()
+
     val lastVersion: Version?
         get() {
             if (versions.isEmpty()) {

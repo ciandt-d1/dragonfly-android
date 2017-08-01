@@ -27,32 +27,40 @@ class ProjectSelectionViewHolder(itemView: View, val itemClick: (Project) -> Uni
             container.setBackgroundColor(color)
         }
 
-        val lastVersion = if (item.versions.isNotEmpty()) item.versions.last() else Version()
+        if (item.hasAnyVersion()) {
 
-        val format = resources.getString(R.string.project_selection_item_info, lastVersion.version, SizeHelper.toReadable(lastVersion.size, format = DecimalFormat("#.##")))
-        info.text = format
+            val format = resources.getString(R.string.project_selection_item_info, item.lastVersion!!.version, SizeHelper.toReadable(item.lastVersion!!.size, format = DecimalFormat("#.##")))
+            info.text = format
 
-        with(download) {
-            when (lastVersion.status) {
-                Version.STATUS_DOWNLOADED -> {
-                    text = resources.getString(R.string.project_selection_item_downloaded)
-                    setTextColor(ContextCompat.getColor(download.context, R.color.project_selection_item_downloaded))
-                    setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_downloaded_model, 0)
+            with(download) {
+                when (item.lastVersion!!.status) {
+                    Version.STATUS_DOWNLOADED -> {
+                        text = resources.getString(R.string.project_selection_item_downloaded)
+                        setTextColor(ContextCompat.getColor(context, R.color.project_selection_item_downloaded))
+                        setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_downloaded_model, 0)
+                    }
+                    Version.STATUS_DOWNLOADING -> {
+                        text = resources.getString(R.string.project_selection_item_downloading)
+                        setTextColor(ContextCompat.getColor(context, R.color.project_selection_item_downloading))
+                        setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                    }
+                    else -> {
+                        text = resources.getString(R.string.project_selection_item_download)
+                        setTextColor(ContextCompat.getColor(context, R.color.project_selection_item_download))
+                        setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_download_model, 0)
+                    }
                 }
-                Version.STATUS_DOWNLOADING -> {
-                    text = resources.getString(R.string.project_selection_item_downloading)
-                    setTextColor(ContextCompat.getColor(download.context, R.color.project_selection_item_downloading))
-                    setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                }
-                else -> {
-                    text = resources.getString(R.string.project_selection_item_download)
-                    setTextColor(ContextCompat.getColor(download.context, R.color.project_selection_item_download))
-                    setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_download_model, 0)
+
+                setOnClickListener {
+                    itemClick(item)
                 }
             }
 
-            setOnClickListener {
-                itemClick(item)
+        } else {
+            download.apply {
+                text = resources.getString(R.string.project_selection_item_unavailable)
+                setTextColor(ContextCompat.getColor(context, R.color.project_selection_item_unavailable))
+                setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             }
         }
 

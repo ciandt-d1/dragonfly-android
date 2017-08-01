@@ -8,8 +8,9 @@
     <string name="project_selection_item_download">Download</string>
     <string name="project_selection_item_downloading">Downloading…</string>
     <string name="project_selection_item_downloaded">Let\'s start</string>
-    <string name="project_selection_item_wait">Downloading in progress. Please wait…</string>
-    <string name="project_selection_item_unavailable">No versions available yet.</string>
+    <string name="project_selection_item_unavailable">Unavailable</string>
+    <string name="project_selection_item_wait_message">Downloading in progress. Please wait…</string>
+    <string name="project_selection_item_unavailable_message">No versions available yet.</string>
 
     <string name="project_selection_empty_message">Oops…\nNo models found!</string>
     <string name="project_selection_error_message">Uh-oh, an error occurred!</string>

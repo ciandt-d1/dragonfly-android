@@ -39,6 +39,11 @@ class LocalDataSource(context: Context) {
         projectDao.delete(project)
     }
 
+    fun update(project: ProjectEntity) {
+        versionDao.delete(project.id)
+        save(project)
+    }
+
     fun getProjects(): List<ProjectEntity> {
         val projects = arrayListOf<ProjectEntity>()
 
