@@ -30,7 +30,7 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project_selection)
 
-        startService(RemoteProjectService.createIntent(this))
+        RemoteProjectService.start(this)
 
         presenter = ProjectSelectionPresenter(ProjectSelectionInteractor(this))
         presenter.attachView(this)
@@ -66,7 +66,7 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
     }
 
     override fun onDestroy() {
-        stopService(RemoteProjectService.createIntent(this))
+        RemoteProjectService.stop(this)
         super.onDestroy()
     }
 
