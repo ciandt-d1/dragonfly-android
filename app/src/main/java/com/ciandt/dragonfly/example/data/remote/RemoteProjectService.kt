@@ -35,8 +35,15 @@ class RemoteProjectService : Service() {
     }
 
     companion object {
-        fun createIntent(context: Context): Intent {
-            return Intent(context, RemoteProjectService::class.java)
+        
+        fun start(context: Context) {
+            val intent = Intent(context, RemoteProjectService::class.java)
+            context.startService(intent)
+        }
+
+        fun stop(context: Context) {
+            val intent = Intent(context, RemoteProjectService::class.java)
+            context.stopService(intent)
         }
     }
 }
