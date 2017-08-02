@@ -1,11 +1,14 @@
 package com.ciandt.dragonfly.example.debug;
 
 import com.ciandt.dragonfly.example.R;
+import com.ciandt.dragonfly.example.data.ProjectRepository;
+import com.ciandt.dragonfly.example.data.remote.RemoteProjectService;
 import com.ciandt.dragonfly.example.features.login.LoginActivity;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -169,6 +172,40 @@ public class DebugActionsHelper {
                 });
 
                 context.startActivity(LoginActivity.Companion.create(context));
+            }
+        }));
+
+        actions.add(new ButtonAction("Clear projects database", new ButtonAction.Listener() {
+
+            @Override
+            public void onClick() {
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Context context = target.getActivityInstance();
+                        ProjectRepository repository = new ProjectRepository(context);
+                        repository.clear();
+                    }
+                }).start();
+            }
+        }));
+
+        actions.add(new ButtonAction("Start Firebase Project Service", new ButtonAction.Listener() {
+
+            @Override
+            public void onClick() {
+                Context context = target.getActivityInstance();
+                context.startService(new Intent(context, RemoteProjectService.class));
+            }
+        }));
+
+        actions.add(new ButtonAction("Stop Firebase Project Service", new ButtonAction.Listener() {
+
+            @Override
+            public void onClick() {
+                Context context = target.getActivityInstance();
+                context.stopService(new Intent(context, RemoteProjectService.class));
             }
         }));
 

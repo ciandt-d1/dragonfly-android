@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import com.ciandt.dragonfly.example.R
-import com.ciandt.dragonfly.example.features.modelselection.ModelSelectionActivity
+import com.ciandt.dragonfly.example.helpers.IntentHelper
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.ciandt.dragonfly.example.infrastructure.extensions.isNetworkAvailable
 import com.ciandt.dragonfly.example.infrastructure.extensions.makeGone
@@ -91,7 +91,7 @@ class LoginActivity : BaseActivity(), LoginContract.View, GoogleApiClient.OnConn
     }
 
     override fun goToMain() {
-        startActivity(ModelSelectionActivity.create(this))
+        startActivity(IntentHelper.openProjectSelection(this))
         finish()
     }
 

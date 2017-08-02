@@ -5,11 +5,11 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card"
-    android:layout_width="@dimen/model_selection_item_width"
+    android:layout_width="@dimen/project_selection_item_width"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/model_selection_item_margin"
+    android:layout_margin="@dimen/project_selection_item_margin"
     android:foreground="?attr/selectableItemBackground"
-    card_view:cardCornerRadius="@dimen/model_selection_item_corner_radius">
+    card_view:cardCornerRadius="@dimen/project_selection_item_corner_radius">
 
     <RelativeLayout
         android:id="@+id/container"
@@ -29,9 +29,9 @@
 
         <ImageView
             android:id="@+id/icon"
-            android:layout_width="@dimen/model_selection_item_icon_size"
-            android:layout_height="@dimen/model_selection_item_icon_size"
-            android:layout_marginTop="@dimen/model_selection_item_icon_margin_top"
+            android:layout_width="@dimen/project_selection_item_icon_size"
+            android:layout_height="@dimen/project_selection_item_icon_size"
+            android:layout_marginTop="@dimen/project_selection_item_icon_margin_top"
             android:layout_centerHorizontal="true"
             android:contentDescription="@null"
             android:src="@drawable/ic_hexagon"
@@ -41,9 +41,9 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/model_selection_item_name_margin_top"
+            android:layout_marginTop="@dimen/project_selection_item_name_margin_top"
             android:layout_below="@+id/icon"
-            style="@style/ModelSelection.Item.Name"
+            style="@style/ProjectSelection.Item.Name"
             tools:text="Model"
         />
 
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/name"
-            style="@style/ModelSelection.Item.Info"
+            style="@style/ProjectSelection.Item.Info"
             tools:text="Ver. 0001 - 30 MB"
         />
 
@@ -60,19 +60,19 @@
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/model_selection_item_description_margin_top"
+            android:layout_marginTop="@dimen/project_selection_item_description_margin_top"
             android:layout_below="@+id/info"
-            style="@style/ModelSelection.Item.Description"
+            style="@style/ProjectSelection.Item.Description"
             tools:text="More than +20000 types automotive pieces, brands and model."
         />
 
         <Button
             android:id="@+id/download"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/model_selection_item_download_height"
+            android:layout_height="@dimen/project_selection_item_download_height"
             android:layout_alignParentBottom="true"
-            style="@style/ModelSelection.Item.Download"
-            android:text="@string/model_selection_item_download"
+            style="@style/ProjectSelection.Item.Download"
+            android:text="@string/project_selection_item_download"
             android:drawableEnd="@drawable/ic_download_model"
         />
 

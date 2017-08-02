@@ -4,42 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".features.modelselection.ModelSelectionActivity">
+    tools:context=".features.projectselection.ProjectSelectionActivity">
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/model_selection_title_margin_top"
-        android:layout_marginLeft="@dimen/model_selection_title_horizontal_margin"
-        android:layout_marginRight="@dimen/model_selection_title_horizontal_margin"
-        android:layout_marginStart="@dimen/model_selection_title_horizontal_margin"
-        android:layout_marginEnd="@dimen/model_selection_title_horizontal_margin"
-        style="@style/ModelSelection.Title"
-        android:text="@string/model_selection_title"
+        android:layout_marginTop="@dimen/project_selection_title_margin_top"
+        android:layout_marginLeft="@dimen/project_selection_title_horizontal_margin"
+        android:layout_marginRight="@dimen/project_selection_title_horizontal_margin"
+        android:layout_marginStart="@dimen/project_selection_title_horizontal_margin"
+        android:layout_marginEnd="@dimen/project_selection_title_horizontal_margin"
+        style="@style/ProjectSelection.Title"
+        android:text="@string/project_selection_title"
     />
 
     <TextView
         android:id="@+id/subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/model_selection_subtitle_margin_top"
-        android:layout_marginLeft="@dimen/model_selection_subtitle_horizontal_margin"
-        android:layout_marginRight="@dimen/model_selection_subtitle_horizontal_margin"
-        android:layout_marginStart="@dimen/model_selection_subtitle_horizontal_margin"
-        android:layout_marginEnd="@dimen/model_selection_subtitle_horizontal_margin"
+        android:layout_marginTop="@dimen/project_selection_subtitle_margin_top"
+        android:layout_marginLeft="@dimen/project_selection_subtitle_horizontal_margin"
+        android:layout_marginRight="@dimen/project_selection_subtitle_horizontal_margin"
+        android:layout_marginStart="@dimen/project_selection_subtitle_horizontal_margin"
+        android:layout_marginEnd="@dimen/project_selection_subtitle_horizontal_margin"
         android:layout_below="@+id/title"
-        style="@style/ModelSelection.Subtitle"
-        android:text="@string/model_selection_subtitle"
+        style="@style/ProjectSelection.Subtitle"
+        android:text="@string/project_selection_subtitle"
     />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/model_selection_list_height"
-        android:layout_marginTop="@dimen/model_selection_list_margin_top"
-        android:paddingLeft="@dimen/model_selection_list_horizontal_padding"
-        android:paddingRight="@dimen/model_selection_list_horizontal_padding"
+        android:layout_height="@dimen/project_selection_list_height"
+        android:layout_marginTop="@dimen/project_selection_list_margin_top"
+        android:paddingLeft="@dimen/project_selection_list_horizontal_padding"
+        android:paddingRight="@dimen/project_selection_list_horizontal_padding"
         android:layout_below="@+id/subtitle"
         android:clipToPadding="false"
         android:overScrollMode="never"
@@ -48,7 +48,7 @@
     <LinearLayout
         android:id="@+id/messageContainer"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/model_selection_list_height"
+        android:layout_height="@dimen/project_selection_list_height"
         android:layout_alignTop="@id/recyclerView"
         android:layout_alignBottom="@id/recyclerView"
         android:gravity="center"
@@ -67,19 +67,19 @@
             android:id="@+id/messageText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/model_selection_message_text_margin"
-            style="@style/ModelSelection.Message"
-            android:text="@string/model_selection_empty_message"/>
+            android:layout_margin="@dimen/project_selection_message_text_margin"
+            style="@style/ProjectSelection.Message"
+            android:text="@string/project_selection_empty_message"/>
 
         <Button
             android:id="@+id/messageRetry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/model_selection_message_button_margin"
-            android:layout_marginEnd="@dimen/model_selection_message_button_margin"
+            android:layout_marginStart="@dimen/project_selection_message_button_margin"
+            android:layout_marginEnd="@dimen/project_selection_message_button_margin"
             android:background="@android:color/transparent"
-            android:text="@string/model_selection_retry"
-            android:textColor="@color/model_selection_about"/>
+            android:text="@string/project_selection_retry"
+            android:textColor="@color/project_selection_about"/>
 
     </LinearLayout>
 
@@ -97,18 +97,18 @@
         tools:ignore="UnusedAttribute"/>
 
     <View android:layout_width="match_parent"
-          android:layout_height="@dimen/model_selection_line_height"
-          android:layout_marginLeft="@dimen/model_selection_line_horizontal_margin"
-          android:layout_marginRight="@dimen/model_selection_line_horizontal_margin"
+          android:layout_height="@dimen/project_selection_line_height"
+          android:layout_marginLeft="@dimen/project_selection_line_horizontal_margin"
+          android:layout_marginRight="@dimen/project_selection_line_horizontal_margin"
           android:layout_above="@+id/about"
-          android:background="@color/model_selection_line"/>
+          android:background="@color/project_selection_line"/>
 
     <Button
         android:id="@+id/about"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/model_selection_about_height"
+        android:layout_height="@dimen/project_selection_about_height"
         android:layout_alignParentBottom="true"
-        style="@style/ModelSelection.About"
+        style="@style/ProjectSelection.About"
         android:drawableStart="@drawable/ciandt_logo"
     />
 
