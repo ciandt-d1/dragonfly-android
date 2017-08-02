@@ -3,7 +3,6 @@ package com.ciandt.dragonfly.example.features.projectselection
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
@@ -14,6 +13,7 @@ import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.data.remote.RemoteProjectService
 import com.ciandt.dragonfly.example.features.about.AboutActivity
 import com.ciandt.dragonfly.example.features.realtime.RealTimeActivity
+import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.shared.BaseActivity
 import kotlinx.android.synthetic.main.activity_project_selection.*
@@ -144,11 +144,11 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
     }
 
     override fun showDownloading(project: Project) {
-        Snackbar.make(getRootView(), getString(R.string.project_selection_item_wait_message), Snackbar.LENGTH_LONG).show()
+        showSnackbar(R.string.project_selection_item_wait_message)
     }
 
     override fun showUnavailable(project: Project) {
-        Snackbar.make(getRootView(), getString(R.string.project_selection_item_unavailable_message), Snackbar.LENGTH_LONG).show()
+        showSnackbar(R.string.project_selection_item_unavailable_message)
     }
 
     companion object {
