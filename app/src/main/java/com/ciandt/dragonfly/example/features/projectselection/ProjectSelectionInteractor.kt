@@ -3,12 +3,13 @@ package com.ciandt.dragonfly.example.features.projectselection
 import android.content.Context
 import android.os.AsyncTask
 import com.ciandt.dragonfly.example.data.ProjectRepository
+import com.ciandt.dragonfly.example.infrastructure.extensions.executeParallel
 import com.ciandt.dragonfly.example.models.Project
 
 class ProjectSelectionInteractor(val context: Context) : ProjectSelectionContract.Interactor {
 
     override fun loadProjects(onSuccess: (List<Project>) -> Unit, onFailure: (Exception) -> Unit) {
-        LoadProjectsTask(context, onSuccess, onFailure).execute()
+        LoadProjectsTask(context, onSuccess, onFailure).executeParallel()
     }
 
     private data class LoadProjectsResult(val projects: List<Project>, val exception: Exception?) {
