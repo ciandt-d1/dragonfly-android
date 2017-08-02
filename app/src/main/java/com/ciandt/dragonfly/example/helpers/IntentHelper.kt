@@ -6,6 +6,7 @@ import android.net.Uri
 import android.provider.Settings
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.features.login.LoginActivity
+import com.ciandt.dragonfly.example.features.projectselection.ProjectSelectionActivity
 
 object IntentHelper {
 
@@ -35,5 +36,9 @@ object IntentHelper {
 
     fun openLogin(context: Context): Intent {
         return LoginActivity.create(context)
+    }
+
+    fun openProjectSelection(context: Context): Intent {
+        return ProjectSelectionActivity.create(context)
     }
 }

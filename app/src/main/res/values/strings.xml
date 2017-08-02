@@ -1,18 +1,20 @@
 <resources>
-    <string name="model_selection_title">Dragonfly Lens</string>
-    <string name="model_selection_subtitle">Select a model and check what you can identify around
+    <string name="project_selection_title">Dragonfly Lens</string>
+    <string name="project_selection_subtitle">Select a model and check what you can identify around
         you
     </string>
-    <string name="model_selection_about">About us</string>
-    <string name="model_selection_item_info">Ver. %1$04d - %2$s</string>
-    <string name="model_selection_item_download">Download</string>
-    <string name="model_selection_item_downloading">Downloading…</string>
-    <string name="model_selection_item_downloaded">Let\'s start</string>
-    <string name="model_selection_item_wait">Downloading in progress. Please wait…</string>
+    <string name="project_selection_about">About us</string>
+    <string name="project_selection_item_info">Ver. %1$04d - %2$s</string>
+    <string name="project_selection_item_download">Download</string>
+    <string name="project_selection_item_downloading">Downloading…</string>
+    <string name="project_selection_item_downloaded">Let\'s start</string>
+    <string name="project_selection_item_unavailable">Unavailable</string>
+    <string name="project_selection_item_wait_message">Downloading in progress. Please wait…</string>
+    <string name="project_selection_item_unavailable_message">No versions available yet.</string>
 
-    <string name="model_selection_empty_message">Oops…\nNo models found!</string>
-    <string name="model_selection_error_message">Uh-oh, an error occurred!</string>
-    <string name="model_selection_retry">Try again</string>
+    <string name="project_selection_empty_message">Oops…\nNo models found!</string>
+    <string name="project_selection_error_message">Uh-oh, an error occurred!</string>
+    <string name="project_selection_retry">Try again</string>
 
     <string name="about_title">Thoughtfully Fast. Purposely Lean.</string>
     <string name="about_description">CI&amp;T is a digital technology agency focused on creating

@@ -25,7 +25,7 @@ class ChipAdapter(var context: Context, var list: ArrayList<out Chip>, val onCli
 
         val view = LayoutInflater.from(context).inflate(layout, parent, false)
 
-        view.findViewById(R.id.chipButton) as Button? ?: throw IllegalArgumentException("Layout for item should contain a Button with id = button")
+        view.findViewById<Button?>(R.id.chipButton) ?: throw IllegalArgumentException("Layout for item should contain a Button with id = R.id.chipButton")
 
         return ChipViewHolder(view, selectable) { chip, activated ->
 
