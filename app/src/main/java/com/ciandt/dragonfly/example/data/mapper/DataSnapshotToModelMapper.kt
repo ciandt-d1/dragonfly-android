@@ -17,13 +17,6 @@ class DataSnapshotToProjectEntityMapper(val dataSnapshot: DataSnapshot) : Mapper
         }
 
         try {
-            val project = ProjectEntity(
-                    id = dataSnapshot.key,
-                    name = dataSnapshot.child("name").getValue(String::class.java)!!,
-                    description = dataSnapshot.child("description").getValue(String::class.java)!!,
-                    createdAt = dataSnapshot.child("createdAt").getValue(Long::class.java)!!
-            )
-
             val colors = ArrayList<String>()
             dataSnapshot.child("colors").children.forEach {
                 colors.add(it.getValue(String::class.java)!!)
@@ -36,9 +29,14 @@ class DataSnapshotToProjectEntityMapper(val dataSnapshot: DataSnapshot) : Mapper
                 }
             }
 
-            project.colors = colors.joinToString(",")
-            project.versions = versions
-            return project
+            return ProjectEntity(
+                    id = dataSnapshot.key,
+                    name = dataSnapshot.child("name").getValue(String::class.java)!!,
+                    description = dataSnapshot.child("description").getValue(String::class.java)!!,
+                    createdAt = dataSnapshot.child("createdAt").getValue(Long::class.java)!!,
+                    colors = colors.joinToString(","),
+                    versions = versions
+            )
 
         } catch (e: Exception) {
             DragonflyLogger.error(LOG_TAG, e.message, e)

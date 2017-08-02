@@ -6,27 +6,23 @@ import com.ciandt.dragonfly.example.models.Version
 
 class ProjectToLibraryModelMapper(val project: Project) : Mapper<Model>() {
 
-    override fun map(): Model = with(project) {
+    override fun map(): Model {
 
-        val lastVersion = lastVersion ?: Version()
+        val lastVersion = project.lastVersion ?: Version()
 
-        val model = Model(id)
-
-        model.name = name
-        model.description = description
-        model.colors = colors.toTypedArray()
-        model.version = lastVersion.version
-        model.size = lastVersion.size
-
-        model.modelPath = lastVersion.modelPath
-        model.labelsPath = lastVersion.labelPath
-
-        model.inputSize = lastVersion.inputSize
-        model.imageMean = lastVersion.imageMean
-        model.imageStd = lastVersion.imageStd
-        model.inputName = lastVersion.inputName
-        model.outputName = lastVersion.outputName
-
-        return model
+        return Model(project.id).apply {
+            name = project.name
+            description = project.description
+            colors = project.colors.toTypedArray()
+            version = lastVersion.version
+            size = lastVersion.size
+            modelPath = lastVersion.modelPath
+            labelsPath = lastVersion.labelPath
+            inputSize = lastVersion.inputSize
+            imageMean = lastVersion.imageMean
+            imageStd = lastVersion.imageStd
+            inputName = lastVersion.inputName
+            outputName = lastVersion.outputName
+        }
     }
 }

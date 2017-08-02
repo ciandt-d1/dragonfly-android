@@ -8,13 +8,6 @@ class ProjectEntityToProjectMapper(val entity: ProjectEntity) : Mapper<Project>(
 
     override fun map(): Project? = with(entity) {
 
-        val project = Project(
-                id,
-                name,
-                description,
-                colors.split(",")
-        )
-
         val versionsMapped = arrayListOf<Version>()
 
         versions.forEach {
@@ -23,8 +16,12 @@ class ProjectEntityToProjectMapper(val entity: ProjectEntity) : Mapper<Project>(
             }
         }
 
-        project.versions = versionsMapped
-
-        return project
+        return Project(
+                id,
+                name,
+                description,
+                colors.split(","),
+                versionsMapped
+        )
     }
 }
