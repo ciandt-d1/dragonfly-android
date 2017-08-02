@@ -20,7 +20,9 @@ import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.config.PermissionsMapping
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
+import com.ciandt.dragonfly.example.infrastructure.extensions.getRootView
 import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
+import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
 import com.ciandt.dragonfly.example.shared.BaseActivity
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.tensorflow.Classifier
@@ -198,7 +200,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     override fun showNoClassifications() {
-        Snackbar.make(getRootView(), R.string.feedback_no_classifications_found, Snackbar.LENGTH_LONG).show()
+        showSnackbar(R.string.feedback_no_classifications_found)
     }
 
     override fun showClassifications(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>) {
