@@ -22,8 +22,7 @@ class LocalDataSource(context: Context) {
         database.getVersionDao()
     }
 
-    fun save(project: ProjectEntity) = database.runInTransaction {
-
+    private fun insert(project: ProjectEntity) {
         projectDao.insert(project)
 
         project.versions.forEach { version ->
@@ -34,14 +33,18 @@ class LocalDataSource(context: Context) {
         }
     }
 
+    fun save(project: ProjectEntity) = database.runInTransaction {
+        insert(project)
+    }
+
     fun delete(project: ProjectEntity) = database.runInTransaction {
         versionDao.delete(project.id)
         projectDao.delete(project)
     }
 
-    fun update(project: ProjectEntity) {
+    fun update(project: ProjectEntity) = database.runInTransaction {
         versionDao.delete(project.id)
-        save(project)
+        insert(project)
     }
 
     fun getProjects(): List<ProjectEntity> {
