@@ -59,4 +59,12 @@
 
     <string name="feedback_save_image_success">Image saved successfully.</string>
     <string name="feedback_save_image_error">Something was wrong. Please try again.</string>
+
+    <string name="login_with_google">LOGIN WITH GOOGLE</string>
+    <string name="login_title">Dragonfly Lens</string>
+    <string name="login_subtitle">Send feedback and compare the results with other services.
+    </string>
+    <string name="login_terms_and_conditions">TERMS AND CONDITIONS</string>
+
+    <string name="login_error">There was an error when trying to connect. Please try again.</string>
 </resources>

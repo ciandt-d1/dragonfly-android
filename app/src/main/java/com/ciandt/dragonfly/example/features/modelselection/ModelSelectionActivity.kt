@@ -1,5 +1,7 @@
 package com.ciandt.dragonfly.example.features.modelselection
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
@@ -134,5 +136,11 @@ class ModelSelectionActivity : BaseActivity(), ModelSelectionContract.View {
 
     override fun showDownloading(model: Model) {
         Snackbar.make(getRootView(), getString(R.string.model_selection_item_wait), Snackbar.LENGTH_LONG).show()
+    }
+
+    companion object {
+        fun create(context: Context): Intent {
+            return Intent(context, ModelSelectionActivity::class.java)
+        }
     }
 }
