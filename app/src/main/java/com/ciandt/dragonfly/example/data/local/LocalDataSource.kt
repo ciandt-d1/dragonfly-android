@@ -2,14 +2,14 @@ package com.ciandt.dragonfly.example.data.local
 
 import android.arch.persistence.room.Room
 import android.content.Context
-import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.data.local.entities.ProjectEntity
+import com.ciandt.dragonfly.example.config.Database as DatabaseConfig
 
 class LocalDataSource(context: Context) {
 
     private val database by lazy {
         Room
-                .databaseBuilder(context.applicationContext, AppDatabase::class.java, BuildConfig.APPLICATION_ID)
+                .databaseBuilder(context.applicationContext, AppDatabase::class.java, DatabaseConfig.NAME)
                 .fallbackToDestructiveMigration()
                 .build()
     }
