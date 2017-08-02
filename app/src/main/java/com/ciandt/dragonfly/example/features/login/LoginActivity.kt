@@ -11,6 +11,7 @@ import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.ciandt.dragonfly.example.infrastructure.extensions.isNetworkAvailable
 import com.ciandt.dragonfly.example.infrastructure.extensions.makeGone
 import com.ciandt.dragonfly.example.infrastructure.extensions.makeVisible
+import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
 import com.ciandt.dragonfly.example.shared.BaseActivity
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -106,7 +107,7 @@ class LoginActivity : BaseActivity(), LoginContract.View, GoogleApiClient.OnConn
     override fun showError(exception: Exception) {
         DragonflyLogger.warn(LOG_TAG, exception.message ?: "")
         progress.makeGone()
-        Snackbar.make(getRootView(), getString(R.string.login_error), Snackbar.LENGTH_LONG).show()
+        showSnackbar(R.string.login_error)
     }
 
     companion object {
