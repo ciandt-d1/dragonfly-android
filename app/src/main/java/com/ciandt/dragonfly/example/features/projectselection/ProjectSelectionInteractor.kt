@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.AsyncTask
 import com.ciandt.dragonfly.example.data.ProjectRepository
+import com.ciandt.dragonfly.example.features.download.DownloadHelper
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.models.Version
 import com.google.android.gms.tasks.Task
@@ -15,10 +16,14 @@ class ProjectSelectionInteractor(val context: Context, val firebaseStorage: Fire
         LoadProjectsTask(context, onSuccess, onFailure).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
-    override fun downloadVersion(version: Version, onFailure: (Exception) -> Unit) {
-        val storageRef = firebaseStorage.getReferenceFromUrl(version.downloadUrl)
+    override fun downloadVersion(title: String, version: Version, onFailure: (Exception) -> Unit) {
+        val storageRef = firebaseStorage.reference.child(version.downloadUrl)
         storageRef.downloadUrl.addOnCompleteListener { task: Task<Uri> ->
-            onFailure(task.exception!!)
+            if (task.isSuccessful) {
+                DownloadHelper.startDownload(context, title, version, task.result)
+            } else {
+                onFailure(task.exception!!)
+            }
         }
     }
 

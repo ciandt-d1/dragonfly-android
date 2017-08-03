@@ -39,6 +39,6 @@ interface ProjectSelectionContract {
 
         fun loadProjects(onSuccess: (List<Project>) -> Unit, onFailure: (Exception) -> Unit)
 
-        fun downloadVersion(version: Version, onFailure: (Exception) -> Unit)
+        fun downloadVersion(title: String, version: Version, onFailure: (Exception) -> Unit)
     }
 }

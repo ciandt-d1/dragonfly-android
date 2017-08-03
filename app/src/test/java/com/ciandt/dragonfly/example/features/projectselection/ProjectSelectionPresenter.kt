@@ -119,7 +119,7 @@ class ProjectSelectionPresenterTest {
 
         verify(view).update(project)
 
-        verify(interactor).downloadVersion(eq(version), any())
+        verify(interactor).downloadVersion(any(), eq(version), any())
     }
 
     @Test
@@ -139,7 +139,7 @@ class ProjectSelectionPresenterTest {
         val exception = RuntimeException("test")
 
         argumentCaptor<(Exception) -> Unit>().apply {
-            verify(interactor).downloadVersion(eq(version), capture())
+            verify(interactor).downloadVersion(any(), eq(version), capture())
             firstValue.invoke(exception)
         }
 

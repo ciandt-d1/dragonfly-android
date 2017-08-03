@@ -9,7 +9,7 @@ import android.support.v4.content.ContextCompat
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.features.download.DownloadedFile
 
-object NotificationHelper {
+object DownloadNotificationHelper {
 
     fun showProcessing(context: Context, file: DownloadedFile) {
 

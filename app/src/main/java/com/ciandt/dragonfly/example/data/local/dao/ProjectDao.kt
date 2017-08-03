@@ -17,6 +17,9 @@ interface ProjectDao {
     @Delete
     fun delete(project: ProjectEntity)
 
+    @Query("SELECT * FROM projects WHERE id = :arg0")
+    fun getProject(id: String): ProjectVersions?
+
     @Query("SELECT * FROM projects ORDER BY createdAt ASC")
     fun getProjects(): List<ProjectVersions>
 
