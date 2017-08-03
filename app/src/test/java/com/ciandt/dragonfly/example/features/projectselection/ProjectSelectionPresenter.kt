@@ -4,8 +4,10 @@ import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.models.Version
 import com.nhaarman.mockito_kotlin.argumentCaptor
+import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.verify
 import org.amshove.kluent.any
+import org.amshove.kluent.shouldBeFalse
 import org.amshove.kluent.shouldBeTrue
 import org.junit.After
 import org.junit.Before
@@ -105,8 +107,10 @@ class ProjectSelectionPresenterTest {
 
     @Test
     fun selectProjectWithVersionNotDownloaded() {
+        val version = Version("not-downloaded")
+
         val project = Project("not-downloaded").apply {
-            versions = arrayListOf(Version("not-downloaded"))
+            versions = arrayListOf(version)
         }
 
         presenter.selectProject(project)
@@ -114,6 +118,34 @@ class ProjectSelectionPresenterTest {
         project.hasDownloadingVersion().shouldBeTrue()
 
         verify(view).update(project)
+
+        verify(interactor).downloadVersion(eq(version), any())
+    }
+
+    @Test
+    fun handleModelNotDownloadedWithError() {
+        val version = Version("not-downloaded")
+
+        val project = Project("not-downloaded").apply {
+            versions = arrayListOf(version)
+        }
+
+        presenter.selectProject(project)
+
+        project.hasDownloadingVersion().shouldBeTrue()
+
+        verify(view).update(project)
+
+        val exception = RuntimeException("test")
+
+        argumentCaptor<(Exception) -> Unit>().apply {
+            verify(interactor).downloadVersion(eq(version), capture())
+            firstValue.invoke(exception)
+        }
+
+        project.hasDownloadingVersion().shouldBeFalse()
+
+        verify(view).showDownloadError(exception)
     }
 
     @Test

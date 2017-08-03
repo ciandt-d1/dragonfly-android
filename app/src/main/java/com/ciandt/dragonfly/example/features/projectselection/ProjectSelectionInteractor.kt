@@ -1,14 +1,25 @@
 package com.ciandt.dragonfly.example.features.projectselection
 
 import android.content.Context
+import android.net.Uri
 import android.os.AsyncTask
 import com.ciandt.dragonfly.example.data.ProjectRepository
 import com.ciandt.dragonfly.example.models.Project
+import com.ciandt.dragonfly.example.models.Version
+import com.google.android.gms.tasks.Task
+import com.google.firebase.storage.FirebaseStorage
 
-class ProjectSelectionInteractor(val context: Context) : ProjectSelectionContract.Interactor {
+class ProjectSelectionInteractor(val context: Context, val firebaseStorage: FirebaseStorage) : ProjectSelectionContract.Interactor {
 
     override fun loadProjects(onSuccess: (List<Project>) -> Unit, onFailure: (Exception) -> Unit) {
         LoadProjectsTask(context, onSuccess, onFailure).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+    }
+
+    override fun downloadVersion(version: Version, onFailure: (Exception) -> Unit) {
+        val storageRef = firebaseStorage.getReferenceFromUrl(version.downloadUrl)
+        storageRef.downloadUrl.addOnCompleteListener { task: Task<Uri> ->
+            onFailure(task.exception!!)
+        }
     }
 
     private data class LoadProjectsResult(val projects: List<Project>, val exception: Exception?) {

@@ -16,6 +16,7 @@ import com.ciandt.dragonfly.example.features.realtime.RealTimeActivity
 import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.shared.BaseActivity
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_project_selection.*
 
 class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
@@ -32,7 +33,7 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
 
         RemoteProjectService.start(this)
 
-        presenter = ProjectSelectionPresenter(ProjectSelectionInteractor(this))
+        presenter = ProjectSelectionPresenter(ProjectSelectionInteractor(this, FirebaseStorage.getInstance()))
         presenter.attachView(this)
 
         setupList()
@@ -145,6 +146,10 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
 
     override fun showDownloading(project: Project) {
         showSnackbar(R.string.project_selection_item_wait_message)
+    }
+
+    override fun showDownloadError(exception: Exception) {
+        showSnackbar(R.string.download_failed)
     }
 
     override fun showUnavailable(project: Project) {
