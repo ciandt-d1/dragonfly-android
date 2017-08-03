@@ -6,6 +6,7 @@ import com.ciandt.dragonfly.example.models.Version
 import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.verify
 import org.amshove.kluent.any
+import org.amshove.kluent.shouldBeTrue
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -13,7 +14,6 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import kotlin.test.assertTrue
 
 @RunWith(JUnit4::class)
 class ProjectSelectionPresenterTest {
@@ -106,14 +106,12 @@ class ProjectSelectionPresenterTest {
     @Test
     fun selectProjectWithVersionNotDownloaded() {
         val project = Project("not-downloaded").apply {
-            versions = listOf(Version())
+            versions = arrayListOf(Version("not-downloaded"))
         }
 
         presenter.selectProject(project)
 
-        assertTrue {
-            project.isDownloading()
-        }
+        project.hasDownloadingVersion().shouldBeTrue()
 
         verify(view).update(project)
     }
@@ -135,7 +133,7 @@ class ProjectSelectionPresenterTest {
             versions = arrayListOf(Version("downloaded", status = Version.STATUS_DOWNLOADED))
         }
 
-        val libraryModel = Model("downloaded")
+        val libraryModel = Model("downloaded/0")
 
         presenter.selectProject(project)
 

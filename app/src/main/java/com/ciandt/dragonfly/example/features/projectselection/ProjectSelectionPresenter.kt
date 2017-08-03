@@ -1,5 +1,6 @@
 package com.ciandt.dragonfly.example.features.projectselection
 
+import com.ciandt.dragonfly.example.infrastructure.extensions.replace
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.models.Version
 import com.ciandt.dragonfly.example.shared.BasePresenter
@@ -33,14 +34,17 @@ class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract
             return
         }
 
-        if (project.isDownloaded()) {
-            view?.run(project.toLibraryModel())
+        if (project.hasDownloadedVersion()) {
+            view?.run(project.getLastDownloadedVersion()!!.toLibraryModel())
 
-        } else if (project.isDownloading()) {
+        } else if (project.hasDownloadingVersion()) {
             view?.showDownloading(project)
 
         } else {
-            project.status = Version.STATUS_DOWNLOADING
+            val lastVersion = project.getLastVersion()!!
+            lastVersion.status = Version.STATUS_DOWNLOADING
+
+            project.versions.replace(lastVersion)
             view?.update(project)
         }
     }

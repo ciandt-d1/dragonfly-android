@@ -18,7 +18,7 @@ class VersionEntityToVersionMapper(val entity: VersionEntity) : Mapper<Version>(
                 downloadUrl,
                 createdAt,
                 modelPath,
-                labelPath,
+                labelsPath,
                 status
         )
     }

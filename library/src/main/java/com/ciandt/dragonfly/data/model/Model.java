@@ -2,44 +2,26 @@ package com.ciandt.dragonfly.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.IntDef;
 
-import java.lang.annotation.Retention;
-import java.util.Arrays;
-
-import static java.lang.annotation.RetentionPolicy.SOURCE;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Model implements Parcelable {
 
-    @Retention(SOURCE)
-    @IntDef({STATUS_DEFAULT, STATUS_DOWNLOADING, STATUS_DOWNLOADED})
-    public @interface Status {
+    private String id = "";
+    private int version = 0;
 
-    }
+    private String modelPath = "";
+    private String labelsPath = "";
 
-    public static final int STATUS_DEFAULT = 0;
-    public static final int STATUS_DOWNLOADING = 1;
-    public static final int STATUS_DOWNLOADED = 2;
+    private int inputSize = 0;
+    private int imageMean = 0;
+    private float imageStd = 0f;
+    private String inputName = "";
+    private String outputName = "";
 
-    @Status
-    private int status = STATUS_DEFAULT;
+    private Map<String, Parcelable> others = new HashMap<>();
 
-    private final String id;
-    private String name;
-    private int version;
-    private long size;
-    private String description;
-    private String[] colors;
-
-
-    private String modelPath;
-    private String labelsPath;
-
-    private int inputSize;
-    private int imageMean;
-    private float imageStd;
-    private String inputName;
-    private String outputName;
 
     public Model(String id) {
         this.id = id;
@@ -47,15 +29,6 @@ public class Model implements Parcelable {
 
     public String getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Model setName(String name) {
-        this.name = name;
-        return this;
     }
 
     public int getVersion() {
@@ -66,51 +39,6 @@ public class Model implements Parcelable {
         this.version = version;
         return this;
     }
-
-    public long getSize() {
-        return size;
-    }
-
-    public Model setSize(long size) {
-        this.size = size;
-        return this;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Model setDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
-    public String[] getColors() {
-        return colors;
-    }
-
-    public Model setColors(String[] colors) {
-        this.colors = colors;
-        return this;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public Model setStatus(@Status int status) {
-        this.status = status;
-        return this;
-    }
-
-    public boolean isDownloading() {
-        return status == STATUS_DOWNLOADING;
-    }
-
-    public boolean isDownloaded() {
-        return status == STATUS_DOWNLOADED;
-    }
-
 
     public String getModelPath() {
         return modelPath;
@@ -175,35 +103,58 @@ public class Model implements Parcelable {
         return this;
     }
 
+    public Map<String, Parcelable> getOthers() {
+        return others;
+    }
+
+    public Model setOthers(Map<String, Parcelable> others) {
+        this.others = others;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Model model = (Model) o;
 
-        return id != null ? id.equals(model.id) : model.id == null;
+        if (version != model.version) return false;
+        if (inputSize != model.inputSize) return false;
+        if (imageMean != model.imageMean) return false;
+        if (Float.compare(model.imageStd, imageStd) != 0) return false;
+        if (id != null ? !id.equals(model.id) : model.id != null) return false;
+        if (modelPath != null ? !modelPath.equals(model.modelPath) : model.modelPath != null)
+            return false;
+        if (labelsPath != null ? !labelsPath.equals(model.labelsPath) : model.labelsPath != null)
+            return false;
+        if (inputName != null ? !inputName.equals(model.inputName) : model.inputName != null)
+            return false;
+        if (outputName != null ? !outputName.equals(model.outputName) : model.outputName != null)
+            return false;
+        return others != null ? others.equals(model.others) : model.others == null;
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + version;
+        result = 31 * result + (modelPath != null ? modelPath.hashCode() : 0);
+        result = 31 * result + (labelsPath != null ? labelsPath.hashCode() : 0);
+        result = 31 * result + inputSize;
+        result = 31 * result + imageMean;
+        result = 31 * result + (imageStd != +0.0f ? Float.floatToIntBits(imageStd) : 0);
+        result = 31 * result + (inputName != null ? inputName.hashCode() : 0);
+        result = 31 * result + (outputName != null ? outputName.hashCode() : 0);
+        result = 31 * result + (others != null ? others.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
         return "Model{" +
                 "id='" + id + '\'' +
-                ", name='" + name + '\'' +
                 ", version=" + version +
-                ", size=" + size +
-                ", description='" + description + '\'' +
-                ", colors=" + Arrays.toString(colors) +
-                ", status=" + status +
                 ", modelPath='" + modelPath + '\'' +
                 ", labelsPath='" + labelsPath + '\'' +
                 ", inputSize=" + inputSize +
@@ -211,6 +162,7 @@ public class Model implements Parcelable {
                 ", imageStd=" + imageStd +
                 ", inputName='" + inputName + '\'' +
                 ", outputName='" + outputName + '\'' +
+                ", others='" + others + '\'' +
                 '}';
     }
 
@@ -222,12 +174,7 @@ public class Model implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.id);
-        dest.writeString(this.name);
         dest.writeInt(this.version);
-        dest.writeLong(this.size);
-        dest.writeString(this.description);
-        dest.writeStringArray(this.colors);
-        dest.writeInt(this.status);
         dest.writeString(this.modelPath);
         dest.writeString(this.labelsPath);
         dest.writeInt(this.inputSize);
@@ -235,16 +182,16 @@ public class Model implements Parcelable {
         dest.writeFloat(this.imageStd);
         dest.writeString(this.inputName);
         dest.writeString(this.outputName);
+        dest.writeInt(this.others.size());
+        for (Map.Entry<String, Parcelable> entry : this.others.entrySet()) {
+            dest.writeString(entry.getKey());
+            dest.writeParcelable(entry.getValue(), flags);
+        }
     }
 
     protected Model(Parcel in) {
         this.id = in.readString();
-        this.name = in.readString();
         this.version = in.readInt();
-        this.size = in.readLong();
-        this.description = in.readString();
-        this.colors = in.createStringArray();
-        this.status = in.readInt();
         this.modelPath = in.readString();
         this.labelsPath = in.readString();
         this.inputSize = in.readInt();
@@ -252,6 +199,13 @@ public class Model implements Parcelable {
         this.imageStd = in.readFloat();
         this.inputName = in.readString();
         this.outputName = in.readString();
+        int othersSize = in.readInt();
+        this.others = new HashMap<>(othersSize);
+        for (int i = 0; i < othersSize; i++) {
+            String key = in.readString();
+            Parcelable value = in.readParcelable(Parcelable.class.getClassLoader());
+            this.others.put(key, value);
+        }
     }
 
     public static final Creator<Model> CREATOR = new Creator<Model>() {
