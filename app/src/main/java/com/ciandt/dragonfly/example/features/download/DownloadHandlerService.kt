@@ -8,6 +8,7 @@ import com.ciandt.dragonfly.example.data.ProjectRepository
 import com.ciandt.dragonfly.example.helpers.DownloadNotificationHelper
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.ciandt.dragonfly.example.infrastructure.extensions.getDownloadManager
+import com.ciandt.dragonfly.example.infrastructure.extensions.getLocalBroadcastManager
 import com.ciandt.dragonfly.example.models.Version
 
 class DownloadHandlerService : IntentService("DownloadHandlerService") {
@@ -43,6 +44,7 @@ class DownloadHandlerService : IntentService("DownloadHandlerService") {
         DownloadHelper.processDownload(this, downloadedFile, version, onSuccess = {
 
             DownloadNotificationHelper.showFinished(this, downloadedFile)
+            sendBroadcastForProjectChanged()
 
         }, onFailure = { exception ->
 
@@ -54,6 +56,7 @@ class DownloadHandlerService : IntentService("DownloadHandlerService") {
     private fun handleError() {
         DownloadNotificationHelper.showError(this, downloadedFile)
         ProjectRepository(this).updateVersionStatus(version.project, version.version, Version.STATUS_NOT_DOWNLOADED)
+        sendBroadcastForProjectChanged()
     }
 
     private fun handleNotFound() {
@@ -62,6 +65,12 @@ class DownloadHandlerService : IntentService("DownloadHandlerService") {
 
     private fun handleUnauth() {
         handleError()
+    }
+
+    private fun sendBroadcastForProjectChanged() {
+        ProjectRepository(this).getProject(version.project)?.let {
+            getLocalBroadcastManager().sendBroadcast(ProjectChangedReceiver.create(it))
+        }
     }
 
     companion object {

@@ -35,6 +35,7 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
 
         presenter = ProjectSelectionPresenter(ProjectSelectionInteractor(this, FirebaseStorage.getInstance()))
         presenter.attachView(this)
+        presenter.registerProjectObserver()
 
         setupList()
 
@@ -67,6 +68,7 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
     }
 
     override fun onDestroy() {
+        presenter.unregisterProjectObserver()
         RemoteProjectService.stop(this)
         super.onDestroy()
     }

@@ -3,6 +3,7 @@ package com.ciandt.dragonfly.example.infrastructure.extensions
 import android.app.DownloadManager
 import android.content.Context
 import android.net.ConnectivityManager
+import android.support.v4.content.LocalBroadcastManager
 import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
 
@@ -16,6 +17,10 @@ fun Context.getInputMethodService(): InputMethodManager {
 
 fun Context.getDownloadManager(): DownloadManager {
     return getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+}
+
+fun Context.getLocalBroadcastManager(): LocalBroadcastManager {
+    return LocalBroadcastManager.getInstance(this)
 }
 
 fun Context.isNetworkAvailable(): Boolean {

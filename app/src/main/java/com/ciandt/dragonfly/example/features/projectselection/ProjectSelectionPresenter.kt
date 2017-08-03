@@ -7,6 +7,17 @@ import com.ciandt.dragonfly.example.shared.BasePresenter
 
 class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract.Interactor) : BasePresenter<ProjectSelectionContract.View>(), ProjectSelectionContract.Presenter {
 
+    private val updateQueue = ArrayList<Project>()
+
+    override fun attachView(view: ProjectSelectionContract.View) {
+        super.attachView(view)
+
+        updateQueue.forEach {
+            view.update(it)
+            updateQueue.remove(it)
+        }
+    }
+
     override fun loadProjects() {
 
         view?.showLoading()
@@ -55,5 +66,19 @@ class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract
                 view?.showDownloadError(exception)
             }
         }
+    }
+
+    override fun registerProjectObserver() {
+        interactor.registerProjectObserver { project ->
+            if (view != null) {
+                view?.update(project)
+            } else {
+                updateQueue.add(project)
+            }
+        }
+    }
+
+    override fun unregisterProjectObserver() {
+        interactor.unregisterProjectObserver()
     }
 }
