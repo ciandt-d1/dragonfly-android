@@ -40,7 +40,7 @@ object DownloadHelper {
         context.startService(DownloadHandlerService.create(context, file, version))
     }
 
-    fun processDownload(context: Context, downloadedFile: DownloadedFile, version: Version, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+    fun processDownload(context: Context, downloadedFile: DownloadedFile, version: Version, onSuccess: (Version) -> Unit, onFailure: (Exception) -> Unit) {
 
         val uri = context.getDownloadManager().getUriForDownloadedFile(downloadedFile.id)
         val inputStream = context.contentResolver.openInputStream(uri)
@@ -67,7 +67,7 @@ object DownloadHelper {
                     version.status = Version.STATUS_DOWNLOADED
 
                     updateVersion(context, version)
-                    onSuccess()
+                    onSuccess(version)
                 },
                 onFailure = onFailure
         )

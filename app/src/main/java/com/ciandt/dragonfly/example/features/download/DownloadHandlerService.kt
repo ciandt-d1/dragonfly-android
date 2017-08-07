@@ -41,9 +41,9 @@ class DownloadHandlerService : IntentService("DownloadHandlerService") {
 
     private fun handleDownloadSuccess() {
         DownloadNotificationHelper.showProcessing(this, downloadedFile)
-        DownloadHelper.processDownload(this, downloadedFile, version, onSuccess = {
+        DownloadHelper.processDownload(this, downloadedFile, version, onSuccess = { newVersion ->
 
-            DownloadNotificationHelper.showFinished(this, downloadedFile)
+            DownloadNotificationHelper.showFinished(this, downloadedFile, newVersion.toLibraryModel())
             sendBroadcastForProjectChanged()
 
         }, onFailure = { exception ->

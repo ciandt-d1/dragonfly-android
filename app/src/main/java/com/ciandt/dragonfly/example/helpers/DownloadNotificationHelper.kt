@@ -2,10 +2,13 @@ package com.ciandt.dragonfly.example.helpers
 
 import android.app.Notification
 import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
+import android.content.Intent
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.content.ContextCompat
+import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.features.download.DownloadedFile
 
@@ -21,14 +24,18 @@ object DownloadNotificationHelper {
         show(context, file.hashCode(), builder.build())
     }
 
-    fun showFinished(context: Context, file: DownloadedFile) {
+    fun showFinished(context: Context, file: DownloadedFile, model: Model) {
 
-        val builder = getBasicNotification(context, null)
+        val id = file.hashCode()
+
+        val intent = IntentHelper.openRealTime(context, model)
+
+        val builder = getBasicNotification(context, getPendingIntent(context, intent, id))
 
         builder.setContentTitle(file.title.removePrefix((context.getString(R.string.app_name)) + ": "))
         builder.setContentText(context.getString(R.string.download_finished))
 
-        show(context, file.hashCode(), builder.build())
+        show(context, id, builder.build())
     }
 
     fun showError(context: Context, file: DownloadedFile) {
@@ -61,5 +68,14 @@ object DownloadNotificationHelper {
         }
 
         return builder
+    }
+
+    private fun getPendingIntent(context: Context, intent: Intent, id: Int): PendingIntent {
+
+        val stackBuilder = TaskStackBuilder.create(context)
+        stackBuilder.addParentStack(intent.component)
+        stackBuilder.addNextIntent(intent)
+
+        return stackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 }
