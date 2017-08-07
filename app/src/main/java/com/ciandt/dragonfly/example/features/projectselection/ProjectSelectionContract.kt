@@ -32,13 +32,13 @@ interface ProjectSelectionContract {
 
     interface Presenter : BasePresenterContract<View> {
 
+        fun start()
+
+        fun stop()
+
         fun loadProjects()
 
         fun selectProject(project: Project)
-
-        fun registerProjectObserver()
-
-        fun unregisterProjectObserver()
     }
 
     interface Interactor {

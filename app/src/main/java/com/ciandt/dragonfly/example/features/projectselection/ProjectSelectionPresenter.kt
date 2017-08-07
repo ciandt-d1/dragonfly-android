@@ -18,6 +18,20 @@ class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract
         }
     }
 
+    override fun start() {
+        interactor.registerProjectObserver { project ->
+            if (view != null) {
+                view?.update(project)
+            } else {
+                updateQueue.add(project)
+            }
+        }
+    }
+
+    override fun stop() {
+        interactor.unregisterProjectObserver()
+    }
+
     override fun loadProjects() {
 
         view?.showLoading()
