@@ -5,6 +5,7 @@ import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.models.Version
 import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.eq
+import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.verify
 import org.amshove.kluent.any
 import org.amshove.kluent.shouldBeFalse
@@ -115,11 +116,33 @@ class ProjectSelectionPresenterTest {
 
         presenter.selectProject(project)
 
+        argumentCaptor<() -> Unit>().apply {
+            verify(view).confirmDownload(eq(project), capture())
+            firstValue.invoke()
+        }
+
         project.hasDownloadingVersion().shouldBeTrue()
 
         verify(view).update(project)
 
         verify(interactor).downloadVersion(any(), eq(version), any())
+    }
+
+    @Test
+    fun selectProjectWithVersionNotDownloadedAndCancelConfirmation() {
+        val version = Version("not-downloaded")
+
+        val project = Project("not-downloaded").apply {
+            versions = arrayListOf(version)
+        }
+
+        presenter.selectProject(project)
+
+        project.hasDownloadingVersion().shouldBeFalse()
+
+        verify(view, never()).update(project)
+
+        verify(interactor, never()).downloadVersion(any(), eq(version), any())
     }
 
     @Test
@@ -131,6 +154,11 @@ class ProjectSelectionPresenterTest {
         }
 
         presenter.selectProject(project)
+
+        argumentCaptor<() -> Unit>().apply {
+            verify(view).confirmDownload(eq(project), capture())
+            firstValue.invoke()
+        }
 
         project.hasDownloadingVersion().shouldBeTrue()
 

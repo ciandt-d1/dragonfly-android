@@ -26,6 +26,8 @@ interface ProjectSelectionContract {
         fun showDownloadError(exception: Exception)
 
         fun showUnavailable(project: Project)
+
+        fun confirmDownload(project: Project, onConfirm: () -> Unit)
     }
 
     interface Presenter : BasePresenterContract<View> {

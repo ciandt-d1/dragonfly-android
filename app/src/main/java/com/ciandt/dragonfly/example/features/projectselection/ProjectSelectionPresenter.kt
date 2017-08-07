@@ -52,33 +52,23 @@ class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract
             view?.showDownloading(project)
 
         } else {
-            val lastVersion = project.getLastVersion()!!
-            lastVersion.status = Version.STATUS_DOWNLOADING
+            view?.confirmDownload(project) {
 
-            project.versions.replace(lastVersion)
-            view?.update(project)
+                val lastVersion = project.getLastVersion()!!
+                lastVersion.status = Version.STATUS_DOWNLOADING
 
-            interactor.downloadVersion(project.name, lastVersion) { exception ->
-
-                lastVersion.status = Version.STATUS_NOT_DOWNLOADED
+                project.versions.replace(lastVersion)
                 view?.update(project)
 
-                view?.showDownloadError(exception)
+                interactor.downloadVersion(project.name, lastVersion) { exception ->
+
+                    lastVersion.status = Version.STATUS_NOT_DOWNLOADED
+                    view?.update(project)
+
+                    view?.showDownloadError(exception)
+                }
+
             }
         }
-    }
-
-    override fun registerProjectObserver() {
-        interactor.registerProjectObserver { project ->
-            if (view != null) {
-                view?.update(project)
-            } else {
-                updateQueue.add(project)
-            }
-        }
-    }
-
-    override fun unregisterProjectObserver() {
-        interactor.unregisterProjectObserver()
     }
 }

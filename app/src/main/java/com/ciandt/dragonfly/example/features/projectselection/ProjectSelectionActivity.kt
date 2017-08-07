@@ -13,6 +13,8 @@ import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.data.remote.RemoteProjectService
 import com.ciandt.dragonfly.example.features.about.AboutActivity
 import com.ciandt.dragonfly.example.features.realtime.RealTimeActivity
+import com.ciandt.dragonfly.example.helpers.DialogHelper
+import com.ciandt.dragonfly.example.infrastructure.extensions.isWifiNetworkConnected
 import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.shared.BaseActivity
@@ -156,6 +158,18 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
 
     override fun showUnavailable(project: Project) {
         showSnackbar(R.string.project_selection_item_unavailable_message)
+    }
+
+    override fun confirmDownload(project: Project, onConfirm: () -> Unit) {
+        if (isWifiNetworkConnected()) {
+            onConfirm()
+        } else {
+            DialogHelper.showConfirmation(this,
+                    getString(R.string.project_selection_download_confirmation_title),
+                    getString(R.string.project_selection_download_confirmation_message)) {
+                onConfirm()
+            }
+        }
     }
 
     companion object {
