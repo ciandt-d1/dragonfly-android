@@ -13,9 +13,12 @@ import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.data.remote.RemoteProjectService
 import com.ciandt.dragonfly.example.features.about.AboutActivity
 import com.ciandt.dragonfly.example.features.realtime.RealTimeActivity
+import com.ciandt.dragonfly.example.helpers.DialogHelper
+import com.ciandt.dragonfly.example.infrastructure.extensions.isWifiNetworkConnected
 import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.shared.BaseActivity
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_project_selection.*
 
 class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
@@ -32,8 +35,9 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
 
         RemoteProjectService.start(this)
 
-        presenter = ProjectSelectionPresenter(ProjectSelectionInteractor(this))
+        presenter = ProjectSelectionPresenter(ProjectSelectionInteractor(this, FirebaseStorage.getInstance()))
         presenter.attachView(this)
+        presenter.start()
 
         setupList()
 
@@ -66,6 +70,7 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
     }
 
     override fun onDestroy() {
+        presenter.stop()
         RemoteProjectService.stop(this)
         super.onDestroy()
     }
@@ -147,8 +152,24 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
         showSnackbar(R.string.project_selection_item_wait_message)
     }
 
+    override fun showDownloadError(exception: Exception) {
+        showSnackbar(R.string.download_failed)
+    }
+
     override fun showUnavailable(project: Project) {
         showSnackbar(R.string.project_selection_item_unavailable_message)
+    }
+
+    override fun confirmDownload(project: Project, onConfirm: () -> Unit) {
+        if (isWifiNetworkConnected()) {
+            onConfirm()
+        } else {
+            DialogHelper.showConfirmation(this,
+                    getString(R.string.project_selection_download_confirmation_title),
+                    getString(R.string.project_selection_download_confirmation_message)) {
+                onConfirm()
+            }
+        }
     }
 
     companion object {

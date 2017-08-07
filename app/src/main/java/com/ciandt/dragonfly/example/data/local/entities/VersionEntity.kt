@@ -15,6 +15,6 @@ data class VersionEntity(
         var downloadUrl: String = "",
         var createdAt: Long = 0L,
         var modelPath: String = "",
-        var labelPath: String = "",
+        var labelsPath: String = "",
         var status: Int = 0
 )

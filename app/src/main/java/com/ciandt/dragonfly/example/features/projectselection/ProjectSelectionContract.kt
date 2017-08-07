@@ -2,6 +2,7 @@ package com.ciandt.dragonfly.example.features.projectselection
 
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.models.Project
+import com.ciandt.dragonfly.example.models.Version
 import com.ciandt.dragonfly.example.shared.BasePresenterContract
 
 interface ProjectSelectionContract {
@@ -22,10 +23,18 @@ interface ProjectSelectionContract {
 
         fun showDownloading(project: Project)
 
+        fun showDownloadError(exception: Exception)
+
         fun showUnavailable(project: Project)
+
+        fun confirmDownload(project: Project, onConfirm: () -> Unit)
     }
 
     interface Presenter : BasePresenterContract<View> {
+
+        fun start()
+
+        fun stop()
 
         fun loadProjects()
 
@@ -35,5 +44,11 @@ interface ProjectSelectionContract {
     interface Interactor {
 
         fun loadProjects(onSuccess: (List<Project>) -> Unit, onFailure: (Exception) -> Unit)
+
+        fun downloadVersion(title: String, version: Version, onFailure: (Exception) -> Unit)
+
+        fun registerProjectObserver(onChanged: (Project) -> Unit)
+
+        fun unregisterProjectObserver()
     }
 }

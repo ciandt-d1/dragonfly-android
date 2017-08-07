@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:name=".DragonflyApplication"
@@ -47,6 +48,19 @@
         <service
             android:name=".data.remote.RemoteProjectService"
             android:exported="false"/>
+
+        <service
+            android:name=".features.download.DownloadHandlerService"
+            android:exported="false"/>
+
+        <receiver
+            android:name=".features.download.DownloadReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 </manifest>

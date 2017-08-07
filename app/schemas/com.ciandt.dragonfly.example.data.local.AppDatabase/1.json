@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c0ff5ac5eac4cdededc86f1525159798",
+    "identityHash": "8ef2e826169e7cec27d16ce613312395",
     "entities": [
       {
         "tableName": "projects",
@@ -45,7 +45,7 @@
       },
       {
         "tableName": "versions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`project` TEXT, `version` INTEGER, `size` INTEGER, `inputSize` INTEGER, `imageMean` INTEGER, `imageStd` REAL, `inputName` TEXT, `outputName` TEXT, `downloadUrl` TEXT, `createdAt` INTEGER, `modelPath` TEXT, `labelPath` TEXT, `status` INTEGER, PRIMARY KEY(`project`, `version`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`project` TEXT, `version` INTEGER, `size` INTEGER, `inputSize` INTEGER, `imageMean` INTEGER, `imageStd` REAL, `inputName` TEXT, `outputName` TEXT, `downloadUrl` TEXT, `createdAt` INTEGER, `modelPath` TEXT, `labelsPath` TEXT, `status` INTEGER, PRIMARY KEY(`project`, `version`))",
         "fields": [
           {
             "fieldPath": "project",
@@ -103,8 +103,8 @@
             "affinity": "TEXT"
           },
           {
-            "fieldPath": "labelPath",
-            "columnName": "labelPath",
+            "fieldPath": "labelsPath",
+            "columnName": "labelsPath",
             "affinity": "TEXT"
           },
           {
@@ -122,11 +122,40 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "downloads",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `project` TEXT, `version` INTEGER, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "project",
+            "columnName": "project",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c0ff5ac5eac4cdededc86f1525159798\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"8ef2e826169e7cec27d16ce613312395\")"
     ]
   }
 }

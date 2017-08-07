@@ -9,12 +9,18 @@
     <string name="project_selection_item_downloading">Downloading…</string>
     <string name="project_selection_item_downloaded">Let\'s start</string>
     <string name="project_selection_item_unavailable">Unavailable</string>
-    <string name="project_selection_item_wait_message">Downloading in progress. Please wait…</string>
+    <string name="project_selection_item_wait_message">Downloading in progress. Please wait…
+    </string>
     <string name="project_selection_item_unavailable_message">No versions available yet.</string>
 
     <string name="project_selection_empty_message">Oops…\nNo models found!</string>
     <string name="project_selection_error_message">Uh-oh, an error occurred!</string>
     <string name="project_selection_retry">Try again</string>
+
+    <string name="project_selection_download_confirmation_title">Attention</string>
+    <string name="project_selection_download_confirmation_message">You are about to download a large
+        file over your mobile network and data charges may apply.
+    </string>
 
     <string name="about_title">Thoughtfully Fast. Purposely Lean.</string>
     <string name="about_description">CI&amp;T is a digital technology agency focused on creating
@@ -69,4 +75,11 @@
     <string name="login_terms_and_conditions">TERMS AND CONDITIONS</string>
 
     <string name="login_error">There was an error when trying to connect. Please try again.</string>
+
+    <string name="download_processing">Processing…</string>
+    <string name="download_finished">Download finished</string>
+    <string name="download_failed">Oops… The download has failed</string>
+
+    <string name="dialog_confirmation_button_cancel">CANCEL</string>
+    <string name="dialog_confirmation_button_confirm">CONFIRM</string>
 </resources>

@@ -1,10 +1,36 @@
 package com.ciandt.dragonfly.example.features.projectselection
 
+import com.ciandt.dragonfly.example.infrastructure.extensions.replace
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.models.Version
 import com.ciandt.dragonfly.example.shared.BasePresenter
 
 class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract.Interactor) : BasePresenter<ProjectSelectionContract.View>(), ProjectSelectionContract.Presenter {
+
+    private val updateQueue = ArrayList<Project>()
+
+    override fun attachView(view: ProjectSelectionContract.View) {
+        super.attachView(view)
+
+        updateQueue.forEach {
+            view.update(it)
+            updateQueue.remove(it)
+        }
+    }
+
+    override fun start() {
+        interactor.registerProjectObserver { project ->
+            if (view != null) {
+                view?.update(project)
+            } else {
+                updateQueue.add(project)
+            }
+        }
+    }
+
+    override fun stop() {
+        interactor.unregisterProjectObserver()
+    }
 
     override fun loadProjects() {
 
@@ -33,15 +59,30 @@ class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract
             return
         }
 
-        if (project.isDownloaded()) {
-            view?.run(project.toLibraryModel())
+        if (project.hasDownloadedVersion()) {
+            view?.run(project.getLastDownloadedVersion()!!.toLibraryModel())
 
-        } else if (project.isDownloading()) {
+        } else if (project.hasDownloadingVersion()) {
             view?.showDownloading(project)
 
         } else {
-            project.status = Version.STATUS_DOWNLOADING
-            view?.update(project)
+            view?.confirmDownload(project) {
+
+                val lastVersion = project.getLastVersion()!!
+                lastVersion.status = Version.STATUS_DOWNLOADING
+
+                project.versions.replace(lastVersion)
+                view?.update(project)
+
+                interactor.downloadVersion(project.name, lastVersion) { exception ->
+
+                    lastVersion.status = Version.STATUS_NOT_DOWNLOADED
+                    view?.update(project)
+
+                    view?.showDownloadError(exception)
+                }
+
+            }
         }
     }
 }

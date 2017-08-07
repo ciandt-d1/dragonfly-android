@@ -4,11 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.helpers.IntentHelper
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
-import com.ciandt.dragonfly.example.infrastructure.extensions.isNetworkAvailable
+import com.ciandt.dragonfly.example.infrastructure.extensions.isNetworkConnected
 import com.ciandt.dragonfly.example.infrastructure.extensions.makeGone
 import com.ciandt.dragonfly.example.infrastructure.extensions.makeVisible
 import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
@@ -78,7 +77,7 @@ class LoginActivity : BaseActivity(), LoginContract.View, GoogleApiClient.OnConn
                 val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
                 presenter.checkSignInWithGoogle(result)
             } else {
-                presenter.signInWithGoogleCanceled(isNetworkAvailable())
+                presenter.signInWithGoogleCanceled(isNetworkConnected())
             }
         }
     }
