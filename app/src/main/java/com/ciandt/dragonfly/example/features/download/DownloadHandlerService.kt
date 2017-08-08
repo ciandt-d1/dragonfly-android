@@ -34,6 +34,8 @@ class DownloadHandlerService : IntentService("DownloadHandlerService") {
                 404 -> handleNotFound()
                 else -> handleError()
             }
+        } else if (downloadedFile.isCancelled()) {
+            handleCancelled()
         }
 
         getDownloadManager().remove(downloadedFile.id)
@@ -65,6 +67,11 @@ class DownloadHandlerService : IntentService("DownloadHandlerService") {
 
     private fun handleUnauth() {
         handleError()
+    }
+
+    private fun handleCancelled() {
+        ProjectRepository(this).updateVersionStatus(version.project, version.version, Version.STATUS_NOT_DOWNLOADED)
+        sendBroadcastForProjectChanged()
     }
 
     private fun sendBroadcastForProjectChanged() {
