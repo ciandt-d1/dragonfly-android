@@ -28,9 +28,12 @@ object DownloadNotificationHelper {
 
         val id = file.hashCode()
 
+        val parent = IntentHelper.openProjectSelection(context)
         val intent = IntentHelper.openRealTime(context, model)
 
-        val builder = getBasicNotification(context, getPendingIntent(context, intent, id))
+        val pendingIntent = getPendingIntent(context, parent, intent, id)
+
+        val builder = getBasicNotification(context, pendingIntent)
 
         builder.setContentTitle(file.title.removePrefix((context.getString(R.string.app_name)) + ": "))
         builder.setContentText(context.getString(R.string.download_finished))
@@ -70,9 +73,10 @@ object DownloadNotificationHelper {
         return builder
     }
 
-    private fun getPendingIntent(context: Context, intent: Intent, id: Int): PendingIntent {
+    private fun getPendingIntent(context: Context, parent: Intent, intent: Intent, id: Int): PendingIntent {
 
         val stackBuilder = TaskStackBuilder.create(context)
+        stackBuilder.addNextIntent(parent)
         stackBuilder.addParentStack(intent.component)
         stackBuilder.addNextIntent(intent)
 
