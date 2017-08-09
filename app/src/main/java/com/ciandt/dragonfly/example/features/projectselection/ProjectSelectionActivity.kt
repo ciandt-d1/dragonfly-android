@@ -3,6 +3,7 @@ package com.ciandt.dragonfly.example.features.projectselection
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
@@ -28,6 +29,9 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
     private lateinit var presenter: ProjectSelectionContract.Presenter
 
     private val projects = ArrayList<Project>()
+
+    private val FIRST_TIME_DELAY = 1500L
+    private var firstTime = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +63,16 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
         super.onResume()
         presenter.attachView(this)
 
-        if (projects.isEmpty()) {
+        if (firstTime) {
+            firstTime = false
+
+            showLoading()
+
+            Handler().postDelayed({
+                presenter.loadProjects()
+            }, FIRST_TIME_DELAY)
+
+        } else if (projects.isEmpty()) {
             presenter.loadProjects()
         }
     }
