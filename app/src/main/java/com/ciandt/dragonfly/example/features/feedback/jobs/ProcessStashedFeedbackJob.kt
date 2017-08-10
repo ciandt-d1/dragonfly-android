@@ -8,6 +8,7 @@ import com.evernote.android.job.Job
 import com.evernote.android.job.JobRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import java.util.concurrent.TimeUnit
 
 
@@ -16,6 +17,16 @@ import java.util.concurrent.TimeUnit
  */
 class ProcessStashedFeedbackJob : Job() {
     override fun onRunJob(params: Params?): Result {
+        if (!isRequirementChargingMet) {
+            DragonflyLogger.warn(LOG_TAG, "Charging requirement not met. Skipping job execution.")
+            return Result.FAILURE
+        }
+
+        if (!isRequirementNetworkTypeMet) {
+            DragonflyLogger.warn(LOG_TAG, "Network requirement not met. Skipping job execution.")
+            return Result.FAILURE
+        }
+
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser == null) {
             DragonflyLogger.warn(LOG_TAG, "Tried to execute ProcessStashedFeedbackJob, but there is no user signed in.")
@@ -23,8 +34,11 @@ class ProcessStashedFeedbackJob : Job() {
         }
 
         try {
-            val processor = StashedFeedbackProcessor(FirebaseDatabase.getInstance(), Tenant.ID, currentUser.uid)
+            val processor = StashedFeedbackProcessor(FirebaseDatabase.getInstance(), FirebaseStorage.getInstance(), Tenant.ID, currentUser.uid)
+
+            DragonflyLogger.debug(LOG_TAG, "Before processor.process()")
             processor.process()
+            DragonflyLogger.debug(LOG_TAG, "After processor.process()")
 
             return Result.SUCCESS
         } catch (e: Exception) {
@@ -47,7 +61,6 @@ class ProcessStashedFeedbackJob : Job() {
                     .setRequiresCharging(true)
                     .setRequiresDeviceIdle(false)
                     .setRequiredNetworkType(JobRequest.NetworkType.UNMETERED)
-                    .setRequirementsEnforced(true)
                     .setUpdateCurrent(true)
                     .setPersisted(true)
                     .build()

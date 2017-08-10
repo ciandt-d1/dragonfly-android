@@ -45,8 +45,12 @@ interface FeedbackContract {
         fun saveImageToGallery(classificationInput: DragonflyClassificationInput)
     }
 
-    interface Interactor {
+    interface SaverInteractor {
         fun setOnFeedbackSavedCallback(callback: ((Feedback) -> Unit)?)
+
+        fun setOnFeedbackSaveErrorCallback(callback: ((Feedback, Exception) -> Unit)?)
+
+        fun setOnFeedbackUpdatedWithGcsLocationCallback(callback: ((Feedback) -> Unit)?)
 
         fun saveFeedback(feedback: Feedback)
     }

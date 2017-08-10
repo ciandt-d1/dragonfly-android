@@ -20,13 +20,40 @@ class ProjectRepository(context: Context) {
     }
 
     fun getProjects(): List<Project> {
+
         val projects = arrayListOf<Project>()
 
-        localDataSource.getProjects().forEach {
-            ProjectEntityToProjectMapper(it).map()?.let { mapped ->
-                projects.add(mapped)
-            }
-        }
+//        localDataSource.getProjects().forEach {
+//            ProjectEntityToProjectMapper(it).map()?.let { mapped ->
+//                projects.add(mapped)
+//            }
+//        }
+        val project = Project(
+                "flowers",
+                "Flowers",
+                "This model classifies 130 plants",
+                listOf("#9BCE4F", "#228B22")
+        )
+
+        val version = Version(
+                "flowers",
+                1,
+                88481067L,
+                224,
+                128,
+                128f,
+                "Mul",
+                "final_ops/softmax",
+                "",
+                1L,
+                "file:///android_asset/models/flowers/inception_v1_quantized_optimized_frozen_graph_PL.pb",
+                "file:///android_asset/models/flowers/dict.txt",
+                Version.STATUS_DOWNLOADED
+        )
+
+        project.versions = listOf(version)
+
+        projects.add(project)
 
         return projects
     }

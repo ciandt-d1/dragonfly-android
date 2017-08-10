@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.annotation.StringRes
-import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
@@ -65,10 +64,10 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
         allowSaveToGallery = intent.extras.getBoolean(ALLOW_SAVE_TO_GALLERY_BUNDLE, false)
 
-        val feedbackInteractor = FeedbackInteractor(FirebaseStorage.getInstance(), FirebaseDatabase.getInstance())
+        val feedbackSaverInteractor = FeedbackSaverSaverInteractor(FirebaseStorage.getInstance(), FirebaseDatabase.getInstance())
         val saveImageToGalleryInteractor = SaveImageToGalleryInteractor(applicationContext)
 
-        presenter = FeedbackPresenter(model, classificationInput, feedbackInteractor, saveImageToGalleryInteractor, FirebaseAuth.getInstance())
+        presenter = FeedbackPresenter(model, classificationInput, feedbackSaverInteractor, saveImageToGalleryInteractor, FirebaseAuth.getInstance())
         presenter.attachView(this)
         presenter.setUserFeedback(userFeedback)
         presenter.setClassifications(classifications)
