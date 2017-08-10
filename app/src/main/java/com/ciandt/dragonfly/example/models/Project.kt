@@ -1,8 +1,6 @@
 package com.ciandt.dragonfly.example.models
 
 import android.os.Parcel
-import com.ciandt.dragonfly.data.model.Model
-import com.ciandt.dragonfly.example.data.mapper.ProjectToLibraryModelMapper
 import com.ciandt.dragonfly.example.shared.KParcelable
 import com.ciandt.dragonfly.example.shared.parcelableCreator
 
@@ -11,38 +9,51 @@ data class Project(
         var name: String = "",
         var description: String = "",
         var colors: List<String> = emptyList(),
-        var versions: List<Version> = emptyList()
+        var versions: MutableList<Version> = mutableListOf()
 ) : KParcelable {
 
-    fun hasAnyVersion(): Boolean = versions.isNotEmpty()
-
-    val lastVersion: Version?
-        get() {
-            if (versions.isEmpty()) {
-                return null
-            } else {
-                return versions.last()
-            }
-        }
-
-    var status: Int
-        get() {
-            return lastVersion?.status ?: 0
-        }
-        set(value) {
-            lastVersion?.status = value
-        }
-
-    fun isDownloading(): Boolean {
-        return lastVersion?.isDownloading() ?: false
+    fun hasAnyVersion(): Boolean {
+        return versions.isNotEmpty()
     }
 
-    fun isDownloaded(): Boolean {
-        return lastVersion?.isDownloaded() ?: false
+    fun hasDownloadingVersion(): Boolean {
+        return versions
+                .filter { it.isDownloading() }
+                .isNotEmpty()
     }
 
-    fun toLibraryModel(): Model {
-        return ProjectToLibraryModelMapper(this).map()
+    fun hasDownloadedVersion(): Boolean {
+        return versions
+                .filter { it.isDownloaded() }
+                .isNotEmpty()
+    }
+
+    fun getLastVersion(): Version? {
+        if (versions.isEmpty()) {
+            return null
+        }
+
+        return versions
+                .sortedBy { it.version }
+                .lastOrNull()
+    }
+
+    fun getLastDownloadedVersion(): Version? {
+        return versions
+                .filter { it.isDownloaded() }
+                .sortedBy { it.version }
+                .lastOrNull()
+    }
+
+    fun hasUpdate(): Boolean {
+        val lastDownloadVersion = getLastDownloadedVersion()?.version ?: 0
+        if (lastDownloadVersion == 0) {
+            return false
+        }
+
+        return versions
+                .filter { it.isNotDownloaded() && it.version > lastDownloadVersion }
+                .isNotEmpty()
     }
 
     private constructor(p: Parcel) : this(
@@ -59,6 +70,15 @@ data class Project(
         dest.writeString(description)
         dest.writeStringList(colors)
         dest.writeList(versions)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        return (id == (other as Project).id)
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
     }
 
     companion object {

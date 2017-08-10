@@ -29,11 +29,13 @@ class ProjectSelectionViewHolder(itemView: View, val itemClick: (Project) -> Uni
 
         if (item.hasAnyVersion()) {
 
-            val format = resources.getString(R.string.project_selection_item_info, item.lastVersion!!.version, SizeHelper.toReadable(item.lastVersion!!.size, format = DecimalFormat("#.##")))
+            val lastVersion = item.getLastVersion()!!
+
+            val format = resources.getString(R.string.project_selection_item_info, lastVersion.version, SizeHelper.toReadable(lastVersion.size, format = DecimalFormat("#.##")))
             info.text = format
 
             with(download) {
-                when (item.lastVersion!!.status) {
+                when (lastVersion.status) {
                     Version.STATUS_DOWNLOADED -> {
                         text = resources.getString(R.string.project_selection_item_downloaded)
                         setTextColor(ContextCompat.getColor(context, R.color.project_selection_item_downloaded))

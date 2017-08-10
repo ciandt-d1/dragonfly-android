@@ -214,6 +214,8 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         if (otherClassifications.isEmpty()) {
             footer.visibility = View.GONE
         } else {
+            footer.visibility = View.VISIBLE
+
             val chips = ArrayList<FeedbackChip>()
             otherClassifications.forEach {
                 chips.add(FeedbackChip(it))
@@ -285,7 +287,6 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         positiveButton.visibility = View.GONE
         negativeButton.visibility = View.GONE
         underRevision.visibility = View.VISIBLE
-        footer.visibility = View.VISIBLE
     }
 
     private fun enableInput() {

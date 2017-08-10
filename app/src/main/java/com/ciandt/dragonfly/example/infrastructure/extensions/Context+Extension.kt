@@ -1,7 +1,10 @@
 package com.ciandt.dragonfly.example.infrastructure.extensions
 
+import android.app.DownloadManager
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import android.support.v4.content.LocalBroadcastManager
 import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
 
@@ -13,8 +16,25 @@ fun Context.getInputMethodService(): InputMethodManager {
     return getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 }
 
-fun Context.isNetworkAvailable(): Boolean {
+fun Context.getDownloadManager(): DownloadManager {
+    return getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+}
+
+fun Context.getLocalBroadcastManager(): LocalBroadcastManager {
+    return LocalBroadcastManager.getInstance(this)
+}
+
+fun Context.getNetworkInfo(): NetworkInfo? {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val activeNetworkInfo = connectivityManager.activeNetworkInfo ?: return false
-    return activeNetworkInfo.isAvailable && activeNetworkInfo.isConnected
+    return connectivityManager.activeNetworkInfo
+}
+
+fun Context.isNetworkConnected(): Boolean {
+    val network = getNetworkInfo() ?: return false
+    return network.isAvailable && network.isConnected
+}
+
+fun Context.isWifiNetworkConnected(): Boolean {
+    val network = getNetworkInfo() ?: return false
+    return network.isAvailable && network.isConnected && network.type == ConnectivityManager.TYPE_WIFI
 }
