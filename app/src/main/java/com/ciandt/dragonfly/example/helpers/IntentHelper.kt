@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.features.login.LoginActivity
 import com.ciandt.dragonfly.example.features.projectselection.ProjectSelectionActivity
+import com.ciandt.dragonfly.example.features.realtime.RealTimeActivity
 
 object IntentHelper {
 
@@ -40,5 +42,9 @@ object IntentHelper {
 
     fun openProjectSelection(context: Context): Intent {
         return ProjectSelectionActivity.create(context)
+    }
+
+    fun openRealTime(context: Context, model: Model): Intent {
+        return RealTimeActivity.create(context, model)
     }
 }

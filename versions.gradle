@@ -1,5 +1,5 @@
 ext {
 	appVersionMajor = 0
 	appVersionMinor = 0
-	appVersionPatch = 13
+	appVersionPatch = 17
 }

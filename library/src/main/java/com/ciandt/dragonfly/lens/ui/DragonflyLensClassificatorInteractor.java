@@ -172,7 +172,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
                 return new AsyncTaskResult<>(model, null);
             } catch (Exception e) {
-                String errorMessage = String.format("Failed to load model %s at %s", model.getName(), model.getModelPath());
+                String errorMessage = String.format("Failed to load model %s at %s", model.getId(), model.getModelPath());
 
                 return new AsyncTaskResult<>(null, new DragonflyModelException(errorMessage, e, model));
             }

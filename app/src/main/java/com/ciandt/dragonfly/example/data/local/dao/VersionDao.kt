@@ -18,6 +18,12 @@ interface VersionDao {
     @Query("SELECT * FROM versions WHERE project = :arg0 AND version = :arg1 AND status != 0")
     fun downloadingOrDownloaded(project: String, version: Int): VersionEntity?
 
+    @Query("UPDATE versions SET status = :arg2 WHERE project = :arg0 AND version = :arg1")
+    fun updateStatus(project: String, version: Int, status: Int)
+
     @Query("DELETE FROM versions")
     fun clear()
+
+    @Query("SELECT versions.* FROM versions, downloads WHERE versions.project = downloads.project AND versions.version = downloads.version AND downloads.id = :arg0")
+    fun getByDownload(id: Long): VersionEntity?
 }

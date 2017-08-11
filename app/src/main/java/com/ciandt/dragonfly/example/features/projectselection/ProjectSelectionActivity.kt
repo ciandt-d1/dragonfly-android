@@ -3,6 +3,7 @@ package com.ciandt.dragonfly.example.features.projectselection
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
@@ -13,9 +14,12 @@ import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.data.remote.RemoteProjectService
 import com.ciandt.dragonfly.example.features.about.AboutActivity
 import com.ciandt.dragonfly.example.features.realtime.RealTimeActivity
+import com.ciandt.dragonfly.example.helpers.DialogHelper
+import com.ciandt.dragonfly.example.infrastructure.extensions.isWifiNetworkConnected
 import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.shared.BaseActivity
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_project_selection.*
 
 class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
@@ -26,14 +30,18 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
 
     private val projects = ArrayList<Project>()
 
+    private val FIRST_TIME_DELAY = 1500L
+    private var firstTime = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project_selection)
 
         RemoteProjectService.start(this)
 
-        presenter = ProjectSelectionPresenter(ProjectSelectionInteractor(this))
+        presenter = ProjectSelectionPresenter(ProjectSelectionInteractor(this, FirebaseStorage.getInstance()))
         presenter.attachView(this)
+        presenter.start()
 
         setupList()
 
@@ -55,7 +63,16 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
         super.onResume()
         presenter.attachView(this)
 
-        if (projects.isEmpty()) {
+        if (firstTime) {
+            firstTime = false
+
+            showLoading()
+
+            Handler().postDelayed({
+                presenter.loadProjects()
+            }, FIRST_TIME_DELAY)
+
+        } else if (projects.isEmpty()) {
             presenter.loadProjects()
         }
     }
@@ -66,6 +83,7 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
     }
 
     override fun onDestroy() {
+        presenter.stop()
         RemoteProjectService.stop(this)
         super.onDestroy()
     }
@@ -147,8 +165,24 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
         showSnackbar(R.string.project_selection_item_wait_message)
     }
 
+    override fun showDownloadError(exception: Exception) {
+        showSnackbar(R.string.download_failed)
+    }
+
     override fun showUnavailable(project: Project) {
         showSnackbar(R.string.project_selection_item_unavailable_message)
+    }
+
+    override fun confirmDownload(project: Project, onConfirm: () -> Unit) {
+        if (isWifiNetworkConnected()) {
+            onConfirm()
+        } else {
+            DialogHelper.showConfirmation(this,
+                    getString(R.string.project_selection_download_confirmation_title),
+                    getString(R.string.project_selection_download_confirmation_message)) {
+                onConfirm()
+            }
+        }
     }
 
     companion object {
