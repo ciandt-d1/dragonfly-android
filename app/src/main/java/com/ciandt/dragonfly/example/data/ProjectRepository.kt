@@ -1,6 +1,6 @@
 package com.ciandt.dragonfly.example.data
 
-import android.content.Context
+import com.ciandt.dragonfly.example.data.local.AppDatabase
 import com.ciandt.dragonfly.example.data.local.LocalDataSource
 import com.ciandt.dragonfly.example.data.mapper.ProjectEntityToProjectMapper
 import com.ciandt.dragonfly.example.data.mapper.VersionEntityToVersionMapper
@@ -8,9 +8,9 @@ import com.ciandt.dragonfly.example.data.mapper.VersionToVersionEntityMapper
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.models.Version
 
-class ProjectRepository(context: Context) {
+class ProjectRepository(database: AppDatabase) {
 
-    private val localDataSource = LocalDataSource(context)
+    private val localDataSource = LocalDataSource(database)
 
     fun getProject(id: String): Project? {
         localDataSource.getProject(id)?.let {
@@ -20,40 +20,13 @@ class ProjectRepository(context: Context) {
     }
 
     fun getProjects(): List<Project> {
-
         val projects = arrayListOf<Project>()
 
-//        localDataSource.getProjects().forEach {
-//            ProjectEntityToProjectMapper(it).map()?.let { mapped ->
-//                projects.add(mapped)
-//            }
-//        }
-        val project = Project(
-                "flowers",
-                "Flowers",
-                "This model classifies 130 plants",
-                listOf("#9BCE4F", "#228B22")
-        )
-
-        val version = Version(
-                "flowers",
-                1,
-                88481067L,
-                224,
-                128,
-                128f,
-                "Mul",
-                "final_ops/softmax",
-                "",
-                1L,
-                "file:///android_asset/models/flowers/inception_v1_quantized_optimized_frozen_graph_PL.pb",
-                "file:///android_asset/models/flowers/dict.txt",
-                Version.STATUS_DOWNLOADED
-        )
-
-        project.versions = listOf(version)
-
-        projects.add(project)
+        localDataSource.getProjects().forEach {
+            ProjectEntityToProjectMapper(it).map()?.let { mapped ->
+                projects.add(mapped)
+            }
+        }
 
         return projects
     }

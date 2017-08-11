@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import com.ciandt.dragonfly.example.R
+import com.ciandt.dragonfly.example.data.DatabaseManager
 import com.ciandt.dragonfly.example.data.ProjectRepository
 import com.ciandt.dragonfly.example.helpers.ZipHelper
 import com.ciandt.dragonfly.example.infrastructure.extensions.getDownloadManager
@@ -12,6 +13,13 @@ import com.ciandt.dragonfly.example.models.Version
 import java.io.File
 
 object DownloadHelper {
+    private val database by lazy {
+        DatabaseManager.database
+    }
+
+    private val projectRepository by lazy {
+        ProjectRepository(database)
+    }
 
     fun startDownload(context: Context, title: String, version: Version, uri: Uri) = runOnBackgroundThread {
         val request = DownloadManager.Request(uri)
@@ -24,19 +32,17 @@ object DownloadHelper {
 
         val id = context.getDownloadManager().enqueue(request)
 
-        with(ProjectRepository(context)) {
+        with(projectRepository) {
             updateVersionStatus(version.project, version.version, Version.STATUS_DOWNLOADING)
             saveDownload(id, version.project, version.version)
         }
     }
 
     fun startDownloadHandler(context: Context, id: Long) = runOnBackgroundThread {
-        val repository = ProjectRepository(context)
-
-        val version = repository.getVersionByDownload(id) ?: return@runOnBackgroundThread
+        val version = projectRepository.getVersionByDownload(id) ?: return@runOnBackgroundThread
         val file = getDownloadedFile(context, id)
 
-        repository.deleteDownload(id)
+        projectRepository.deleteDownload(id)
         context.startService(DownloadHandlerService.create(context, file, version))
     }
 
@@ -74,7 +80,7 @@ object DownloadHelper {
     }
 
     private fun updateVersion(context: Context, version: Version) = runOnBackgroundThread {
-        ProjectRepository(context).updateVersion(version)
+        projectRepository.updateVersion(version)
     }
 
     private fun getDownloadedFile(context: Context, id: Long): DownloadedFile {

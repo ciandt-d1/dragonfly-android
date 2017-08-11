@@ -1,14 +1,16 @@
-package com.ciandt.dragonfly.example.infrastructure.jobs
+package com.ciandt.dragonfly.example.features.feedback.jobs
 
 import com.ciandt.dragonfly.example.BuildConfig
-import com.ciandt.dragonfly.example.config.Tenant
+import com.ciandt.dragonfly.example.data.DatabaseManager
+import com.ciandt.dragonfly.example.data.PendingFeedbackRepository
+import com.ciandt.dragonfly.example.features.feedback.jobs.processor.StashedFeedbackProcessor
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
-import com.ciandt.dragonfly.example.infrastructure.jobs.processor.StashedFeedbackProcessor
 import com.evernote.android.job.Job
 import com.evernote.android.job.JobRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 
@@ -18,33 +20,47 @@ import java.util.concurrent.TimeUnit
 class ProcessStashedFeedbackJob : Job() {
     override fun onRunJob(params: Params?): Result {
         if (!isRequirementChargingMet) {
-            DragonflyLogger.warn(LOG_TAG, "Charging requirement not met. Skipping job execution.")
+            DragonflyLogger.info(LOG_TAG, "Charging requirement not met. Skipping job execution.")
             return Result.FAILURE
         }
 
         if (!isRequirementNetworkTypeMet) {
-            DragonflyLogger.warn(LOG_TAG, "Network requirement not met. Skipping job execution.")
+            DragonflyLogger.info(LOG_TAG, "Network requirement not met. Skipping job execution.")
             return Result.FAILURE
         }
 
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser == null) {
-            DragonflyLogger.warn(LOG_TAG, "Tried to execute ProcessStashedFeedbackJob, but there is no user signed in.")
+            DragonflyLogger.info(LOG_TAG, "Tried to execute ProcessStashedFeedbackJob, but there is no user signed in.")
             return Result.FAILURE
         }
 
         try {
-            val processor = StashedFeedbackProcessor(FirebaseDatabase.getInstance(), FirebaseStorage.getInstance(), Tenant.ID, currentUser.uid)
+            val processor = StashedFeedbackProcessor(FirebaseDatabase.getInstance(), FirebaseStorage.getInstance(), PendingFeedbackRepository(DatabaseManager.database), ITEMS_LIMIT)
 
-            DragonflyLogger.debug(LOG_TAG, "Before processor.process()")
-            processor.process()
-            DragonflyLogger.debug(LOG_TAG, "After processor.process()")
+            val countDownLatch = CountDownLatch(1)
+            runOnBackgroundThread {
+                DragonflyLogger.debug(LOG_TAG, "Before processor.process()")
+                processor.process()
+                DragonflyLogger.debug(LOG_TAG, "After processor.process()")
+
+                countDownLatch.countDown()
+            }
+
+            try {
+                countDownLatch.await()
+            } catch (ignored: InterruptedException) {
+            }
 
             return Result.SUCCESS
         } catch (e: Exception) {
             DragonflyLogger.error(LOG_TAG, e)
             return Result.FAILURE
         }
+    }
+
+    private fun runOnBackgroundThread(action: () -> Unit) {
+        Thread(Runnable { action() }).start()
     }
 
     companion object {
@@ -54,6 +70,8 @@ class ProcessStashedFeedbackJob : Job() {
 
         private val JOB_INTERVAL = if (BuildConfig.DEBUG) TimeUnit.MINUTES.toMillis(1) else TimeUnit.MINUTES.toMillis(60)
         private val JOB_FLEX = if (BuildConfig.DEBUG) TimeUnit.SECONDS.toMillis(30) else TimeUnit.MINUTES.toMillis(10)
+
+        private val ITEMS_LIMIT = 10
 
         fun schedule() {
             JobRequest.Builder(JOB_TAG)

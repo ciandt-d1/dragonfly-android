@@ -50,8 +50,6 @@ interface FeedbackContract {
 
         fun setOnFeedbackSaveErrorCallback(callback: ((Feedback, Exception) -> Unit)?)
 
-        fun setOnFeedbackUpdatedWithGcsLocationCallback(callback: ((Feedback) -> Unit)?)
-
         fun saveFeedback(feedback: Feedback)
     }
 }

@@ -3,7 +3,9 @@ package com.ciandt.dragonfly.example.features.projectselection
 import android.content.Context
 import android.net.Uri
 import android.os.AsyncTask
+import com.ciandt.dragonfly.example.data.DatabaseManager
 import com.ciandt.dragonfly.example.data.ProjectRepository
+import com.ciandt.dragonfly.example.data.local.AppDatabase
 import com.ciandt.dragonfly.example.features.download.DownloadHelper
 import com.ciandt.dragonfly.example.features.download.ProjectChangedReceiver
 import com.ciandt.dragonfly.example.infrastructure.extensions.getLocalBroadcastManager
@@ -16,8 +18,12 @@ class ProjectSelectionInteractor(val context: Context, val firebaseStorage: Fire
 
     private var receiver: ProjectChangedReceiver? = null
 
+    private val database by lazy {
+        DatabaseManager.database
+    }
+
     override fun loadProjects(onSuccess: (List<Project>) -> Unit, onFailure: (Exception) -> Unit) {
-        LoadProjectsTask(context, onSuccess, onFailure).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        LoadProjectsTask(database, onSuccess, onFailure).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
     override fun downloadVersion(title: String, version: Version, onFailure: (Exception) -> Unit) {
@@ -46,9 +52,9 @@ class ProjectSelectionInteractor(val context: Context, val firebaseStorage: Fire
         fun isSuccessful(): Boolean = exception == null
     }
 
-    private class LoadProjectsTask(context: Context, private var onSuccess: (List<Project>) -> Unit, private var onFailure: (Exception) -> Unit) : AsyncTask<Void, Void, LoadProjectsResult>() {
+    private class LoadProjectsTask(database: AppDatabase, private var onSuccess: (List<Project>) -> Unit, private var onFailure: (Exception) -> Unit) : AsyncTask<Void, Void, LoadProjectsResult>() {
 
-        private val repository = ProjectRepository(context)
+        private val repository = ProjectRepository(database)
 
         override fun doInBackground(vararg params: Void?): LoadProjectsResult {
             try {

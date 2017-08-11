@@ -1,21 +1,17 @@
 package com.ciandt.dragonfly.example.debug;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.ciandt.dragonfly.example.R;
 import com.ciandt.dragonfly.example.config.FirebaseConfig;
+import com.ciandt.dragonfly.example.data.DatabaseManager;
 import com.ciandt.dragonfly.example.data.ProjectRepository;
 import com.ciandt.dragonfly.example.data.remote.RemoteProjectService;
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback;
@@ -43,20 +39,12 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -182,7 +170,8 @@ public class DebugActionsHelper {
                     @Override
                     public void run() {
                         Context context = target.getActivityInstance();
-                        ProjectRepository repository = new ProjectRepository(context);
+
+                        ProjectRepository repository = new ProjectRepository(DatabaseManager.INSTANCE.getDatabase());
                         repository.clear();
                     }
                 }).start();
