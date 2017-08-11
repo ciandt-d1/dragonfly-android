@@ -207,6 +207,9 @@ dependencies {
     // Helpers
     compile 'com.karumi:dexter:4.1.0'
 
+    // Job scheduling
+    compile 'com.evernote:android-job:1.1.11'
+
     // Dragonfly Library
     compile project(":library")
 

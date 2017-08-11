@@ -2,6 +2,7 @@ package com.ciandt.dragonfly.example.features.feedback
 
 import android.os.AsyncTask
 import android.support.v4.os.AsyncTaskCompat
+import com.ciandt.dragonfly.example.config.FirebaseConfig
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.ciandt.dragonfly.example.infrastructure.extensions.lastSegment
@@ -31,8 +32,6 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
     companion object {
         private val LOG_TAG = FeedbackInteractor::class.java.simpleName
 
-        private const val FEEDBACK_COLLECTION = "feedback_stash"
-
         private class SaveFeedbackTask(val interactor: FeedbackInteractor) : AsyncTask<SaveFeedbackTask.TaskParams, Void, Void>() {
 
             override fun doInBackground(vararg params: TaskParams): Void? {
@@ -48,15 +47,15 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
                             .setContentType("image/jpeg")
                             .build()
 
-                    val feedbackKey = interactor.databaseRef.child(FEEDBACK_COLLECTION).push().key
+                    val feedbackKey = interactor.databaseRef.child(FirebaseConfig.COLLECTION_FEEDBACK_STASH).push().key
 
                     val uploadTask = imageReference.putStream(stream, metadata)
                     uploadTask.addOnFailureListener({ exception ->
                         stream.close()
 
-                        DragonflyLogger.debug(LOG_TAG, "SaveFeedbackTask.doInBackground() - failure | downloadUrl: ${exception.message}")
+                        DragonflyLogger.debug(LOG_TAG, "SaveFeedbackTask.doInBackground() - failure | error: ${exception.message}")
 
-                        interactor.databaseRef.child(FEEDBACK_COLLECTION).child(feedbackKey).setValue(taskParams.feedback)
+                        interactor.databaseRef.child(FirebaseConfig.COLLECTION_FEEDBACK_STASH).child(feedbackKey).setValue(taskParams.feedback)
 
                         interactor.onFeedbackSavedCallback?.invoke(taskParams.feedback)
                     }).addOnSuccessListener({ taskSnapshot ->
@@ -73,7 +72,7 @@ class FeedbackInteractor(storage: FirebaseStorage, database: FirebaseDatabase) :
                                     uploadToGcsFinished = true
                             )
 
-                            interactor.databaseRef.child(FEEDBACK_COLLECTION).child(feedbackKey).setValue(updatedFeedback)
+                            interactor.databaseRef.child(FirebaseConfig.COLLECTION_FEEDBACK_STASH).child(feedbackKey).setValue(updatedFeedback)
 
                             interactor.onFeedbackSavedCallback?.invoke(updatedFeedback)
                         } else {

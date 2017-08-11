@@ -3,15 +3,19 @@ package com.ciandt.dragonfly.example
 import android.app.Application
 import android.os.Environment
 import com.ciandt.dragonfly.example.config.Features
+import com.ciandt.dragonfly.example.infrastructure.jobs.DragonflyJobCreator
+import com.ciandt.dragonfly.example.infrastructure.jobs.ProcessStashedFeedbackJob
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger
 import com.crashlytics.android.Crashlytics
+import com.evernote.android.job.JobManager
 import com.facebook.stetho.Stetho
 import com.google.firebase.FirebaseApp
 import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 import java.io.File
+
 
 class DragonflyApplication : Application() {
 
@@ -30,6 +34,7 @@ class DragonflyApplication : Application() {
         setupStetho()
         setupDragonflyLib()
         setupFirebase()
+        setupJobScheduler()
     }
 
     private fun setupCrashlytics() {
@@ -71,5 +76,16 @@ class DragonflyApplication : Application() {
 
     private fun setupFirebase() {
         FirebaseApp.initializeApp(this)
+    }
+
+    private fun setupJobScheduler() {
+        JobManager
+                .create(this)
+                .addJobCreator(DragonflyJobCreator())
+
+        JobManager.instance().config.setAllowSmallerIntervalsForMarshmallow(BuildConfig.DEBUG)
+
+
+        ProcessStashedFeedbackJob.schedule()
     }
 }
