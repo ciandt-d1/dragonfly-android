@@ -1,16 +1,15 @@
 <resources>
     <string name="project_selection_title">Dragonfly Lens</string>
-    <string name="project_selection_subtitle">Select a model and check what you can identify around
-        you
+    <string name="project_selection_subtitle">Choose a trained model below and explore the world
+        around you
     </string>
-    <string name="project_selection_about">About us</string>
+    <string name="project_selection_about">About Us</string>
     <string name="project_selection_item_info">Ver. %1$04d - %2$s</string>
     <string name="project_selection_item_download">Download</string>
     <string name="project_selection_item_downloading">Downloading…</string>
-    <string name="project_selection_item_downloaded">Let\'s start</string>
+    <string name="project_selection_item_downloaded">Explore</string>
     <string name="project_selection_item_unavailable">Unavailable</string>
-    <string name="project_selection_item_wait_message">Downloading in progress. Please wait…
-    </string>
+    <string name="project_selection_item_wait_message">Download in progress. Please wait…</string>
     <string name="project_selection_item_unavailable_message">No versions available yet.</string>
 
     <string name="project_selection_empty_message">Oops…\nNo models found!</string>
@@ -25,47 +24,47 @@
     <string name="about_title">Thoughtfully Fast. Purposely Lean.</string>
     <string name="about_description">CI&amp;T is a digital technology agency focused on creating
         digital experiences that people love.\n
-        We are pioneers at combining design thinking, data-led strategy, lean principles, and
-        advanced tech with years of industry and vertical expertise to create radically practical
-        solutions for our clients.\n
         We see Machine Learning as a strong force allowing us to take bold ideas to the market with
-        speed and agility.\n\n
+        speed and agility.\n
+        We are pioneers at combining design thinking, data-led strategy, lean principles, and
+        advanced tech with years of industry expertise to create radically practical
+        solutions for our clients.\n\n
         Read more at ciandt.com
     </string>
     <string name="about_privacy">
-        <u>Privacy &amp; Policy</u>
+        <u>Privacy Policy</u>
     </string>
     <string name="about_privacy_url">http://www.ciandt.com</string>
     <string name="about_powered">POWERED BY CIANDT</string>
 
     <string name="permissions_open_settings">Settings</string>
-    <string name="permissions_required_title">Permissions required</string>
+    <string name="permissions_required_title">Permissions Required</string>
     <string name="permissions_required_description">Please provide the required permissions.
     </string>
 
     <string name="real_time_back_button">Back to previous screen</string>
-    <string name="real_time_from_existing_picture">Select an existing picture</string>
+    <string name="real_time_from_existing_picture">Select an image</string>
 
     <string name="feedback_title">Results</string>
     <string name="feedback_save">Save</string>
-    <string name="feedback_save_content_description">Save picture to gallery</string>
-    <string name="feedback_back_content_description">Back to the real time</string>
-    <string name="feedback_also_identify">I also identify these options</string>
-    <string name="feedback_classification">%s - Is this correct?</string>
+    <string name="feedback_save_content_description">Save Photo</string>
+    <string name="feedback_back_content_description">Back to Live Lens</string>
+    <string name="feedback_also_identify">Other predictions</string>
+    <string name="feedback_classification">%s \nIs the prediction correct?</string>
     <string name="feedback_more_info">MORE INFO</string>
-    <string name="feedback_close">CLOSE</string>
+    <string name="feedback_close">COLLAPSE</string>
     <string name="feedback_positive_button_content_description">Positive</string>
     <string name="feedback_negative_button_content_description">Negative</string>
     <string name="feedback_under_revision">Under Revision</string>
-    <string name="feedback_is_something_wrong">Is something wrong?</string>
-    <string name="feedback_choose_option">Choose a better option for this image:</string>
-    <string name="feedback_form_hint_or">Or you can type here what is this</string>
-    <string name="feedback_form_hint">Type here what is this</string>
+    <string name="feedback_is_something_wrong">Help us improve</string>
+    <string name="feedback_choose_option">Choose a more accurate prediction for this image:</string>
+    <string name="feedback_form_hint_or">or type a new one in here</string>
+    <string name="feedback_form_hint">Type here your prediction</string>
     <string name="feedback_form_button_cancel">CANCEL</string>
-    <string name="feedback_form_button_confirm">CONFIRM</string>
+    <string name="feedback_form_button_confirm">SUBMIT</string>
     <string name="feedback_no_classifications_found">No classifications found.</string>
 
-    <string name="feedback_save_image_success">Image saved successfully.</string>
+    <string name="feedback_save_image_success">Photo saved successfully.</string>
     <string name="feedback_save_image_error">Something was wrong. Please try again.</string>
 
     <string name="login_with_google">LOGIN WITH GOOGLE</string>
