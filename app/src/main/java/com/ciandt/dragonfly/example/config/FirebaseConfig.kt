@@ -7,6 +7,6 @@ class FirebaseConfig {
     companion object {
         const val COLLECTION_FEEDBACK_STASH = "feedback_stash"
 
-        const val SYNC_ITEMS_PER_RUN = 4
+        const val SYNC_ITEMS_PER_RUN = 10
     }
 }

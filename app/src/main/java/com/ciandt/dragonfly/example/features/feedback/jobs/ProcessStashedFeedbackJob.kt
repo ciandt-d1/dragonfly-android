@@ -1,6 +1,7 @@
 package com.ciandt.dragonfly.example.features.feedback.jobs
 
 import com.ciandt.dragonfly.example.BuildConfig
+import com.ciandt.dragonfly.example.config.FirebaseConfig
 import com.ciandt.dragonfly.example.data.DatabaseManager
 import com.ciandt.dragonfly.example.data.PendingFeedbackRepository
 import com.ciandt.dragonfly.example.features.feedback.jobs.processor.StashedFeedbackProcessor
@@ -36,7 +37,7 @@ class ProcessStashedFeedbackJob : Job() {
         }
 
         try {
-            val processor = StashedFeedbackProcessor(FirebaseDatabase.getInstance(), FirebaseStorage.getInstance(), PendingFeedbackRepository(DatabaseManager.database), ITEMS_LIMIT)
+            val processor = StashedFeedbackProcessor(FirebaseDatabase.getInstance(), FirebaseStorage.getInstance(), PendingFeedbackRepository(DatabaseManager.database), FirebaseConfig.SYNC_ITEMS_PER_RUN)
 
             val countDownLatch = CountDownLatch(1)
             runOnBackgroundThread {
@@ -70,8 +71,6 @@ class ProcessStashedFeedbackJob : Job() {
 
         private val JOB_INTERVAL = if (BuildConfig.DEBUG) TimeUnit.MINUTES.toMillis(1) else TimeUnit.MINUTES.toMillis(60)
         private val JOB_FLEX = if (BuildConfig.DEBUG) TimeUnit.SECONDS.toMillis(30) else TimeUnit.MINUTES.toMillis(10)
-
-        private val ITEMS_LIMIT = 10
 
         fun schedule() {
             JobRequest.Builder(JOB_TAG)
