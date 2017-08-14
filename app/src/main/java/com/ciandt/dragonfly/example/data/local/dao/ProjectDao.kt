@@ -1,10 +1,6 @@
 package com.ciandt.dragonfly.example.data.local.dao
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Delete
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Query
+import android.arch.persistence.room.*
 import com.ciandt.dragonfly.example.data.local.entities.ProjectEntity
 import com.ciandt.dragonfly.example.data.local.relations.ProjectVersions
 
@@ -20,7 +16,7 @@ interface ProjectDao {
     @Query("SELECT * FROM projects WHERE id = :arg0")
     fun getProject(id: String): ProjectVersions?
 
-    @Query("SELECT * FROM projects ORDER BY createdAt ASC")
+    @Query("SELECT * FROM projects ORDER BY created_at ASC")
     fun getProjects(): List<ProjectVersions>
 
     @Query("DELETE FROM projects")

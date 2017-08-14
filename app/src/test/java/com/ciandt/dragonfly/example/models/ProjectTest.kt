@@ -1,15 +1,10 @@
 package com.ciandt.dragonfly.example.models
 
-import org.amshove.kluent.shouldBe
-import org.amshove.kluent.shouldBeFalse
-import org.amshove.kluent.shouldBeNull
-import org.amshove.kluent.shouldBeTrue
-import org.amshove.kluent.shouldEqual
-import org.amshove.kluent.shouldNotBeNull
+import org.amshove.kluent.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.util.Collections
+import java.util.*
 
 @RunWith(JUnit4::class)
 class ProjectTest {

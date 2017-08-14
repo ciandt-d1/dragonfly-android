@@ -1,5 +1,6 @@
 package com.ciandt.dragonfly.example.infrastructure.jobs
 
+import com.ciandt.dragonfly.example.features.feedback.jobs.ProcessStashedFeedbackJob
 import com.evernote.android.job.Job
 import com.evernote.android.job.JobCreator
 

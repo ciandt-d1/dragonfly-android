@@ -1,10 +1,5 @@
 package com.ciandt.dragonfly.example.debug;
 
-import com.ciandt.dragonfly.example.R;
-import com.ciandt.dragonfly.example.data.ProjectRepository;
-import com.ciandt.dragonfly.example.data.remote.RemoteProjectService;
-import com.ciandt.dragonfly.example.features.login.LoginActivity;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +9,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 
+import com.ciandt.dragonfly.example.R;
+import com.ciandt.dragonfly.example.data.DatabaseManager;
+import com.ciandt.dragonfly.example.data.ProjectRepository;
+import com.ciandt.dragonfly.example.data.remote.RemoteProjectService;
+import com.ciandt.dragonfly.example.features.login.LoginActivity;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -143,7 +143,8 @@ public class DebugActionsHelper {
                     @Override
                     public void run() {
                         Context context = target.getActivityInstance();
-                        ProjectRepository repository = new ProjectRepository(context);
+
+                        ProjectRepository repository = new ProjectRepository(DatabaseManager.INSTANCE.getDatabase());
                         repository.clear();
                     }
                 }).start();

@@ -11,6 +11,7 @@ import com.google.firebase.database.IgnoreExtraProperties
  */
 @IgnoreExtraProperties
 data class Feedback(
+        @get:Exclude var key: String? = null,
         var tenant: String = "",
         var project: String = "",
         var userId: String = "",
@@ -32,7 +33,7 @@ data class Feedback(
     fun isNegative() = value == NEGATIVE
 
     override fun toString(): String {
-        return "Feedback(tenant='$tenant', project='$project', userId='$userId', modelVersion=$modelVersion, value=$value, actualLabel='$actualLabel', identifiedLabels=$identifiedLabels, imageLocalPath='$imageLocalPath', imageGcsPath=$imageGcsPath, uploadToGcsFinished=$uploadToGcsFinished, createdAt=$createdAt, tenantUserProject=$tenantUserProject)"
+        return "Feedback(key=${key} tenant='$tenant', project='$project', userId='$userId', modelVersion=$modelVersion, value=$value, actualLabel='$actualLabel', identifiedLabels=$identifiedLabels, imageLocalPath='$imageLocalPath', imageGcsPath=$imageGcsPath, uploadToGcsFinished=$uploadToGcsFinished, createdAt=$createdAt, tenantUserProject=$tenantUserProject)"
     }
 
     companion object {
@@ -60,6 +61,7 @@ data class Feedback(
             source.readString(),
             source.readString(),
             source.readString(),
+            source.readString(),
             source.readInt(),
             source.readInt(),
             source.readString(),
@@ -74,6 +76,7 @@ data class Feedback(
     override fun describeContents() = 0
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(key)
         dest.writeString(tenant)
         dest.writeString(project)
         dest.writeString(userId)

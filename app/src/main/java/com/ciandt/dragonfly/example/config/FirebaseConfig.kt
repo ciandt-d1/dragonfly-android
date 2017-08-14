@@ -5,6 +5,8 @@ package com.ciandt.dragonfly.example.config
  */
 class FirebaseConfig {
     companion object {
-        val COLLECTION_FEEDBACK_STASH = "feedback_stash"
+        const val COLLECTION_FEEDBACK_STASH = "feedback_stash"
+
+        const val SYNC_ITEMS_PER_RUN = 10
     }
 }

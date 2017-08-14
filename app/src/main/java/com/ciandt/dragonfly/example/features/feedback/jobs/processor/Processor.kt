@@ -1,4 +1,4 @@
-package com.ciandt.dragonfly.example.infrastructure.jobs.processor
+package com.ciandt.dragonfly.example.features.feedback.jobs.processor
 
 /**
  * Created by iluz on 8/4/17.

@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import com.ciandt.dragonfly.example.data.DatabaseManager
 import com.ciandt.dragonfly.example.data.local.LocalDataSource
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -19,7 +20,7 @@ class RemoteProjectService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        listener = RemoteProjectListener(LocalDataSource(this))
+        listener = RemoteProjectListener(LocalDataSource(DatabaseManager.database))
 
         databaseRef = FirebaseDatabase.getInstance().getReference(PROJECTS_COLLECTION)
         databaseRef.addChildEventListener(listener)
@@ -35,7 +36,7 @@ class RemoteProjectService : Service() {
     }
 
     companion object {
-        
+
         fun start(context: Context) {
             val intent = Intent(context, RemoteProjectService::class.java)
             context.startService(intent)
