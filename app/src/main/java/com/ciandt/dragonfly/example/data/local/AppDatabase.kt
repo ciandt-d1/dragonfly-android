@@ -5,7 +5,16 @@ import android.arch.persistence.room.RoomDatabase
 import com.ciandt.dragonfly.example.data.local.dao.*
 import com.ciandt.dragonfly.example.data.local.entities.*
 
-@Database(entities = arrayOf(ProjectEntity::class, VersionEntity::class, DownloadEntity::class, PendingFeedbackEntitiy::class, PendingFeedbackLabelEntitiy::class), version = 2)
+@Database(
+        entities = arrayOf(
+                ProjectEntity::class,
+                VersionEntity::class,
+                DownloadEntity::class,
+                PendingFeedbackEntitiy::class,
+                PendingFeedbackLabelEntitiy::class
+        ),
+        version = 2
+)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun getProjectDao(): ProjectDao

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "a9d931be6ed6d4e18ee228b69ad41917",
+    "identityHash": "9015cd6825f93478d5fea8df06ade6e0",
     "entities": [
       {
         "tableName": "projects",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT, `name` TEXT, `description` TEXT, `colors` TEXT, `createdAt` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT, `name` TEXT, `description` TEXT, `colors` TEXT, `created_at` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -30,7 +30,7 @@
           },
           {
             "fieldPath": "createdAt",
-            "columnName": "createdAt",
+            "columnName": "created_at",
             "affinity": "INTEGER"
           }
         ],
@@ -40,12 +40,21 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_projects_created_at",
+            "unique": false,
+            "columnNames": [
+              "created_at"
+            ],
+            "createSql": "CREATE  INDEX `index_projects_created_at` ON `${TABLE_NAME}` (`created_at`)"
+          }
+        ],
         "foreignKeys": []
       },
       {
         "tableName": "versions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`project` TEXT, `version` INTEGER, `size` INTEGER, `inputSize` INTEGER, `imageMean` INTEGER, `imageStd` REAL, `inputName` TEXT, `outputName` TEXT, `downloadUrl` TEXT, `createdAt` INTEGER, `modelPath` TEXT, `labelsPath` TEXT, `status` INTEGER, PRIMARY KEY(`project`, `version`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`project` TEXT, `version` INTEGER, `size` INTEGER, `input_size` INTEGER, `image_mean` INTEGER, `image_std` REAL, `input_name` TEXT, `output_name` TEXT, `download_url` TEXT, `created_at` INTEGER, `model_path` TEXT, `labels_path` TEXT, `status` INTEGER, PRIMARY KEY(`project`, `version`))",
         "fields": [
           {
             "fieldPath": "project",
@@ -64,47 +73,47 @@
           },
           {
             "fieldPath": "inputSize",
-            "columnName": "inputSize",
+            "columnName": "input_size",
             "affinity": "INTEGER"
           },
           {
             "fieldPath": "imageMean",
-            "columnName": "imageMean",
+            "columnName": "image_mean",
             "affinity": "INTEGER"
           },
           {
             "fieldPath": "imageStd",
-            "columnName": "imageStd",
+            "columnName": "image_std",
             "affinity": "REAL"
           },
           {
             "fieldPath": "inputName",
-            "columnName": "inputName",
+            "columnName": "input_name",
             "affinity": "TEXT"
           },
           {
             "fieldPath": "outputName",
-            "columnName": "outputName",
+            "columnName": "output_name",
             "affinity": "TEXT"
           },
           {
             "fieldPath": "downloadUrl",
-            "columnName": "downloadUrl",
+            "columnName": "download_url",
             "affinity": "TEXT"
           },
           {
             "fieldPath": "createdAt",
-            "columnName": "createdAt",
+            "columnName": "created_at",
             "affinity": "INTEGER"
           },
           {
             "fieldPath": "modelPath",
-            "columnName": "modelPath",
+            "columnName": "model_path",
             "affinity": "TEXT"
           },
           {
             "fieldPath": "labelsPath",
-            "columnName": "labelsPath",
+            "columnName": "labels_path",
             "affinity": "TEXT"
           },
           {
@@ -120,7 +129,24 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_versions_status",
+            "unique": false,
+            "columnNames": [
+              "status"
+            ],
+            "createSql": "CREATE  INDEX `index_versions_status` ON `${TABLE_NAME}` (`status`)"
+          },
+          {
+            "name": "index_versions_created_at",
+            "unique": false,
+            "columnNames": [
+              "created_at"
+            ],
+            "createSql": "CREATE  INDEX `index_versions_created_at` ON `${TABLE_NAME}` (`created_at`)"
+          }
+        ],
         "foreignKeys": []
       },
       {
@@ -149,7 +175,16 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_downloads_version",
+            "unique": false,
+            "columnNames": [
+              "version"
+            ],
+            "createSql": "CREATE  INDEX `index_downloads_version` ON `${TABLE_NAME}` (`version`)"
+          }
+        ],
         "foreignKeys": []
       },
       {
@@ -266,7 +301,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"a9d931be6ed6d4e18ee228b69ad41917\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"9015cd6825f93478d5fea8df06ade6e0\")"
     ]
   }
 }

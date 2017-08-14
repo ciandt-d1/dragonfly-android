@@ -2,7 +2,10 @@ package com.ciandt.dragonfly.example.data.local.entities
 
 import android.arch.persistence.room.*
 
-@Entity(tableName = "pending_feedback", indices = arrayOf(Index("created_at")))
+@Entity(
+        tableName = "pending_feedback",
+        indices = arrayOf(Index("created_at"))
+)
 data class PendingFeedbackEntitiy(
         @PrimaryKey(autoGenerate = false)
         var id: String = "",

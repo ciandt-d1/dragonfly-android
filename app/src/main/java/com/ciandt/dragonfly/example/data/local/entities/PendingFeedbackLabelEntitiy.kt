@@ -5,7 +5,10 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Index
 import android.arch.persistence.room.PrimaryKey
 
-@Entity(tableName = "pending_feedback_label", indices = arrayOf(Index("feedback_id")))
+@Entity(
+        tableName = "pending_feedback_label",
+        indices = arrayOf(Index("feedback_id"))
+)
 data class PendingFeedbackLabelEntitiy(
         @PrimaryKey(autoGenerate = true)
         var id: Long? = null,
