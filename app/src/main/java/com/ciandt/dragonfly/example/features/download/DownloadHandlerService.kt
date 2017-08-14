@@ -4,6 +4,7 @@ import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import com.ciandt.dragonfly.example.BuildConfig
+import com.ciandt.dragonfly.example.data.DatabaseManager
 import com.ciandt.dragonfly.example.data.ProjectRepository
 import com.ciandt.dragonfly.example.helpers.DownloadNotificationHelper
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
@@ -15,6 +16,14 @@ class DownloadHandlerService : IntentService("DownloadHandlerService") {
 
     private lateinit var downloadedFile: DownloadedFile
     private lateinit var version: Version
+
+    private val database by lazy {
+        DatabaseManager.database
+    }
+
+    private val projectRepository by lazy {
+        ProjectRepository(database)
+    }
 
     override fun onHandleIntent(intent: Intent?) {
         if (intent == null) {
@@ -57,7 +66,7 @@ class DownloadHandlerService : IntentService("DownloadHandlerService") {
 
     private fun handleError() {
         DownloadNotificationHelper.showError(this, downloadedFile)
-        ProjectRepository(this).updateVersionStatus(version.project, version.version, Version.STATUS_NOT_DOWNLOADED)
+        projectRepository.updateVersionStatus(version.project, version.version, Version.STATUS_NOT_DOWNLOADED)
         sendBroadcastForProjectChanged()
     }
 
@@ -70,12 +79,12 @@ class DownloadHandlerService : IntentService("DownloadHandlerService") {
     }
 
     private fun handleCancelled() {
-        ProjectRepository(this).updateVersionStatus(version.project, version.version, Version.STATUS_NOT_DOWNLOADED)
+        projectRepository.updateVersionStatus(version.project, version.version, Version.STATUS_NOT_DOWNLOADED)
         sendBroadcastForProjectChanged()
     }
 
     private fun sendBroadcastForProjectChanged() {
-        ProjectRepository(this).getProject(version.project)?.let {
+        projectRepository.getProject(version.project)?.let {
             getLocalBroadcastManager().sendBroadcast(ProjectChangedReceiver.create(it))
         }
     }

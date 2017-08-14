@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.annotation.StringRes
-import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
@@ -19,6 +18,8 @@ import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.config.PermissionsMapping
+import com.ciandt.dragonfly.example.data.DatabaseManager
+import com.ciandt.dragonfly.example.data.PendingFeedbackRepository
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.infrastructure.extensions.getRootView
 import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
@@ -28,7 +29,6 @@ import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.tensorflow.Classifier
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.FirebaseStorage
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -65,10 +65,10 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
         allowSaveToGallery = intent.extras.getBoolean(ALLOW_SAVE_TO_GALLERY_BUNDLE, false)
 
-        val feedbackInteractor = FeedbackInteractor(FirebaseStorage.getInstance(), FirebaseDatabase.getInstance())
+        val feedbackSaverInteractor = FeedbackSaverInteractor(FirebaseDatabase.getInstance(), PendingFeedbackRepository(DatabaseManager.database))
         val saveImageToGalleryInteractor = SaveImageToGalleryInteractor(applicationContext)
 
-        presenter = FeedbackPresenter(model, classificationInput, feedbackInteractor, saveImageToGalleryInteractor, FirebaseAuth.getInstance())
+        presenter = FeedbackPresenter(model, classificationInput, feedbackSaverInteractor, saveImageToGalleryInteractor, FirebaseAuth.getInstance())
         presenter.attachView(this)
         presenter.setUserFeedback(userFeedback)
         presenter.setClassifications(classifications)

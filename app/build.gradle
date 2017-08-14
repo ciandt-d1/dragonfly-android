@@ -190,7 +190,7 @@ dependencies {
     compile "com.google.firebase:firebase-database:${firebaseVersion}"
     compile "com.google.android.gms:play-services-auth:${firebaseVersion}"
 
-    def androidArch = '1.0.0-alpha7'
+    def androidArch = '1.0.0-alpha8'
     compile "android.arch.persistence.room:runtime:${androidArch}"
     kapt "android.arch.persistence.room:compiler:${androidArch}"
 
@@ -206,6 +206,9 @@ dependencies {
 
     // Helpers
     compile 'com.karumi:dexter:4.1.0'
+
+    // Job scheduling
+    compile 'com.evernote:android-job:1.1.11'
 
     // Dragonfly Library
     compile project(":library")
