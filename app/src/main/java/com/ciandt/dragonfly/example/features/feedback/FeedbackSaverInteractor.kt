@@ -47,8 +47,8 @@ class FeedbackSaverInteractor(database: FirebaseDatabase, val pendingFeedbackRep
                     val feedbackKey = saverInteractor.databaseRef.child(FirebaseConfig.COLLECTION_FEEDBACK_STASH).push().key
                     taskParams.feedback.key = feedbackKey
 
-                    saverInteractor.databaseRef.child(FirebaseConfig.COLLECTION_FEEDBACK_STASH).child(feedbackKey).setValue(taskParams.feedback)
                     saverInteractor.pendingFeedbackRepository.insert(taskParams.feedback)
+                    saverInteractor.databaseRef.child(FirebaseConfig.COLLECTION_FEEDBACK_STASH).child(feedbackKey).setValue(taskParams.feedback)
                     saverInteractor.onFeedbackSavedCallback?.invoke(taskParams.feedback)
                 } catch (e: Exception) {
                     DragonflyLogger.error(LOG_TAG, e)
