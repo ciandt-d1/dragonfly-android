@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class PendingFeedbackLabelDaoTest : BaseDaoTest() {
-    protected val dao by lazy { DATABASE.getPendingeFeedbackLabelDao() }
+    protected val dao by lazy { DATABASE.getPendingFeedbackLabelDao() }
 
     @Before
     fun clear() {
