@@ -1,9 +1,9 @@
 package com.ciandt.dragonfly.example.data.mapper
 
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
+import org.amshove.kluent.shouldEqualTo
+import org.amshove.kluent.shouldNotBeNull
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 /**
  * Created by iluz on 8/15/17.
@@ -33,20 +33,20 @@ class FeedbackToPendingFeedbackEntityMapperTest {
 
         val pendingFeedback = FeedbackToPendingFeedbackEntityMapper(feedback).map()
         pendingFeedback.let {
-            assertEquals(feedback.key, it.id)
-            assertEquals(feedback.tenant, it.tenant)
-            assertEquals(feedback.project, it.project)
-            assertEquals(feedback.userId, it.userId)
-            assertEquals(feedback.modelVersion, it.modelVersion)
-            assertEquals(feedback.value, it.value)
-            assertEquals(feedback.actualLabel, it.actualLabel)
-            assertEquals(feedback.imageLocalPath, it.imageLocalPath)
-            assertEquals(feedback.createdAt, it.createdAt)
+            feedback.key!!.shouldEqualTo(it.id)
+            feedback.tenant.shouldEqualTo(it.tenant)
+            feedback.project.shouldEqualTo(it.project)
+            feedback.userId.shouldEqualTo(it.userId)
+            feedback.modelVersion.shouldEqualTo(it.modelVersion)
+            feedback.value.shouldEqualTo(it.value)
+            feedback.actualLabel.shouldEqualTo(it.actualLabel)
+            feedback.imageLocalPath.shouldEqualTo(it.imageLocalPath)
+            feedback.createdAt.shouldEqualTo(it.createdAt)
 
-            assertEquals(feedback.identifiedLabels.keys.size, it.identifiedLabels.size)
+            feedback.identifiedLabels.size.shouldEqualTo(it.identifiedLabels.size)
             it.identifiedLabels.forEach { label ->
-                assertNotNull(feedback.identifiedLabels.get(label.label))
-                assertEquals(feedback.identifiedLabels.get(label.label), label.confidence)
+                feedback.identifiedLabels.get(label.label).shouldNotBeNull()
+                feedback.identifiedLabels.get(label.label)!!.shouldEqualTo(label.confidence)
             }
         }
     }

@@ -2,11 +2,11 @@ package com.ciandt.dragonfly.example.data.mapper
 
 import com.ciandt.dragonfly.example.data.local.entities.PendingFeedbackEntitiy
 import com.ciandt.dragonfly.example.data.local.entities.PendingFeedbackLabelEntitiy
+import org.amshove.kluent.shouldBeFalse
+import org.amshove.kluent.shouldBeNull
+import org.amshove.kluent.shouldEqualTo
+import org.amshove.kluent.shouldNotBeNull
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 
 /**
  * Created by iluz on 8/15/17.
@@ -42,26 +42,25 @@ class PendingFeedbackEntityToFeedbackMapperTest {
                 createdAt = System.currentTimeMillis()
         )
 
-        val feedback = PendingFeedbackEntityToFeedbackMapper(pendingFeedback).map()
-        feedback!!.let { feedback ->
-            assertEquals(pendingFeedback.id, feedback.key)
-            assertEquals(pendingFeedback.tenant, feedback.tenant)
-            assertEquals(pendingFeedback.project, feedback.project)
-            assertEquals(pendingFeedback.userId, feedback.userId)
-            assertEquals(pendingFeedback.modelVersion, feedback.modelVersion)
-            assertEquals(pendingFeedback.value, feedback.value)
-            assertEquals(pendingFeedback.actualLabel, feedback.actualLabel)
-            assertEquals(pendingFeedback.imageLocalPath, feedback.imageLocalPath)
-            assertNull(feedback.imageGcsPath)
-            assertFalse(feedback.uploadToGcsFinished)
-            assertEquals(pendingFeedback.createdAt, feedback.createdAt)
-            assertNull(feedback.tenantUserProject)
+        val feedback = PendingFeedbackEntityToFeedbackMapper(pendingFeedback).map()!!
 
-            assertEquals(feedback.identifiedLabels.keys.size, pendingFeedback.identifiedLabels.size)
-            pendingFeedback.identifiedLabels.forEach { label ->
-                assertNotNull(feedback.identifiedLabels.get(label.label))
-                assertEquals(feedback.identifiedLabels.get(label.label), label.confidence)
-            }
+        pendingFeedback.id.shouldEqualTo(feedback.key!!)
+        pendingFeedback.tenant.shouldEqualTo(feedback.tenant)
+        pendingFeedback.project.shouldEqualTo(feedback.project)
+        pendingFeedback.userId.shouldEqualTo(feedback.userId)
+        pendingFeedback.modelVersion.shouldEqualTo(feedback.modelVersion)
+        pendingFeedback.value.shouldEqualTo(feedback.value)
+        pendingFeedback.actualLabel.shouldEqualTo(feedback.actualLabel)
+        pendingFeedback.imageLocalPath.shouldEqualTo(feedback.imageLocalPath)
+        feedback.imageGcsPath.shouldBeNull()
+        feedback.uploadToGcsFinished.shouldBeFalse()
+        pendingFeedback.createdAt.shouldEqualTo(feedback.createdAt)
+        feedback.tenantUserProject.shouldBeNull()
+
+        feedback.identifiedLabels.size.shouldEqualTo(pendingFeedback.identifiedLabels.size)
+        pendingFeedback.identifiedLabels.forEach { label ->
+            feedback.identifiedLabels.get(label.label).shouldNotBeNull()
+            feedback.identifiedLabels.get(label.label)!!.shouldEqualTo(label.confidence)
         }
     }
 }
