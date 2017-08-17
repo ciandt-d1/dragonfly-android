@@ -82,20 +82,29 @@ public class DragonflyLensFeedbackView extends FrameLayout {
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.DragonflyLensFeedbackView, 0, 0);
         try {
             Drawable ornamentDrawable = typedArray.getDrawable(R.styleable.DragonflyLensFeedbackView_dlfvCameraOrnament);
-            if (ornamentDrawable != null) {
-                ornamentView.setImageDrawable(ornamentDrawable);
-                ornamentView.setVisibility(VISIBLE);
-            } else {
-                ornamentView.setVisibility(GONE);
-            }
+            setOrnamentDrawable(ornamentDrawable);
 
             final int scaleTypeIndex = typedArray.getInt(R.styleable.DragonflyLensFeedbackView_dlfvCameraOrnamentScaleType, -1);
             if (scaleTypeIndex >= 0 && scaleTypeIndex <= ImageScaleTypes.VALUES.length) {
+                setOrnamentScaleType(ImageScaleTypes.VALUES[scaleTypeIndex]);
                 ornamentView.setScaleType(ImageScaleTypes.VALUES[scaleTypeIndex]);
             }
         } finally {
             typedArray.recycle();
         }
+    }
+
+    public void setOrnamentDrawable(Drawable ornamentDrawable) {
+        if (ornamentDrawable != null) {
+            ornamentView.setImageDrawable(ornamentDrawable);
+            ornamentView.setVisibility(VISIBLE);
+        } else {
+            ornamentView.setVisibility(GONE);
+        }
+    }
+
+    public void setOrnamentScaleType(ImageView.ScaleType scaleType) {
+        ornamentView.setScaleType(scaleType);
     }
 
     @Override

@@ -126,17 +126,23 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.DragonflyLensRealtimeView, 0, 0);
         try {
             Drawable ornamentDrawable = typedArray.getDrawable(R.styleable.DragonflyLensRealtimeView_dlvCameraOrnament);
-            if (ornamentDrawable != null) {
-                ornamentView.setImageDrawable(ornamentDrawable);
-            }
+            setOrnamentDrawable(ornamentDrawable);
 
             final int scaleTypeIndex = typedArray.getInt(R.styleable.DragonflyLensRealtimeView_dlvCameraOrnamentScaleType, -1);
             if (scaleTypeIndex >= 0 && scaleTypeIndex <= ImageScaleTypes.VALUES.length) {
-                ornamentView.setScaleType(ImageScaleTypes.VALUES[scaleTypeIndex]);
+                setOrnamentScaleType(ImageScaleTypes.VALUES[scaleTypeIndex]);
             }
         } finally {
             typedArray.recycle();
         }
+    }
+
+    public void setOrnamentDrawable(Drawable ornamentDrawable) {
+        ornamentView.setImageDrawable(ornamentDrawable);
+    }
+
+    public void setOrnamentScaleType(ImageView.ScaleType scaleType) {
+        ornamentView.setScaleType(scaleType);
     }
 
     public void setModelCallbacks(ModelCallbacks callbacks) {
