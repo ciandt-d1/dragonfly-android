@@ -4,10 +4,14 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.view.View.GONE
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.ViewTarget
+import com.bumptech.glide.request.transition.Transition
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
@@ -86,6 +90,15 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         dragonFlyLens.loadModel(model)
         dragonFlyLens.setSnapshotCallbacks(this)
         dragonFlyLens.setUriAnalysisCallbacks(this)
+
+        Glide
+                .with(this)
+                .load(R.drawable.dragonfly_lens_grid)
+                .into(object : ViewTarget<DragonflyLensRealtimeView, Drawable>(dragonFlyLens) {
+                    override fun onResourceReady(resource: Drawable?, anim: Transition<in Drawable>?) {
+                        view.setOrnamentDrawable(resource)
+                    }
+                })
 
         setupDragonflyLensPermissionsCallback()
     }

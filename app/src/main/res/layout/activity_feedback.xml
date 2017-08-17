@@ -14,7 +14,6 @@
         android:id="@+id/dragonFlyLensFeedbackView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:dlfvCameraOrnament="@drawable/dragonfly_lens_grid"
         app:dlfvCameraOrnamentScaleType="center"/>
 
     <android.support.v7.widget.Toolbar

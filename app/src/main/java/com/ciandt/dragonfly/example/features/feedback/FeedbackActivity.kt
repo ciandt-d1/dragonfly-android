@@ -4,10 +4,10 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.support.annotation.StringRes
-import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,6 +15,9 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.ViewTarget
+import com.bumptech.glide.request.transition.Transition
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
@@ -24,6 +27,7 @@ import com.ciandt.dragonfly.example.infrastructure.extensions.getRootView
 import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
 import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
 import com.ciandt.dragonfly.example.shared.BaseActivity
+import com.ciandt.dragonfly.feedback.ui.DragonflyLensFeedbackView
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.tensorflow.Classifier
 import com.google.firebase.auth.FirebaseAuth
@@ -79,6 +83,15 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         setupNegativeFeedbackView()
 
         dragonFlyLensFeedbackView.setClassificationInput(classificationInput)
+
+        Glide
+                .with(this)
+                .load(R.drawable.dragonfly_lens_grid)
+                .into(object : ViewTarget<DragonflyLensFeedbackView, Drawable>(dragonFlyLensFeedbackView) {
+                    override fun onResourceReady(resource: Drawable?, anim: Transition<in Drawable>?) {
+                        view.setOrnamentDrawable(resource)
+                    }
+                })
     }
 
     override fun showSaveImageSuccessMessage(@StringRes message: Int) {
