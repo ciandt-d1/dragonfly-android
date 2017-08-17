@@ -23,6 +23,7 @@ apply plugin: 'io.fabric'
 apply from: '../versions.gradle'
 apply from: '../sonarqube.gradle'
 apply from: '../quality.gradle'
+apply from: '../.configs/configs.gradle'
 
 ext {
     // The order is based on way the Play store works with multiple APKs. Remember, if a user's
