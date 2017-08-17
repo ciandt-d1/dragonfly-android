@@ -9,7 +9,7 @@ class PendingFeedbackLocalDataSource(val database: AppDatabase) {
     }
 
     private val pendingFeedbackLabelDao by lazy {
-        database.getPendingeFeedbackLabelDao()
+        database.getPendingFeedbackLabelDao()
     }
 
     fun insert(feedback: PendingFeedbackEntitiy) = database.runInTransaction {

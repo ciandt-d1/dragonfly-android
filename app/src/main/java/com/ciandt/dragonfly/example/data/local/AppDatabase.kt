@@ -25,5 +25,5 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun getPendingFeedbackDao(): PendingFeedbackDao
 
-    abstract fun getPendingeFeedbackLabelDao(): PendingFeedbackLabelDao
+    abstract fun getPendingFeedbackLabelDao(): PendingFeedbackLabelDao
 }
