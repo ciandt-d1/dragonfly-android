@@ -17,12 +17,16 @@ import android.widget.Toast
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
+import com.ciandt.dragonfly.example.components.predictions.PredictionsView
 import com.ciandt.dragonfly.example.config.PermissionsMapping
 import com.ciandt.dragonfly.example.data.DatabaseManager
 import com.ciandt.dragonfly.example.data.PendingFeedbackRepository
+import com.ciandt.dragonfly.example.features.feedback.model.ComparisonResult
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.infrastructure.extensions.getRootView
 import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
+import com.ciandt.dragonfly.example.infrastructure.extensions.makeGone
+import com.ciandt.dragonfly.example.infrastructure.extensions.makeVisible
 import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
 import com.ciandt.dragonfly.example.shared.BaseActivity
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
@@ -67,8 +71,9 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
         val feedbackSaverInteractor = FeedbackSaverInteractor(FirebaseDatabase.getInstance(), PendingFeedbackRepository(DatabaseManager.database))
         val saveImageToGalleryInteractor = SaveImageToGalleryInteractor(applicationContext)
+        val comparisonInteractor = ComparisonInteractor()
 
-        presenter = FeedbackPresenter(model, classificationInput, feedbackSaverInteractor, saveImageToGalleryInteractor, FirebaseAuth.getInstance())
+        presenter = FeedbackPresenter(model, classificationInput, feedbackSaverInteractor, saveImageToGalleryInteractor, comparisonInteractor, FirebaseAuth.getInstance())
         presenter.attachView(this)
         presenter.setUserFeedback(userFeedback)
         presenter.setClassifications(classifications)
@@ -79,6 +84,10 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         setupNegativeFeedbackView()
 
         dragonFlyLensFeedbackView.setClassificationInput(classificationInput)
+
+        compareButton.setOnClickListener {
+            presenter.compareServices(classificationInput)
+        }
     }
 
     override fun showSaveImageSuccessMessage(@StringRes message: Int) {
@@ -87,6 +96,32 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
     override fun showSaveImageErrorMessage(@StringRes message: Int) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showComparisonResult(result: ComparisonResult) {
+        compareButton.makeGone()
+
+        comparisonContainer.makeGone()
+        comparisonContainer.removeAllViews()
+
+        result.services.forEach { (_, name, classifications) ->
+
+            val chips = ArrayList<FeedbackChip>()
+            classifications.mapTo(chips, { FeedbackChip(it) })
+
+            val predictionView = PredictionsView(this)
+            predictionView.setTitle(name)
+            predictionView.setChips(chips)
+
+            comparisonContainer.addView(predictionView)
+        }
+
+        comparisonContainer.makeVisible()
+    }
+
+    override fun showComparisonResultError(exception: Exception) {
+        compareButton.makeVisible()
+        Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
     }
 
     private fun setupSaveImageButton() {

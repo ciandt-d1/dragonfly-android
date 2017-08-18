@@ -98,6 +98,29 @@
                 android:layout_height="wrap_content"
                 predictionsView:title="@string/feedback_also_identify"/>
 
+            <View
+                android:id="@+id/servicesSeparator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/feedback_result_line_height"
+                android:layout_marginLeft="@dimen/feedback_result_line_horizontal_margin"
+                android:layout_marginRight="@dimen/feedback_result_line_horizontal_margin"
+                android:background="@color/feedback_result_line"
+            />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/compareButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/touchable_area_minimum_dimension"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/feedback_compare_services"
+            />
+
+            <LinearLayout
+                android:id="@+id/comparisonContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
 
         </LinearLayout>
 

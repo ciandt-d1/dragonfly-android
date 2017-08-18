@@ -13,7 +13,14 @@ import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.tensorflow.Classifier
 import com.google.firebase.auth.FirebaseAuth
 
-class FeedbackPresenter(val model: Model, val classificationInput: DragonflyClassificationInput, val feedbackSaverInteractor: FeedbackContract.SaverInteractor, val saveImageToGalleryInteractor: SaveImageToGalleryContract.Interactor, val firebaseAuth: FirebaseAuth) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
+class FeedbackPresenter(
+        val model: Model,
+        val classificationInput: DragonflyClassificationInput,
+        val feedbackSaverInteractor: FeedbackContract.SaverInteractor,
+        val saveImageToGalleryInteractor: SaveImageToGalleryContract.Interactor,
+        val comparisonInteractor: ComparisonContract.Interactor,
+        val firebaseAuth: FirebaseAuth
+) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
     private val results = ArrayList<Classifier.Classification>()
     private var userFeedback: Feedback? = null
 
@@ -75,6 +82,17 @@ class FeedbackPresenter(val model: Model, val classificationInput: DragonflyClas
 
     override fun saveImageToGallery(classificationInput: DragonflyClassificationInput) {
         saveImageToGalleryInteractor.save(classificationInput)
+    }
+
+    override fun compareServices(classificationInput: DragonflyClassificationInput) {
+        comparisonInteractor.compareServices(
+                onSuccess = { result ->
+                    view?.showComparisonResult(result)
+                },
+                onFailure = { exception ->
+                    view?.showComparisonResultError(exception)
+                }
+        )
     }
 
     private fun saveFeedback(label: String, value: Int) {
