@@ -9,7 +9,7 @@ data class Classification(
         @Expose
         var label: String? = null,
 
-        @SerializedName("confidence")
+        @SerializedName("score")
         @Expose
-        var confidence: Double = 0.toDouble()
+        var score: Float = 0.toFloat()
 )
