@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:chipsView="http://schemas.android.com/apk/res-auto"
+              xmlns:predictionsView="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:id="@+id/feedbackResultContainer"
               android:layout_width="match_parent"
@@ -84,7 +84,7 @@
             tools:visibility="visible">
 
             <View
-                android:id="@+id/line"
+                android:id="@+id/otherPredictionsSeparator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/feedback_result_line_height"
                 android:layout_marginLeft="@dimen/feedback_result_line_horizontal_margin"
@@ -92,36 +92,17 @@
                 android:background="@color/feedback_result_line"
             />
 
-            <TextView
+            <com.ciandt.dragonfly.example.components.predictions.PredictionsView
+                android:id="@+id/otherPredictions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/feedback_result_other_text_vertical_margin"
-                android:layout_marginLeft="@dimen/feedback_result_other_text_horizontal_margin"
-                android:layout_marginRight="@dimen/feedback_result_other_text_horizontal_margin"
-                style="@style/Feedback.Result.Others"
-                android:text="@string/feedback_also_identify"
-            />
+                predictionsView:title="@string/feedback_also_identify"/>
 
-            <com.ciandt.dragonfly.example.components.chips.ChipsView
-                android:id="@+id/chipsViews"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/feedback_result_chips_margin_top"
-                android:layout_marginBottom="@dimen/feedback_result_chips_margin_bottom"
-                chipsView:chipLayout="@layout/item_chip"
-                chipsView:chipSpaceAfter="@dimen/chip_space_after"
-                chipsView:chipSpaceBefore="@dimen/chip_space_before"
-                chipsView:chipSpaceBetween="@dimen/chip_space_between"
-                chipsView:fadingEdges="true"
-                chipsView:fadingEdgesDrawable="@drawable/chip_gradient"
-                chipsView:fadingEdgesWidth="@dimen/fading_edges_width"
-                chipsView:selectable="false"
-            />
 
         </LinearLayout>
 
         <View
-            android:id="@+id/line2"
+            android:id="@+id/moreInfoSeparator"
             android:layout_width="match_parent"
             android:layout_height="@dimen/feedback_result_line_height"
             android:layout_marginLeft="@dimen/feedback_result_line_horizontal_margin"
@@ -148,7 +129,7 @@
             android:layout_height="@dimen/feedback_result_more_info_height"
             android:minHeight="@dimen/touchable_area_minimum_dimension"
             android:paddingStart="@dimen/feedback_result_more_info_padding_left"
-            android:layout_below="@id/line2"
+            android:layout_below="@id/moreInfoSeparator"
             style="@style/Feedback.Result.MoreInfo"
             android:gravity="center_vertical"
             android:text="@string/feedback_more_info"

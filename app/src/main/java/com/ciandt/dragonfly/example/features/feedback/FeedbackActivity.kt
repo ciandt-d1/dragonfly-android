@@ -221,7 +221,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                 chips.add(FeedbackChip(it))
             }
 
-            chipsViews.setChips(chips)
+            otherPredictions.setChips(chips)
         }
     }
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:chipsView="http://schemas.android.com/apk/res-auto"
+       xmlns:tools="http://schemas.android.com/tools"
+       tools:background="#33ff0000"
+       tools:layout_height="wrap_content"
+       tools:layout_width="match_parent"
+       tools:orientation="vertical"
+       tools:parentTag="android.widget.LinearLayout">
+
+    <TextView
+        android:id="@+id/titleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/feedback_result_other_text_vertical_margin"
+        android:layout_marginLeft="@dimen/feedback_result_other_text_horizontal_margin"
+        android:layout_marginRight="@dimen/feedback_result_other_text_horizontal_margin"
+        style="@style/Feedback.Result.Others"
+        tools:text="Title"
+    />
+
+    <com.ciandt.dragonfly.example.components.chips.ChipsView
+        android:id="@+id/chipsView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/feedback_result_chips_margin_top"
+        android:layout_marginBottom="@dimen/feedback_result_chips_margin_bottom"
+        chipsView:chipLayout="@layout/item_chip"
+        chipsView:chipSpaceAfter="@dimen/chip_space_after"
+        chipsView:chipSpaceBefore="@dimen/chip_space_before"
+        chipsView:chipSpaceBetween="@dimen/chip_space_between"
+        chipsView:fadingEdges="true"
+        chipsView:fadingEdgesDrawable="@drawable/chip_gradient"
+        chipsView:fadingEdgesWidth="@dimen/fading_edges_width"
+        chipsView:selectable="false"
+    />
+
+</merge>
