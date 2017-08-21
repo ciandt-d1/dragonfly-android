@@ -11,15 +11,14 @@ import com.ciandt.dragonfly.example.infrastructure.extensions.tail
 import com.ciandt.dragonfly.example.shared.BasePresenter
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.tensorflow.Classifier
-import com.google.firebase.auth.FirebaseAuth
 
 class FeedbackPresenter(
         val model: Model,
         val classificationInput: DragonflyClassificationInput,
+        val userId: String,
         val feedbackSaverInteractor: FeedbackContract.SaverInteractor,
         val saveImageToGalleryInteractor: SaveImageToGalleryContract.Interactor,
-        val benchmarkInteractor: BenchmarkContract.Interactor,
-        val firebaseAuth: FirebaseAuth
+        val benchmarkInteractor: BenchmarkContract.Interactor
 ) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
     private val results = ArrayList<Classifier.Classification>()
     private var userFeedback: Feedback? = null
@@ -111,7 +110,7 @@ class FeedbackPresenter(
         val feedback = Feedback(
                 tenant = Tenant.ID,
                 project = model.id,
-                userId = firebaseAuth.currentUser!!.uid,
+                userId = userId,
                 modelVersion = model.version,
                 value = value,
                 actualLabel = label,

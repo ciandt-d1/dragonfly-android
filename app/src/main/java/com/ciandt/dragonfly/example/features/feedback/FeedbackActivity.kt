@@ -71,7 +71,11 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         val saveImageToGalleryInteractor = SaveImageToGalleryInteractor(applicationContext)
         val benchmarkInteractor = BenchmarkInteractor()
 
-        presenter = FeedbackPresenter(model, classificationInput, feedbackSaverInteractor, saveImageToGalleryInteractor, benchmarkInteractor, FirebaseAuth.getInstance())
+        presenter = FeedbackPresenter(model, classificationInput, FirebaseAuth.getInstance().currentUser!!.uid,
+                feedbackSaverInteractor,
+                saveImageToGalleryInteractor,
+                benchmarkInteractor)
+
         presenter.attachView(this)
         presenter.setUserFeedback(userFeedback)
         presenter.setClassifications(classifications)
