@@ -36,7 +36,7 @@ class RemoteDataSource(private val baseUrl: String) {
     }
 
     fun compareServices(image: String): List<Service> {
-        val request = comparisonApi.compare()
+        val request = comparisonApi.compare(ComparisonApi.CompareParams(image))
         val response = request.execute()
 
         if (response.isSuccessful) {

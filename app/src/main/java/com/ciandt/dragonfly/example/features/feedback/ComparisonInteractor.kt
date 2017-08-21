@@ -4,11 +4,13 @@ import android.os.AsyncTask
 import com.ciandt.dragonfly.example.config.Network
 import com.ciandt.dragonfly.example.data.ClassificationRepository
 import com.ciandt.dragonfly.example.features.feedback.model.ComparisonResult
+import com.ciandt.dragonfly.example.helpers.ImageHelper
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 
 class ComparisonInteractor : ComparisonContract.Interactor {
 
-    override fun compareServices(onSuccess: (ComparisonResult) -> Unit, onFailure: (Exception) -> Unit) {
-        CompareServicesTask(onSuccess, onFailure).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+    override fun compareServices(input: DragonflyClassificationInput, onSuccess: (ComparisonResult) -> Unit, onFailure: (Exception) -> Unit) {
+        CompareServicesTask(input, onSuccess, onFailure).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
     private data class CompareServicesResult(val comparison: ComparisonResult, val exception: Exception?) {
@@ -21,7 +23,8 @@ class ComparisonInteractor : ComparisonContract.Interactor {
 
         override fun doInBackground(vararg params: Void?): CompareServicesResult {
             try {
-                val result = repository.compareServices("//todo")
+                val image = ImageHelper.encodeToBase64(input.imagePath) ?: throw RuntimeException("Image could not be converted to base64")
+                val result = repository.compareServices(image)
                 return CompareServicesResult(result, null)
             } catch (e: Exception) {
                 return CompareServicesResult(ComparisonResult(), e)
