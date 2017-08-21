@@ -23,7 +23,7 @@ class ComparisonInteractor : ComparisonContract.Interactor {
 
         override fun doInBackground(vararg params: Void?): CompareServicesResult {
             try {
-                val image = ImageHelper.encodeToBase64(input.imagePath) ?: throw RuntimeException("Image could not be converted to base64")
+                val image = ImageHelper.encodeToBase64(input.imagePath, quality = 85) ?: throw RuntimeException("Image could not be converted to base64")
                 val result = repository.compareServices(image)
                 return CompareServicesResult(result, null)
             } catch (e: Exception) {
