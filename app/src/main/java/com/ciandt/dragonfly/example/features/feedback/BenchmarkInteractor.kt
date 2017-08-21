@@ -1,6 +1,7 @@
 package com.ciandt.dragonfly.example.features.feedback
 
 import android.os.AsyncTask
+import com.ciandt.dragonfly.example.config.Benchmark
 import com.ciandt.dragonfly.example.config.Network
 import com.ciandt.dragonfly.example.data.ClassificationRepository
 import com.ciandt.dragonfly.example.features.feedback.model.BenchmarkResult
@@ -23,7 +24,7 @@ class BenchmarkInteractor : BenchmarkContract.Interactor {
 
         override fun doInBackground(vararg params: Void?): BenchmarkTaskResult {
             try {
-                val image = ImageHelper.encodeToBase64(input.imagePath, quality = 85) ?: throw RuntimeException("Image could not be converted to base64")
+                val image = ImageHelper.encodeToBase64(input.imagePath, Benchmark.IMAGE_FORMAT, Benchmark.IMAGE_QUALITY) ?: throw RuntimeException("Image could not be converted to base64")
                 val result = repository.benchmark(image)
                 return BenchmarkTaskResult(result, null)
             } catch (e: Exception) {
