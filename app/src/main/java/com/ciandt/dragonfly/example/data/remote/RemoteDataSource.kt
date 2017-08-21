@@ -9,17 +9,23 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 
 class RemoteDataSource(private val baseUrl: String) {
 
     private val httpClient by lazy {
         OkHttpClient.Builder().apply {
+
+            connectTimeout(30, TimeUnit.SECONDS)
+            readTimeout(60, TimeUnit.SECONDS)
+
             if (BuildConfig.DEBUG) {
                 addNetworkInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             }
             addInterceptor(UserAgentInterceptor())
             addInterceptor(AuthorizationInterceptor())
+
         }.build()
     }
 
