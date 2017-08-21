@@ -7,7 +7,9 @@ class BenchmarkResult {
     val benchmarks: MutableList<BenchmarkService> = mutableListOf()
 
     fun addBenchmarkService(service: BenchmarkService) {
-        benchmarks.add(service)
+        if (service.classifications.isNotEmpty()) {
+            benchmarks.add(service)
+        }
     }
 
     data class BenchmarkService(
