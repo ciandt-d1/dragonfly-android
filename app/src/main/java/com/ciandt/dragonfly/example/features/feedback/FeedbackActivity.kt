@@ -25,8 +25,6 @@ import com.ciandt.dragonfly.example.features.feedback.model.ComparisonResult
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.infrastructure.extensions.getRootView
 import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
-import com.ciandt.dragonfly.example.infrastructure.extensions.makeGone
-import com.ciandt.dragonfly.example.infrastructure.extensions.makeVisible
 import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
 import com.ciandt.dragonfly.example.shared.BaseActivity
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
@@ -79,15 +77,12 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         presenter.setClassifications(classifications)
 
         setupBackButton()
+        setupCompareButtons()
         setupSaveImageButton()
         setupResultsView()
         setupNegativeFeedbackView()
 
         dragonFlyLensFeedbackView.setClassificationInput(classificationInput)
-
-        compareButton.setOnClickListener {
-            presenter.compareServices(classificationInput)
-        }
     }
 
     override fun showSaveImageSuccessMessage(@StringRes message: Int) {
@@ -98,11 +93,16 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    override fun showComparisonResult(result: ComparisonResult) {
-        compareButton.makeGone()
+    override fun showComparisonLoading() {
+        compareButton.visibility = View.GONE
+        compareErrorState.visibility = View.GONE
+        compareLoading.visibility = View.VISIBLE
+    }
 
-        comparisonContainer.makeGone()
-        comparisonContainer.removeAllViews()
+    override fun showComparisonResult(result: ComparisonResult) {
+        compareButton.visibility = View.GONE
+        compareLoading.visibility = View.GONE
+        compareErrorState.visibility = View.GONE
 
         result.services.forEach { (_, name, classifications) ->
 
@@ -115,13 +115,20 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
             comparisonContainer.addView(predictionView)
         }
-
-        comparisonContainer.makeVisible()
     }
 
-    override fun showComparisonResultError(exception: Exception) {
-        compareButton.makeVisible()
-        Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
+    override fun showComparisonError(exception: Exception) {
+        compareButton.visibility = View.GONE
+        compareLoading.visibility = View.GONE
+        compareErrorState.visibility = View.VISIBLE
+        compareErrorMessage.text = getString(R.string.feedback_compare_error)
+    }
+
+    override fun showComparisonEmpty() {
+        compareButton.visibility = View.GONE
+        compareLoading.visibility = View.GONE
+        compareErrorState.visibility = View.VISIBLE
+        compareErrorMessage.text = getString(R.string.feedback_compare_empty)
     }
 
     private fun setupSaveImageButton() {
@@ -147,6 +154,16 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         btnBack.setOnClickListener({
             super.onBackPressed()
         })
+    }
+
+    private fun setupCompareButtons() {
+        compareButton.setOnClickListener {
+            presenter.compareServices(classificationInput)
+        }
+
+        compareErrorRetry.setOnClickListener {
+            presenter.compareServices(classificationInput)
+        }
     }
 
     private fun setupResultsView() {

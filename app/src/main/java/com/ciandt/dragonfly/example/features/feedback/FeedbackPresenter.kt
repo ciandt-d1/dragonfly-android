@@ -85,12 +85,19 @@ class FeedbackPresenter(
     }
 
     override fun compareServices(classificationInput: DragonflyClassificationInput) {
+
+        view?.showComparisonLoading()
+
         comparisonInteractor.compareServices(classificationInput,
                 onSuccess = { result ->
-                    view?.showComparisonResult(result)
+                    if (result.services.isEmpty()) {
+                        view?.showComparisonEmpty()
+                    } else {
+                        view?.showComparisonResult(result)
+                    }
                 },
                 onFailure = { exception ->
-                    view?.showComparisonResultError(exception)
+                    view?.showComparisonError(exception)
                 }
         )
     }

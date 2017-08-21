@@ -30,9 +30,13 @@ interface FeedbackContract {
 
         fun showSaveImageErrorMessage(@StringRes message: Int)
 
+        fun showComparisonLoading()
+
         fun showComparisonResult(result: ComparisonResult)
 
-        fun showComparisonResultError(exception: Exception)
+        fun showComparisonError(exception: Exception)
+
+        fun showComparisonEmpty()
     }
 
     interface Presenter : BasePresenterContract<View> {

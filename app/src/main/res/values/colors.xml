@@ -13,6 +13,9 @@
     <color name="toolbar_background">@color/white</color>
     <color name="toolbar_button_text">@color/colorAccent</color>
 
+    <color name="button_text">#ffffff</color>
+    <color name="button_background">#7b63f0</color>
+
     <color name="project_selection_title">#414141</color>
     <color name="project_selection_subtitle">#757575</color>
     <color name="project_selection_line">#e0e0e0</color>
@@ -59,10 +62,10 @@
     <color name="feedback_form_confirm">#18f7b6</color>
     <color name="feedback_form_confirm_disabled">#33ffffff</color>
 
+    <color name="feedback_compare_message">#8A000000</color>
+
     <color name="login_title">#dd000000</color>
     <color name="login_subtitle">#89000000</color>
-    <color name="login_google">#ffffff</color>
-    <color name="login_google_background">#7b63f0</color>
     <color name="login_footer_line">#1e000000</color>
     <color name="login_footer">#89000000</color>
     <color name="login_footer_background">#f5f5f5</color>

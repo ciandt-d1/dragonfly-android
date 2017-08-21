@@ -107,20 +107,62 @@
                 android:background="@color/feedback_result_line"
             />
 
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/compareButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/touchable_area_minimum_dimension"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/feedback_compare_services"
-            />
-
             <LinearLayout
                 android:id="@+id/comparisonContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"/>
+                android:minHeight="@dimen/feedback_comparison_container_minimum_height"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/compareButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/touchable_area_minimum_dimension"
+                    android:layout_margin="@dimen/feedback_compare_button_margin"
+                    style="@style/Feedback.CompareButton"
+                    android:text="@string/feedback_compare_services"
+                />
+
+                <ProgressBar
+                    android:id="@+id/compareLoading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/feedback_loading_margin"
+                    android:layout_marginBottom="@dimen/feedback_loading_margin"
+                    style="?android:attr/progressBarStyle"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/colorAccent"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    tools:ignore="UnusedAttribute"/>
+
+                <LinearLayout
+                    android:id="@+id/compareErrorState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/feedback_error_margin"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/compareErrorMessage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/Feedback.Compare.Message"
+                        android:text="@string/feedback_compare_error"/>
+
+                    <Button
+                        android:id="@+id/compareErrorRetry"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/touchable_area_minimum_dimension"
+                        android:layout_margin="@dimen/feedback_compare_button_margin"
+                        style="@style/Feedback.Retry"
+                        android:text="@string/feedback_compare_try_again"
+                    />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 

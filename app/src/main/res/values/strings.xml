@@ -67,7 +67,10 @@
     <string name="feedback_save_image_success">Photo saved successfully.</string>
     <string name="feedback_save_image_error">Something was wrong. Please try again.</string>
 
-    <string name="feedback_compare_services">Compare with other services</string>
+    <string name="feedback_compare_services">Benchmark</string>
+    <string name="feedback_compare_try_again">Try again</string>
+    <string name="feedback_compare_error">Uh-oh, an error occurred!</string>
+    <string name="feedback_compare_empty">No classifications found.</string>
 
     <string name="login_with_google">LOGIN WITH GOOGLE</string>
     <string name="login_title">Dragonfly Lens</string>
