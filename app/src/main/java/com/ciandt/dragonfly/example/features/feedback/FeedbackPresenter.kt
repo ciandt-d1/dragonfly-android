@@ -80,11 +80,11 @@ class FeedbackPresenter(
         this.userFeedback = userFeedback
     }
 
-    override fun saveImageToGallery(classificationInput: DragonflyClassificationInput) {
+    override fun saveImageToGallery() {
         saveImageToGalleryInteractor.save(classificationInput)
     }
 
-    override fun benchmark(classificationInput: DragonflyClassificationInput) {
+    override fun benchmark() {
 
         view?.showBenchmarkLoading()
 

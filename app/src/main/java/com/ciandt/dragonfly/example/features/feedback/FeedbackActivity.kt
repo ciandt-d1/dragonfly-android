@@ -139,7 +139,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                     .withPermissions(PermissionsMapping.SAVE_IMAGE_TO_GALLERY)
                     .withListener(object : MultiplePermissionsListener {
                         override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                            presenter.saveImageToGallery(classificationInput)
+                            presenter.saveImageToGallery()
                         }
 
                         override fun onPermissionRationaleShouldBeShown(permissions: MutableList<PermissionRequest>, token: PermissionToken) {
@@ -158,11 +158,11 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
     private fun setupBenchmarkButtons() {
         benchmarkButton.setOnClickListener {
-            presenter.benchmark(classificationInput)
+            presenter.benchmark()
         }
 
         benchmarkErrorRetry.setOnClickListener {
-            presenter.benchmark(classificationInput)
+            presenter.benchmark()
         }
     }
 
