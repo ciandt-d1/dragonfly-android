@@ -1,7 +1,7 @@
 package com.ciandt.dragonfly.example.features.feedback
 
 import android.support.annotation.StringRes
-import com.ciandt.dragonfly.example.features.feedback.model.ComparisonResult
+import com.ciandt.dragonfly.example.features.feedback.model.BenchmarkResult
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.shared.BasePresenterContract
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
@@ -30,13 +30,13 @@ interface FeedbackContract {
 
         fun showSaveImageErrorMessage(@StringRes message: Int)
 
-        fun showComparisonLoading()
+        fun showBenchmarkLoading()
 
-        fun showComparisonResult(result: ComparisonResult)
+        fun showBenchmarkResult(result: BenchmarkResult)
 
-        fun showComparisonError(exception: Exception)
+        fun showBenchmarkError(exception: Exception)
 
-        fun showComparisonEmpty()
+        fun showBenchmarkEmpty()
     }
 
     interface Presenter : BasePresenterContract<View> {
@@ -53,7 +53,7 @@ interface FeedbackContract {
 
         fun saveImageToGallery(classificationInput: DragonflyClassificationInput)
 
-        fun compareServices(classificationInput: DragonflyClassificationInput)
+        fun benchmark(classificationInput: DragonflyClassificationInput)
     }
 
     interface SaverInteractor {

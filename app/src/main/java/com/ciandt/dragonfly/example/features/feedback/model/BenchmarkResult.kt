@@ -2,15 +2,15 @@ package com.ciandt.dragonfly.example.features.feedback.model
 
 import com.ciandt.dragonfly.tensorflow.Classifier
 
-class ComparisonResult {
+class BenchmarkResult {
 
-    val services: MutableList<Service> = mutableListOf()
+    val benchmarks: MutableList<BenchmarkService> = mutableListOf()
 
-    fun addService(service: Service) {
-        services.add(service)
+    fun addBenchmarkService(service: BenchmarkService) {
+        benchmarks.add(service)
     }
 
-    data class Service(
+    data class BenchmarkService(
             var id: String = "",
             var name: String = "",
             var classifications: MutableList<Classifier.Classification> = mutableListOf()

@@ -1,8 +1,8 @@
 package com.ciandt.dragonfly.example.data.remote
 
 import com.ciandt.dragonfly.example.BuildConfig
-import com.ciandt.dragonfly.example.data.remote.apis.ComparisonApi
-import com.ciandt.dragonfly.example.data.remote.entities.Service
+import com.ciandt.dragonfly.example.data.remote.apis.BenchmarkApi
+import com.ciandt.dragonfly.example.data.remote.entities.BenchmarkService
 import com.ciandt.dragonfly.example.data.remote.interceptors.AuthorizationInterceptor
 import com.ciandt.dragonfly.example.data.remote.interceptors.UserAgentInterceptor
 import okhttp3.OkHttpClient
@@ -37,12 +37,12 @@ class RemoteDataSource(private val baseUrl: String) {
                 .build()
     }
 
-    private val comparisonApi by lazy {
-        retrofit.create(ComparisonApi::class.java)
+    private val benchmarkApi by lazy {
+        retrofit.create(BenchmarkApi::class.java)
     }
 
-    fun compareServices(image: String): List<Service> {
-        val request = comparisonApi.compare(ComparisonApi.CompareParams(image))
+    fun benchmark(image: String): List<BenchmarkService> {
+        val request = benchmarkApi.benchmark(BenchmarkApi.BenchmarkParams(image))
         val response = request.execute()
 
         if (response.isSuccessful) {

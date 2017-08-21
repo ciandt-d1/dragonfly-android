@@ -21,7 +21,7 @@ import com.ciandt.dragonfly.example.components.predictions.PredictionsView
 import com.ciandt.dragonfly.example.config.PermissionsMapping
 import com.ciandt.dragonfly.example.data.DatabaseManager
 import com.ciandt.dragonfly.example.data.PendingFeedbackRepository
-import com.ciandt.dragonfly.example.features.feedback.model.ComparisonResult
+import com.ciandt.dragonfly.example.features.feedback.model.BenchmarkResult
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.infrastructure.extensions.getRootView
 import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
@@ -69,15 +69,15 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
         val feedbackSaverInteractor = FeedbackSaverInteractor(FirebaseDatabase.getInstance(), PendingFeedbackRepository(DatabaseManager.database))
         val saveImageToGalleryInteractor = SaveImageToGalleryInteractor(applicationContext)
-        val comparisonInteractor = ComparisonInteractor()
+        val benchmarkInteractor = BenchmarkInteractor()
 
-        presenter = FeedbackPresenter(model, classificationInput, feedbackSaverInteractor, saveImageToGalleryInteractor, comparisonInteractor, FirebaseAuth.getInstance())
+        presenter = FeedbackPresenter(model, classificationInput, feedbackSaverInteractor, saveImageToGalleryInteractor, benchmarkInteractor, FirebaseAuth.getInstance())
         presenter.attachView(this)
         presenter.setUserFeedback(userFeedback)
         presenter.setClassifications(classifications)
 
         setupBackButton()
-        setupCompareButtons()
+        setupBenchmarkButtons()
         setupSaveImageButton()
         setupResultsView()
         setupNegativeFeedbackView()
@@ -93,18 +93,18 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    override fun showComparisonLoading() {
-        compareButton.visibility = View.GONE
-        compareErrorState.visibility = View.GONE
-        compareLoading.visibility = View.VISIBLE
+    override fun showBenchmarkLoading() {
+        benchmarkButton.visibility = View.GONE
+        benchmarkErrorState.visibility = View.GONE
+        benchmarkLoading.visibility = View.VISIBLE
     }
 
-    override fun showComparisonResult(result: ComparisonResult) {
-        compareButton.visibility = View.GONE
-        compareLoading.visibility = View.GONE
-        compareErrorState.visibility = View.GONE
+    override fun showBenchmarkResult(result: BenchmarkResult) {
+        benchmarkButton.visibility = View.GONE
+        benchmarkLoading.visibility = View.GONE
+        benchmarkErrorState.visibility = View.GONE
 
-        result.services.forEach { (_, name, classifications) ->
+        result.benchmarks.forEach { (_, name, classifications) ->
 
             val chips = ArrayList<FeedbackChip>()
             classifications.mapTo(chips, { FeedbackChip(it) })
@@ -113,22 +113,22 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             predictionView.setTitle(name)
             predictionView.setChips(chips)
 
-            comparisonContainer.addView(predictionView)
+            benchmarkContainer.addView(predictionView)
         }
     }
 
-    override fun showComparisonError(exception: Exception) {
-        compareButton.visibility = View.GONE
-        compareLoading.visibility = View.GONE
-        compareErrorState.visibility = View.VISIBLE
-        compareErrorMessage.text = getString(R.string.feedback_compare_error)
+    override fun showBenchmarkError(exception: Exception) {
+        benchmarkButton.visibility = View.GONE
+        benchmarkLoading.visibility = View.GONE
+        benchmarkErrorState.visibility = View.VISIBLE
+        benchmarkErrorMessage.text = getString(R.string.feedback_benchmark_error)
     }
 
-    override fun showComparisonEmpty() {
-        compareButton.visibility = View.GONE
-        compareLoading.visibility = View.GONE
-        compareErrorState.visibility = View.VISIBLE
-        compareErrorMessage.text = getString(R.string.feedback_compare_empty)
+    override fun showBenchmarkEmpty() {
+        benchmarkButton.visibility = View.GONE
+        benchmarkLoading.visibility = View.GONE
+        benchmarkErrorState.visibility = View.VISIBLE
+        benchmarkErrorMessage.text = getString(R.string.feedback_benchmark_empty)
     }
 
     private fun setupSaveImageButton() {
@@ -156,13 +156,13 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         })
     }
 
-    private fun setupCompareButtons() {
-        compareButton.setOnClickListener {
-            presenter.compareServices(classificationInput)
+    private fun setupBenchmarkButtons() {
+        benchmarkButton.setOnClickListener {
+            presenter.benchmark(classificationInput)
         }
 
-        compareErrorRetry.setOnClickListener {
-            presenter.compareServices(classificationInput)
+        benchmarkErrorRetry.setOnClickListener {
+            presenter.benchmark(classificationInput)
         }
     }
 

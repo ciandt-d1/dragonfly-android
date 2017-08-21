@@ -18,7 +18,7 @@ class FeedbackPresenter(
         val classificationInput: DragonflyClassificationInput,
         val feedbackSaverInteractor: FeedbackContract.SaverInteractor,
         val saveImageToGalleryInteractor: SaveImageToGalleryContract.Interactor,
-        val comparisonInteractor: ComparisonContract.Interactor,
+        val benchmarkInteractor: BenchmarkContract.Interactor,
         val firebaseAuth: FirebaseAuth
 ) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
     private val results = ArrayList<Classifier.Classification>()
@@ -84,20 +84,20 @@ class FeedbackPresenter(
         saveImageToGalleryInteractor.save(classificationInput)
     }
 
-    override fun compareServices(classificationInput: DragonflyClassificationInput) {
+    override fun benchmark(classificationInput: DragonflyClassificationInput) {
 
-        view?.showComparisonLoading()
+        view?.showBenchmarkLoading()
 
-        comparisonInteractor.compareServices(classificationInput,
+        benchmarkInteractor.benchmark(classificationInput,
                 onSuccess = { result ->
-                    if (result.services.isEmpty()) {
-                        view?.showComparisonEmpty()
+                    if (result.benchmarks.isEmpty()) {
+                        view?.showBenchmarkEmpty()
                     } else {
-                        view?.showComparisonResult(result)
+                        view?.showBenchmarkResult(result)
                     }
                 },
                 onFailure = { exception ->
-                    view?.showComparisonError(exception)
+                    view?.showBenchmarkError(exception)
                 }
         )
     }

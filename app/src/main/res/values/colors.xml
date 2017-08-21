@@ -62,7 +62,7 @@
     <color name="feedback_form_confirm">#18f7b6</color>
     <color name="feedback_form_confirm_disabled">#33ffffff</color>
 
-    <color name="feedback_compare_message">#8A000000</color>
+    <color name="feedback_benchmark_message">#8A000000</color>
 
     <color name="login_title">#dd000000</color>
     <color name="login_subtitle">#89000000</color>

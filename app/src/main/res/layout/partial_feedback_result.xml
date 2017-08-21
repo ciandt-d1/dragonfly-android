@@ -104,31 +104,30 @@
                 android:layout_height="@dimen/feedback_result_line_height"
                 android:layout_marginLeft="@dimen/feedback_result_line_horizontal_margin"
                 android:layout_marginRight="@dimen/feedback_result_line_horizontal_margin"
-                android:background="@color/feedback_result_line"
-            />
+                android:background="@color/feedback_result_line"/>
 
             <LinearLayout
-                android:id="@+id/comparisonContainer"
+                android:id="@+id/benchmarkContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="@dimen/feedback_comparison_container_minimum_height"
+                android:minHeight="@dimen/feedback_benchmark_container_minimum_height"
                 android:orientation="vertical">
 
                 <Button
-                    android:id="@+id/compareButton"
+                    android:id="@+id/benchmarkButton"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/touchable_area_minimum_dimension"
-                    android:layout_margin="@dimen/feedback_compare_button_margin"
-                    style="@style/Feedback.CompareButton"
-                    android:text="@string/feedback_compare_services"
+                    android:layout_margin="@dimen/feedback_benchmark_button_margin"
+                    style="@style/Feedback.Benchmark.Button"
+                    android:text="@string/feedback_benchmark_button"
                 />
 
                 <ProgressBar
-                    android:id="@+id/compareLoading"
+                    android:id="@+id/benchmarkLoading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/feedback_loading_margin"
-                    android:layout_marginBottom="@dimen/feedback_loading_margin"
+                    android:layout_marginTop="@dimen/feedback_benchmark_loading_margin"
+                    android:layout_marginBottom="@dimen/feedback_benchmark_loading_margin"
                     style="?android:attr/progressBarStyle"
                     android:indeterminate="true"
                     android:indeterminateTint="@color/colorAccent"
@@ -137,27 +136,27 @@
                     tools:ignore="UnusedAttribute"/>
 
                 <LinearLayout
-                    android:id="@+id/compareErrorState"
+                    android:id="@+id/benchmarkErrorState"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/feedback_error_margin"
+                    android:layout_marginTop="@dimen/feedback_benchmark_error_margin"
                     android:orientation="vertical"
                     android:visibility="gone">
 
                     <TextView
-                        android:id="@+id/compareErrorMessage"
+                        android:id="@+id/benchmarkErrorMessage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/Feedback.Compare.Message"
-                        android:text="@string/feedback_compare_error"/>
+                        style="@style/Feedback.Benchmark.Message"
+                        android:text="@string/feedback_benchmark_error"/>
 
                     <Button
-                        android:id="@+id/compareErrorRetry"
+                        android:id="@+id/benchmarkErrorRetry"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/touchable_area_minimum_dimension"
-                        android:layout_margin="@dimen/feedback_compare_button_margin"
-                        style="@style/Feedback.Retry"
-                        android:text="@string/feedback_compare_try_again"
+                        android:layout_margin="@dimen/feedback_benchmark_button_margin"
+                        style="@style/Feedback.Benchmark.ButtonRetry"
+                        android:text="@string/feedback_benchmark_try_again"
                     />
 
                 </LinearLayout>
