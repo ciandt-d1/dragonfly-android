@@ -282,9 +282,11 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
     private fun showOtherClassifications(otherClassifications: List<Classifier.Classification>) {
         if (otherClassifications.isEmpty()) {
-            footer.visibility = View.GONE
+            otherPredictionsSeparator.visibility = View.GONE
+            otherPredictions.visibility = View.GONE
         } else {
-            footer.visibility = View.VISIBLE
+            otherPredictionsSeparator.visibility = View.VISIBLE
+            otherPredictions.visibility = View.VISIBLE
 
             val chips = ArrayList<FeedbackChip>()
             otherClassifications.forEach {
