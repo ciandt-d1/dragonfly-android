@@ -23,6 +23,7 @@ apply plugin: 'io.fabric'
 apply from: '../versions.gradle'
 apply from: '../sonarqube.gradle'
 apply from: '../quality.gradle'
+apply from: '../.configs/configs.gradle'
 
 ext {
     // The order is based on way the Play store works with multiple APKs. Remember, if a user's
@@ -209,6 +210,12 @@ dependencies {
 
     // Job scheduling
     compile 'com.evernote:android-job:1.1.11'
+
+    // Network
+    def retrofitVersion = '2.3.0'
+    compile "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+    compile "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
+    compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'
 
     // Dragonfly Library
     compile project(":library")

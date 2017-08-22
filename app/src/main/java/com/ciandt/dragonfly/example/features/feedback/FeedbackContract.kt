@@ -1,9 +1,9 @@
 package com.ciandt.dragonfly.example.features.feedback
 
 import android.support.annotation.StringRes
+import com.ciandt.dragonfly.example.features.feedback.model.BenchmarkResult
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.shared.BasePresenterContract
-import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.tensorflow.Classifier
 
 /**
@@ -28,6 +28,14 @@ interface FeedbackContract {
         fun showSaveImageSuccessMessage(@StringRes message: Int)
 
         fun showSaveImageErrorMessage(@StringRes message: Int)
+
+        fun showBenchmarkLoading()
+
+        fun showBenchmarkResult(result: BenchmarkResult)
+
+        fun showBenchmarkError(exception: Exception)
+
+        fun showBenchmarkEmpty()
     }
 
     interface Presenter : BasePresenterContract<View> {
@@ -42,7 +50,9 @@ interface FeedbackContract {
 
         fun setUserFeedback(userFeedback: Feedback?)
 
-        fun saveImageToGallery(classificationInput: DragonflyClassificationInput)
+        fun saveImageToGallery()
+
+        fun benchmark()
     }
 
     interface SaverInteractor {
