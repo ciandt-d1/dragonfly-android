@@ -14,12 +14,17 @@ import com.ciandt.dragonfly.example.data.DatabaseManager;
 import com.ciandt.dragonfly.example.data.ProjectRepository;
 import com.ciandt.dragonfly.example.data.remote.RemoteProjectService;
 import com.ciandt.dragonfly.example.features.login.LoginActivity;
+import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,6 +171,31 @@ public class DebugActionsHelper {
             public void onClick() {
                 Context context = target.getActivityInstance();
                 context.stopService(new Intent(context, RemoteProjectService.class));
+            }
+        }));
+
+        actions.add(new ButtonAction("Get Firebase ID Token", new ButtonAction.Listener() {
+
+            @Override
+            public void onClick() {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user == null) {
+                    DragonflyLogger.INSTANCE.warn(LOG_TAG, "No user signed in.", null);
+                }
+
+                user.getIdToken(true).addOnSuccessListener(new OnSuccessListener<GetTokenResult>() {
+
+                    @Override
+                    public void onSuccess(GetTokenResult getTokenResult) {
+                        DragonflyLogger.INSTANCE.info(LOG_TAG, String.format("Firebase ID Token: %s", getTokenResult.getToken()));
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        DragonflyLogger.INSTANCE.error(LOG_TAG, e);
+                    }
+                });
             }
         }));
 

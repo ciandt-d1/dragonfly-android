@@ -21,9 +21,11 @@ import com.bumptech.glide.request.transition.Transition
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
+import com.ciandt.dragonfly.example.components.classifications.ClassificationsView
 import com.ciandt.dragonfly.example.config.PermissionsMapping
 import com.ciandt.dragonfly.example.data.DatabaseManager
 import com.ciandt.dragonfly.example.data.PendingFeedbackRepository
+import com.ciandt.dragonfly.example.features.feedback.model.BenchmarkResult
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.infrastructure.extensions.getRootView
 import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
@@ -72,13 +74,19 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
         val feedbackSaverInteractor = FeedbackSaverInteractor(FirebaseDatabase.getInstance(), PendingFeedbackRepository(DatabaseManager.database))
         val saveImageToGalleryInteractor = SaveImageToGalleryInteractor(applicationContext)
+        val benchmarkInteractor = BenchmarkInteractor()
 
-        presenter = FeedbackPresenter(model, classificationInput, feedbackSaverInteractor, saveImageToGalleryInteractor, FirebaseAuth.getInstance())
+        presenter = FeedbackPresenter(model, classificationInput, FirebaseAuth.getInstance().currentUser!!.uid,
+                feedbackSaverInteractor,
+                saveImageToGalleryInteractor,
+                benchmarkInteractor)
+
         presenter.attachView(this)
         presenter.setUserFeedback(userFeedback)
         presenter.setClassifications(classifications)
 
         setupBackButton()
+        setupBenchmarkButtons()
         setupSaveImageButton()
         setupResultsView()
         setupNegativeFeedbackView()
@@ -103,6 +111,44 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
+    override fun showBenchmarkLoading() {
+        benchmarkButton.visibility = View.GONE
+        benchmarkErrorState.visibility = View.GONE
+        benchmarkLoading.visibility = View.VISIBLE
+    }
+
+    override fun showBenchmarkResult(result: BenchmarkResult) {
+        benchmarkButton.visibility = View.GONE
+        benchmarkLoading.visibility = View.GONE
+        benchmarkErrorState.visibility = View.GONE
+
+        result.benchmarks.forEach { (_, name, classifications) ->
+
+            val chips = ArrayList<FeedbackChip>()
+            classifications.mapTo(chips, { FeedbackChip(it) })
+
+            val classificationsView = ClassificationsView(this)
+            classificationsView.setTitle(name)
+            classificationsView.setChips(chips)
+
+            benchmarkContainer.addView(classificationsView)
+        }
+    }
+
+    override fun showBenchmarkError(exception: Exception) {
+        benchmarkButton.visibility = View.GONE
+        benchmarkLoading.visibility = View.GONE
+        benchmarkErrorState.visibility = View.VISIBLE
+        benchmarkErrorMessage.text = getString(R.string.feedback_benchmark_error)
+    }
+
+    override fun showBenchmarkEmpty() {
+        benchmarkButton.visibility = View.GONE
+        benchmarkLoading.visibility = View.GONE
+        benchmarkErrorState.visibility = View.VISIBLE
+        benchmarkErrorMessage.text = getString(R.string.feedback_benchmark_empty)
+    }
+
     private fun setupSaveImageButton() {
         btnSaveImage.visibility = if (allowSaveToGallery) View.VISIBLE else View.INVISIBLE
         btnSaveImage.setOnClickListener({
@@ -111,7 +157,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                     .withPermissions(PermissionsMapping.SAVE_IMAGE_TO_GALLERY)
                     .withListener(object : MultiplePermissionsListener {
                         override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                            presenter.saveImageToGallery(classificationInput)
+                            presenter.saveImageToGallery()
                         }
 
                         override fun onPermissionRationaleShouldBeShown(permissions: MutableList<PermissionRequest>, token: PermissionToken) {
@@ -126,6 +172,16 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         btnBack.setOnClickListener({
             super.onBackPressed()
         })
+    }
+
+    private fun setupBenchmarkButtons() {
+        benchmarkButton.setOnClickListener {
+            presenter.benchmark()
+        }
+
+        benchmarkErrorRetry.setOnClickListener {
+            presenter.benchmark()
+        }
     }
 
     private fun setupResultsView() {
@@ -235,7 +291,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                 chips.add(FeedbackChip(it))
             }
 
-            chipsViews.setChips(chips)
+            otherPredictions.setChips(chips)
         }
     }
 

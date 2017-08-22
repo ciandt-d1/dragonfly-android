@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:chipsView="http://schemas.android.com/apk/res-auto"
+              xmlns:classificationsView="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:id="@+id/feedbackResultContainer"
               android:layout_width="match_parent"
@@ -84,7 +84,7 @@
             tools:visibility="visible">
 
             <View
-                android:id="@+id/line"
+                android:id="@+id/otherPredictionsSeparator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/feedback_result_line_height"
                 android:layout_marginLeft="@dimen/feedback_result_line_horizontal_margin"
@@ -92,36 +92,81 @@
                 android:background="@color/feedback_result_line"
             />
 
-            <TextView
+            <com.ciandt.dragonfly.example.components.classifications.ClassificationsView
+                android:id="@+id/otherPredictions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/feedback_result_other_text_vertical_margin"
-                android:layout_marginLeft="@dimen/feedback_result_other_text_horizontal_margin"
-                android:layout_marginRight="@dimen/feedback_result_other_text_horizontal_margin"
-                style="@style/Feedback.Result.Others"
-                android:text="@string/feedback_also_identify"
-            />
+                classificationsView:title="@string/feedback_also_identify"/>
 
-            <com.ciandt.dragonfly.example.components.chips.ChipsView
-                android:id="@+id/chipsViews"
+            <View
+                android:id="@+id/servicesSeparator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/feedback_result_line_height"
+                android:layout_marginLeft="@dimen/feedback_result_line_horizontal_margin"
+                android:layout_marginRight="@dimen/feedback_result_line_horizontal_margin"
+                android:background="@color/feedback_result_line"/>
+
+            <LinearLayout
+                android:id="@+id/benchmarkContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/feedback_result_chips_margin_top"
-                android:layout_marginBottom="@dimen/feedback_result_chips_margin_bottom"
-                chipsView:chipLayout="@layout/item_chip"
-                chipsView:chipSpaceAfter="@dimen/chip_space_after"
-                chipsView:chipSpaceBefore="@dimen/chip_space_before"
-                chipsView:chipSpaceBetween="@dimen/chip_space_between"
-                chipsView:fadingEdges="true"
-                chipsView:fadingEdgesDrawable="@drawable/chip_gradient"
-                chipsView:fadingEdgesWidth="@dimen/fading_edges_width"
-                chipsView:selectable="false"
-            />
+                android:minHeight="@dimen/feedback_benchmark_container_minimum_height"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/benchmarkButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/touchable_area_minimum_dimension"
+                    android:layout_margin="@dimen/feedback_benchmark_button_margin"
+                    style="@style/Feedback.Benchmark.Button"
+                    android:text="@string/feedback_benchmark_button"
+                />
+
+                <ProgressBar
+                    android:id="@+id/benchmarkLoading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/feedback_benchmark_loading_margin"
+                    android:layout_marginBottom="@dimen/feedback_benchmark_loading_margin"
+                    style="?android:attr/progressBarStyle"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/colorAccent"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    tools:ignore="UnusedAttribute"/>
+
+                <LinearLayout
+                    android:id="@+id/benchmarkErrorState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/feedback_benchmark_error_margin"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/benchmarkErrorMessage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/Feedback.Benchmark.Message"
+                        android:text="@string/feedback_benchmark_error"/>
+
+                    <Button
+                        android:id="@+id/benchmarkErrorRetry"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/touchable_area_minimum_dimension"
+                        android:layout_margin="@dimen/feedback_benchmark_button_margin"
+                        style="@style/Feedback.Benchmark.ButtonRetry"
+                        android:text="@string/feedback_benchmark_try_again"
+                    />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 
         <View
-            android:id="@+id/line2"
+            android:id="@+id/moreInfoSeparator"
             android:layout_width="match_parent"
             android:layout_height="@dimen/feedback_result_line_height"
             android:layout_marginLeft="@dimen/feedback_result_line_horizontal_margin"
@@ -148,7 +193,7 @@
             android:layout_height="@dimen/feedback_result_more_info_height"
             android:minHeight="@dimen/touchable_area_minimum_dimension"
             android:paddingStart="@dimen/feedback_result_more_info_padding_left"
-            android:layout_below="@id/line2"
+            android:layout_below="@id/moreInfoSeparator"
             style="@style/Feedback.Result.MoreInfo"
             android:gravity="center_vertical"
             android:text="@string/feedback_more_info"

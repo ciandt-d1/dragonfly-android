@@ -11,9 +11,15 @@ import com.ciandt.dragonfly.example.infrastructure.extensions.tail
 import com.ciandt.dragonfly.example.shared.BasePresenter
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.tensorflow.Classifier
-import com.google.firebase.auth.FirebaseAuth
 
-class FeedbackPresenter(val model: Model, val classificationInput: DragonflyClassificationInput, val feedbackSaverInteractor: FeedbackContract.SaverInteractor, val saveImageToGalleryInteractor: SaveImageToGalleryContract.Interactor, val firebaseAuth: FirebaseAuth) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
+class FeedbackPresenter(
+        val model: Model,
+        val classificationInput: DragonflyClassificationInput,
+        val userId: String,
+        val feedbackSaverInteractor: FeedbackContract.SaverInteractor,
+        val saveImageToGalleryInteractor: SaveImageToGalleryContract.Interactor,
+        val benchmarkInteractor: BenchmarkContract.Interactor
+) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
     private val results = ArrayList<Classifier.Classification>()
     private var userFeedback: Feedback? = null
 
@@ -73,8 +79,26 @@ class FeedbackPresenter(val model: Model, val classificationInput: DragonflyClas
         this.userFeedback = userFeedback
     }
 
-    override fun saveImageToGallery(classificationInput: DragonflyClassificationInput) {
+    override fun saveImageToGallery() {
         saveImageToGalleryInteractor.save(classificationInput)
+    }
+
+    override fun benchmark() {
+
+        view?.showBenchmarkLoading()
+
+        benchmarkInteractor.benchmark(classificationInput,
+                onSuccess = { result ->
+                    if (result.benchmarks.isEmpty()) {
+                        view?.showBenchmarkEmpty()
+                    } else {
+                        view?.showBenchmarkResult(result)
+                    }
+                },
+                onFailure = { exception ->
+                    view?.showBenchmarkError(exception)
+                }
+        )
     }
 
     private fun saveFeedback(label: String, value: Int) {
@@ -86,7 +110,7 @@ class FeedbackPresenter(val model: Model, val classificationInput: DragonflyClas
         val feedback = Feedback(
                 tenant = Tenant.ID,
                 project = model.id,
-                userId = firebaseAuth.currentUser!!.uid,
+                userId = userId,
                 modelVersion = model.version,
                 value = value,
                 actualLabel = label,
