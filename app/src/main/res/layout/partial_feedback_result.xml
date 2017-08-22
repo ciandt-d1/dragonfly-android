@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:predictionsView="http://schemas.android.com/apk/res-auto"
+              xmlns:classificationsView="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:id="@+id/feedbackResultContainer"
               android:layout_width="match_parent"
@@ -92,11 +92,11 @@
                 android:background="@color/feedback_result_line"
             />
 
-            <com.ciandt.dragonfly.example.components.predictions.PredictionsView
+            <com.ciandt.dragonfly.example.components.classifications.ClassificationsView
                 android:id="@+id/otherPredictions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                predictionsView:title="@string/feedback_also_identify"/>
+                classificationsView:title="@string/feedback_also_identify"/>
 
             <View
                 android:id="@+id/servicesSeparator"

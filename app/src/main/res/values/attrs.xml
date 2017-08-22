@@ -24,7 +24,7 @@
         <attr format="color" name="lineColorFocused"/>
     </declare-styleable>
 
-    <declare-styleable name="PredictionsView">
+    <declare-styleable name="ClassificationsView">
         <attr format="string" name="title"/>
     </declare-styleable>
     

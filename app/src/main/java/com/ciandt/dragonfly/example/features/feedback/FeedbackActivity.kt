@@ -17,7 +17,7 @@ import android.widget.Toast
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
-import com.ciandt.dragonfly.example.components.predictions.PredictionsView
+import com.ciandt.dragonfly.example.components.classifications.ClassificationsView
 import com.ciandt.dragonfly.example.config.PermissionsMapping
 import com.ciandt.dragonfly.example.data.DatabaseManager
 import com.ciandt.dragonfly.example.data.PendingFeedbackRepository
@@ -113,11 +113,11 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             val chips = ArrayList<FeedbackChip>()
             classifications.mapTo(chips, { FeedbackChip(it) })
 
-            val predictionView = PredictionsView(this)
-            predictionView.setTitle(name)
-            predictionView.setChips(chips)
+            val classificationsView = ClassificationsView(this)
+            classificationsView.setTitle(name)
+            classificationsView.setChips(chips)
 
-            benchmarkContainer.addView(predictionView)
+            benchmarkContainer.addView(classificationsView)
         }
     }
 

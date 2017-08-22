@@ -1,4 +1,4 @@
-package com.ciandt.dragonfly.example.components.predictions
+package com.ciandt.dragonfly.example.components.classifications
 
 import android.content.Context
 import android.util.AttributeSet
@@ -9,7 +9,7 @@ import com.ciandt.dragonfly.example.components.chips.Chip
 import com.ciandt.dragonfly.example.components.chips.ChipsView
 import com.ciandt.dragonfly.example.infrastructure.extensions.getLayoutInflaterService
 
-class PredictionsView : LinearLayout {
+class ClassificationsView : LinearLayout {
 
     private lateinit var titleView: TextView
     private lateinit var chipsView: ChipsView
@@ -32,16 +32,16 @@ class PredictionsView : LinearLayout {
         orientation = VERTICAL
 
         val inflater = context.getLayoutInflaterService()
-        inflater.inflate(R.layout.component_predictions_view, this)
+        inflater.inflate(R.layout.component_classifications_view, this)
 
         titleView = findViewById(R.id.titleView)
         chipsView = findViewById(R.id.chipsView)
     }
 
     private fun initializeAttributes(attrs: AttributeSet) {
-        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.PredictionsView, 0, 0)
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ClassificationsView, 0, 0)
         try {
-            val title = typedArray.getString(R.styleable.PredictionsView_title)
+            val title = typedArray.getString(R.styleable.ClassificationsView_title)
             setTitle(title)
         } finally {
             typedArray.recycle()
