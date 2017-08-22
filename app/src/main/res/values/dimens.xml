@@ -34,7 +34,6 @@
     <dimen name="project_selection_item_download_height">36dp</dimen>
     <dimen name="project_selection_item_download_padding_left">16dp</dimen>
     <dimen name="project_selection_item_download_padding_right">20dp</dimen>
-    <dimen name="project_selection_item_download_drawable_padding">8dp</dimen>
 
     <dimen name="about_title_height">56dp</dimen>
     <dimen name="about_description_padding">24dp</dimen>
