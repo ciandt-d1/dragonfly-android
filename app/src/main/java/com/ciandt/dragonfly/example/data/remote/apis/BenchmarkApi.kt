@@ -10,7 +10,7 @@ import retrofit2.http.POST
 
 interface BenchmarkApi {
 
-    @POST("/api/v1/other-services")
+    @POST("/api/v1/benchmark")
     @Headers(
             "Accept: application/json",
             "Content-Type: application/json"
