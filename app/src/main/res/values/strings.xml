@@ -11,6 +11,7 @@
     <string name="project_selection_item_unavailable">Unavailable</string>
     <string name="project_selection_item_wait_message">Download in progress. Please wait…</string>
     <string name="project_selection_item_unavailable_message">No versions available yet.</string>
+    <string name="project_selection_item_update">Update</string>
 
     <string name="project_selection_empty_message">Oops…\nNo models found!</string>
     <string name="project_selection_error_message">Uh-oh, an error occurred!</string>

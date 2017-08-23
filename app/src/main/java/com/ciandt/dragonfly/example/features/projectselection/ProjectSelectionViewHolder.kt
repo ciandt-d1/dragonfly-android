@@ -45,7 +45,7 @@ class ProjectSelectionViewHolder(itemView: View, val itemClick: (Project) -> Uni
                         setTextColor(ContextCompat.getColor(context, R.color.project_selection_item_downloading))
                     }
                     else -> {
-                        text = resources.getString(R.string.project_selection_item_download)
+                        text = resources.getString(if (item.hasUpdate()) R.string.project_selection_item_update else R.string.project_selection_item_download)
                         setTextColor(ContextCompat.getColor(context, R.color.project_selection_item_download))
                     }
                 }
