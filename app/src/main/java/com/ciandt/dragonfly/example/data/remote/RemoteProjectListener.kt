@@ -1,19 +1,23 @@
 package com.ciandt.dragonfly.example.data.remote
 
+import android.content.Context
 import com.ciandt.dragonfly.example.data.local.LocalDataSource
 import com.ciandt.dragonfly.example.data.mapper.DataSnapshotToProjectEntityMapper
+import com.ciandt.dragonfly.example.features.projectselection.ProjectListChangedReceiver
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
+import com.ciandt.dragonfly.example.infrastructure.extensions.getLocalBroadcastManager
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 
-class RemoteProjectListener(private val localDataSource: LocalDataSource) : ChildEventListener {
+class RemoteProjectListener(private val context: Context, private val localDataSource: LocalDataSource) : ChildEventListener {
 
     override fun onChildAdded(dataSnapshot: DataSnapshot, prevChildKey: String?) {
         val project = DataSnapshotToProjectEntityMapper(dataSnapshot).map()
         project?.let {
             runOnBackgroundThread {
                 localDataSource.save(it)
+                sendBroadcast()
             }
         }
     }
@@ -23,6 +27,7 @@ class RemoteProjectListener(private val localDataSource: LocalDataSource) : Chil
         project?.let {
             runOnBackgroundThread {
                 localDataSource.update(it)
+                sendBroadcast()
             }
         }
     }
@@ -43,7 +48,11 @@ class RemoteProjectListener(private val localDataSource: LocalDataSource) : Chil
         DragonflyLogger.warn(LOG_TAG, databaseError.message)
     }
 
-    fun runOnBackgroundThread(action: () -> Unit) {
+    private fun sendBroadcast() {
+        context.getLocalBroadcastManager().sendBroadcast(ProjectListChangedReceiver.create(System.currentTimeMillis()))
+    }
+
+    private fun runOnBackgroundThread(action: () -> Unit) {
         Thread(Runnable { action() }).start()
     }
 

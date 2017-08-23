@@ -7,6 +7,7 @@ import com.nhaarman.mockito_kotlin.argumentCaptor
 import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.amshove.kluent.any
 import org.amshove.kluent.shouldBeFalse
 import org.amshove.kluent.shouldBeTrue
@@ -29,17 +30,26 @@ class ProjectSelectionPresenterTest {
     @Mock
     lateinit var interactor: ProjectSelectionContract.Interactor
 
+
+    private val nonEmptyList = ArrayList<Project>()
+
+
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
 
+        nonEmptyList.add(Project("1"))
+        nonEmptyList.add(Project("2"))
+
         presenter = ProjectSelectionPresenter(interactor)
         presenter.attachView(view)
+        presenter.start()
     }
 
     @After
     fun tearDown() {
         presenter.detachView()
+        presenter.stop()
     }
 
     @Test
@@ -82,10 +92,6 @@ class ProjectSelectionPresenterTest {
 
     @Test
     fun loadProjectsHandlingNonEmptyList() {
-
-        val nonEmptyList = ArrayList<Project>()
-        nonEmptyList.add(Project("1"))
-        nonEmptyList.add(Project("2"))
 
         presenter.loadProjects()
 
@@ -198,5 +204,105 @@ class ProjectSelectionPresenterTest {
         presenter.selectProject(project)
 
         verify(view).run(libraryModel)
+    }
+
+    @Test
+    fun projectObserverWithViewAttached() {
+        val project = Project("test")
+
+        argumentCaptor<(Project) -> Unit>().apply {
+            verify(interactor).registerProjectObserver(capture())
+            firstValue.invoke(project)
+        }
+
+        verify(view).update(eq(project))
+    }
+
+    @Test
+    fun projectObserverWithoutViewAttached() {
+        val project = Project("test")
+
+        presenter.detachView()
+
+        argumentCaptor<(Project) -> Unit>().apply {
+            verify(interactor).registerProjectObserver(capture())
+            firstValue.invoke(project)
+        }
+
+        verify(view, never()).update(eq(project))
+
+        presenter.attachView(view)
+
+        verify(view).update(eq(project))
+    }
+
+    @Test
+    fun listObserverCalledBeforeLoad() {
+
+        whenever(
+                interactor.getTimestamp()
+        ).thenReturn(1000L)
+
+        var captured: ((Long) -> Unit)? = null
+        argumentCaptor<(Long) -> Unit>().apply {
+            verify(interactor).registerListObserver(capture())
+            captured = firstValue
+        }
+
+        presenter.loadProjects()
+
+        val changedAt = 500L
+        captured?.invoke(changedAt)
+
+        verify(view, never()).showSeeUpdates()
+    }
+
+    @Test
+    fun listObserverCalledAfterLoad() {
+
+        whenever(
+                interactor.getTimestamp()
+        ).thenReturn(1000L)
+
+
+        var captured: ((Long) -> Unit)? = null
+        argumentCaptor<(Long) -> Unit>().apply {
+            verify(interactor).registerListObserver(capture())
+            captured = firstValue
+        }
+
+        presenter.loadProjects()
+
+        val changedAt = 2000L
+        captured?.invoke(changedAt)
+
+        verify(view).showSeeUpdates()
+    }
+
+    @Test
+    fun listObserverCalledAfterLoadWithoutViewAttached() {
+
+        whenever(
+                interactor.getTimestamp()
+        ).thenReturn(1000L)
+
+        var captured: ((Long) -> Unit)? = null
+        argumentCaptor<(Long) -> Unit>().apply {
+            verify(interactor).registerListObserver(capture())
+            captured = firstValue
+        }
+
+        presenter.loadProjects()
+
+        presenter.detachView()
+
+        val changedAt = 2000L
+        captured?.invoke(changedAt)
+
+        verify(view, never()).showSeeUpdates()
+
+        presenter.attachView(view)
+
+        verify(view).showSeeUpdates()
     }
 }

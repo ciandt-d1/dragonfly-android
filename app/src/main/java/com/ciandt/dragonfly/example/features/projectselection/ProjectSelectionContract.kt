@@ -54,5 +54,11 @@ interface ProjectSelectionContract {
         fun registerProjectObserver(onChanged: (Project) -> Unit)
 
         fun unregisterProjectObserver()
+
+        fun getTimestamp(): Long
+
+        fun registerListObserver(onChanged: (Long) -> Unit)
+
+        fun unregisterListObserver()
     }
 }

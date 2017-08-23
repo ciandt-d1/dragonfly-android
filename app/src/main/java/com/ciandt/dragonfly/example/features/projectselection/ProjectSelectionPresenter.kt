@@ -9,30 +9,37 @@ class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract
 
     private val updateQueue = ArrayList<Project>()
 
+    private var lastLoad: Long = Long.MAX_VALUE
+
+    private var hasPendingSeeUpdate = false
+
     override fun attachView(view: ProjectSelectionContract.View) {
         super.attachView(view)
 
         updateQueue.forEach {
             view.update(it)
-            updateQueue.remove(it)
+        }
+        updateQueue.clear()
+
+        if (hasPendingSeeUpdate) {
+            hasPendingSeeUpdate = false
+            view.showSeeUpdates()
         }
     }
 
     override fun start() {
-        interactor.registerProjectObserver { project ->
-            if (view != null) {
-                view?.update(project)
-            } else {
-                updateQueue.add(project)
-            }
-        }
+        registerProjectObserver()
+        registerListObserver()
     }
 
     override fun stop() {
         interactor.unregisterProjectObserver()
+        interactor.unregisterListObserver()
     }
 
     override fun loadProjects() {
+
+        view?.hideSeeUpdates()
 
         view?.showLoading()
 
@@ -50,6 +57,9 @@ class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract
                     view?.showError(exception)
                 }
         )
+
+        lastLoad = interactor.getTimestamp()
+        registerListObserver()
     }
 
     override fun selectProject(project: Project) {
@@ -84,5 +94,32 @@ class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract
 
             }
         }
+    }
+
+
+    private fun registerProjectObserver() {
+        interactor.registerProjectObserver { project ->
+            if (view != null) {
+                view?.update(project)
+            } else {
+                updateQueue.add(project)
+            }
+        }
+    }
+
+    private fun registerListObserver() {
+        interactor.registerListObserver { changedAt ->
+            if (waslistChangedAfterLastLoad(changedAt)) {
+                if (view != null) {
+                    view?.showSeeUpdates()
+                } else {
+                    hasPendingSeeUpdate = true
+                }
+            }
+        }
+    }
+
+    private fun waslistChangedAfterLastLoad(timestamp: Long): Boolean {
+        return timestamp > lastLoad
     }
 }
