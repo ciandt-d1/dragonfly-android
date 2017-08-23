@@ -28,6 +28,10 @@ interface ProjectSelectionContract {
         fun showUnavailable(project: Project)
 
         fun confirmDownload(project: Project, onConfirm: () -> Unit)
+
+        fun showSeeUpdates()
+
+        fun hideSeeUpdates()
     }
 
     interface Presenter : BasePresenterContract<View> {

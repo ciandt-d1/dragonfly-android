@@ -90,6 +90,21 @@
         <item name="android:maxLines">1</item>
     </style>
 
+    <style name="ProjectSelection.Update.Message" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+        <item name="android:textColor">@color/project_selection_update_message</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="ProjectSelection.Update.Button" parent="Widget.AppCompat.Button.Borderless">
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+        <item name="android:textColor">@color/project_selection_update_button</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <style name="About.Title" parent="TextAppearance.AppCompat">
         <item name="fontPath">fonts/Roboto-Medium.ttf</item>
         <item name="android:textColor">@color/about_title</item>

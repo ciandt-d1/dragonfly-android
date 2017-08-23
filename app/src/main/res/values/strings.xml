@@ -22,6 +22,9 @@
         file over your mobile network and data charges may apply.
     </string>
 
+    <string name="project_selection_update_message">There\'s a new model available</string>
+    <string name="project_selection_update_button">Update</string>
+
     <string name="about_title">Thoughtfully Fast. Purposely Lean.</string>
     <string name="about_description">CI&amp;T is a digital technology agency focused on creating
         digital experiences that people love.\n
