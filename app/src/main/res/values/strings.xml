@@ -90,4 +90,6 @@
 
     <string name="dialog_confirmation_button_cancel">CANCEL</string>
     <string name="dialog_confirmation_button_confirm">CONFIRM</string>
+
+    <string name="logout">Logout</string>
 </resources>

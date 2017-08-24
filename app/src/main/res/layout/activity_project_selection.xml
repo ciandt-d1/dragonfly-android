@@ -6,18 +6,37 @@
     android:layout_height="match_parent"
     tools:context=".features.projectselection.ProjectSelectionActivity">
 
-    <TextView
-        android:id="@+id/title"
+    <android.support.v7.widget.Toolbar
+        android:id="@id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/project_selection_title_margin_top"
-        android:layout_marginLeft="@dimen/project_selection_title_horizontal_margin"
-        android:layout_marginRight="@dimen/project_selection_title_horizontal_margin"
-        android:layout_marginStart="@dimen/project_selection_title_horizontal_margin"
-        android:layout_marginEnd="@dimen/project_selection_title_horizontal_margin"
-        style="@style/ProjectSelection.Title"
-        android:text="@string/project_selection_title"
-    />
+        android:layout_height="?attr/actionBarSize"
+        style="@style/ProjectSelection.Toolbar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                style="@style/AppTheme.Toolbar.TextAppearance.Title"
+                android:gravity="center_vertical"
+                android:text="@string/project_selection_title"/>
+
+            <ImageButton
+                android:id="@+id/logout"
+                android:layout_width="@dimen/touchable_area_minimum_dimension"
+                android:layout_height="@dimen/touchable_area_minimum_dimension"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                style="@style/AppTheme.Toolbar.Button.Flat"
+                android:contentDescription="@string/logout"
+                android:src="@drawable/ic_logout"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
 
     <TextView
         android:id="@+id/subtitle"
@@ -28,7 +47,7 @@
         android:layout_marginRight="@dimen/project_selection_subtitle_horizontal_margin"
         android:layout_marginStart="@dimen/project_selection_subtitle_horizontal_margin"
         android:layout_marginEnd="@dimen/project_selection_subtitle_horizontal_margin"
-        android:layout_below="@+id/title"
+        android:layout_below="@+id/toolbar"
         style="@style/ProjectSelection.Subtitle"
         android:text="@string/project_selection_subtitle"
     />
