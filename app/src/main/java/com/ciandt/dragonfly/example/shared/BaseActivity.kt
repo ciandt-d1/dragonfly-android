@@ -17,7 +17,11 @@ import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.config.CommonBundleNames
 import com.ciandt.dragonfly.example.config.Features
 import com.ciandt.dragonfly.example.debug.DebugActionsHelper
+import com.ciandt.dragonfly.example.features.login.LoginActivity
 import com.ciandt.dragonfly.example.helpers.IntentHelper
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.auth.FirebaseAuth
 import io.palaima.debugdrawer.DebugDrawer
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
@@ -132,6 +136,40 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
 
     private fun isUserLogged(): Boolean {
         return FirebaseAuth.getInstance().currentUser != null
+    }
+
+    protected fun logout() {
+        FirebaseAuth.getInstance().signOut()
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
+
+        val googleApiClient = GoogleApiClient.Builder(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build()
+
+        googleApiClient.connect()
+        googleApiClient.registerConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
+
+            override fun onConnected(bundle: Bundle?) {
+                if (googleApiClient.isConnected) {
+                    Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback {
+                        if (googleApiClient.isConnected) {
+                            googleApiClient.clearDefaultAccountAndReconnect()
+                            googleApiClient.disconnect()
+                        }
+                    }
+                }
+            }
+
+            override fun onConnectionSuspended(i: Int) {
+
+            }
+        })
+
+        startActivity(LoginActivity.create(this))
     }
 
     private var icLauncher: Bitmap? = null

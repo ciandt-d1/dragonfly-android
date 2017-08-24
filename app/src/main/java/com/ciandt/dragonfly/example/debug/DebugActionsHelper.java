@@ -1,25 +1,17 @@
 package com.ciandt.dragonfly.example.debug;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.DrawerLayout;
-import android.view.View;
-
-import com.ciandt.dragonfly.example.R;
 import com.ciandt.dragonfly.example.data.DatabaseManager;
 import com.ciandt.dragonfly.example.data.ProjectRepository;
 import com.ciandt.dragonfly.example.data.remote.RemoteProjectService;
-import com.ciandt.dragonfly.example.features.login.LoginActivity;
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.v4.widget.DrawerLayout;
+import android.view.View;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -90,54 +82,6 @@ public class DebugActionsHelper {
 
     public static List<ButtonAction> getButtonActions(final DebuggableActivity target) {
         final List<ButtonAction> actions = new ArrayList<>();
-
-        actions.add(new ButtonAction("Logout", new ButtonAction.Listener() {
-
-            @Override
-            public void onClick() {
-                Context context = target.getActivityInstance();
-
-                FirebaseAuth.getInstance().signOut();
-
-                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken(context.getString(R.string.default_web_client_id))
-                        .requestEmail()
-                        .build();
-
-                final GoogleApiClient googleApiClient = new GoogleApiClient.Builder(context.getApplicationContext())
-                        .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                        .build();
-
-                googleApiClient.connect();
-                googleApiClient.registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-
-                    @Override
-                    public void onConnected(@Nullable Bundle bundle) {
-                        if (googleApiClient.isConnected()) {
-                            Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
-                                    new ResultCallback<Status>() {
-
-                                        @Override
-                                        public void onResult(@NonNull Status status) {
-                                            if (googleApiClient.isConnected()) {
-                                                googleApiClient.clearDefaultAccountAndReconnect();
-                                                googleApiClient.disconnect();
-                                            }
-                                        }
-                                    }
-                            );
-                        }
-                    }
-
-                    @Override
-                    public void onConnectionSuspended(int i) {
-
-                    }
-                });
-
-                context.startActivity(LoginActivity.Companion.create(context));
-            }
-        }));
 
         actions.add(new ButtonAction("Clear projects database", new ButtonAction.Listener() {
 

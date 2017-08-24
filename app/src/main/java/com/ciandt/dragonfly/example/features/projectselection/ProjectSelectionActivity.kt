@@ -59,6 +59,10 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
             presenter.loadProjects()
         }
 
+        logout.setOnClickListener {
+            logout()
+        }
+
         if (savedInstanceState != null) {
             update(savedInstanceState.getParcelableArrayList(PROJECTS_BUNDLE))
         }
