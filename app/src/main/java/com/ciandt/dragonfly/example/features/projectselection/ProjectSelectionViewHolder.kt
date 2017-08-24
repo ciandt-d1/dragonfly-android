@@ -39,17 +39,14 @@ class ProjectSelectionViewHolder(itemView: View, val itemClick: (Project) -> Uni
                     Version.STATUS_DOWNLOADED -> {
                         text = resources.getString(R.string.project_selection_item_downloaded)
                         setTextColor(ContextCompat.getColor(context, R.color.project_selection_item_downloaded))
-                        setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_downloaded_model, 0)
                     }
                     Version.STATUS_DOWNLOADING -> {
                         text = resources.getString(R.string.project_selection_item_downloading)
                         setTextColor(ContextCompat.getColor(context, R.color.project_selection_item_downloading))
-                        setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                     }
                     else -> {
-                        text = resources.getString(R.string.project_selection_item_download)
+                        text = resources.getString(if (item.hasUpdate()) R.string.project_selection_item_update else R.string.project_selection_item_download)
                         setTextColor(ContextCompat.getColor(context, R.color.project_selection_item_download))
-                        setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_download_model, 0)
                     }
                 }
 

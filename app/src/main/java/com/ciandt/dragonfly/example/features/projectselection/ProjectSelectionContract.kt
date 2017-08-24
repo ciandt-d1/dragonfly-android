@@ -28,6 +28,10 @@ interface ProjectSelectionContract {
         fun showUnavailable(project: Project)
 
         fun confirmDownload(project: Project, onConfirm: () -> Unit)
+
+        fun showSeeUpdates()
+
+        fun hideSeeUpdates()
     }
 
     interface Presenter : BasePresenterContract<View> {
@@ -50,5 +54,11 @@ interface ProjectSelectionContract {
         fun registerProjectObserver(onChanged: (Project) -> Unit)
 
         fun unregisterProjectObserver()
+
+        fun getTimestamp(): Long
+
+        fun registerListObserver(onChanged: (Long) -> Unit)
+
+        fun unregisterListObserver()
     }
 }

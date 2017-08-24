@@ -7,6 +7,7 @@ import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
+import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import com.ciandt.dragonfly.data.model.Model
@@ -52,6 +53,10 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
         about.setOnClickListener {
             val intent = AboutActivity.create(this)
             startActivity(intent)
+        }
+
+        update.setOnClickListener {
+            presenter.loadProjects()
         }
 
         if (savedInstanceState != null) {
@@ -183,6 +188,20 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
                 onConfirm()
             }
         }
+    }
+
+    override fun showSeeUpdates() {
+        if (updateContainer.visibility == VISIBLE) {
+            return
+        }
+
+        updateContainer.alpha = 0.0f
+        updateContainer.visibility = VISIBLE
+        updateContainer.animate().alpha(1.0f)
+    }
+
+    override fun hideSeeUpdates() {
+        updateContainer.visibility = GONE
     }
 
     companion object {

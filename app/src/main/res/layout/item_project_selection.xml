@@ -73,7 +73,6 @@
             android:layout_alignParentBottom="true"
             style="@style/ProjectSelection.Item.Download"
             android:text="@string/project_selection_item_download"
-            android:drawableEnd="@drawable/ic_download_model"
         />
 
     </RelativeLayout>

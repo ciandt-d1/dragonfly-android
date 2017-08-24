@@ -18,6 +18,8 @@ class ProjectSelectionInteractor(val context: Context, val firebaseStorage: Fire
 
     private var receiver: ProjectChangedReceiver? = null
 
+    private var listReceiver: ProjectListChangedReceiver? = null
+
     private val database by lazy {
         DatabaseManager.database
     }
@@ -46,6 +48,22 @@ class ProjectSelectionInteractor(val context: Context, val firebaseStorage: Fire
         receiver?.let {
             context.getLocalBroadcastManager().unregisterReceiver(it)
         }
+    }
+
+    override fun registerListObserver(onChanged: (Long) -> Unit) {
+        unregisterListObserver()
+        listReceiver = ProjectListChangedReceiver(onChanged)
+        context.getLocalBroadcastManager().registerReceiver(listReceiver, ProjectListChangedReceiver.getIntentFilter())
+    }
+
+    override fun unregisterListObserver() {
+        listReceiver?.let {
+            context.getLocalBroadcastManager().unregisterReceiver(it)
+        }
+    }
+
+    override fun getTimestamp(): Long {
+        return System.currentTimeMillis()
     }
 
     private data class LoadProjectsResult(val projects: List<Project>, val exception: Exception?) {
