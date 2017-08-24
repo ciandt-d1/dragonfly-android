@@ -16,6 +16,8 @@
     <color name="button_text">#ffffff</color>
     <color name="button_background">#7b63f0</color>
 
+    <color name="update_background">#323232</color>
+
     <color name="project_selection_title">#414141</color>
     <color name="project_selection_subtitle">#757575</color>
     <color name="project_selection_line">#e0e0e0</color>
@@ -30,6 +32,9 @@
     <color name="project_selection_item_downloaded">#3DBBC1</color>
     <color name="project_selection_item_unavailable">#AAAAAA</color>
     <color name="project_selection_item_download_background">#FFFFFF</color>
+
+    <color name="project_selection_update_message">#ddffffff</color>
+    <color name="project_selection_update_button">#dd1de9b6</color>
 
     <color name="about_title">#212121</color>
     <color name="about_description">#757575</color>

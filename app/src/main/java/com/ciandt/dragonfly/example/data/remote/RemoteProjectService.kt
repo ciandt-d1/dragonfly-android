@@ -20,7 +20,7 @@ class RemoteProjectService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        listener = RemoteProjectListener(LocalDataSource(DatabaseManager.database))
+        listener = RemoteProjectListener(this, LocalDataSource(DatabaseManager.database))
 
         databaseRef = FirebaseDatabase.getInstance().getReference(PROJECTS_COLLECTION)
         databaseRef.addChildEventListener(listener)

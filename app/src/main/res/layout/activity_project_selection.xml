@@ -112,4 +112,36 @@
         android:drawableStart="@drawable/ciandt_logo"
     />
 
+    <RelativeLayout
+        android:id="@+id/updateContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/touchable_area_minimum_dimension"
+        android:layout_margin="@dimen/project_selection_update_margin"
+        android:paddingLeft="@dimen/project_selection_update_horizontal_padding"
+        android:layout_above="@id/about"
+        android:background="@drawable/update_background"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/update"
+            android:layout_centerVertical="true"
+            style="@style/ProjectSelection.Update.Message"
+            android:text="@string/project_selection_update_message"/>
+
+        <Button
+            android:id="@+id/update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            style="@style/ProjectSelection.Update.Button"
+            android:text="@string/project_selection_update_button"
+        />
+    </RelativeLayout>
+
 </RelativeLayout>
