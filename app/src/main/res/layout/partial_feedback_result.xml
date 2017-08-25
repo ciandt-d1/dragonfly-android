@@ -26,7 +26,7 @@
             android:layout_marginBottom="@dimen/feedback_result_text_vertical_margin"
             android:paddingStart="@dimen/feedback_result_text_padding_left"
             style="@style/Feedback.Result.Title"
-            tools:text="@string/feedback_classification"
+            android:text="@string/feedback_classification"
         />
 
         <ImageButton
