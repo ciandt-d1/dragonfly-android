@@ -179,7 +179,7 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
             if (icLauncher == null) {
                 icLauncher = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
             }
-            val taskDescription = ActivityManager.TaskDescription(resources.getString(R.string.app_name), icLauncher, ContextCompat.getColor(this, R.color.task_description))
+            val taskDescription = ActivityManager.TaskDescription(resources.getString(R.string.app_name), icLauncher, ContextCompat.getColor(this, R.color.white))
             setTaskDescription(taskDescription)
         }
     }
