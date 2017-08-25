@@ -1,5 +1,11 @@
 package com.ciandt.dragonfly.feedback.ui;
 
+import com.ciandt.dragonfly.R;
+import com.ciandt.dragonfly.base.ui.ImageScaleTypes;
+import com.ciandt.dragonfly.image_processing.ImageUtils;
+import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
+import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -12,12 +18,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
-import com.ciandt.dragonfly.R;
-import com.ciandt.dragonfly.base.ui.ImageScaleTypes;
-import com.ciandt.dragonfly.image_processing.ImageUtils;
-import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
-import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
+import android.widget.TextView;
 
 /**
  * Created by iluz on 6/9/17.
@@ -27,6 +28,7 @@ public class DragonflyLensFeedbackView extends FrameLayout {
 
     private static final String LOG_TAG = DragonflyLensFeedbackView.class.getSimpleName();
 
+    private TextView labelView;
     private ImageView previewView;
     private ImageView ornamentView;
 
@@ -65,6 +67,8 @@ public class DragonflyLensFeedbackView extends FrameLayout {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.dragonfly_lens_feedback_view, this);
+
+        labelView = (TextView) this.findViewById(R.id.dragonflyLensLabelView);
 
         previewView = (ImageView) this.findViewById(R.id.previewImageView);
         ornamentView = (ImageView) this.findViewById(R.id.dragonflyLensOrnamentView);
@@ -105,6 +109,22 @@ public class DragonflyLensFeedbackView extends FrameLayout {
 
     public void setOrnamentScaleType(ImageView.ScaleType scaleType) {
         ornamentView.setScaleType(scaleType);
+    }
+
+    public void setLabel(String label) {
+        labelView.setVisibility(TextUtils.isEmpty(label) ? GONE : VISIBLE);
+
+        String formattedLabel = getContext().getString(R.string.label_without_confidence, label);
+
+        labelView.setText(formattedLabel);
+    }
+
+    public void setLabel(String label, int confidence) {
+        labelView.setVisibility(TextUtils.isEmpty(label) ? GONE : VISIBLE);
+
+        String formattedLabel = getContext().getString(R.string.label_with_confidence, label, confidence);
+
+        labelView.setText(formattedLabel);
     }
 
     @Override

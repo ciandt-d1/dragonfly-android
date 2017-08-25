@@ -54,7 +54,7 @@
     <string name="feedback_save_content_description">Save Photo</string>
     <string name="feedback_back_content_description">Back to Live Lens</string>
     <string name="feedback_also_identify">Other predictions</string>
-    <string name="feedback_classification">%s \nIs the prediction correct?</string>
+    <string name="feedback_classification">Is the prediction correct?</string>
     <string name="feedback_more_info">MORE INFO</string>
     <string name="feedback_close">COLLAPSE</string>
     <string name="feedback_positive_button_content_description">Positive</string>

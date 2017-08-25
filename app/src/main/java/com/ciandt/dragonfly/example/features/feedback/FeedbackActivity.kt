@@ -28,6 +28,7 @@ import com.ciandt.dragonfly.example.data.PendingFeedbackRepository
 import com.ciandt.dragonfly.example.features.feedback.model.BenchmarkResult
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.infrastructure.extensions.getRootView
+import com.ciandt.dragonfly.example.infrastructure.extensions.head
 import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
 import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
 import com.ciandt.dragonfly.example.shared.BaseActivity
@@ -92,6 +93,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         setupNegativeFeedbackView()
 
         dragonFlyLensFeedbackView.setClassificationInput(classificationInput)
+        dragonFlyLensFeedbackView.setLabel(classifications.head().title, Math.round(classifications.head().confidence * 100))
 
         Glide
                 .with(this)
@@ -274,8 +276,6 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     override fun showClassifications(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>) {
-        result.text = getString(R.string.feedback_classification, mainClassificationLabel)
-
         showOtherClassifications(otherClassifications)
         showFeedbackView()
     }
