@@ -1,5 +1,6 @@
 package com.ciandt.dragonfly.example.features.feedback.jobs
 
+import android.os.Build
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.config.FirebaseConfig
 import com.ciandt.dragonfly.example.data.DatabaseManager
@@ -69,8 +70,8 @@ class ProcessStashedFeedbackJob : Job() {
 
         private val LOG_TAG = ProcessStashedFeedbackJob::class.java.simpleName
 
-        private val JOB_INTERVAL = if (BuildConfig.DEBUG) TimeUnit.MINUTES.toMillis(1) else TimeUnit.MINUTES.toMillis(60)
-        private val JOB_FLEX = if (BuildConfig.DEBUG) TimeUnit.SECONDS.toMillis(30) else TimeUnit.MINUTES.toMillis(10)
+        private val JOB_INTERVAL = if (BuildConfig.DEBUG && Build.VERSION.SDK_INT < 24) TimeUnit.MINUTES.toMillis(1) else TimeUnit.MINUTES.toMillis(60)
+        private val JOB_FLEX = if (BuildConfig.DEBUG && Build.VERSION.SDK_INT < 24) TimeUnit.SECONDS.toMillis(30) else TimeUnit.MINUTES.toMillis(10)
 
         fun schedule() {
             JobRequest.Builder(JOB_TAG)
