@@ -44,7 +44,7 @@ object IntentHelper {
         return ProjectSelectionActivity.create(context)
     }
 
-    fun openRealTime(context: Context, model: Model): Intent {
-        return RealTimeActivity.create(context, model)
+    fun openRealTime(context: Context, model: Model, name: String = ""): Intent {
+        return RealTimeActivity.create(context, model, name)
     }
 }

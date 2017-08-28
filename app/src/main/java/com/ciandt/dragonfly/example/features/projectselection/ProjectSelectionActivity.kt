@@ -14,8 +14,8 @@ import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.data.remote.RemoteProjectService
 import com.ciandt.dragonfly.example.features.about.AboutActivity
-import com.ciandt.dragonfly.example.features.realtime.RealTimeActivity
 import com.ciandt.dragonfly.example.helpers.DialogHelper
+import com.ciandt.dragonfly.example.helpers.IntentHelper
 import com.ciandt.dragonfly.example.infrastructure.extensions.isWifiNetworkConnected
 import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
 import com.ciandt.dragonfly.example.models.Project
@@ -165,8 +165,8 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
         }
     }
 
-    override fun run(model: Model) {
-        val intent = RealTimeActivity.create(this, model)
+    override fun run(model: Model, name: String) {
+        val intent = IntentHelper.openRealTime(this, model, name)
         startActivity(intent)
     }
 
