@@ -1,6 +1,7 @@
 package com.ciandt.dragonfly.example
 
 import android.app.Application
+import android.os.Build
 import android.os.Environment
 import com.ciandt.dragonfly.example.config.Features
 import com.ciandt.dragonfly.example.data.DatabaseManager
@@ -91,7 +92,7 @@ class DragonflyApplication : Application() {
                 .create(this)
                 .addJobCreator(DragonflyJobCreator())
 
-        JobManager.instance().config.setAllowSmallerIntervalsForMarshmallow(BuildConfig.DEBUG)
+        JobManager.instance().config.isAllowSmallerIntervalsForMarshmallow = BuildConfig.DEBUG && Build.VERSION.SDK_INT < 24
 
         ProcessStashedFeedbackJob.schedule()
     }
