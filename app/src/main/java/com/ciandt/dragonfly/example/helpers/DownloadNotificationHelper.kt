@@ -28,14 +28,16 @@ object DownloadNotificationHelper {
 
         val id = file.hashCode()
 
+        val modelName = file.title.removePrefix((context.getString(R.string.app_name)) + ": ")
+
         val parent = IntentHelper.openProjectSelection(context)
-        val intent = IntentHelper.openRealTime(context, model)
+        val intent = IntentHelper.openRealTime(context, model, modelName)
 
         val pendingIntent = getPendingIntent(context, parent, intent, id)
 
         val builder = getBasicNotification(context, pendingIntent)
 
-        builder.setContentTitle(file.title.removePrefix((context.getString(R.string.app_name)) + ": "))
+        builder.setContentTitle(modelName)
         builder.setContentText(context.getString(R.string.download_finished))
 
         show(context, id, builder.build())

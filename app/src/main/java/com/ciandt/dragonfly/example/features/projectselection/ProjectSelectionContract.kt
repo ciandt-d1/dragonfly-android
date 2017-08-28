@@ -19,7 +19,7 @@ interface ProjectSelectionContract {
 
         fun update(project: Project)
 
-        fun run(model: Model)
+        fun run(model: Model, name: String = "")
 
         fun showDownloading(project: Project)
 

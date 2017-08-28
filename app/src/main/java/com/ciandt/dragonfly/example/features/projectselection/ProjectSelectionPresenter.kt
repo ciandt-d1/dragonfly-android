@@ -70,7 +70,7 @@ class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract
         }
 
         if (project.hasDownloadedVersion()) {
-            view?.run(project.getLastDownloadedVersion()!!.toLibraryModel())
+            view?.run(project.getLastDownloadedVersion()!!.toLibraryModel(), project.name)
 
         } else if (project.hasDownloadingVersion()) {
             view?.showDownloading(project)

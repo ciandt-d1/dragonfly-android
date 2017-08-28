@@ -22,7 +22,7 @@ import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
 import com.ciandt.dragonfly.example.infrastructure.SharedPreferencesRepository
 import com.ciandt.dragonfly.example.infrastructure.extensions.isVisible
 import com.ciandt.dragonfly.example.infrastructure.extensions.makeVisible
-import com.ciandt.dragonfly.example.shared.FullScreenActivity
+import com.ciandt.dragonfly.example.shared.InvisibleToolbarActivity
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException
@@ -40,10 +40,11 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_real_time.*
 
-class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyLensRealtimeView.ModelCallbacks, DragonflyLensRealtimeView.SnapshotCallbacks, DragonflyLensRealtimeView.UriAnalysisCallbacks {
-    private lateinit var presenter: RealTimeContract.Presenter
+class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, DragonflyLensRealtimeView.ModelCallbacks, DragonflyLensRealtimeView.SnapshotCallbacks, DragonflyLensRealtimeView.UriAnalysisCallbacks {
 
+    private lateinit var presenter: RealTimeContract.Presenter
     private lateinit var model: Model
+    private lateinit var modelName: String
 
     private var missingPermissionsAlertDialog: AlertDialog? = null
     private var comingFromSettings = false
@@ -60,14 +61,16 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         if (savedInstanceState != null) {
             savedInstanceState.apply {
                 model = getParcelable(MODEL_BUNDLE)
+                modelName = getString(MODEL_NAME_BUNDLE)
                 uriUnderAnalysis = getParcelable(IMAGE_URI_BUNDLE)
             }
         } else {
             model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
+            modelName = intent.extras.getString(MODEL_NAME_BUNDLE)
             uriUnderAnalysis = null
         }
 
-        setupBackButton()
+        setupToolbar()
         setupDragonflyLens()
         setupSelectExistingImageButton()
     }
@@ -77,10 +80,12 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         dragonFlyLens.unloadModel()
     }
 
-    private fun setupBackButton() {
+    private fun setupToolbar() {
         btnBack.setOnClickListener({
             super.onBackPressed()
         })
+
+        titleView.text = modelName
     }
 
     private fun setupDragonflyLens() {
@@ -170,6 +175,7 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
 
         outState?.apply {
             putParcelable(MODEL_BUNDLE, model)
+            putString(MODEL_NAME_BUNDLE, modelName)
             putParcelable(IMAGE_URI_BUNDLE, uriUnderAnalysis)
         }
     }
@@ -355,13 +361,15 @@ class RealTimeActivity : FullScreenActivity(), RealTimeContract.View, DragonflyL
         private val LOG_TAG = RealTimeActivity::class.java.simpleName
 
         private val MODEL_BUNDLE = "${BuildConfig.APPLICATION_ID}.model_bundle"
+        private val MODEL_NAME_BUNDLE = "${BuildConfig.APPLICATION_ID}.model_name_bundle"
         private val IMAGE_URI_BUNDLE = "${BuildConfig.APPLICATION_ID}.image_uri"
 
         private val REQUEST_CODE_SELECT_IMAGE = 1
 
-        fun create(context: Context, model: Model): Intent {
+        fun create(context: Context, model: Model, modelName: String = ""): Intent {
             val intent = Intent(context, RealTimeActivity::class.java)
             intent.putExtra(MODEL_BUNDLE, model)
+            intent.putExtra(MODEL_NAME_BUNDLE, modelName)
             return intent
         }
 
