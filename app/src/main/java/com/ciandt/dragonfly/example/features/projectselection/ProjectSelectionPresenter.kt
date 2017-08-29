@@ -62,17 +62,21 @@ class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract
         registerListObserver()
     }
 
-    override fun selectProject(project: Project) {
+    override fun run(project: Project) {
+
+        if (project.hasDownloadedVersion()) {
+            view?.run(project.getLastDownloadedVersion()!!.toLibraryModel(), project.name)
+        }
+    }
+
+    override fun download(project: Project) {
 
         if (project.versions.isEmpty()) {
             view?.showUnavailable(project)
             return
         }
 
-        if (project.hasDownloadedVersion()) {
-            view?.run(project.getLastDownloadedVersion()!!.toLibraryModel(), project.name)
-
-        } else if (project.hasDownloadingVersion()) {
+        if (project.hasDownloadingVersion()) {
             view?.showDownloading(project)
 
         } else {
@@ -95,7 +99,6 @@ class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract
             }
         }
     }
-
 
     private fun registerProjectObserver() {
         interactor.registerProjectObserver { project ->

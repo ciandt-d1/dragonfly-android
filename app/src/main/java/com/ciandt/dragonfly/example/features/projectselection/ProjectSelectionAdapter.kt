@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.ciandt.dragonfly.example.models.Project
 
-class ProjectSelectionAdapter(var context: Context, var list: ArrayList<Project>, val itemClick: (Project) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProjectSelectionAdapter(var context: Context, var list: ArrayList<Project>, val itemClick: (Int, Project) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(context).inflate(ProjectSelectionViewHolder.getLayoutRes(), parent, false)

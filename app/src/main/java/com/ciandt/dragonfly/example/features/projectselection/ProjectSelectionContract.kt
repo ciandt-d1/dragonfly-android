@@ -42,7 +42,9 @@ interface ProjectSelectionContract {
 
         fun loadProjects()
 
-        fun selectProject(project: Project)
+        fun run(project: Project)
+
+        fun download(project: Project)
     }
 
     interface Interactor {

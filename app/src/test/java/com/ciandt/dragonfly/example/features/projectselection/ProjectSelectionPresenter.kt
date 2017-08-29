@@ -104,23 +104,23 @@ class ProjectSelectionPresenterTest {
     }
 
     @Test
-    fun selectProjectWithoutVersion() {
+    fun downloadWithoutVersion() {
         val project = Project("without-versions")
 
-        presenter.selectProject(project)
+        presenter.download(project)
 
         verify(view).showUnavailable(project)
     }
 
     @Test
-    fun selectProjectWithVersionNotDownloaded() {
+    fun downloadVersion() {
         val version = Version("not-downloaded")
 
         val project = Project("not-downloaded").apply {
             versions = arrayListOf(version)
         }
 
-        presenter.selectProject(project)
+        presenter.download(project)
 
         argumentCaptor<() -> Unit>().apply {
             verify(view).confirmDownload(eq(project), capture())
@@ -135,14 +135,14 @@ class ProjectSelectionPresenterTest {
     }
 
     @Test
-    fun selectProjectWithVersionNotDownloadedAndCancelConfirmation() {
+    fun downloadVersionAndCancelConfirmation() {
         val version = Version("not-downloaded")
 
         val project = Project("not-downloaded").apply {
             versions = arrayListOf(version)
         }
 
-        presenter.selectProject(project)
+        presenter.download(project)
 
         project.hasDownloadingVersion().shouldBeFalse()
 
@@ -159,7 +159,7 @@ class ProjectSelectionPresenterTest {
             versions = arrayListOf(version)
         }
 
-        presenter.selectProject(project)
+        presenter.download(project)
 
         argumentCaptor<() -> Unit>().apply {
             verify(view).confirmDownload(eq(project), capture())
@@ -183,25 +183,25 @@ class ProjectSelectionPresenterTest {
     }
 
     @Test
-    fun selectProjectWithVersionDownloading() {
+    fun downloadWithVersionDownloading() {
         val project = Project("downloading").apply {
             versions = arrayListOf(Version("downloading", status = Version.STATUS_DOWNLOADING))
         }
 
-        presenter.selectProject(project)
+        presenter.download(project)
 
         verify(view).showDownloading(project)
     }
 
     @Test
-    fun selectProjectWithVersionDownloaded() {
+    fun runProjectWithVersionDownloaded() {
         val project = Project("downloaded").apply {
             versions = arrayListOf(Version("downloaded", status = Version.STATUS_DOWNLOADED))
         }
 
         val libraryModel = Model("downloaded/0")
 
-        presenter.selectProject(project)
+        presenter.run(project)
 
         verify(view).run(libraryModel)
     }
