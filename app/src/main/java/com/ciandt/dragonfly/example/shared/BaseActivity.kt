@@ -97,7 +97,8 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
     }
 
     fun configDebugDrawer(currentIntent: Intent) {
-        if (hasDebugDrawer && Features.ENABLE_DEBUG_DRAWER && currentIntent.getBooleanExtra(CommonBundleNames.SHOW_DEBUG_DRAWER_BUNDLE, true)) {
+        val showDebugDrawer = currentIntent.getBooleanExtra(CommonBundleNames.SHOW_DEBUG_DRAWER_BUNDLE, true)
+        if (hasDebugDrawer && Features.ENABLE_DEBUG_DRAWER && showDebugDrawer) {
             buildNewDebugDrawer()
         }
     }
@@ -179,7 +180,8 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
             if (icLauncher == null) {
                 icLauncher = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
             }
-            val taskDescription = ActivityManager.TaskDescription(resources.getString(R.string.app_name), icLauncher, ContextCompat.getColor(this, R.color.white))
+            val color = ContextCompat.getColor(this, R.color.white)
+            val taskDescription = ActivityManager.TaskDescription(resources.getString(R.string.app_name), icLauncher, color)
             setTaskDescription(taskDescription)
         }
     }

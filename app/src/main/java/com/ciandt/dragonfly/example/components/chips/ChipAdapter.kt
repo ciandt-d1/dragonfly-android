@@ -7,7 +7,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.ciandt.dragonfly.example.R
 
-class ChipAdapter(var context: Context, var list: ArrayList<out Chip>, val onClick: (chip: Chip, activated: Boolean) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChipAdapter(
+        var context: Context,
+        var list: ArrayList<out Chip>,
+        val onClick: (chip: Chip, activated: Boolean) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var selectable = false
     private var multipleSelection = false
@@ -23,7 +27,8 @@ class ChipAdapter(var context: Context, var list: ArrayList<out Chip>, val onCli
 
         val view = LayoutInflater.from(context).inflate(layout, parent, false)
 
-        view.findViewById<Button?>(R.id.chipButton) ?: throw IllegalArgumentException("Layout for item should contain a Button with id = R.id.chipButton")
+        view.findViewById<Button?>(R.id.chipButton) ?:
+                throw IllegalArgumentException("Layout for item should contain a Button with id = R.id.chipButton")
 
         return ChipViewHolder(view, selectable) { chip, activated ->
 
