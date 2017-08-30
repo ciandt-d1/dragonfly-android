@@ -8,5 +8,7 @@ class FirebaseConfig {
         const val COLLECTION_FEEDBACK_STASH = "feedback_stash"
 
         const val SYNC_ITEMS_PER_RUN = 10
+
+        const val REMOTE_CONFIG_CACHE_EXPIRATON = 3600L // 1 hour in seconds
     }
 }

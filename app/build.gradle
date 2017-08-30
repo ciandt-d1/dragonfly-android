@@ -184,11 +184,12 @@ dependencies {
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
     testCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
 
-    def firebaseVersion = '11.0.1'
+    def firebaseVersion = '11.2.0'
     compile "com.google.firebase:firebase-core:${firebaseVersion}"
     compile "com.google.firebase:firebase-auth:${firebaseVersion}"
     compile "com.google.firebase:firebase-storage:${firebaseVersion}"
     compile "com.google.firebase:firebase-database:${firebaseVersion}"
+    compile "com.google.firebase:firebase-config:${firebaseVersion}"
     compile "com.google.android.gms:play-services-auth:${firebaseVersion}"
 
     def androidArch = '1.0.0-alpha8'

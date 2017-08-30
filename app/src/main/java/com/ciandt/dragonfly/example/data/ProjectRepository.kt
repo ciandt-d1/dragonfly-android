@@ -1,5 +1,6 @@
 package com.ciandt.dragonfly.example.data
 
+import com.ciandt.dragonfly.example.config.Features
 import com.ciandt.dragonfly.example.data.local.AppDatabase
 import com.ciandt.dragonfly.example.data.local.LocalDataSource
 import com.ciandt.dragonfly.example.data.mapper.ProjectEntityToProjectMapper
@@ -22,9 +23,13 @@ class ProjectRepository(database: AppDatabase) {
     fun getProjects(): List<Project> {
         val projects = arrayListOf<Project>()
 
+        val showProjectsWithoutVersions = Features.SHOW_PROJECTS_WITHOUT_VERSIONS
+
         localDataSource.getProjects().forEach {
             ProjectEntityToProjectMapper(it).map()?.let { mapped ->
-                projects.add(mapped)
+                if (mapped.versions.isNotEmpty() || showProjectsWithoutVersions) {
+                    projects.add(mapped)
+                }
             }
         }
 
