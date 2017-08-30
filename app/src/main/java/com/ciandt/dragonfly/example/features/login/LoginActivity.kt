@@ -21,8 +21,6 @@ import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : BaseActivity(), LoginContract.View, GoogleApiClient.OnConnectionFailedListener {
 
-    private val RESULT_CODE_SIGN_IN = 9001
-
     private var googleApiClient: GoogleApiClient? = null
 
     private lateinit var presenter: LoginContract.Presenter
@@ -111,6 +109,8 @@ class LoginActivity : BaseActivity(), LoginContract.View, GoogleApiClient.OnConn
 
     companion object {
         private val LOG_TAG = LoginActivity::class.java.simpleName
+
+        private val RESULT_CODE_SIGN_IN = 9001
 
         fun create(context: Context): Intent {
             val intent = Intent(context, LoginActivity::class.java)

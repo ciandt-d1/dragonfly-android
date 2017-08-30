@@ -15,13 +15,6 @@ import kotlinx.android.synthetic.main.component_chips_view.view.*
 
 class ChipsView : RelativeLayout {
 
-    private val INVALID_RESOURCE = -1
-
-    private val DEFAULT_EDGES_WIDTH = 16.toPx()
-    private val DEFAULT_SPACE_BEFORE = 0.toPx()
-    private val DEFAULT_SPACE_BETWEEN = 0.toPx()
-    private val DEFAULT_SPACE_AFTER = 0.toPx()
-
     private val chips = ArrayList<Chip>()
 
     private lateinit var recyclerView: RecyclerView
@@ -153,5 +146,13 @@ class ChipsView : RelativeLayout {
 
     fun getSelectedItems(): List<Chip> {
         return adapter.getSelectedItems()
+    }
+
+    companion object {
+        private val INVALID_RESOURCE = -1
+        private val DEFAULT_EDGES_WIDTH = 16.toPx()
+        private val DEFAULT_SPACE_BEFORE = 0.toPx()
+        private val DEFAULT_SPACE_BETWEEN = 0.toPx()
+        private val DEFAULT_SPACE_AFTER = 0.toPx()
     }
 }

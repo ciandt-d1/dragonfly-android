@@ -25,13 +25,10 @@ import kotlinx.android.synthetic.main.activity_project_selection.*
 
 class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
 
-    private val PROJECTS_BUNDLE = "PROJECTS_BUNDLE"
-
     private lateinit var presenter: ProjectSelectionContract.Presenter
 
     private val projects = ArrayList<Project>()
 
-    private val FIRST_TIME_DELAY = 1500L
     private var firstTime = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -209,6 +206,11 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
     }
 
     companion object {
+
+        private val PROJECTS_BUNDLE = "PROJECTS_BUNDLE"
+
+        private val FIRST_TIME_DELAY = 1500L
+
         fun create(context: Context): Intent {
             return Intent(context, ProjectSelectionActivity::class.java)
         }

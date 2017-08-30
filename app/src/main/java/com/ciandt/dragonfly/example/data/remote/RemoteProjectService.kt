@@ -11,8 +11,6 @@ import com.google.firebase.database.FirebaseDatabase
 
 class RemoteProjectService : Service() {
 
-    private val PROJECTS_COLLECTION = "v1/projects"
-
     private lateinit var databaseRef: DatabaseReference
 
     private lateinit var listener: RemoteProjectListener
@@ -36,6 +34,8 @@ class RemoteProjectService : Service() {
     }
 
     companion object {
+
+        private val PROJECTS_COLLECTION = "v1/projects"
 
         fun start(context: Context) {
             val intent = Intent(context, RemoteProjectService::class.java)

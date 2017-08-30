@@ -9,8 +9,6 @@ import com.ciandt.dragonfly.example.R
 
 class ChipAdapter(var context: Context, var list: ArrayList<out Chip>, val onClick: (chip: Chip, activated: Boolean) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val UNINITIALIZED_LAYOUT_RESOURCE = -1
-
     private var selectable = false
     private var multipleSelection = false
     private var layout = UNINITIALIZED_LAYOUT_RESOURCE
@@ -92,4 +90,7 @@ class ChipAdapter(var context: Context, var list: ArrayList<out Chip>, val onCli
         return items
     }
 
+    companion object {
+        private val UNINITIALIZED_LAYOUT_RESOURCE = -1
+    }
 }
