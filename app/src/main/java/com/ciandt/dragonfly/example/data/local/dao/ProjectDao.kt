@@ -13,12 +13,17 @@ interface ProjectDao {
     @Delete
     fun delete(project: ProjectEntity)
 
-    @Query("SELECT * FROM projects WHERE id = :arg0")
+    @Query("SELECT * " +
+            "FROM projects " +
+            "WHERE id = :arg0")
     fun getProject(id: String): ProjectVersions?
 
-    @Query("SELECT * FROM projects ORDER BY created_at ASC")
+    @Query("SELECT * " +
+            "FROM projects " +
+            "ORDER BY created_at ASC")
     fun getProjects(): List<ProjectVersions>
 
-    @Query("DELETE FROM projects")
+    @Query("DELETE " +
+            "FROM projects")
     fun clear()
 }

@@ -12,12 +12,17 @@ interface PendingFeedbackLabelDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(label: PendingFeedbackLabelEntitiy)
 
-    @Query("DELETE FROM pending_feedback_label WHERE feedback_id = :arg0")
+    @Query("DELETE " +
+            "FROM pending_feedback_label " +
+            "WHERE feedback_id = :arg0")
     fun delete(feedbackId: String)
 
-    @Query("SELECT * FROM pending_feedback_label WHERE feedback_id = :arg0")
+    @Query("SELECT * " +
+            "FROM pending_feedback_label " +
+            "WHERE feedback_id = :arg0")
     fun findByFeedbackId(feedbackId: String): List<PendingFeedbackLabelEntitiy>
 
-    @Query("DELETE FROM pending_feedback_label")
+    @Query("DELETE " +
+            "FROM pending_feedback_label")
     fun clear()
 }
