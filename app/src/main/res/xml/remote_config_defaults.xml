@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <entry>
+        <key>show_projects_without_versions</key>
+        <value>0</value>
+    </entry>
+</defaultsMap>
