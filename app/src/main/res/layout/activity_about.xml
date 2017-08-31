@@ -1,26 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/about_title_height"
-        style="@style/About.Title"
-        android:text="@string/about_title"/>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <ScrollView android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        style="@style/AppTheme.Toolbar"
+        android:elevation="0dp"
+        tools:ignore="UnusedAttribute">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="@dimen/back_button_width"
+                android:layout_height="@dimen/back_button_height"
+                android:layout_marginTop="@dimen/back_button_margin_top"
+                android:layout_marginStart="@dimen/back_button_margin_left"
+                android:padding="@dimen/back_button_padding"
+                android:layout_centerVertical="true"
+                style="@style/AppTheme.Toolbar.Button.Navigation"
+                android:contentDescription="@string/about_back_content_description"
+                android:src="@drawable/ic_back_close"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                style="@style/AppTheme.Toolbar.TextAppearance.Title"
+                android:text="@string/about_title"
+                android:textAlignment="center"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/line"
+        android:layout_below="@id/toolbar"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/about_margin"
+                android:layout_marginLeft="@dimen/about_margin"
+                android:layout_marginRight="@dimen/about_margin"
+                style="@style/About.Subtitle"
+                android:text="@string/about_subtitle"/>
 
             <TextView
                 android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/about_margin"
+                android:layout_marginLeft="@dimen/about_margin"
+                android:layout_marginRight="@dimen/about_margin"
                 style="@style/About.Description"
                 android:autoLink="web"
                 android:text="@string/about_description"/>
@@ -29,22 +78,27 @@
                 android:id="@+id/privacy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/description"
+                android:layout_margin="@dimen/about_margin"
                 style="@style/About.Privacy"
                 android:text="@string/about_privacy"/>
-        </RelativeLayout>
+
+        </LinearLayout>
+
     </ScrollView>
 
     <View
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/about_line_height"
+        android:layout_above="@+id/poweredBy"
         android:background="@color/about_line"/>
 
     <Button
         android:id="@+id/poweredBy"
         android:layout_width="match_parent"
         android:layout_height="@dimen/about_powered_height"
+        android:layout_alignParentBottom="true"
         style="@style/AppTheme.Footer.Button"
         android:text="@string/about_powered"/>
-</LinearLayout>
+
+</RelativeLayout>

@@ -34,9 +34,7 @@
     <dimen name="project_selection_update_horizontal_padding">16dp</dimen>
 
     <dimen name="about_title_height">56dp</dimen>
-    <dimen name="about_description_padding">24dp</dimen>
-    <dimen name="about_privacy_margin_top">8dp</dimen>
-    <dimen name="about_line_horizontal_margin">10dp</dimen>
+    <dimen name="about_margin">24dp</dimen>
     <dimen name="about_line_height">1dp</dimen>
 
     <dimen name="about_powered_height">56dp</dimen>
