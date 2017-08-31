@@ -39,18 +39,12 @@
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/about_line_height"
-        android:layout_marginLeft="@dimen/about_line_horizontal_margin"
-        android:layout_marginRight="@dimen/about_line_horizontal_margin"
         android:background="@color/about_line"/>
+
     <Button
-        android:id="@+id/about"
+        android:id="@+id/poweredBy"
         android:layout_width="match_parent"
         android:layout_height="@dimen/about_powered_height"
-        android:layout_marginLeft="@dimen/about_powered_horizontal_margin"
-        android:layout_marginRight="@dimen/about_powered_horizontal_margin"
-        android:background="@android:color/transparent"
-        android:drawablePadding="@dimen/about_powered_drawable_padding"
-        android:drawableStart="@drawable/ciandt_logo"
-        android:text="@string/about_powered"
-        android:textColor="@color/about_powered"/>
+        style="@style/AppTheme.Footer.Button"
+        android:text="@string/about_powered"/>
 </LinearLayout>

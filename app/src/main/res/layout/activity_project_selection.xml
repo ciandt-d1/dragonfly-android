@@ -117,8 +117,6 @@
 
     <View android:layout_width="match_parent"
           android:layout_height="@dimen/project_selection_line_height"
-          android:layout_marginLeft="@dimen/project_selection_line_horizontal_margin"
-          android:layout_marginRight="@dimen/project_selection_line_horizontal_margin"
           android:layout_above="@+id/about"
           android:background="@color/project_selection_line"/>
 
@@ -127,9 +125,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/project_selection_about_height"
         android:layout_alignParentBottom="true"
-        style="@style/ProjectSelection.About"
-        android:drawableStart="@drawable/ciandt_logo"
-    />
+        style="@style/AppTheme.Footer.Button"
+        android:text="@string/project_selection_about"/>
 
     <RelativeLayout
         android:id="@+id/updateContainer"

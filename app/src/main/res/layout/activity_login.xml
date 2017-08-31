@@ -63,21 +63,16 @@
             android:id="@+id/line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/login_footer_line_height"
-            android:layout_above="@+id/footer"
+            android:layout_above="@+id/termsAndConditions"
             android:background="@color/login_footer_line"/>
 
         <Button
-            android:id="@+id/footer"
+            android:id="@+id/termsAndConditions"
             android:layout_width="match_parent"
             android:layout_height="@dimen/login_footer_height"
-            android:paddingLeft="@dimen/login_footer_horizontal_padding"
-            android:paddingRight="@dimen/login_footer_horizontal_padding"
             android:layout_alignParentBottom="true"
-            style="@style/Login.Footer"
-            android:drawablePadding="@dimen/login_footer_drawable_padding"
-            android:drawableStart="@drawable/ciandt_logo"
-            android:text="@string/login_terms_and_conditions"
-        />
+            style="@style/AppTheme.Footer.Button"
+            android:text="@string/login_terms_and_conditions"/>
 
     </RelativeLayout>
 
