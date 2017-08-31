@@ -13,12 +13,18 @@ interface PendingFeedbackDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(feedback: PendingFeedbackEntitiy)
 
-    @Query("DELETE FROM pending_feedback WHERE id = :arg0")
+    @Query("DELETE " +
+            "FROM pending_feedback " +
+            "WHERE id = :arg0")
     fun delete(id: String)
 
-    @Query("SELECT * FROM pending_feedback ORDER BY created_at ASC LIMIT :arg0")
+    @Query("SELECT * " +
+            "FROM pending_feedback " +
+            "ORDER BY created_at ASC " +
+            "LIMIT :arg0")
     fun getLimitingTo(limit: Int): List<PendingFeedbackWithLabels>
 
-    @Query("DELETE FROM pending_feedback")
+    @Query("DELETE " +
+            "FROM pending_feedback")
     fun clear()
 }

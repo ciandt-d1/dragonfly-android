@@ -12,12 +12,17 @@ interface DownloadDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(version: DownloadEntity)
 
-    @Query("DELETE FROM downloads WHERE id = :arg0")
+    @Query("DELETE " +
+            "FROM downloads " +
+            "WHERE id = :arg0")
     fun delete(id: Long)
 
-    @Query("SELECT * FROM downloads WHERE id = :arg0")
+    @Query("SELECT * " +
+            "FROM downloads " +
+            "WHERE id = :arg0")
     fun get(id: Long): DownloadEntity?
 
-    @Query("DELETE FROM downloads")
+    @Query("DELETE " +
+            "FROM downloads")
     fun clear()
 }

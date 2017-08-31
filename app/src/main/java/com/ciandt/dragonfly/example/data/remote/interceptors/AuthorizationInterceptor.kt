@@ -23,8 +23,11 @@ class AuthorizationInterceptor : Interceptor {
     }
 
     private fun refreshToken() {
-        val user = FirebaseAuth.getInstance().currentUser ?: throw RuntimeException("No user signed in")
-        token = Tasks.await(user.getIdToken(true), 10L, TimeUnit.SECONDS).token ?: throw RuntimeException("Token is null")
+        val user = FirebaseAuth.getInstance().currentUser ?:
+                throw RuntimeException("No user signed in")
+
+        token = Tasks.await(user.getIdToken(true), 10L, TimeUnit.SECONDS).token ?:
+                throw RuntimeException("Token is null")
     }
 
     private fun signRequestAndProceed(chain: Interceptor.Chain): Response {

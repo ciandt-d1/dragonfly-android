@@ -72,10 +72,12 @@ class DragonflyApplication : Application() {
         DragonflyConfig.shouldSaveCapturedCameraFramesInDebugMode(Features.SAVE_CAPTURED_IMAGES_FOR_DEBUGGING)
         DragonflyConfig.shouldSaveSelectedExistingBitmapsInDebugMode(Features.SAVE_SELECTED_IMAGE_FOR_DEBUGGING)
 
-        val stagingPath = Environment.getExternalStorageDirectory().absolutePath + File.separator + BuildConfig.APPLICATION_ID
+        val externalStorageDirectory = Environment.getExternalStorageDirectory().absolutePath
+
+        val stagingPath = externalStorageDirectory + File.separator + BuildConfig.APPLICATION_ID
         DragonflyConfig.setStagingPath(stagingPath)
 
-        val userSavedImagePath = Environment.getExternalStorageDirectory().absolutePath + File.separator + getString(R.string.app_name)
+        val userSavedImagePath = externalStorageDirectory + File.separator + getString(R.string.app_name)
         DragonflyConfig.setUserSavedImagesPath(userSavedImagePath)
 
         DragonflyConfig.setMaxModelLoadingRetryAttempts(5)
@@ -111,7 +113,8 @@ class DragonflyApplication : Application() {
                 .create(this)
                 .addJobCreator(DragonflyJobCreator())
 
-        JobManager.instance().config.isAllowSmallerIntervalsForMarshmallow = BuildConfig.DEBUG && Build.VERSION.SDK_INT < 24
+        val allowSmallerIntervalsForMarshmallow = BuildConfig.DEBUG && Build.VERSION.SDK_INT < 24
+        JobManager.instance().config.isAllowSmallerIntervalsForMarshmallow = allowSmallerIntervalsForMarshmallow
 
         ProcessStashedFeedbackJob.schedule()
     }

@@ -5,7 +5,11 @@ import android.view.View
 import android.widget.Button
 import com.ciandt.dragonfly.example.R
 
-class ChipViewHolder(itemView: View, val selectable: Boolean, val onClick: (chip: Chip, activated: Boolean) -> Unit) : RecyclerView.ViewHolder(itemView) {
+class ChipViewHolder(
+        itemView: View,
+        val selectable: Boolean,
+        val onClick: (chip: Chip, activated: Boolean) -> Unit
+) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(chip: Chip, selected: Boolean = false) = with(itemView.findViewById<Button>(R.id.chipButton)) {
 

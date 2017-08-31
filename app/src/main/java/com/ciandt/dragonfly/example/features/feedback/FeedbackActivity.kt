@@ -47,8 +47,6 @@ import kotlinx.android.synthetic.main.partial_feedback_form.*
 import kotlinx.android.synthetic.main.partial_feedback_result.*
 
 class FeedbackActivity : BaseActivity(), FeedbackContract.View {
-    private val HIDE_SHOW_ANIMATION_DURATION = 150L
-    private val FIRST_APPEAR_ANIMATION_DURATION = 1000L
 
     private lateinit var presenter: FeedbackContract.Presenter
     private lateinit var classificationInput: DragonflyClassificationInput
@@ -497,7 +495,8 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     companion object {
-        private val LOG_TAG = FeedbackActivity::class.java.simpleName
+        private val HIDE_SHOW_ANIMATION_DURATION = 150L
+        private val FIRST_APPEAR_ANIMATION_DURATION = 1000L
 
         private val MODEL_BUNDLE = String.format("%s.model", BuildConfig.APPLICATION_ID)
         private val CLASSIFICATION_INPUT_BUNDLE = String.format("%s.classification_input", BuildConfig.APPLICATION_ID)
