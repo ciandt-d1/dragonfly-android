@@ -106,8 +106,11 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
 
         (recyclerView.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
-        val adapter = ProjectSelectionAdapter(this, projects) { project ->
-            presenter.selectProject(project)
+        val adapter = ProjectSelectionAdapter(this, projects) { button, project ->
+            when (button) {
+                ProjectSelectionViewHolder.BUTTON_DOWNLOAD -> presenter.download(project)
+                ProjectSelectionViewHolder.BUTTON_EXPLORE -> presenter.run(project)
+            }
         }
 
         adapter.setHasStableIds(true)

@@ -21,6 +21,6 @@ fun <E> MutableList<E>.replace(element: E): Boolean {
     if (index == -1) {
         return false
     }
-    add(index, element)
+    set(index, element)
     return true
 }

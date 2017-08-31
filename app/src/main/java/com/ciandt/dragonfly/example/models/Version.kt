@@ -82,6 +82,15 @@ data class Version(
         writeInt(status)
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Version) {
+            return false
+        }
+        if (project != other.project) return false
+        return (version == other.version)
+    }
+
     companion object {
 
         val STATUS_NOT_DOWNLOADED = 0

@@ -55,13 +55,15 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/project_selection_list_height"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/project_selection_list_margin_top"
         android:paddingLeft="@dimen/project_selection_list_horizontal_padding"
         android:paddingRight="@dimen/project_selection_list_horizontal_padding"
         android:layout_below="@+id/subtitle"
         android:clipToPadding="false"
         android:overScrollMode="never"
+        tools:layout_height="@dimen/project_selection_list_height"
+        tools:listitem="@layout/item_project_selection"
     />
 
     <LinearLayout
@@ -74,7 +76,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="invisible"
-        tools:visibility="visible">
+        tools:visibility="invisible">
 
         <ImageView
             android:id="@+id/stateIcon"
