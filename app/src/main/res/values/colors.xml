@@ -8,6 +8,7 @@
 
     <color name="black_87">#de000000</color>
     <color name="black_54">#8a000000</color>
+    <color name="black_38">#60000000</color>
 
     <color name="white">#ffffff</color>
 
@@ -23,7 +24,10 @@
     <color name="project_selection_subtitle">#757575</color>
     <color name="project_selection_about">@color/colorAccent</color>
     <color name="project_selection_line">#1e000000</color>
-    <color name="project_selection_message">#757575</color>
+
+    <color name="project_selection_state_background">@color/white</color>
+    <color name="project_selection_state_title">@color/black_54</color>
+    <color name="project_selection_state_message">@color/black_38</color>
 
     <color name="project_selection_item_title">#FFFFFF</color>
     <color name="project_selection_item_info">#B3FFFFFF</color>

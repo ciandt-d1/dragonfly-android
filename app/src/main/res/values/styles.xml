@@ -31,14 +31,23 @@
         <item name="android:ellipsize">end</item>
     </style>
 
-    <style name="ProjectSelection.Message" parent="TextAppearance.AppCompat">
+    <style name="ProjectSelection.State.Title" parent="TextAppearance.AppCompat">
         <item name="fontPath">fonts/Roboto-Regular.ttf</item>
-        <item name="android:textColor">@color/project_selection_message</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:maxLines">2</item>
-        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/project_selection_state_title</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:lineSpacingExtra">5sp</item>
         <item name="android:textAlignment">center</item>
     </style>
+
+    <style name="ProjectSelection.State.Message" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+        <item name="android:textColor">@color/project_selection_state_message</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineSpacingExtra">5sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="ProjectSelection.State.Button" parent="AppTheme.Button"/>
 
     <style name="ProjectSelection.Item.Name" parent="TextAppearance.AppCompat">
         <item name="fontPath">fonts/Roboto-Bold.ttf</item>

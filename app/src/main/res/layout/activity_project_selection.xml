@@ -65,40 +65,51 @@
     />
 
     <LinearLayout
-        android:id="@+id/messageContainer"
+        android:id="@+id/stateContainer"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/project_selection_list_height"
-        android:layout_alignTop="@id/recyclerView"
-        android:layout_alignBottom="@id/recyclerView"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/about"
+        android:layout_below="@+id/toolbar"
+        android:background="@color/project_selection_state_background"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="invisible"
         tools:visibility="visible">
 
         <ImageView
-            android:id="@+id/messageIcon"
+            android:id="@+id/stateIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@null"
-            android:src="@drawable/ic_warning"/>
+            android:src="@drawable/ic_projects_empty"/>
 
         <TextView
-            android:id="@+id/messageText"
+            android:id="@+id/stateTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/project_selection_message_text_margin"
-            style="@style/ProjectSelection.Message"
-            android:text="@string/project_selection_empty_message"/>
+            android:layout_marginTop="@dimen/project_selection_state_title_margin"
+            android:layout_marginLeft="@dimen/project_selection_state_title_margin"
+            android:layout_marginRight="@dimen/project_selection_state_title_margin"
+            style="@style/ProjectSelection.State.Title"
+            android:text="@string/project_selection_empty_state_title"/>
+
+        <TextView
+            android:id="@+id/stateMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/project_selection_state_message_margin"
+            android:layout_marginRight="@dimen/project_selection_state_message_margin"
+            style="@style/ProjectSelection.State.Message"
+            android:text="@string/project_selection_empty_state_message"/>
 
         <Button
-            android:id="@+id/messageRetry"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/project_selection_message_button_margin"
-            android:layout_marginEnd="@dimen/project_selection_message_button_margin"
-            android:background="@android:color/transparent"
-            android:text="@string/project_selection_retry"
-            android:textColor="@color/project_selection_about"/>
+            android:id="@+id/stateRetry"
+            android:layout_width="@dimen/project_selection_state_retry_width"
+            android:layout_height="@dimen/touchable_area_minimum_dimension"
+            android:layout_marginTop="@dimen/project_selection_state_retry_margin"
+            style="@style/ProjectSelection.State.Button"
+            android:text="@string/project_selection_state_retry"
+        />
 
     </LinearLayout>
 

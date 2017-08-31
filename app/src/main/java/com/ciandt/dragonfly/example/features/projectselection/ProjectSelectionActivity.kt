@@ -43,7 +43,7 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
 
         setupList()
 
-        messageRetry.setOnClickListener {
+        stateRetry.setOnClickListener {
             presenter.loadProjects()
         }
 
@@ -117,31 +117,36 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
 
     override fun showLoading() {
         loading.visibility = VISIBLE
+        subtitle.visibility = INVISIBLE
         recyclerView.visibility = INVISIBLE
-        messageContainer.visibility = INVISIBLE
+        stateContainer.visibility = INVISIBLE
     }
 
     override fun showEmpty() {
         loading.visibility = INVISIBLE
+        subtitle.visibility = INVISIBLE
         recyclerView.visibility = INVISIBLE
 
-        messageIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_warning))
-        messageText.text = getString(R.string.project_selection_empty_message)
-        messageContainer.visibility = VISIBLE
+        stateIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_projects_empty))
+        stateTitle.text = getString(R.string.project_selection_empty_state_title)
+        stateMessage.text = getString(R.string.project_selection_empty_state_message)
+        stateContainer.visibility = VISIBLE
     }
 
     override fun showError(exception: Exception) {
         loading.visibility = INVISIBLE
+        subtitle.visibility = INVISIBLE
         recyclerView.visibility = INVISIBLE
 
-        messageIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_error))
-        messageText.text = getString(R.string.project_selection_error_message)
-        messageContainer.visibility = VISIBLE
+        stateIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_projects_error))
+        stateTitle.text = getString(R.string.project_selection_error_state_title)
+        stateMessage.text = getString(R.string.project_selection_error_state_message)
+        stateContainer.visibility = VISIBLE
     }
 
     override fun update(projects: List<Project>) {
         loading.visibility = INVISIBLE
-        messageContainer.visibility = INVISIBLE
+        stateContainer.visibility = INVISIBLE
 
         this.projects.clear()
         this.projects.addAll(projects)
@@ -149,6 +154,7 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
         recyclerView.adapter.notifyDataSetChanged()
 
         recyclerView.visibility = VISIBLE
+        subtitle.visibility = VISIBLE
     }
 
     override fun update(project: Project) {

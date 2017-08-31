@@ -13,8 +13,10 @@
     <dimen name="project_selection_line_horizontal_margin">10dp</dimen>
     <dimen name="project_selection_line_height">1dp</dimen>
 
-    <dimen name="project_selection_message_text_margin">8dp</dimen>
-    <dimen name="project_selection_message_button_margin">8dp</dimen>
+    <dimen name="project_selection_state_title_margin">24dp</dimen>
+    <dimen name="project_selection_state_message_margin">80dp</dimen>
+    <dimen name="project_selection_state_retry_margin">24dp</dimen>
+    <dimen name="project_selection_state_retry_width">122dp</dimen>
 
     <dimen name="project_selection_about_height">56dp</dimen>
 
