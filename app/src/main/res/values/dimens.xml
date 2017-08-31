@@ -17,8 +17,6 @@
     <dimen name="project_selection_message_button_margin">8dp</dimen>
 
     <dimen name="project_selection_about_height">56dp</dimen>
-    <dimen name="project_selection_about_horizontal_padding">10dp</dimen>
-    <dimen name="project_selection_about_drawable_padding">-32dp</dimen>
 
     <dimen name="project_selection_item_width">154dp</dimen>
     <dimen name="project_selection_item_margin">4dp</dimen>
@@ -42,8 +40,6 @@
     <dimen name="about_line_height">1dp</dimen>
 
     <dimen name="about_powered_height">56dp</dimen>
-    <dimen name="about_powered_horizontal_margin">10dp</dimen>
-    <dimen name="about_powered_drawable_padding">-32dp</dimen>
 
     <dimen name="real_time_from_existing_picture_margin_right">64dp</dimen>
     <dimen name="real_time_from_existing_picture_margin_bottom">24dp</dimen>
@@ -119,8 +115,8 @@
     <dimen name="login_google_horizontal_margin">32dp</dimen>
     <dimen name="login_footer_line_height">1dp</dimen>
     <dimen name="login_footer_height">56dp</dimen>
-    <dimen name="login_footer_horizontal_padding">16dp</dimen>
-    <dimen name="login_footer_drawable_padding">-32dp</dimen>
     <dimen name="login_progress_dimension">48dp</dimen>
 
+    <dimen name="button_footer_horizontal_padding">16dp</dimen>
+    <dimen name="button_footer_drawable_padding">-32dp</dimen>
 </resources>
