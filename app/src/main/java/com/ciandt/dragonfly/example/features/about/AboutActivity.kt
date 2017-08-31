@@ -14,6 +14,10 @@ class AboutActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
 
+        btnBack.setOnClickListener({
+            super.onBackPressed()
+        })
+
         privacy.setOnClickListener {
             val intent = IntentHelper.openUrl(getString(R.string.about_privacy_url))
             startActivity(intent)

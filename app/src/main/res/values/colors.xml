@@ -7,6 +7,7 @@
     <color name="colorAccent">#7C67E8</color>
 
     <color name="black_87">#de000000</color>
+    <color name="black_54">#8a000000</color>
 
     <color name="white">#ffffff</color>
 
@@ -36,8 +37,8 @@
     <color name="project_selection_update_message">#ddffffff</color>
     <color name="project_selection_update_button">#dd1de9b6</color>
 
-    <color name="about_title">#212121</color>
-    <color name="about_description">#757575</color>
+    <color name="about_title">@color/black_87</color>
+    <color name="about_description">@color/black_54</color>
     <color name="about_privacy">@color/colorAccent</color>
     <color name="about_line">#1e000000</color>
     <color name="about_powered">#9E9E9E</color>
