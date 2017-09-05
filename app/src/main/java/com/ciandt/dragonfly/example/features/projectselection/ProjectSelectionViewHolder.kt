@@ -1,8 +1,10 @@
 package com.ciandt.dragonfly.example.features.projectselection
 
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.ciandt.dragonfly.example.R
+import com.ciandt.dragonfly.example.components.buttons.DownloadButton
 import com.ciandt.dragonfly.example.helpers.ColorHelper
 import com.ciandt.dragonfly.example.helpers.SizeHelper
 import com.ciandt.dragonfly.example.infrastructure.extensions.makeGone
@@ -33,10 +35,8 @@ class ProjectSelectionViewHolder(itemView: View, val itemClick: (Int, Project) -
             explore.makeGone()
             download.makeVisible()
 
-            download.apply {
-                text = resources.getString(R.string.project_selection_item_unavailable)
-                isActivated = false
-            }
+            val text = resources.getString(R.string.project_selection_item_unavailable)
+            download.setState(DownloadButton.State.Start(null, text))
 
         } else {
 
@@ -45,14 +45,14 @@ class ProjectSelectionViewHolder(itemView: View, val itemClick: (Int, Project) -
             val format = resources.getString(R.string.project_selection_item_info, lastVersion.version, SizeHelper.toReadable(lastVersion.size, format = DecimalFormat("#.##")))
             info.text = format
 
-
             explore.makeGone()
             download.makeGone()
 
-
             if (item.hasDownloadedVersion()) {
-                explore.isActivated = true
+
+                val text = resources.getString(R.string.project_selection_item_downloaded)
                 explore.makeVisible()
+                explore.setState(DownloadButton.State.Done(text))
             }
 
             when (lastVersion.status) {
@@ -62,12 +62,14 @@ class ProjectSelectionViewHolder(itemView: View, val itemClick: (Int, Project) -
 
                 Version.STATUS_DOWNLOADING -> {
                     download.makeVisible()
-                    download.text = resources.getString(if (item.hasDownloadedVersion()) R.string.project_selection_item_updating else R.string.project_selection_item_downloading)
+                    download.setState(DownloadButton.State.Progress())
                 }
 
                 else -> {
+                    val drawable = ContextCompat.getDrawable(context, if (item.hasUpdate()) R.drawable.ic_update else R.drawable.ic_download)
+                    val text = resources.getString(if (item.hasUpdate()) R.string.project_selection_item_update else R.string.project_selection_item_download)
                     download.makeVisible()
-                    download.text = resources.getString(if (item.hasUpdate()) R.string.project_selection_item_update else R.string.project_selection_item_download)
+                    download.setState(DownloadButton.State.Start(drawable, text))
                 }
             }
 

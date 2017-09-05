@@ -73,21 +73,17 @@
             android:layout_alignParentBottom="true"
             android:orientation="vertical">
 
-            <Button
+            <com.ciandt.dragonfly.example.components.buttons.DownloadButton
                 android:id="@+id/explore"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/project_selection_item_download_height"
-                style="@style/ProjectSelection.Item.Download"
-                android:text="@string/project_selection_item_downloaded"
             />
 
-            <Button
+            <com.ciandt.dragonfly.example.components.buttons.DownloadButton
                 android:id="@+id/download"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/project_selection_item_download_height"
                 android:layout_marginTop="@dimen/project_selection_item_download_margin"
-                style="@style/ProjectSelection.Item.Download"
-                android:text="@string/project_selection_item_download"
             />
 
         </LinearLayout>

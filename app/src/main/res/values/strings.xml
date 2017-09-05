@@ -7,8 +7,6 @@
     <string name="project_selection_item_info">Ver. %1$04d - %2$s</string>
     <string name="project_selection_item_download">Download</string>
     <string name="project_selection_item_update">Update</string>
-    <string name="project_selection_item_downloading">Downloading…</string>
-    <string name="project_selection_item_updating">Updating…</string>
     <string name="project_selection_item_downloaded">Explore</string>
     <string name="project_selection_item_unavailable">Unavailable</string>
     <string name="project_selection_item_wait_message">Download in progress. Please wait…</string>

@@ -82,13 +82,20 @@
         <item name="android:paddingRight">@dimen/project_selection_item_text_horizontal_padding</item>
     </style>
 
-    <style name="ProjectSelection.Item.Download" parent="TextAppearance.AppCompat">
+    <style name="ProjectSelection.Item.Explore" parent="TextAppearance.AppCompat">
         <item name="fontPath">fonts/Roboto-Medium.ttf</item>
-        <item name="android:text">@string/project_selection_item_download</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textAlignment">center</item>
-        <item name="android:textColor">@drawable/item_button_selector_text</item>
-        <item name="android:background">@drawable/item_button_selector_background</item>
+        <item name="android:textColor">#7b63f0</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="ProjectSelection.Item.Download" parent="TextAppearance.AppCompat">
+        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">#ffffff</item>
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
     </style>
