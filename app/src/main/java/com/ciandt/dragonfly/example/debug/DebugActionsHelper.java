@@ -100,6 +100,21 @@ public class DebugActionsHelper {
             }
         }));
 
+        actions.add(new ButtonAction("Set flowers update", new ButtonAction.Listener() {
+
+            @Override
+            public void onClick() {
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        ProjectRepository repository = new ProjectRepository(DatabaseManager.INSTANCE.getDatabase());
+                        repository.updateVersionStatus("scotts-v1-quantized", 1, 2);
+                    }
+                }).start();
+            }
+        }));
+
         actions.add(new ButtonAction("Start Firebase Project Service", new ButtonAction.Listener() {
 
             @Override
