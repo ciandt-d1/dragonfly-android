@@ -12,6 +12,7 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.R
+import com.ciandt.dragonfly.example.config.CommonBundleNames
 import com.ciandt.dragonfly.example.data.remote.RemoteProjectService
 import com.ciandt.dragonfly.example.features.about.AboutActivity
 import com.ciandt.dragonfly.example.helpers.DialogHelper
@@ -164,7 +165,11 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
         if (projects.contains(project)) {
             val index = projects.indexOf(project)
             projects[index] = project
-            recyclerView.adapter.notifyItemChanged(index)
+
+            val payload = Bundle().apply {
+                putBoolean(CommonBundleNames.PROJECT_CHANGED, true)
+            }
+            recyclerView.adapter.notifyItemChanged(index, payload)
         } else {
             projects.add(project)
             recyclerView.adapter.notifyItemInserted(projects.size - 1)

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/component_download_button_background_1">
+
+    <View
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:background="@drawable/component_download_button_background_2"/>
+
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/progress"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_centerInParent="true"
+        style="?android:attr/progressBarStyleLarge"
+        android:indeterminate="true"
+        android:indeterminateTint="#0000ff"
+        tools:ignore="UnusedAttribute"/>
+
+</RelativeLayout>
