@@ -16,7 +16,7 @@ import java.text.DecimalFormat
 
 class ProjectSelectionViewHolder(itemView: View, val itemClick: (Int, Project) -> Unit) : RecyclerView.ViewHolder(itemView) {
 
-    fun bind(item: Project) = with(itemView) {
+    fun bind(item: Project, animate: Boolean = false) = with(itemView) {
 
         name.text = item.name
 
@@ -36,7 +36,7 @@ class ProjectSelectionViewHolder(itemView: View, val itemClick: (Int, Project) -
             download.makeVisible()
 
             val text = resources.getString(R.string.project_selection_item_unavailable)
-            download.setState(DownloadButton.State.Start(null, text))
+            download.setState(DownloadButton.State.Start(null, text), animate)
 
         } else {
 
@@ -51,25 +51,40 @@ class ProjectSelectionViewHolder(itemView: View, val itemClick: (Int, Project) -
             if (item.hasDownloadedVersion()) {
 
                 val text = resources.getString(R.string.project_selection_item_downloaded)
-                explore.makeVisible()
-                explore.setState(DownloadButton.State.Done(text))
+
+                val setExplore = {
+                    explore.makeVisible()
+                    explore.setState(DownloadButton.State.Done(text), false)
+                }
+
+                if (animate && lastVersion.isDownloaded()) {
+
+                    download.makeVisible()
+                    download.setState(DownloadButton.State.Done(text), true, {
+                        download.makeGone()
+
+                        setExplore()
+                    })
+
+                } else {
+                    setExplore()
+                }
             }
 
             when (lastVersion.status) {
                 Version.STATUS_DOWNLOADED -> {
-                    download.makeGone()
                 }
 
                 Version.STATUS_DOWNLOADING -> {
                     download.makeVisible()
-                    download.setState(DownloadButton.State.Progress())
+                    download.setState(DownloadButton.State.Progress(), animate)
                 }
 
                 else -> {
                     val drawable = ContextCompat.getDrawable(context, if (item.hasUpdate()) R.drawable.ic_update else R.drawable.ic_download)
                     val text = resources.getString(if (item.hasUpdate()) R.string.project_selection_item_update else R.string.project_selection_item_download)
                     download.makeVisible()
-                    download.setState(DownloadButton.State.Start(drawable, text))
+                    download.setState(DownloadButton.State.Start(drawable, text), animate)
                 }
             }
 

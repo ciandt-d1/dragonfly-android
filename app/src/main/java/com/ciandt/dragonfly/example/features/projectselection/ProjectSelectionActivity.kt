@@ -164,7 +164,11 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
         if (projects.contains(project)) {
             val index = projects.indexOf(project)
             projects[index] = project
-            recyclerView.adapter.notifyItemChanged(index)
+
+            val payload = Bundle().apply {
+                putBoolean("changed", true)
+            }
+            recyclerView.adapter.notifyItemChanged(index, payload)
         } else {
             projects.add(project)
             recyclerView.adapter.notifyItemInserted(projects.size - 1)

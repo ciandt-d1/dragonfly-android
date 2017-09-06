@@ -39,7 +39,11 @@ class DownloadButton : FrameLayout {
         }
     }
 
-    private var state = 0
+    private var state = -1
+
+    private var animating = false
+
+    private var onCompleted: () -> Unit = {}
 
     private val views = mutableMapOf<Int, View>()
 
@@ -82,7 +86,7 @@ class DownloadButton : FrameLayout {
         TransitionManager.go(Scene(this, view), t)
     }
 
-    fun setState(state: State, animated: Boolean = false) {
+    fun setState(state: State, animated: Boolean, onCompleted: () -> Unit = {}) {
         val from = this.state
 
         val index = state.getViewIndex() ?: -1
@@ -104,11 +108,17 @@ class DownloadButton : FrameLayout {
         }
 
         this.state = index
+        this.onCompleted = onCompleted
 
         if (!animated) {
             goTo(view)
 
         } else {
+            if (animating) {
+                return
+            }
+
+            animating = true
             when (from) {
 
                 0 -> when (index) {
@@ -121,10 +131,6 @@ class DownloadButton : FrameLayout {
                 }
             }
         }
-    }
-
-    fun changeState(state: State) {
-        setState(state, true)
     }
 
 
@@ -171,6 +177,11 @@ class DownloadButton : FrameLayout {
             })
 
             duration = 400
+
+            onTransitionEnd({
+                animating = false
+                onCompleted()
+            })
         }
 
         goTo(views[2], set)
@@ -200,6 +211,11 @@ class DownloadButton : FrameLayout {
             })
 
             duration = 400
+
+            onTransitionEnd({
+                animating = false
+                onCompleted()
+            })
         }
 
         goTo(views[0], set)
@@ -261,15 +277,19 @@ class DownloadButton : FrameLayout {
             })
 
             duration = 600
+
+            onTransitionEnd({
+                animating = false
+                onCompleted()
+            })
         }
 
         goTo(views[4], set)
     }
-
 }
 
 // Helper Extension
-fun TransitionSet.onTransitionEnd(action: () -> Unit, delay: Long) {
+fun TransitionSet.onTransitionEnd(action: () -> Unit, delay: Long = 0) {
     addListener(object : Transition.TransitionListenerAdapter() {
         override fun onTransitionEnd(transition: Transition?) {
             super.onTransitionEnd(transition)
