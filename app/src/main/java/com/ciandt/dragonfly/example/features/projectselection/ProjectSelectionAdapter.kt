@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.ciandt.dragonfly.example.config.CommonBundleNames
 import com.ciandt.dragonfly.example.models.Project
 
 class ProjectSelectionAdapter(var context: Context, var list: ArrayList<Project>, val itemClick: (Int, Project) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -23,7 +24,7 @@ class ProjectSelectionAdapter(var context: Context, var list: ArrayList<Project>
 
         val first = payloads?.firstOrNull()
         if (first != null && first is Bundle) {
-            changed = first.getBoolean("changed")
+            changed = first.getBoolean(CommonBundleNames.PROJECT_CHANGED)
         }
         (holder as ProjectSelectionViewHolder).bind(list[position], changed)
     }

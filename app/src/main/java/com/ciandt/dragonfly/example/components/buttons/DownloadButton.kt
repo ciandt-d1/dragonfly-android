@@ -21,6 +21,7 @@ import com.transitionseverywhere.TransitionManager
 import com.transitionseverywhere.TransitionSet
 import com.transitionseverywhere.extra.Scale
 
+@Suppress("MagicNumber")
 class DownloadButton : FrameLayout {
 
     sealed class State {
@@ -133,10 +134,7 @@ class DownloadButton : FrameLayout {
         }
     }
 
-
-    /**
-     * From Start to Progress
-     */
+    // From Start to Progress
     private fun animateFrom0To2() {
 
         val set = TransitionSet().apply {
@@ -187,10 +185,7 @@ class DownloadButton : FrameLayout {
         goTo(views[2], set)
     }
 
-
-    /**
-     * From Progress to Start
-     */
+    // From Progress to Start
     private fun animateFrom2To0() {
 
         val set = TransitionSet().apply {
@@ -221,10 +216,7 @@ class DownloadButton : FrameLayout {
         goTo(views[0], set)
     }
 
-
-    /**
-     * From Progress to Done
-     */
+    // From Progress to Done
     private fun animateFrom2To4() {
 
         val set = TransitionSet().apply {
