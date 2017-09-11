@@ -144,6 +144,10 @@ public interface Classifier {
                 return new Classification[size];
             }
         };
+
+        public Classification clone(Float newConfidence) {
+            return new Classification(this.id, this.title, newConfidence, this.location);
+        }
     }
 
     List<Classification> classifyImage(Bitmap bitmap);

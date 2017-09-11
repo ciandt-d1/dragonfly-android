@@ -23,7 +23,12 @@ import com.ciandt.dragonfly.tensorflow.Classifier;
 import com.ciandt.dragonfly.tensorflow.TensorFlowImageClassifier;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -49,6 +54,8 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
     private final YuvNv21ToRGBA888Converter yuvToRgbConverter;
 
     private boolean isAnalyzingFromUri = false;
+
+    private final Map<String, Classifier.Classification> classifications = new HashMap<>();
 
     public DragonflyLensClassificatorInteractor(Context context) {
         this.context = context.getApplicationContext();
@@ -83,6 +90,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
     @Override
     public void releaseModel() {
         model = null;
+        classifications.clear();
 
         if (classifier != null) {
             classifier.close();
@@ -131,7 +139,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
             return;
         }
 
-        analyzeYUVN21Task = new AnalyzeYUVN21Task(this);
+        analyzeYUVN21Task = new AnalyzeYUVN21Task(this, classifications);
 
         AnalyzeYUVN21Task.TaskParams taskParams = new AnalyzeYUVN21Task.TaskParams(data, width, height, rotation);
         AsyncTaskCompat.executeParallel(analyzeYUVN21Task, taskParams);
@@ -278,9 +286,15 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
     private static class AnalyzeYUVN21Task extends AsyncTask<AnalyzeYUVN21Task.TaskParams, Void, AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException>> {
 
         private final DragonflyLensClassificatorInteractor interactor;
+        private final Map<String, Classifier.Classification> classifications;
 
-        public AnalyzeYUVN21Task(DragonflyLensClassificatorInteractor interactor) {
+        private final float DECAY_VALUE = 0.6f;
+        private final float UPDATE_VALUE = 0.4f;
+        private final float MINIMUM_THRESHOLD = 0.05f;
+
+        public AnalyzeYUVN21Task(DragonflyLensClassificatorInteractor interactor, Map<String, Classifier.Classification> classifications) {
             this.interactor = interactor;
+            this.classifications = classifications;
         }
 
         @Override
@@ -302,6 +316,10 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
                 List<Classifier.Classification> results = interactor.classifier.classifyImage(croppedBitmap);
                 timings.addSplit("Classify image");
+
+
+                results = optimizeClassifications(results);
+                timings.addSplit("Optimize classifications");
 
                 timings.dumpToLog();
 
@@ -335,6 +353,49 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
                 interactor.classificationCallbacks.onYuvNv21Analyzed(result.getResult());
             }
+        }
+
+        private List<Classifier.Classification> optimizeClassifications(List<Classifier.Classification> newClassifications) {
+
+            Map<String, Classifier.Classification> decayedClassifications = new HashMap<>();
+
+            for (String key : classifications.keySet()) {
+
+                Classifier.Classification oldClassification = classifications.get(key);
+
+                float decayedConfidence = oldClassification.getConfidence() * DECAY_VALUE;
+                if (decayedConfidence > MINIMUM_THRESHOLD) {
+                    decayedClassifications.put(key, oldClassification.clone(decayedConfidence));
+                }
+            }
+
+            classifications.clear();
+            classifications.putAll(decayedClassifications);
+
+
+            for (Classifier.Classification newClassification : newClassifications) {
+
+                float oldConfidence = 0.0f;
+                Classifier.Classification oldClassification = classifications.get(newClassification.getId());
+                if (oldClassification != null) {
+                    oldConfidence = oldClassification.getConfidence();
+                }
+
+                float updatedConfidence = oldConfidence + (newClassification.getConfidence() * UPDATE_VALUE);
+                classifications.put(newClassification.getId(), newClassification.clone(updatedConfidence));
+            }
+
+
+            List<Classifier.Classification> results = new ArrayList<>(classifications.values());
+            Collections.sort(results, new Comparator<Classifier.Classification>() {
+
+                @Override
+                public int compare(Classifier.Classification c1, Classifier.Classification c2) {
+                    return Float.compare(c2.getConfidence(), c1.getConfidence());
+                }
+            });
+
+            return results;
         }
 
         public static class TaskParams {
