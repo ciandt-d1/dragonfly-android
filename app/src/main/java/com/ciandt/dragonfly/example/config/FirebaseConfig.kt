@@ -1,5 +1,7 @@
 package com.ciandt.dragonfly.example.config
 
+import com.ciandt.dragonfly.example.BuildConfig
+
 /**
  * Created by iluz on 8/4/17.
  */
@@ -9,6 +11,6 @@ class FirebaseConfig {
 
         const val SYNC_ITEMS_PER_RUN = 10
 
-        const val REMOTE_CONFIG_CACHE_EXPIRATON = 3600L // 1 hour in seconds
+        val REMOTE_CONFIG_CACHE_EXPIRATON = if (BuildConfig.DEBUG) 60L else 3600L // 3600 = 1 hour in seconds
     }
 }

@@ -16,6 +16,7 @@ import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.config.PermissionsMapping
+import com.ciandt.dragonfly.example.config.RealTimeConfig
 import com.ciandt.dragonfly.example.features.feedback.FeedbackActivity
 import com.ciandt.dragonfly.example.helpers.IntentHelper
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
@@ -23,6 +24,7 @@ import com.ciandt.dragonfly.example.infrastructure.SharedPreferencesRepository
 import com.ciandt.dragonfly.example.infrastructure.extensions.isVisible
 import com.ciandt.dragonfly.example.infrastructure.extensions.makeVisible
 import com.ciandt.dragonfly.example.shared.InvisibleToolbarActivity
+import com.ciandt.dragonfly.infrastructure.ClassificationConfig
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException
@@ -91,6 +93,17 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
     private fun setupDragonflyLens() {
         hideActionButtons()
 
+        val classificationAlgorithm = RealTimeConfig.CLASSIFICATION_ATENUATION_ALGORITHM
+        val classificationConfigBuilder = ClassificationConfig.newBuilder().withClassificationAtenuationAlgorithm(classificationAlgorithm)
+        if (classificationAlgorithm.equals(ClassificationConfig.CLASSIFICATION_ATENUATION_ALGORITHM_DECAY)) {
+            classificationConfigBuilder.apply {
+                withDecayAtenuationDecayValue(RealTimeConfig.CLASSIFICATION_ATENUATION_ALGORITHM_DECAY__DECAY_VALUE)
+                withDecayAtenuationUpdateValue(RealTimeConfig.CLASSIFICATION_ATENUATION_ALGORITHM_DECAY__UPDATE_VALUE)
+                withDecayAtenuationMinimumThreshold(RealTimeConfig.CLASSIFICATION_ATENUATION_ALGORITHM_DECAY__MINIMUM_THRESHOLD)
+            }
+        }
+
+        dragonFlyLens.setClassificationConfig(classificationConfigBuilder.build())
         dragonFlyLens.setModelCallbacks(this)
         dragonFlyLens.loadModel(model)
         dragonFlyLens.setSnapshotCallbacks(this)
