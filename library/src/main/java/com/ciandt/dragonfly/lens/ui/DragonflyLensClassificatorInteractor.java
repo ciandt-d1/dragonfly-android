@@ -164,6 +164,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         } else {
             analyzeYUVN21Task = new AnalyzeYUVN21Task(this);
             AnalyzeYUVN21Task.TaskParams taskParams = new AnalyzeYUVN21Task.TaskParams(data, width, height, rotation);
+
             AsyncTaskCompat.executeParallel(analyzeYUVN21Task, taskParams);
         }
     }
