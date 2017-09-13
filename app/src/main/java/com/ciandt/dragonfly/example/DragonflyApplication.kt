@@ -96,7 +96,7 @@ class DragonflyApplication : Application() {
         firebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults)
 
         firebaseRemoteConfig
-                .fetch(FirebaseConfig.REMOTE_CONFIG_CACHE_EXPIRATON)
+                .fetch(FirebaseConfig.REMOTE_CONFIG_CACHE_EXPIRATON.toLong())
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         firebaseRemoteConfig.activateFetched()
