@@ -25,6 +25,7 @@ import com.ciandt.dragonfly.base.ui.ImageScaleTypes;
 import com.ciandt.dragonfly.base.ui.Orientation;
 import com.ciandt.dragonfly.base.ui.Size;
 import com.ciandt.dragonfly.data.model.Model;
+import com.ciandt.dragonfly.infrastructure.ClassificationConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.infrastructure.PermissionsMapping;
@@ -174,6 +175,11 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     @Override
     public void setLastClassifications(List<Classifier.Classification> classifications) {
         lastClassifications = classifications;
+    }
+
+    @Override
+    public void setClassificationConfig(ClassificationConfig classificationConfig) {
+        lensRealTimePresenter.setClassificationConfig(classificationConfig);
     }
 
     @Override

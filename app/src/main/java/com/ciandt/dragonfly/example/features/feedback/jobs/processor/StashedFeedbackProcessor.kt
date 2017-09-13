@@ -35,6 +35,7 @@ class StashedFeedbackProcessor(database: FirebaseDatabase, storage: FirebaseStor
 
         val pendingFeedbackList = pendingFeedbackRepository.getLimitingTo(limit)
         if (pendingFeedbackList.isEmpty()) {
+            DragonflyLogger.info(LOG_TAG, "No pending feedbacks found.")
             return
         }
 

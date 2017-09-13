@@ -5,6 +5,7 @@ import android.net.Uri;
 import com.ciandt.dragonfly.base.ui.AbstractPresenter;
 import com.ciandt.dragonfly.base.ui.ClassificatorInteractor;
 import com.ciandt.dragonfly.data.model.Model;
+import com.ciandt.dragonfly.infrastructure.ClassificationConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
@@ -67,6 +68,11 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
         if (loadedModel != null) {
             view.onModelReady(loadedModel);
         }
+    }
+
+    @Override
+    public void setClassificationConfig(ClassificationConfig classificationConfig) {
+        lensClassificatorInteractor.setClassificationConfig(classificationConfig);
     }
 
     @Override

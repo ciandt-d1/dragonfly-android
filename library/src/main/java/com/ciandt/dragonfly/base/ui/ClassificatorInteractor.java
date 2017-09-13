@@ -3,9 +3,10 @@ package com.ciandt.dragonfly.base.ui;
 import android.net.Uri;
 
 import com.ciandt.dragonfly.data.model.Model;
+import com.ciandt.dragonfly.infrastructure.ClassificationConfig;
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
-import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException;
+import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
 import java.util.List;
@@ -17,6 +18,8 @@ import java.util.List;
 public interface ClassificatorInteractor {
 
     void setClassificationCallbacks(LensClassificatorInteractorCallbacks classificationCallbacks);
+
+    void setClassificationConfig(ClassificationConfig classificationConfig);
 
     void loadModel(Model model);
 

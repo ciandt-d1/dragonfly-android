@@ -1,5 +1,9 @@
 package com.ciandt.dragonfly.example.config
 
+import com.ciandt.dragonfly.example.BuildConfig
+import com.ciandt.dragonfly.example.infrastructure.extensions.hoursToSeconds
+import com.ciandt.dragonfly.example.infrastructure.extensions.minutesToSeconds
+
 /**
  * Created by iluz on 8/4/17.
  */
@@ -9,6 +13,6 @@ class FirebaseConfig {
 
         const val SYNC_ITEMS_PER_RUN = 10
 
-        const val REMOTE_CONFIG_CACHE_EXPIRATON = 3600L // 1 hour in seconds
+        val REMOTE_CONFIG_CACHE_EXPIRATON = if (BuildConfig.DEBUG) 1.minutesToSeconds() else 1.hoursToSeconds()
     }
 }

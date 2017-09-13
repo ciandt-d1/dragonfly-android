@@ -4,4 +4,22 @@
         <key>show_projects_without_versions</key>
         <value>0</value>
     </entry>
+
+    <!-- classification optimization -->
+    <entry>
+        <key>classification_optimization_algorithm</key>
+        <value>decay</value>
+    </entry>
+    <entry>
+        <key>classification_optimization_algorithm_decay__decay_value</key>
+        <value>0.6</value>
+    </entry>
+    <entry>
+        <key>classification_optimization_algorithm_decay__update_value</key>
+        <value>0.4</value>
+    </entry>
+    <entry>
+        <key>classification_optimization_algorithm_decay__minimum_threshold</key>
+        <value>0.05</value>
+    </entry>
 </defaultsMap>
