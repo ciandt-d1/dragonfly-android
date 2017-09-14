@@ -3,6 +3,7 @@ package com.ciandt.dragonfly.example.features.feedback.model
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
+import com.ciandt.dragonfly.example.config.Network
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties
 
@@ -23,7 +24,8 @@ data class Feedback(
         var imageGcsPath: String? = null,
         var uploadToGcsFinished: Boolean = false,
         var createdAt: Long = System.currentTimeMillis(),
-        var tenantUserProject: String? = null
+        var tenantUserProject: String? = null,
+        var userAgent: String = Network.USER_AGENT
 ) : Parcelable {
 
     @Exclude
@@ -33,7 +35,7 @@ data class Feedback(
     fun isNegative() = value == NEGATIVE
 
     override fun toString(): String {
-        return "Feedback(key=${key} tenant='$tenant', project='$project', userId='$userId', modelVersion=$modelVersion, value=$value, actualLabel='$actualLabel', identifiedLabels=$identifiedLabels, imageLocalPath='$imageLocalPath', imageGcsPath=$imageGcsPath, uploadToGcsFinished=$uploadToGcsFinished, createdAt=$createdAt, tenantUserProject=$tenantUserProject)"
+        return "Feedback(key=${key} tenant='$tenant', project='$project', userId='$userId', modelVersion=$modelVersion, value=$value, actualLabel='$actualLabel', identifiedLabels=$identifiedLabels, imageLocalPath='$imageLocalPath', imageGcsPath=$imageGcsPath, uploadToGcsFinished=$uploadToGcsFinished, createdAt=$createdAt, tenantUserProject=$tenantUserProject), userAgent=${userAgent}"
     }
 
     companion object {
@@ -70,6 +72,7 @@ data class Feedback(
             source.readString(),
             1 == source.readInt(),
             source.readLong(),
+            source.readString(),
             source.readString()
     )
 
@@ -95,5 +98,6 @@ data class Feedback(
         dest.writeInt((if (uploadToGcsFinished) 1 else 0))
         dest.writeLong(createdAt)
         dest.writeString(tenantUserProject)
+        dest.writeString(userAgent)
     }
 }
