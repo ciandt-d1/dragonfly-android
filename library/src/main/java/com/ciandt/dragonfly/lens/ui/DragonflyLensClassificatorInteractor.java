@@ -269,9 +269,17 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                     return null;
                 }
 
-                InputStream inputStream = interactor.context.getContentResolver().openInputStream(taskParams.uri);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
 
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                InputStream inputStream = interactor.context.getContentResolver().openInputStream(taskParams.uri);
+                BitmapFactory.decodeStream(inputStream, null, options);
+                options.inSampleSize = ImageUtils.calculateInSampleSize(options, interactor.model.getInputSize(), interactor.model.getInputSize());
+                options.inJustDecodeBounds = false;
+
+
+                inputStream = interactor.context.getContentResolver().openInputStream(taskParams.uri);
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
 
                 String filename = Hashing.SHA1(taskParams.uri.toString());
                 savedImagePath = ImageUtils.saveBitmapToStagingArea(bitmap, filename);
