@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by iluz on 5/26/17.
@@ -59,6 +60,8 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
     private boolean isAnalyzingFromUri = false;
 
     private final Map<String, Classifier.Classification> classifications = new HashMap<>();
+
+    private CountDownLatch modelLoadingCountDown;
 
     public DragonflyLensClassificatorInteractor(Context context) {
         this(context, null);
@@ -113,11 +116,6 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
     @Override
     public void analyzeFromUri(final Uri uri) {
-        if (!isModelLoaded()) {
-            DragonflyLogger.warn(LOG_TAG, "No model loaded. Skipping analyzeFromUri() call.");
-            return;
-        }
-
         if (uri == null) {
             throw new IllegalArgumentException("uri can't be null.");
         }
@@ -171,7 +169,17 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isModelLoaded() {
-        return model != null;
+        return modelLoadingCountDown != null && modelLoadingCountDown.getCount() == 0;
+    }
+
+    private void waitForModelToLoad() {
+        try {
+            if (modelLoadingCountDown != null) {
+                modelLoadingCountDown.await();
+            }
+        } catch (InterruptedException e) {
+            DragonflyLogger.error(LOG_TAG, e);
+        }
     }
 
     private static class LoadModelTask extends AsyncTask<Model, Void, AsyncTaskResult<Model, DragonflyModelException>> {
@@ -184,7 +192,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
         @Override
         protected AsyncTaskResult<Model, DragonflyModelException> doInBackground(Model... models) {
-            interactor.isAnalyzingFromUri = true;
+            this.interactor.modelLoadingCountDown = new CountDownLatch(1);
 
             Model model = models[0];
 
@@ -212,7 +220,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
         @Override
         protected void onPostExecute(AsyncTaskResult<Model, DragonflyModelException> result) {
-            interactor.isAnalyzingFromUri = false;
+            this.interactor.modelLoadingCountDown.countDown();
 
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("LoadModelTask.onPostExecute() - error | exception: %s", result.getError()));
@@ -242,18 +250,36 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
         @Override
         protected AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException> doInBackground(TaskParams... params) {
+            interactor.isAnalyzingFromUri = true;
+
             this.taskParams = params[0];
 
             DragonflyLogger.debug(LOG_TAG, "AnalyzeFromUriTask.doInBackground() - start");
 
-            // To see the log ouput, make sure to run the command below:
-            // adb shell setprop log.tag.<LOG_TAG> VERBOSE
-            TimingLogger timings = new TimingLogger(LOG_TAG, "AnalyzeFromUriTask.doInBackground()");
+            TimingLogger timings = new TimingLogger(LOG_TAG, "AnalyzeFromUriTask.analyzeFromUri()");
+
+            if (!this.interactor.isModelLoaded()) {
+                this.interactor.waitForModelToLoad();
+                timings.addSplit("Model loaded.");
+            }
 
             try {
-                InputStream inputStream = interactor.context.getContentResolver().openInputStream(taskParams.uri);
+                if (!this.interactor.isModelLoaded()) {
+                    DragonflyLogger.warn(LOG_TAG, "No model loaded. Skipping analyzeFromUri() call.");
+                    return null;
+                }
 
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+
+                InputStream inputStream = interactor.context.getContentResolver().openInputStream(taskParams.uri);
+                BitmapFactory.decodeStream(inputStream, null, options);
+                options.inSampleSize = ImageUtils.calculateInSampleSize(options, interactor.model.getInputSize(), interactor.model.getInputSize());
+                options.inJustDecodeBounds = false;
+
+
+                inputStream = interactor.context.getContentResolver().openInputStream(taskParams.uri);
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
 
                 String filename = Hashing.SHA1(taskParams.uri.toString());
                 savedImagePath = ImageUtils.saveBitmapToStagingArea(bitmap, filename);
@@ -281,6 +307,8 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
         @Override
         protected void onPostExecute(AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException> result) {
+            interactor.isAnalyzingFromUri = false;
+
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeFromUriTask.onPostExecute() - error | exception: %s", result.getError()));
 
