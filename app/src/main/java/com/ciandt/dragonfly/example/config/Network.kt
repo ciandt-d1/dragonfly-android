@@ -1,11 +1,12 @@
 package com.ciandt.dragonfly.example.config
 
+import android.os.Build
 import com.ciandt.dragonfly.example.BuildConfig
 import okhttp3.internal.Version as HttpClientVersion
 
 class Network {
     companion object {
-        val USER_AGENT: String = "Dragonfly/Android/${BuildConfig.VERSION_NAME} ${HttpClientVersion.userAgent()}"
-        val BASE_URL: String = BuildConfig.BASE_URL
+        val USER_AGENT = "Dragonfly ${BuildConfig.VERSION_NAME}/Android ${Build.VERSION.RELEASE} ${Build.MANUFACTURER} ${Build.MODEL}/OkHttpAgent: ${HttpClientVersion.userAgent().replace("/", "-")}"
+        val BASE_URL = BuildConfig.BASE_URL
     }
 }
