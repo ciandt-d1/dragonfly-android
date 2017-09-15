@@ -4,8 +4,11 @@ import android.content.Context;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.util.AttributeSet;
+import android.view.Display;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 
 import com.ciandt.dragonfly.base.ui.Orientation;
 import com.ciandt.dragonfly.base.ui.Size;
@@ -37,16 +40,24 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
     private boolean snapshoting = false;
 
+    private int orientationDegrees;
+
     public CameraView(Context context) {
         super(context);
+
+        orientationDegrees = calculateOrientationDegrees();
     }
 
     public CameraView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        orientationDegrees = calculateOrientationDegrees();
     }
 
     public CameraView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        orientationDegrees = calculateOrientationDegrees();
     }
 
     public void setOrientation(@Orientation.Mode int orientation) {
@@ -61,7 +72,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
             throw new Exception("Failed to open Camera");
         }
 
-        camera.setDisplayOrientation(getOrientationDegrees());
+        camera.setDisplayOrientation(orientationDegrees);
         getHolder().addCallback(this);
     }
 
@@ -113,7 +124,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
             capture();
 
             if (callback != null) {
-                callback.onPreviewStarted(convertSize(previewSize), getOrientationDegrees());
+                callback.onPreviewStarted(convertSize(previewSize), orientationDegrees);
             }
         } catch (IOException e) {
             DragonflyLogger.error(LOG_TAG, e.getMessage());
@@ -249,11 +260,11 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
             stopPreview();
             snapshoting = false;
 
-            callback.onSnapshotCaptured(data, convertSize(parameters.getPreviewSize()), getOrientationDegrees());
+            callback.onSnapshotCaptured(data, convertSize(parameters.getPreviewSize()), orientationDegrees);
             return;
         }
 
-        callback.onFrameReady(data, convertSize(parameters.getPreviewSize()), getOrientationDegrees());
+        callback.onFrameReady(data, convertSize(parameters.getPreviewSize()), orientationDegrees);
 
         new Timer().schedule(new TimerTask() {
 
@@ -268,12 +279,32 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
         return new Size(cameraSize.width, cameraSize.height);
     }
 
-    private int getOrientationDegrees() {
-        if (orientation == Orientation.ORIENTATION_PORTRAIT) {
-            return CAMERA_ROTATION_PORTRAIT;
-        } else {
-            return CAMERA_ROTATION_LANDSCAPE;
+    // https://developer.android.com/reference/android/hardware/Camera.html#setDisplayOrientation%28int%29
+    private int calculateOrientationDegrees() {
+        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
+        android.hardware.Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_BACK, info);
+
+        Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        int rotation = display.getRotation();
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
         }
+
+        int result = (info.orientation - degrees + 360) % 360;
+
+        return result;
     }
 
     /**
