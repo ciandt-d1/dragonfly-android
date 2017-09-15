@@ -7,10 +7,7 @@ import android.os.Bundle
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.helpers.IntentHelper
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
-import com.ciandt.dragonfly.example.infrastructure.extensions.isNetworkConnected
-import com.ciandt.dragonfly.example.infrastructure.extensions.makeGone
-import com.ciandt.dragonfly.example.infrastructure.extensions.makeVisible
-import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
+import com.ciandt.dragonfly.example.infrastructure.extensions.*
 import com.ciandt.dragonfly.example.shared.BaseActivity
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -36,6 +33,8 @@ class LoginActivity : BaseActivity(), LoginContract.View, GoogleApiClient.OnConn
 
     override fun onResume() {
         super.onResume()
+
+        proceedOnlyIfRequiredGooglePlayServicesIsAvailable()
 
         presenter = LoginPresenter(LoginInteractor(FirebaseAuth.getInstance()))
         presenter.attachView(this)
