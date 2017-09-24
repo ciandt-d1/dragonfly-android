@@ -7,9 +7,6 @@ import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SimpleItemAnimator
-import android.view.View.GONE
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.config.CommonBundleNames
@@ -17,15 +14,13 @@ import com.ciandt.dragonfly.example.data.remote.RemoteProjectService
 import com.ciandt.dragonfly.example.features.about.AboutActivity
 import com.ciandt.dragonfly.example.helpers.DialogHelper
 import com.ciandt.dragonfly.example.helpers.IntentHelper
-import com.ciandt.dragonfly.example.infrastructure.extensions.isWifiNetworkConnected
-import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
+import com.ciandt.dragonfly.example.infrastructure.extensions.*
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.shared.BaseActivity
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_project_selection.*
 
 class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
-
     private lateinit var presenter: ProjectSelectionContract.Presenter
 
     private val projects = ArrayList<Project>()
@@ -38,7 +33,7 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
 
         RemoteProjectService.start(this)
 
-        presenter = ProjectSelectionPresenter(ProjectSelectionInteractor(this, FirebaseStorage.getInstance()))
+        presenter = ProjectSelectionPresenter(ProjectSelectionInteractor(applicationContext, FirebaseStorage.getInstance()))
         presenter.attachView(this)
         presenter.start()
 
@@ -120,45 +115,45 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
     }
 
     override fun showLoading() {
-        loading.visibility = VISIBLE
-        subtitle.visibility = INVISIBLE
-        recyclerView.visibility = INVISIBLE
-        stateContainer.visibility = INVISIBLE
+        loading.makeVisible()
+        subtitle.makeInvisible()
+        recyclerView.makeInvisible()
+        stateContainer.makeInvisible()
     }
 
     override fun showEmpty() {
-        loading.visibility = INVISIBLE
-        subtitle.visibility = INVISIBLE
-        recyclerView.visibility = INVISIBLE
+        loading.makeInvisible()
+        subtitle.makeInvisible()
+        recyclerView.makeInvisible()
 
         stateIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_projects_empty))
         stateTitle.text = getString(R.string.project_selection_empty_state_title)
         stateMessage.text = getString(R.string.project_selection_empty_state_message)
-        stateContainer.visibility = VISIBLE
+        stateContainer.makeVisible()
     }
 
     override fun showError(exception: Exception) {
-        loading.visibility = INVISIBLE
-        subtitle.visibility = INVISIBLE
-        recyclerView.visibility = INVISIBLE
+        loading.makeInvisible()
+        subtitle.makeInvisible()
+        recyclerView.makeInvisible()
 
         stateIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_projects_error))
         stateTitle.text = getString(R.string.project_selection_error_state_title)
         stateMessage.text = getString(R.string.project_selection_error_state_message)
-        stateContainer.visibility = VISIBLE
+        stateContainer.makeVisible()
     }
 
     override fun update(projects: List<Project>) {
-        loading.visibility = INVISIBLE
-        stateContainer.visibility = INVISIBLE
+        loading.makeInvisible()
+        stateContainer.makeInvisible()
 
         this.projects.clear()
         this.projects.addAll(projects)
 
         recyclerView.adapter.notifyDataSetChanged()
 
-        recyclerView.visibility = VISIBLE
-        subtitle.visibility = VISIBLE
+        recyclerView.makeVisible()
+        subtitle.makeVisible()
     }
 
     override fun update(project: Project) {
@@ -206,17 +201,19 @@ class ProjectSelectionActivity : BaseActivity(), ProjectSelectionContract.View {
     }
 
     override fun showSeeUpdates() {
-        if (updateContainer.visibility == VISIBLE) {
+        if (updateContainer.isVisible()) {
             return
         }
 
-        updateContainer.alpha = 0.0f
-        updateContainer.visibility = VISIBLE
-        updateContainer.animate().alpha(1.0f)
+        updateContainer.apply {
+            alpha = 0.0f
+            makeVisible()
+            animate().alpha(1.0f)
+        }
     }
 
     override fun hideSeeUpdates() {
-        updateContainer.visibility = GONE
+        updateContainer.makeGone()
     }
 
     companion object {

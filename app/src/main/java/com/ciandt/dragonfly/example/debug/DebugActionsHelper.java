@@ -1,10 +1,5 @@
 package com.ciandt.dragonfly.example.debug;
 
-import com.ciandt.dragonfly.example.data.DatabaseManager;
-import com.ciandt.dragonfly.example.data.ProjectRepository;
-import com.ciandt.dragonfly.example.data.remote.RemoteProjectService;
-import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +7,11 @@ import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 
+import com.ciandt.dragonfly.example.data.DatabaseManager;
+import com.ciandt.dragonfly.example.data.ProjectRepository;
+import com.ciandt.dragonfly.example.data.remote.RemoteProjectService;
+import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger;
+import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.palaima.debugdrawer.DebugDrawer;
@@ -74,8 +75,8 @@ public class DebugActionsHelper {
         List<Action> actions = new ArrayList<>();
 
         actions.addAll(getButtonActions(target));
-        actions.addAll(getSwitchActions());
-        actions.addAll(getSpinnerActions());
+        actions.addAll(getSwitchActions(target));
+        actions.addAll(getSpinnerActions(target));
 
         return actions.toArray(new Action[actions.size()]);
     }
@@ -161,14 +162,27 @@ public class DebugActionsHelper {
         return actions;
     }
 
-    public static List<SwitchAction> getSwitchActions() {
+    public static List<SwitchAction> getSwitchActions(final DebuggableActivity target) {
         List<SwitchAction> actions = new ArrayList<>();
 
         return actions;
     }
 
-    public static List<SpinnerAction> getSpinnerActions() {
+    public static List<SpinnerAction> getSpinnerActions(final DebuggableActivity target) {
         List<SpinnerAction> actions = new ArrayList<>();
+
+
+        actions.add(new SpinnerAction<Float>(
+                Arrays.asList("Uncompressed model size factor", "1.5", "2", "2.5", "3", "3.5", "4"),
+                Arrays.asList(1.0f, 1.5f, 2.0f, 2.5f, 3.0f, 3.5f, 4.0f),
+                new SpinnerAction.OnItemSelectedListener<Float>() {
+
+                    @Override
+                    public void onItemSelected(Float value) {
+                        DragonflyConfig.setUncompressedModelSizeCalculatorFactor(value);
+                    }
+                }
+        ));
 
         return actions;
     }

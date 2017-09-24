@@ -20,6 +20,9 @@ public class DragonflyConfig {
 
     private static long realTimeControlsVisibilityAnimationDuration = 2500;
 
+    // if you want this to be disabled, set it to 1.
+    private static float uncompressedModelSizeCalculatorFactor = 3;
+
     public static boolean shouldSaveCapturedCameraFramesInDebugMode() {
         return saveCapturedCameraFramesInDebugMode;
     }
@@ -66,5 +69,13 @@ public class DragonflyConfig {
 
     public static void setRealTimeControlsVisibilityAnimationDuration(long realTimeControlsVisibilityAnimationDuration) {
         DragonflyConfig.realTimeControlsVisibilityAnimationDuration = realTimeControlsVisibilityAnimationDuration;
+    }
+
+    public static float getUncompressedModelSizeCalculatorFactor() {
+        return uncompressedModelSizeCalculatorFactor;
+    }
+
+    public static void setUncompressedModelSizeCalculatorFactor(float uncompressedModelSizeCalculatorFactor) {
+        DragonflyConfig.uncompressedModelSizeCalculatorFactor = uncompressedModelSizeCalculatorFactor;
     }
 }

@@ -1,4 +1,7 @@
 <resources>
+    <string name="action_retry">Try again</string>
+    <string name="action_cancel">Cancel</string>
+
     <string name="project_selection_title">Dragonfly Lens</string>
     <string name="project_selection_subtitle">Choose a trained model below and explore the world
         around you
@@ -13,10 +16,20 @@
     <string name="project_selection_item_unavailable_message">No versions available yet.</string>
 
     <string name="project_selection_empty_state_title">No models found.</string>
-    <string name="project_selection_empty_state_message">Looks like you do not have any models available.</string>
+    <string name="project_selection_empty_state_message">Looks like you do not have any models
+        available.
+    </string>
     <string name="project_selection_error_state_title">Uh-oh, an error occurred.</string>
-    <string name="project_selection_error_state_message">An unexpected error happened, please try again.</string>
-    <string name="project_selection_state_retry">Try again</string>
+    <string name="project_selection_error_state_message">An unexpected error happened, please try
+        again.
+    </string>
+    <string name="project_selection_state_retry">@string/action_retry</string>
+
+    <string name="project_selection_error_no_memory">Uh-oh, looks like your device is either quite
+        busy or doesn\'t support the selected project. Please close some other apps and try again.
+    </string>
+    <string name="project_selection_error_no_memory_positive_action">@string/action_retry</string>
+    <string name="project_selection_error_no_memory_negative_action">@string/action_cancel</string>
 
     <string name="project_selection_download_confirmation_title">Attention</string>
     <string name="project_selection_download_confirmation_message">You are about to download a large

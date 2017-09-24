@@ -39,6 +39,7 @@ data class Version(
         model.version = version
         model.modelPath = modelPath
         model.labelsPath = labelsPath
+        model.sizeInBytes = size
         model.inputSize = inputSize
         model.imageMean = imageMean
         model.imageStd = imageStd

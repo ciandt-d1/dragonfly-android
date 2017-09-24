@@ -9,3 +9,5 @@ fun Int.toDp(): Int = (this / Resources.getSystem().displayMetrics.density).toIn
 fun Int.hoursToSeconds(): Int = this * 3600
 
 fun Int.minutesToSeconds(): Int = this * 60
+
+fun Int.megasAsBytes(): Long = this * (1024L * 1024)
