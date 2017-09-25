@@ -6,7 +6,6 @@ import com.ciandt.dragonfly.base.ui.AbstractPresenter;
 import com.ciandt.dragonfly.base.ui.ClassificatorInteractor;
 import com.ciandt.dragonfly.data.model.Model;
 import com.ciandt.dragonfly.infrastructure.ClassificationConfig;
-import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
 import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException;
@@ -30,8 +29,6 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
     private DragonflyLensRealTimeContract.LensSnapshotInteractor snapshotInteractor;
 
     private Model loadedModel;
-
-    private int modelLoadingAttempts = 0;
 
     public DragonflyLensRealTimePresenter(ClassificatorInteractor lensClassificatorInteractor, DragonflyLensRealTimeContract.LensSnapshotInteractor snapshotInteractor) {
         if (lensClassificatorInteractor == null) {
@@ -95,8 +92,6 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
         if (hasViewAttached()) {
             view.onStartLoadingModel(model);
         }
-
-        modelLoadingAttempts = 0;
 
         lensClassificatorInteractor.loadModel(model);
     }
@@ -187,19 +182,8 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
 
     @Override
     public void onModelFailure(DragonflyModelException e) {
-        if (e.getModel() != null) {
-            if (modelLoadingAttempts == DragonflyConfig.getMaxModelLoadingRetryAttempts()) {
-                String message = String.format("Failed to load loadedModel %s after %s attempts", loadedModel, modelLoadingAttempts);
-                throw new DragonflyModelException(message, e, e.getModel());
-            }
-
-            DragonflyLogger.warn(LOG_TAG, String.format("Failed to load loadedModel. Retrying with %s", e.getModel()));
-            modelLoadingAttempts++;
-            lensClassificatorInteractor.loadModel(e.getModel());
-        } else {
-            if (hasViewAttached()) {
-                view.onModelLoadFailure(e);
-            }
+        if (hasViewAttached()) {
+            view.onModelLoadFailure(e);
         }
     }
 

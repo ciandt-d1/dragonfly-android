@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.view.View.GONE
+import android.view.WindowManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.ViewTarget
 import com.bumptech.glide.request.transition.Transition
@@ -29,6 +30,7 @@ import com.ciandt.dragonfly.infrastructure.DragonflyConfig
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException
+import com.ciandt.dragonfly.lens.exception.DragonflyNoMemoryAvailableException
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException
 import com.ciandt.dragonfly.lens.ui.DragonflyLensRealtimeView
 import com.ciandt.dragonfly.tensorflow.Classifier
@@ -43,18 +45,23 @@ import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_real_time.*
 
 class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, DragonflyLensRealtimeView.ModelCallbacks, DragonflyLensRealtimeView.SnapshotCallbacks, DragonflyLensRealtimeView.UriAnalysisCallbacks {
-
     private lateinit var presenter: RealTimeContract.Presenter
     private lateinit var model: Model
     private lateinit var modelName: String
+
+    private var noMemoryAvailableDialog: AlertDialog? = null
 
     private var missingPermissionsAlertDialog: AlertDialog? = null
     private var comingFromSettings = false
 
     private var uriUnderAnalysis: Uri? = null
+    private var lastAnalyzedUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
         setContentView(R.layout.activity_real_time)
 
         val preferencesRepository = SharedPreferencesRepository.get(applicationContext)
@@ -65,6 +72,7 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
                 model = getParcelable(MODEL_BUNDLE)
                 modelName = getString(MODEL_NAME_BUNDLE)
                 uriUnderAnalysis = getParcelable(IMAGE_URI_BUNDLE)
+                lastAnalyzedUri = getParcelable(LAST_ANALYZED_IMAGE_URI_BUNDLE)
             }
         } else {
             model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
@@ -178,8 +186,11 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
     override fun onPause() {
         super.onPause()
 
+        noMemoryAvailableDialog?.dismiss()
         missingPermissionsAlertDialog?.dismiss()
+
         presenter.detachView()
+
         dragonFlyLens.stop()
     }
 
@@ -190,6 +201,7 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
             putParcelable(MODEL_BUNDLE, model)
             putString(MODEL_NAME_BUNDLE, modelName)
             putParcelable(IMAGE_URI_BUNDLE, uriUnderAnalysis)
+            putParcelable(LAST_ANALYZED_IMAGE_URI_BUNDLE, lastAnalyzedUri)
         }
     }
 
@@ -219,6 +231,7 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
                 dragonFlyLens.analyzeFromUri(fileUri)
 
                 uriUnderAnalysis = fileUri
+                lastAnalyzedUri = fileUri
 
                 DragonflyLogger.debug(LOG_TAG, "imageUri: ${fileUri}")
             }
@@ -306,8 +319,10 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
         showActionButtons(true)
     }
 
-    override fun onModelLoadFailure(e: DragonflyModelException?) {
-        showActionButtons(true)
+    override fun onModelLoadFailure(e: DragonflyModelException) {
+        if (e is DragonflyNoMemoryAvailableException || e.cause is DragonflyNoMemoryAvailableException) {
+            showNoMemoryAvailableError()
+        }
     }
 
     override fun onStartTakingSnapshot() {
@@ -332,6 +347,7 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
 
     override fun onUriAnalysisFinished(uri: Uri, classificationInput: DragonflyClassificationInput, classifications: List<Classifier.Classification>) {
         uriUnderAnalysis = null
+        lastAnalyzedUri = null
 
         DragonflyLogger.debug(LOG_TAG, "onUriAnalysisFinished(${classifications})")
 
@@ -370,12 +386,43 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
         }
     }
 
+    private fun showNoMemoryAvailableError() {
+        dragonFlyLens.stop()
+
+        noMemoryAvailableDialog = AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(R.string.project_selection_error_no_memory)
+                .setCancelable(false)
+                .setNegativeButton(R.string.project_selection_error_no_memory_negative_action, { dialog, _ ->
+                    dialog.dismiss()
+                    onBackPressed()
+                })
+                .setPositiveButton(R.string.project_selection_error_no_memory_positive_action, { dialog, _ ->
+                    dialog.dismiss()
+
+                    presenter.attachView(this@RealTimeActivity)
+
+                    setupDragonflyLens()
+                    lastAnalyzedUri?.let {
+                        dragonFlyLens.analyzeFromUri(it)
+                    }
+                })
+                .setIcon(R.mipmap.ic_launcher)
+                .create()
+
+        noMemoryAvailableDialog?.apply {
+            setCanceledOnTouchOutside(false)
+            show()
+        }
+    }
+
     companion object {
         private val LOG_TAG = RealTimeActivity::class.java.simpleName
 
         private val MODEL_BUNDLE = "${BuildConfig.APPLICATION_ID}.model_bundle"
         private val MODEL_NAME_BUNDLE = "${BuildConfig.APPLICATION_ID}.model_name_bundle"
         private val IMAGE_URI_BUNDLE = "${BuildConfig.APPLICATION_ID}.image_uri"
+        private val LAST_ANALYZED_IMAGE_URI_BUNDLE = "${BuildConfig.APPLICATION_ID}.last_analyzed_image_uri"
 
         private val REQUEST_CODE_SELECT_IMAGE = 1
 

@@ -29,6 +29,7 @@ import com.ciandt.dragonfly.infrastructure.ClassificationConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.infrastructure.PermissionsMapping;
+import com.ciandt.dragonfly.infrastructure.system.MemoryHelper;
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
 import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
@@ -114,7 +115,12 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
             }
         });
 
-        lensRealTimePresenter = new DragonflyLensRealTimePresenter(new DragonflyLensClassificatorInteractor(getContext()), new DragonflyLensSnapshotInteractor(getContext()));
+        MemoryHelper memoryHelper = new MemoryHelper(getContext().getApplicationContext());
+
+        lensRealTimePresenter = new DragonflyLensRealTimePresenter(
+                new DragonflyLensClassificatorInteractor(getContext(), memoryHelper),
+                new DragonflyLensSnapshotInteractor(getContext())
+        );
 
         processAttributeSet(context, attrs);
     }

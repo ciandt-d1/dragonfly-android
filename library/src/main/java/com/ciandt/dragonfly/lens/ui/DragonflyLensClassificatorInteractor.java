@@ -17,9 +17,11 @@ import com.ciandt.dragonfly.infrastructure.ClassificationConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyConfig;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.infrastructure.Hashing;
+import com.ciandt.dragonfly.infrastructure.system.MemoryHelper;
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
 import com.ciandt.dragonfly.lens.exception.DragonflyClassificationException;
 import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
+import com.ciandt.dragonfly.lens.exception.DragonflyNoMemoryAvailableException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 import com.ciandt.dragonfly.tensorflow.TensorFlowImageClassifier;
 
@@ -43,6 +45,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
     private static final String LOG_TAG = "ClassificatorInteractor";
 
     private final Context context;
+    private final MemoryHelper memoryHelper;
 
     private LensClassificatorInteractorCallbacks classificationCallbacks;
 
@@ -63,14 +66,15 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
     private CountDownLatch modelLoadingCountDown;
 
-    public DragonflyLensClassificatorInteractor(Context context) {
-        this(context, null);
+    public DragonflyLensClassificatorInteractor(Context context, MemoryHelper memoryHelper) {
+        this(context, null, memoryHelper);
     }
 
-    public DragonflyLensClassificatorInteractor(Context context, ClassificationConfig classificationConfig) {
+    public DragonflyLensClassificatorInteractor(Context context, ClassificationConfig classificationConfig, MemoryHelper memoryHelper) {
         this.context = context.getApplicationContext();
         this.yuvToRgbConverter = new YuvNv21ToRGBA888Converter(context);
         this.classificationConfig = classificationConfig;
+        this.memoryHelper = memoryHelper;
     }
 
     @Override
@@ -169,7 +173,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isModelLoaded() {
-        return modelLoadingCountDown != null && modelLoadingCountDown.getCount() == 0;
+        return this.model != null && (modelLoadingCountDown != null && modelLoadingCountDown.getCount() == 0);
     }
 
     private void waitForModelToLoad() {
@@ -198,17 +202,24 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
             DragonflyLogger.debug(LOG_TAG, String.format("LoadModelTask.doInBackground() - start | model: %s", model));
 
+            if (!hasEnoughMemory(model.getSizeInBytes())) {
+                String exceptionmessage = String.format("No memory available for loading model %s", model.getId());
+                DragonflyModelException exception = new DragonflyModelException(exceptionmessage, new DragonflyNoMemoryAvailableException(), model);
+
+                return new AsyncTaskResult<>(null, exception);
+            }
+
             try {
-                interactor.classifier =
-                        TensorFlowImageClassifier.create(
-                                interactor.context.getAssets(),
-                                model.getModelPath(),
-                                model.getLabelsPath(),
-                                model.getInputSize(),
-                                model.getImageMean(),
-                                model.getImageStd(),
-                                model.getInputName(),
-                                model.getOutputName());
+                interactor.classifier = TensorFlowImageClassifier.create(
+                        interactor.context.getAssets(),
+                        model.getModelPath(),
+                        model.getLabelsPath(),
+                        model.getInputSize(),
+                        model.getImageMean(),
+                        model.getImageStd(),
+                        model.getInputName(),
+                        model.getOutputName()
+                );
 
                 return new AsyncTaskResult<>(model, null);
             } catch (Exception e) {
@@ -234,6 +245,12 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                 interactor.model = model;
                 interactor.classificationCallbacks.onModelReady(model);
             }
+        }
+
+        private boolean hasEnoughMemory(long modelSizeInBytes) {
+            long requiredAvailableMemory = Float.valueOf(modelSizeInBytes * DragonflyConfig.getUncompressedModelSizeCalculatorFactor()).longValue();
+
+            return interactor.memoryHelper.hasEnoughMemory(requiredAvailableMemory, MemoryHelper.MemoryUnit.BYTES);
         }
     }
 
@@ -266,7 +283,9 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
             try {
                 if (!this.interactor.isModelLoaded()) {
                     DragonflyLogger.warn(LOG_TAG, "No model loaded. Skipping analyzeFromUri() call.");
-                    return null;
+
+                    DragonflyModelException modelException = new DragonflyModelException("Model was not loaded.", null);
+                    return new AsyncTaskResult<>(null, new DragonflyClassificationException(modelException.getMessage(), modelException));
                 }
 
                 BitmapFactory.Options options = new BitmapFactory.Options();

@@ -5,6 +5,12 @@
         <value>0</value>
     </entry>
 
+    <!-- Real Time -->
+    <entry>
+        <key>real_time__uncompressed_model_size_calculation_factor</key>
+        <value>3</value>
+    </entry>
+
     <!-- classification optimization -->
     <entry>
         <key>classification_optimization_algorithm</key>

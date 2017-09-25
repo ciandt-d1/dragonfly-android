@@ -14,6 +14,8 @@ public class Model implements Parcelable {
     private String modelPath = "";
     private String labelsPath = "";
 
+    private long sizeInBytes = 0;
+
     private int inputSize = 0;
     private int imageMean = 0;
     private float imageStd = 0f;
@@ -55,6 +57,15 @@ public class Model implements Parcelable {
 
     public Model setLabelsPath(String labelsPath) {
         this.labelsPath = labelsPath;
+        return this;
+    }
+
+    public long getSizeInBytes() {
+        return sizeInBytes;
+    }
+
+    public Model setSizeInBytes(long sizeInBytes) {
+        this.sizeInBytes = sizeInBytes;
         return this;
     }
 
@@ -120,6 +131,7 @@ public class Model implements Parcelable {
         Model model = (Model) o;
 
         if (version != model.version) return false;
+        if (sizeInBytes != model.sizeInBytes) return false;
         if (inputSize != model.inputSize) return false;
         if (imageMean != model.imageMean) return false;
         if (Float.compare(model.imageStd, imageStd) != 0) return false;
@@ -141,6 +153,7 @@ public class Model implements Parcelable {
         result = 31 * result + version;
         result = 31 * result + (modelPath != null ? modelPath.hashCode() : 0);
         result = 31 * result + (labelsPath != null ? labelsPath.hashCode() : 0);
+        result = 31 * result + Long.valueOf(sizeInBytes).hashCode();
         result = 31 * result + inputSize;
         result = 31 * result + imageMean;
         result = 31 * result + (imageStd != +0.0f ? Float.floatToIntBits(imageStd) : 0);
@@ -157,6 +170,7 @@ public class Model implements Parcelable {
                 ", version=" + version +
                 ", modelPath='" + modelPath + '\'' +
                 ", labelsPath='" + labelsPath + '\'' +
+                ", sizeInBytes=" + sizeInBytes +
                 ", inputSize=" + inputSize +
                 ", imageMean=" + imageMean +
                 ", imageStd=" + imageStd +
@@ -177,6 +191,7 @@ public class Model implements Parcelable {
         dest.writeInt(this.version);
         dest.writeString(this.modelPath);
         dest.writeString(this.labelsPath);
+        dest.writeLong(this.sizeInBytes);
         dest.writeInt(this.inputSize);
         dest.writeInt(this.imageMean);
         dest.writeFloat(this.imageStd);
@@ -194,6 +209,7 @@ public class Model implements Parcelable {
         this.version = in.readInt();
         this.modelPath = in.readString();
         this.labelsPath = in.readString();
+        this.sizeInBytes = in.readLong();
         this.inputSize = in.readInt();
         this.imageMean = in.readInt();
         this.imageStd = in.readFloat();

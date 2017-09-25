@@ -5,7 +5,7 @@ import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.models.Version
 import com.ciandt.dragonfly.example.shared.BasePresenter
 
-class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract.Interactor) : BasePresenter<ProjectSelectionContract.View>(), ProjectSelectionContract.Presenter {
+class ProjectSelectionPresenter(private val interactor: ProjectSelectionContract.Interactor) : BasePresenter<ProjectSelectionContract.View>(), ProjectSelectionContract.Presenter {
 
     private val updateQueue = ArrayList<Project>()
 
@@ -65,7 +65,9 @@ class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract
     override fun run(project: Project) {
 
         if (project.hasDownloadedVersion()) {
-            view?.run(project.getLastDownloadedVersion()!!.toLibraryModel(), project.name)
+            val version = project.getLastDownloadedVersion()!!
+
+            view?.run(version.toLibraryModel(), project.name)
         }
     }
 
@@ -122,7 +124,5 @@ class ProjectSelectionPresenter(private var interactor: ProjectSelectionContract
         }
     }
 
-    private fun waslistChangedAfterLastLoad(timestamp: Long): Boolean {
-        return timestamp > lastLoad
-    }
+    private fun waslistChangedAfterLastLoad(timestamp: Long): Boolean = (timestamp > lastLoad)
 }
