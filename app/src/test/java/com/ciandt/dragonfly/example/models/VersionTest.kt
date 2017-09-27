@@ -38,6 +38,7 @@ class VersionTest {
 
         val model = Model("project-id/1")
                 .setVersion(1)
+                .setSizeInBytes(88481067)
                 .setInputSize(299)
                 .setImageMean(128)
                 .setImageStd(128f)
