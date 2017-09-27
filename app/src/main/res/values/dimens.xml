@@ -107,9 +107,8 @@
     <dimen name="feedback_benchmark_loading_margin">24dp</dimen>
     <dimen name="feedback_benchmark_error_margin">24dp</dimen>
 
-    <dimen name="login_title_margin_top">120dp</dimen>
-    <dimen name="login_title_horizontal_margin">48dp</dimen>
-    <dimen name="login_subtitle_margin_top">56dp</dimen>
+    <dimen name="login_logo_margin_top">80dp</dimen>
+    <dimen name="login_subtitle_margin_top">48dp</dimen>
     <dimen name="login_subtitle_horizontal_margin">30dp</dimen>
     <dimen name="login_google_height">48dp</dimen>
     <dimen name="login_google_margin_top">32dp</dimen>

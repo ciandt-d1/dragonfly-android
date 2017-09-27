@@ -7,29 +7,13 @@
                     android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/hexagons"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:contentDescription="@null"
-            android:scaleType="centerCrop"
-            android:src="@drawable/bg_login"/>
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/login_title_margin_top"
-            android:layout_marginLeft="@dimen/login_title_horizontal_margin"
-            android:layout_marginRight="@dimen/login_title_horizontal_margin"
-            android:layout_marginStart="@dimen/login_title_horizontal_margin"
-            android:layout_marginEnd="@dimen/login_title_horizontal_margin"
-            style="@style/Login.Title"
-            android:text="@string/login_title"
-        />
+            android:layout_marginTop="@dimen/login_logo_margin_top"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@null"
+            android:src="@drawable/dragonfly_logo"/>
 
         <TextView
             android:id="@+id/subtitle"
@@ -40,7 +24,7 @@
             android:layout_marginRight="@dimen/login_subtitle_horizontal_margin"
             android:layout_marginStart="@dimen/login_subtitle_horizontal_margin"
             android:layout_marginEnd="@dimen/login_subtitle_horizontal_margin"
-            android:layout_below="@+id/title"
+            android:layout_below="@+id/logo"
             style="@style/Login.Subtitle"
             android:text="@string/login_subtitle"
         />
