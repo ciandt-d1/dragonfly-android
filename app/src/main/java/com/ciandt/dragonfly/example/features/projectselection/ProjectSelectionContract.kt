@@ -51,7 +51,7 @@ interface ProjectSelectionContract {
 
         fun loadProjects(onSuccess: (List<Project>) -> Unit, onFailure: (Exception) -> Unit)
 
-        fun downloadVersion(title: String, version: Version, onFailure: (Exception) -> Unit)
+        fun downloadVersion(title: String, description: String?, version: Version, onFailure: (Exception) -> Unit)
 
         fun registerProjectObserver(onChanged: (Project) -> Unit)
 

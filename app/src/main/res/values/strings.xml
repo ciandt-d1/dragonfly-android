@@ -102,6 +102,8 @@
     <string name="login_error">There was an error when trying to connect. Please try again.</string>
 
     <string name="download_processing">Processing…</string>
+    <string name="download_title">%1$s: %2$s</string>
+    <string name="download_description">%1$s - Ver. %2$04d</string>
     <string name="download_finished">Ready to explore!</string>
     <string name="download_finished_button">Explore</string>
     <string name="download_failed">Oops… The download has failed</string>

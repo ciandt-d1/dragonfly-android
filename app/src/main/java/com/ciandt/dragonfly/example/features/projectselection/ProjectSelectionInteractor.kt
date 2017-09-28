@@ -28,11 +28,11 @@ class ProjectSelectionInteractor(val context: Context, val firebaseStorage: Fire
         LoadProjectsTask(database, onSuccess, onFailure).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
-    override fun downloadVersion(title: String, version: Version, onFailure: (Exception) -> Unit) {
+    override fun downloadVersion(title: String, description: String?, version: Version, onFailure: (Exception) -> Unit) {
         val storageRef = firebaseStorage.reference.child(version.downloadUrl)
         storageRef.downloadUrl.addOnCompleteListener { task: Task<Uri> ->
             if (task.isSuccessful) {
-                DownloadHelper.startDownload(context, title, version, task.result)
+                DownloadHelper.startDownload(context, title, description, version, task.result)
             } else {
                 onFailure(task.exception!!)
             }
