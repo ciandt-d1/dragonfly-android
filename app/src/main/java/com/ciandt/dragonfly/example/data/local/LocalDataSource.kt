@@ -41,7 +41,9 @@ class LocalDataSource(val database: AppDatabase) {
     }
 
     fun update(project: ProjectEntity) = database.runInTransaction {
-        versionDao.delete(project.id)
+        if(project.versions.isEmpty()) {
+            versionDao.delete(project.id)
+        }
         insert(project)
     }
 
