@@ -64,7 +64,7 @@ object DownloadNotificationHelper {
         builder.setDefaults(Notification.DEFAULT_ALL)
         builder.priority = NotificationCompat.PRIORITY_MAX
         builder.setSmallIcon(R.drawable.ic_notification)
-        builder.color = ContextCompat.getColor(context, R.color.colorPrimary)
+        builder.color = ContextCompat.getColor(context, R.color.notification_color)
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         builder.setAutoCancel(true)
 
