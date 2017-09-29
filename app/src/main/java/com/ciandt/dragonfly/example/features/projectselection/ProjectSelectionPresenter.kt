@@ -90,7 +90,7 @@ class ProjectSelectionPresenter(private val interactor: ProjectSelectionContract
                 project.versions.replace(lastVersion)
                 view?.update(project)
 
-                interactor.downloadVersion(project.name, lastVersion) { exception ->
+                interactor.downloadVersion(project.name, project.description, lastVersion) { exception ->
 
                     lastVersion.status = Version.STATUS_NOT_DOWNLOADED
                     view?.update(project)

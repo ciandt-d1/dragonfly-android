@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.content.ContextCompat
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.R
+import com.ciandt.dragonfly.example.config.CommonBundleNames
 import com.ciandt.dragonfly.example.features.download.DownloadedFile
 
 object DownloadNotificationHelper {
@@ -32,6 +33,8 @@ object DownloadNotificationHelper {
 
         val parent = IntentHelper.openProjectSelection(context)
         val intent = IntentHelper.openRealTime(context, model, modelName)
+        intent.putExtra(CommonBundleNames.NOTIFICATION_CANCEL, true)
+        intent.putExtra(CommonBundleNames.NOTIFICATION_ID, id)
 
         val pendingIntent = getPendingIntent(context, parent, intent, id)
 
@@ -39,6 +42,7 @@ object DownloadNotificationHelper {
 
         builder.setContentTitle(modelName)
         builder.setContentText(context.getString(R.string.download_finished))
+        builder.addAction(NotificationCompat.Action(-1, context.getString(R.string.download_finished_button), pendingIntent))
 
         show(context, id, builder.build())
     }
@@ -53,6 +57,11 @@ object DownloadNotificationHelper {
         show(context, file.hashCode(), builder.build())
     }
 
+    fun cancelNotification(context: Context, id: Int) {
+        val notificationManager = NotificationManagerCompat.from(context)
+        notificationManager.cancel(id)
+    }
+
     private fun show(context: Context, id: Int, notification: Notification) {
         val notificationManager = NotificationManagerCompat.from(context)
         notificationManager.notify(id, notification)
@@ -64,7 +73,7 @@ object DownloadNotificationHelper {
         builder.setDefaults(Notification.DEFAULT_ALL)
         builder.priority = NotificationCompat.PRIORITY_MAX
         builder.setSmallIcon(R.drawable.ic_notification)
-        builder.color = ContextCompat.getColor(context, R.color.colorPrimary)
+        builder.color = ContextCompat.getColor(context, R.color.notification_color)
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         builder.setAutoCancel(true)
 

@@ -18,6 +18,7 @@ import com.ciandt.dragonfly.example.config.CommonBundleNames
 import com.ciandt.dragonfly.example.config.Features
 import com.ciandt.dragonfly.example.debug.DebugActionsHelper
 import com.ciandt.dragonfly.example.features.login.LoginActivity
+import com.ciandt.dragonfly.example.helpers.DownloadNotificationHelper
 import com.ciandt.dragonfly.example.helpers.IntentHelper
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -38,6 +39,15 @@ abstract class BaseActivity(protected var hasDebugDrawer: Boolean = true) : AppC
         super.onCreate(savedInstanceState)
 
         enforceLoginIfNeeded()
+        cancelNotifications()
+    }
+
+    private fun cancelNotifications() {
+        val cancel = intent.getBooleanExtra(CommonBundleNames.NOTIFICATION_CANCEL, false)
+        val id = intent.getIntExtra(CommonBundleNames.NOTIFICATION_ID, -1)
+        if(cancel && id != -1) {
+            DownloadNotificationHelper.cancelNotification(this, id)
+        }
     }
 
     override fun onStart() {

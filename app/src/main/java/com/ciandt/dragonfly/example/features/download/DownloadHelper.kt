@@ -21,11 +21,16 @@ object DownloadHelper {
         ProjectRepository(database)
     }
 
-    fun startDownload(context: Context, title: String, version: Version, uri: Uri) = runOnBackgroundThread {
+    fun startDownload(context: Context, title: String, description: String?, version: Version, uri: Uri) = runOnBackgroundThread {
         val request = DownloadManager.Request(uri)
 
-        val appName = context.getString(R.string.app_name)
-        request.setTitle("$appName: $title")
+        val downloadTitle = context.getString(R.string.download_title, context.getString(R.string.app_name), title)
+        request.setTitle(downloadTitle)
+
+        description?.let {
+            val downloadDescription = context.getString(R.string.download_description, it, version.version)
+            request.setDescription(downloadDescription)
+        }
 
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
         request.setVisibleInDownloadsUi(false)
