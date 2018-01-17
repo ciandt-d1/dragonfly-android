@@ -38,15 +38,13 @@ data class Version(
         val model = Model("$project/$version")
         model.version = version
         model.modelPath = modelPath
-        model.labelsPath = labelsPath
+        model.setLabelsPath(labelsPath)
         model.sizeInBytes = size
         model.inputSize = inputSize
         model.imageMean = imageMean
         model.imageStd = imageStd
         model.inputName = inputName
-        model.outputName = outputName
-        model.modelPath = modelPath
-        model.labelsPath = labelsPath
+        model.setOutputName(outputName)
         model.others = others
         return model
     }
