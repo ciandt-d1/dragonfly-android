@@ -1,13 +1,5 @@
 package com.ciandt.dragonfly.lens.ui;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.support.v4.os.AsyncTaskCompat;
-import android.util.TimingLogger;
-
 import com.ciandt.dragonfly.base.ui.BaseInteractorContract.AsyncTaskResult;
 import com.ciandt.dragonfly.base.ui.ClassificatorInteractor;
 import com.ciandt.dragonfly.data.model.Model;
@@ -24,6 +16,14 @@ import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflyNoMemoryAvailableException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 import com.ciandt.dragonfly.tensorflow.TensorFlowImageClassifier;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.support.v4.os.AsyncTaskCompat;
+import android.util.TimingLogger;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -218,7 +218,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                         model.getImageMean(),
                         model.getImageStd(),
                         model.getInputName(),
-                        model.getOutputName()
+                        model.getOutputName().split(",")
                 );
 
                 return new AsyncTaskResult<>(model, null);
@@ -313,10 +313,16 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                     ImageUtils.saveBitmapToStagingArea(croppedBitmap, String.format("selected-cropped-%s.jpg", filename));
                 }
 
-                List<Classifier.Classification> results = interactor.classifier.classifyImage(croppedBitmap);
+                // TODO: Change AsyncTaskResult to HashMap<String, List<>>
+                // FIX ME: This is temporary, only to test tensorflow behaviour with multiple outputs.
+                Map<String, List<Classifier.Classification>> results = interactor.classifier.classifyImage(croppedBitmap);
                 timings.addSplit("Classify image");
 
-                return new AsyncTaskResult<>(results, null);
+                Map.Entry<String, List<Classifier.Classification>> entry = results.entrySet().iterator().next();
+                String key = entry.getKey();
+                List<Classifier.Classification> value = entry.getValue();
+
+                return new AsyncTaskResult<>(value, null);
             } catch (Exception e) {
                 String errorMessage = String.format("Failed to analyze bitmap with error: %s", e.getMessage());
 
@@ -379,7 +385,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                 Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, interactor.model.getInputSize(), interactor.model.getInputSize(), false);
                 timings.addSplit("Scale bitmap");
 
-                List<Classifier.Classification> results = interactor.classifier.classifyImage(croppedBitmap);
+                Map<String, List<Classifier.Classification>> results = interactor.classifier.classifyImage(croppedBitmap);
                 timings.addSplit("Classify image");
 
                 timings.dumpToLog();
@@ -392,7 +398,13 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                     ImageUtils.saveBitmapToStagingArea(croppedBitmap, String.format("captured-cropped-%s.png", baseName));
                 }
 
-                return new AsyncTaskResult<>(results, null);
+                // TODO: Change AsyncTaskResult to HashMap<String, List<>>
+                // FIX ME: This is temporary, only to test tensorflow behaviour with multiple outputs.
+                Map.Entry<String, List<Classifier.Classification>> entry = results.entrySet().iterator().next();
+                String key = entry.getKey();
+                List<Classifier.Classification> value = entry.getValue();
+
+                return new AsyncTaskResult<>(value, null);
             } catch (Exception e) {
                 String errorMessage = String.format("Failed to analyze byte array with error: %s", e.getMessage());
 
@@ -484,11 +496,16 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                 Bitmap croppedBitmap = Bitmap.createScaledBitmap(bitmap, interactor.model.getInputSize(), interactor.model.getInputSize(), false);
                 timings.addSplit("Scale bitmap");
 
-                List<Classifier.Classification> results = interactor.classifier.classifyImage(croppedBitmap);
+                Map<String, List<Classifier.Classification>> results = interactor.classifier.classifyImage(croppedBitmap);
                 timings.addSplit("Classify image");
 
+                // TODO: Change AsyncTaskResult to HashMap<String, List<>>
+                // FIX ME: This is temporary, only to test tensorflow behaviour with multiple outputs.
+                Map.Entry<String, List<Classifier.Classification>> entry = results.entrySet().iterator().next();
+                String key = entry.getKey();
+                List<Classifier.Classification> value = entry.getValue();
 
-                results = optimizeClassifications(results);
+                value = optimizeClassifications(value);
                 timings.addSplit("Optimize classifications");
 
                 timings.dumpToLog();
@@ -501,7 +518,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                     ImageUtils.saveBitmapToStagingArea(croppedBitmap, String.format("captured-cropped-%s.png", baseName));
                 }
 
-                return new AsyncTaskResult<>(results, null);
+                return new AsyncTaskResult<>(value, null);
             } catch (Exception e) {
                 String errorMessage = String.format("Failed to analyze byte array with error: %s", e.getMessage());
 
