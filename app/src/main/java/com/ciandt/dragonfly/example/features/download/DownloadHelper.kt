@@ -65,15 +65,17 @@ object DownloadHelper {
         ZipHelper.unzip(inputStream, path,
                 onSuccess = { files ->
 
-                    val labelsPath = files.filter { it.contains(".txt", true) }.firstOrNull()
-                    val modelPath = files.filter { it.contains(".pb", true) }.firstOrNull()
+                    val outputs = version.outputName.split(",")
 
-                    if (labelsPath == null || modelPath == null) {
-                        onFailure(RuntimeException("Downloaded version does not contain .txt file or .pb file"))
+                    val labelsPath = outputs.mapNotNull { version -> files.firstOrNull { it.contains(version) } }
+                    val modelPath = files.firstOrNull { it.contains(".pb", true) }
+
+                    if (labelsPath.size != outputs.size || modelPath == null) {
+                        onFailure(RuntimeException("Downloaded version does not contain all .txt file or .pb file"))
                         return@unzip
                     }
 
-                    version.labelsPath = labelsPath
+                    version.labelsPath = labelsPath.joinToString(",")
                     version.modelPath = modelPath
                     version.status = Version.STATUS_DOWNLOADED
 
