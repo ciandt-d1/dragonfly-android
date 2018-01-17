@@ -218,7 +218,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                         model.getImageMean(),
                         model.getImageStd(),
                         model.getInputName(),
-                        model.getOutputName().split(",")
+                        model.getOutputName()
                 );
 
                 return new AsyncTaskResult<>(model, null);

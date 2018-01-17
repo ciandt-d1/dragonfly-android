@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,10 +45,10 @@ public class TensorFlowImageClassifier implements Classifier {
     private float imageStd;
 
     // Pre-allocated buffers.
-    private final Vector<String> labels = new Vector<>();
+    private final Map<String, Vector<String>> labels = new HashMap<>();
+    private final Map<String, Integer> numClasses = new LinkedHashMap<>();
     private int[] intValues;
     private float[] floatValues;
-    private Map<String, Integer> numClasses;
     private String[] outputNames;
 
     private TensorFlowInferenceInterface inferenceInterface;
@@ -58,19 +59,19 @@ public class TensorFlowImageClassifier implements Classifier {
     /**
      * Initializes a native TensorFlow session for classifying images.
      *
-     * @param assetManager  The asset manager to be used to load assets.
-     * @param modelFilename The filepath of the model GraphDef protocol buffer.
-     * @param labelFilename The filepath of label file for classes.
-     * @param inputSize     The input size. A square image of inputSize x inputSize is assumed.
-     * @param imageMean     The assumed mean of the image values.
-     * @param imageStd      The assumed std of the image values.
-     * @param inputName     The label of the image input node.
-     * @param outputNames   The labels of the outputs node.
+     * @param assetManager   The asset manager to be used to load assets.
+     * @param modelFilename  The filepath of the model GraphDef protocol buffer.
+     * @param labelFilenames The filepaths of label files for classes.
+     * @param inputSize      The input size. A square image of inputSize x inputSize is assumed.
+     * @param imageMean      The assumed mean of the image values.
+     * @param imageStd       The assumed std of the image values.
+     * @param inputName      The label of the image input node.
+     * @param outputNames    The labels of the outputs node.
      */
     public static TensorFlowImageClassifier create(
             AssetManager assetManager,
             String modelFilename,
-            String labelFilename,
+            String[] labelFilenames,
             int inputSize,
             int imageMean,
             float imageStd,
@@ -80,43 +81,46 @@ public class TensorFlowImageClassifier implements Classifier {
         TensorFlowImageClassifier c = new TensorFlowImageClassifier();
         c.inputName = inputName;
 
-        final boolean hasAssetPrefix = labelFilename.startsWith(ASSET_FILE_PREFIX);
-        InputStream is;
-        String actualLabelFilename = null;
-
-        try {
-            actualLabelFilename = hasAssetPrefix ? labelFilename.split(ASSET_FILE_PREFIX)[1] : labelFilename;
-            is = assetManager.open(actualLabelFilename);
-        } catch (IOException assetIOException) {
-            if (hasAssetPrefix) {
-                throw new RuntimeException("Failed to load model from '" + labelFilename + "'", assetIOException);
-            }
-            // Perhaps the model file is not an asset but is on disk.
-            try {
-                is = new FileInputStream(labelFilename);
-            } catch (IOException externalFileIOException) {
-                throw new RuntimeException("Failed to load model from '" + labelFilename + "'", externalFileIOException);
-            }
-        }
-
-
-        Log.i(LOG_TAG, "Reading labels from: " + actualLabelFilename);
-        BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-        String line;
-        while ((line = br.readLine()) != null) {
-            c.labels.add(line);
-        }
-        br.close();
-
         c.inferenceInterface = new TensorFlowInferenceInterface(assetManager, modelFilename);
 
-        c.numClasses = new LinkedHashMap<>();
-        for (String outputName : outputNames) {
+        for (int i = 0; i < outputNames.length; i++) {
+            String outputName = outputNames[i];
+            String labelFilename = labelFilenames[i];
+
+            // Loading labels
+            final boolean hasAssetPrefix = labelFilename.startsWith(ASSET_FILE_PREFIX);
+            InputStream is;
+            String actualLabelFilename = null;
+
+            try {
+                actualLabelFilename = hasAssetPrefix ? labelFilename.split(ASSET_FILE_PREFIX)[1] : labelFilename;
+                is = assetManager.open(actualLabelFilename);
+            } catch (IOException assetIOException) {
+                if (hasAssetPrefix) {
+                    throw new RuntimeException("Failed to load model from '" + labelFilename + "'", assetIOException);
+                }
+                // Perhaps the model file is not an asset but is on disk.
+                try {
+                    is = new FileInputStream(labelFilename);
+                } catch (IOException externalFileIOException) {
+                    throw new RuntimeException("Failed to load model from '" + labelFilename + "'", externalFileIOException);
+                }
+            }
+
+            Log.i(LOG_TAG, "Reading labels from: " + actualLabelFilename);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            String line;
+            Vector<String> labels = new Vector<>();
+            while ((line = br.readLine()) != null) {
+                labels.add(line);
+            }
+            br.close();
+            c.labels.put(outputName, labels);
 
             // The shape of the output is [N, NUM_CLASSES], where N is the batch size.
             int numClasses = (int) c.inferenceInterface.graph().operation(outputName).output(0).shape().size(1);
 
-            Log.i(LOG_TAG, "Read " + c.labels.size() + " labels, output layer size is " + numClasses);
+            Log.i(LOG_TAG, "Read " + labels.size() + " labels, output layer size is " + numClasses);
             c.numClasses.put(outputName, numClasses);
         }
 
@@ -189,7 +193,7 @@ public class TensorFlowImageClassifier implements Classifier {
                 if (outputs[i] > THRESHOLD) {
                     pq.add(
                             new Classification(
-                                    Integer.toString(i), labels.size() > i ? labels.get(i) : "unknown", outputs[i], null
+                                    Integer.toString(i), labels.get(outputName).size() > i ? labels.get(outputName).get(i) : "unknown", outputs[i], null
                             )
                     );
                 }
