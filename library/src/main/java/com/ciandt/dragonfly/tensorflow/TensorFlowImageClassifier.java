@@ -15,7 +15,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Vector;
 
@@ -37,7 +39,6 @@ public class TensorFlowImageClassifier implements Classifier {
 
     // Config values.
     private String inputName;
-    private String outputName;
     private int inputSize;
     private int imageMean;
     private float imageStd;
@@ -46,7 +47,7 @@ public class TensorFlowImageClassifier implements Classifier {
     private final Vector<String> labels = new Vector<>();
     private int[] intValues;
     private float[] floatValues;
-    private float[] outputs;
+    private Map<String, Integer> numClasses;
     private String[] outputNames;
 
     private TensorFlowInferenceInterface inferenceInterface;
@@ -64,7 +65,7 @@ public class TensorFlowImageClassifier implements Classifier {
      * @param imageMean     The assumed mean of the image values.
      * @param imageStd      The assumed std of the image values.
      * @param inputName     The label of the image input node.
-     * @param outputName    The label of the output node.
+     * @param outputNames   The labels of the outputs node.
      */
     public static TensorFlowImageClassifier create(
             AssetManager assetManager,
@@ -74,11 +75,10 @@ public class TensorFlowImageClassifier implements Classifier {
             int imageMean,
             float imageStd,
             String inputName,
-            String outputName)
+            String[] outputNames)
             throws IOException {
         TensorFlowImageClassifier c = new TensorFlowImageClassifier();
         c.inputName = inputName;
-        c.outputName = outputName;
 
         final boolean hasAssetPrefix = labelFilename.startsWith(ASSET_FILE_PREFIX);
         InputStream is;
@@ -110,10 +110,15 @@ public class TensorFlowImageClassifier implements Classifier {
 
         c.inferenceInterface = new TensorFlowInferenceInterface(assetManager, modelFilename);
 
-        // The shape of the output is [N, NUM_CLASSES], where N is the batch size.
-        int numClasses =
-                (int) c.inferenceInterface.graph().operation(outputName).output(0).shape().size(1);
-        Log.i(LOG_TAG, "Read " + c.labels.size() + " labels, output layer size is " + numClasses);
+        c.numClasses = new LinkedHashMap<>();
+        for (String outputName : outputNames) {
+
+            // The shape of the output is [N, NUM_CLASSES], where N is the batch size.
+            int numClasses = (int) c.inferenceInterface.graph().operation(outputName).output(0).shape().size(1);
+
+            Log.i(LOG_TAG, "Read " + c.labels.size() + " labels, output layer size is " + numClasses);
+            c.numClasses.put(outputName, numClasses);
+        }
 
         // Ideally, inputSize could have been retrieved from the shape of the input operation.  Alas,
         // the placeholder node for input in the graphdef typically used does not specify a shape, so it
@@ -123,15 +128,14 @@ public class TensorFlowImageClassifier implements Classifier {
         c.imageStd = imageStd;
 
         // Pre-allocate buffers.
-        c.outputNames = new String[]{outputName};
+        c.outputNames = outputNames;
         c.intValues = new int[inputSize * inputSize];
         c.floatValues = new float[inputSize * inputSize * 3];
-        c.outputs = new float[numClasses];
 
         return c;
     }
 
-    public List<Classification> classifyImage(final Bitmap bitmap) {
+    public Map<String, List<Classification>> classifyImage(final Bitmap bitmap) {
         // Log this method so that it can be analyzed with systrace.
         Trace.beginSection("classifyImage");
 
@@ -157,37 +161,51 @@ public class TensorFlowImageClassifier implements Classifier {
         inferenceInterface.run(outputNames);
         Trace.endSection();
 
-        // Copy the output Tensor back into the output array.
-        Trace.beginSection("fetch");
-        inferenceInterface.fetch(outputName, outputs);
-        Trace.endSection();
 
-        // Find the best classifications.
-        PriorityQueue<Classification> pq =
-                new PriorityQueue<>(
-                        3,
-                        new Comparator<Classification>() {
+        final LinkedHashMap<String, List<Classification>> multiClassifications = new LinkedHashMap<>();
 
-                            @Override
-                            public int compare(Classification lhs, Classification rhs) {
-                                // Intentionally reversed to put high confidence at the head of the queue.
-                                return Float.compare(rhs.getConfidence(), lhs.getConfidence());
-                            }
-                        });
-        for (int i = 0; i < outputs.length; ++i) {
-            if (outputs[i] > THRESHOLD) {
-                pq.add(
-                        new Classification(
-                                Integer.toString(i), labels.size() > i ? labels.get(i) : "unknown", outputs[i], null));
+        for (String outputName : outputNames) {
+            float[] outputs = new float[numClasses.get(outputName)];
+
+            // Copy the output Tensor back into the output array.
+            Trace.beginSection("fetch");
+            inferenceInterface.fetch(outputName, outputs);
+            Trace.endSection();
+
+            // Find the best classifications.
+            PriorityQueue<Classification> pq =
+                    new PriorityQueue<>(
+                            3,
+                            new Comparator<Classification>() {
+
+                                @Override
+                                public int compare(Classification lhs, Classification rhs) {
+                                    // Intentionally reversed to put high confidence at the head of the queue.
+                                    return Float.compare(rhs.getConfidence(), lhs.getConfidence());
+                                }
+                            });
+
+            for (int i = 0; i < outputs.length; ++i) {
+                if (outputs[i] > THRESHOLD) {
+                    pq.add(
+                            new Classification(
+                                    Integer.toString(i), labels.size() > i ? labels.get(i) : "unknown", outputs[i], null
+                            )
+                    );
+                }
             }
+
+            final ArrayList<Classification> classifications = new ArrayList<>();
+            int classificationsSize = Math.min(pq.size(), MAX_RESULTS);
+            for (int i = 0; i < classificationsSize; ++i) {
+                classifications.add(pq.poll());
+            }
+
+            multiClassifications.put(outputName, classifications);
         }
-        final ArrayList<Classification> classifications = new ArrayList<>();
-        int classificationsSize = Math.min(pq.size(), MAX_RESULTS);
-        for (int i = 0; i < classificationsSize; ++i) {
-            classifications.add(pq.poll());
-        }
+
         Trace.endSection(); // "classifyImage"
-        return classifications;
+        return multiClassifications;
     }
 
     public void enableStatLogging(boolean debug) {
