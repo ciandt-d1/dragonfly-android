@@ -35,7 +35,7 @@ class RemoteProjectService : Service() {
 
     companion object {
 
-        private val PROJECTS_COLLECTION = "v1/projects"
+        private val PROJECTS_COLLECTION = "v2/projects"
 
         fun start(context: Context) {
             val intent = Intent(context, RemoteProjectService::class.java)
