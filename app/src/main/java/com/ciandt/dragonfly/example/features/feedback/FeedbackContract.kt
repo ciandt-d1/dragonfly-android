@@ -40,7 +40,7 @@ interface FeedbackContract {
 
     interface Presenter : BasePresenterContract<View> {
 
-        fun setClassifications(classifications: List<Classifier.Classification>)
+        fun setClassifications(classifications: LinkedHashMap<String, ArrayList<Classifier.Classification>>)
 
         fun markAsPositive()
 

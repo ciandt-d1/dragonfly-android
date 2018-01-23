@@ -20,7 +20,8 @@ class FeedbackPresenter(
         val saveImageToGalleryInteractor: SaveImageToGalleryContract.Interactor,
         val benchmarkInteractor: BenchmarkContract.Interactor
 ) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
-    private val results = ArrayList<Classifier.Classification>()
+    private val results = LinkedHashMap<String, ArrayList<Classifier.Classification>>()
+    private val oldResults = ArrayList<Classifier.Classification>()
     private var userFeedback: Feedback? = null
 
     init {
@@ -37,40 +38,43 @@ class FeedbackPresenter(
         }
     }
 
-    override fun setClassifications(classifications: List<Classifier.Classification>) {
 
-        results.clearAndAddAll(classifications)
+    override fun setClassifications(classifications: LinkedHashMap<String, ArrayList<Classifier.Classification>>) {
+        results.clear()
+        results.putAll(classifications)
 
-        if (results.isEmpty()) {
+        oldResults.clearAndAddAll(classifications.entries.first().value)
+
+        if (oldResults.isEmpty()) {
             view?.showNoClassifications()
             return
         }
 
         if (userFeedback == null) {
-            view?.showClassifications(results.head().title, results.tail())
+            view?.showClassifications(oldResults.head().title, oldResults.tail())
         } else {
             userFeedback!!.let {
                 if (it.isPositive()) {
-                    view?.showPositiveClassification(it.actualLabel, results.tail(), false)
+                    view?.showPositiveClassification(it.actualLabel, oldResults.tail(), false)
                 } else {
-                    view?.showNegativeClassification(it.actualLabel, results.tail())
+                    view?.showNegativeClassification(it.actualLabel, oldResults.tail())
                 }
             }
         }
     }
 
     override fun markAsPositive() {
-        view?.showPositiveClassification(results.head().title, results.tail())
+        view?.showPositiveClassification(oldResults.head().title, oldResults.tail())
 
-        saveFeedback(results.head().title, Feedback.POSITIVE)
+        saveFeedback(oldResults.head().title, Feedback.POSITIVE)
     }
 
     override fun markAsNegative() {
-        view?.showNegativeForm(results.tail())
+        view?.showNegativeForm(oldResults.tail())
     }
 
     override fun submitNegative(label: String) {
-        view?.showNegativeClassification(label, results.tail())
+        view?.showNegativeClassification(label, oldResults.tail())
 
         saveFeedback(label, Feedback.NEGATIVE)
     }
@@ -103,7 +107,7 @@ class FeedbackPresenter(
 
     private fun saveFeedback(label: String, value: Int) {
         val identifiedLabels = HashMap<String, Float>()
-        for (classification in results) {
+        for (classification in oldResults) {
             identifiedLabels.put(classification.title, classification.confidence)
         }
 

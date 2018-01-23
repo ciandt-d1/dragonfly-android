@@ -28,7 +28,6 @@ import com.ciandt.dragonfly.example.data.PendingFeedbackRepository
 import com.ciandt.dragonfly.example.features.feedback.model.BenchmarkResult
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.infrastructure.extensions.getRootView
-import com.ciandt.dragonfly.example.infrastructure.extensions.head
 import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
 import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
 import com.ciandt.dragonfly.example.shared.BaseActivity
@@ -54,22 +53,24 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     private var allowSaveToGallery: Boolean = false
     private var userFeedback: Feedback? = null
 
-    private lateinit var classifications: ArrayList<Classifier.Classification>
+    private val classifications: LinkedHashMap<String, ArrayList<Classifier.Classification>> = LinkedHashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feedback)
 
-        if (savedInstanceState != null) {
-            userFeedback = savedInstanceState.getParcelable<Feedback>(USER_FEEDBACK)
-        } else {
-            userFeedback = null
-        }
+        userFeedback = savedInstanceState?.getParcelable(USER_FEEDBACK)
 
-        classifications = intent.extras.getParcelableArrayList(CLASSIFICATIONS_BUNDLE)
-        classificationInput = intent.extras.getParcelable<DragonflyClassificationInput>(CLASSIFICATION_INPUT_BUNDLE)
-        model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
+        model = intent.extras.getParcelable(MODEL_BUNDLE)
+        classificationInput = intent.extras.getParcelable(CLASSIFICATION_INPUT_BUNDLE)
         allowSaveToGallery = intent.extras.getBoolean(ALLOW_SAVE_TO_GALLERY_BUNDLE, false)
+
+        val values = intent.extras.getSerializable(CLASSIFICATIONS_BUNDLE) as HashMap<String, ArrayList<Classifier.Classification>>
+        model.outputNames.forEach { key ->
+            values[key]?.let { value ->
+                classifications.put(key, value)
+            }
+        }
 
         val feedbackSaverInteractor = FeedbackSaverInteractor(FirebaseDatabase.getInstance(), PendingFeedbackRepository(DatabaseManager.database))
         val saveImageToGalleryInteractor = SaveImageToGalleryInteractor(applicationContext)
@@ -91,7 +92,6 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         setupNegativeFeedbackView()
 
         dragonFlyLensFeedbackView.setClassificationInput(classificationInput)
-        dragonFlyLensFeedbackView.setLabel(classifications.head().title, Math.round(classifications.head().confidence * 100))
 
         Glide
                 .with(this)
@@ -504,12 +504,14 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         private val CLASSIFICATIONS_BUNDLE = String.format("%s.classifications", BuildConfig.APPLICATION_ID)
         private val USER_FEEDBACK = String.format("%s.user_feedback", BuildConfig.APPLICATION_ID)
 
-        fun newIntent(context: Context, model: Model, classificationInput: DragonflyClassificationInput, allowSavingToGallery: Boolean, classifications: List<Classifier.Classification>): Intent {
+        fun newIntent(context: Context, model: Model, classificationInput: DragonflyClassificationInput, allowSavingToGallery: Boolean, classifications: Map<String, List<Classifier.Classification>>): Intent {
             val intent = Intent(context, FeedbackActivity::class.java)
             intent.putExtra(MODEL_BUNDLE, model)
             intent.putExtra(CLASSIFICATION_INPUT_BUNDLE, classificationInput)
             intent.putExtra(ALLOW_SAVE_TO_GALLERY_BUNDLE, allowSavingToGallery)
-            intent.putParcelableArrayListExtra(CLASSIFICATIONS_BUNDLE, ArrayList<Classifier.Classification>(classifications))
+            (classifications as? HashMap<*, *>)?.let {
+                intent.putExtra(CLASSIFICATIONS_BUNDLE, it)
+            }
 
             return intent
         }
