@@ -254,7 +254,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         }
     }
 
-    private static class AnalyzeFromUriTask extends AsyncTask<AnalyzeFromUriTask.TaskParams, Void, AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException>> {
+    private static class AnalyzeFromUriTask extends AsyncTask<AnalyzeFromUriTask.TaskParams, Void, AsyncTaskResult<Map<String, List<Classifier.Classification>>, DragonflyClassificationException>> {
 
         private final DragonflyLensClassificatorInteractor interactor;
         private TaskParams taskParams;
@@ -266,7 +266,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         }
 
         @Override
-        protected AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException> doInBackground(TaskParams... params) {
+        protected AsyncTaskResult<Map<String, List<Classifier.Classification>>, DragonflyClassificationException> doInBackground(TaskParams... params) {
             interactor.isAnalyzingFromUri = true;
 
             this.taskParams = params[0];
@@ -313,16 +313,10 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                     ImageUtils.saveBitmapToStagingArea(croppedBitmap, String.format("selected-cropped-%s.jpg", filename));
                 }
 
-                // TODO: Change AsyncTaskResult to HashMap<String, List<>>
-                // FIX ME: This is temporary, only to test tensorflow behaviour with multiple outputs.
                 Map<String, List<Classifier.Classification>> results = interactor.classifier.classifyImage(croppedBitmap);
                 timings.addSplit("Classify image");
 
-                Map.Entry<String, List<Classifier.Classification>> entry = results.entrySet().iterator().next();
-                String key = entry.getKey();
-                List<Classifier.Classification> value = entry.getValue();
-
-                return new AsyncTaskResult<>(value, null);
+                return new AsyncTaskResult<>(results, null);
             } catch (Exception e) {
                 String errorMessage = String.format("Failed to analyze bitmap with error: %s", e.getMessage());
 
@@ -331,7 +325,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         }
 
         @Override
-        protected void onPostExecute(AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException> result) {
+        protected void onPostExecute(AsyncTaskResult<Map<String, List<Classifier.Classification>>, DragonflyClassificationException> result) {
             interactor.isAnalyzingFromUri = false;
 
             if (result.hasError()) {
@@ -360,7 +354,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         }
     }
 
-    private static class AnalyzeYUVN21Task extends AsyncTask<AnalyzeYUVN21Task.TaskParams, Void, AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException>> {
+    private static class AnalyzeYUVN21Task extends AsyncTask<AnalyzeYUVN21Task.TaskParams, Void, AsyncTaskResult<Map<String, List<Classifier.Classification>>, DragonflyClassificationException>> {
 
         private final DragonflyLensClassificatorInteractor interactor;
 
@@ -369,7 +363,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         }
 
         @Override
-        protected AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException> doInBackground(TaskParams... params) {
+        protected AsyncTaskResult<Map<String, List<Classifier.Classification>>, DragonflyClassificationException> doInBackground(TaskParams... params) {
             TaskParams taskParams = params[0];
 
             DragonflyLogger.debug(LOG_TAG, "AnalyzeYUVN21Task.doInBackground() - start");
@@ -398,13 +392,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                     ImageUtils.saveBitmapToStagingArea(croppedBitmap, String.format("captured-cropped-%s.png", baseName));
                 }
 
-                // TODO: Change AsyncTaskResult to HashMap<String, List<>>
-                // FIX ME: This is temporary, only to test tensorflow behaviour with multiple outputs.
-                Map.Entry<String, List<Classifier.Classification>> entry = results.entrySet().iterator().next();
-                String key = entry.getKey();
-                List<Classifier.Classification> value = entry.getValue();
-
-                return new AsyncTaskResult<>(value, null);
+                return new AsyncTaskResult<>(results, null);
             } catch (Exception e) {
                 String errorMessage = String.format("Failed to analyze byte array with error: %s", e.getMessage());
 
@@ -416,7 +404,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         }
 
         @Override
-        protected void onPostExecute(AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException> result) {
+        protected void onPostExecute(AsyncTaskResult<Map<String, List<Classifier.Classification>>, DragonflyClassificationException> result) {
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeYUVN21Task.onPostExecute() - error | exception: %s", result.getError()));
 
@@ -461,7 +449,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
     }
 
 
-    private static class AnalyzeYUVN21WithDecaymentTask extends AsyncTask<AnalyzeYUVN21WithDecaymentTask.TaskParams, Void, AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException>> {
+    private static class AnalyzeYUVN21WithDecaymentTask extends AsyncTask<AnalyzeYUVN21WithDecaymentTask.TaskParams, Void, AsyncTaskResult<Map<String, List<Classifier.Classification>>, DragonflyClassificationException>> {
 
         private final DragonflyLensClassificatorInteractor interactor;
         private final Map<String, Classifier.Classification> classifications;
@@ -480,7 +468,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         }
 
         @Override
-        protected AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException> doInBackground(TaskParams... params) {
+        protected AsyncTaskResult<Map<String, List<Classifier.Classification>>, DragonflyClassificationException> doInBackground(TaskParams... params) {
             TaskParams taskParams = params[0];
 
             DragonflyLogger.debug(LOG_TAG, "AnalyzeYUVN21WithDecaymentTask.doInBackground() - start");
@@ -499,14 +487,11 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                 Map<String, List<Classifier.Classification>> results = interactor.classifier.classifyImage(croppedBitmap);
                 timings.addSplit("Classify image");
 
-                // TODO: Change AsyncTaskResult to HashMap<String, List<>>
-                // FIX ME: This is temporary, only to test tensorflow behaviour with multiple outputs.
-                Map.Entry<String, List<Classifier.Classification>> entry = results.entrySet().iterator().next();
-                String key = entry.getKey();
-                List<Classifier.Classification> value = entry.getValue();
 
-                value = optimizeClassifications(value);
-                timings.addSplit("Optimize classifications");
+                for (Map.Entry<String, List<Classifier.Classification>> entry : results.entrySet()) {
+                    results.put(entry.getKey(), optimizeClassifications(entry.getValue()));
+                    timings.addSplit("Optimize classifications");
+                }
 
                 timings.dumpToLog();
 
@@ -518,7 +503,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                     ImageUtils.saveBitmapToStagingArea(croppedBitmap, String.format("captured-cropped-%s.png", baseName));
                 }
 
-                return new AsyncTaskResult<>(value, null);
+                return new AsyncTaskResult<>(results, null);
             } catch (Exception e) {
                 String errorMessage = String.format("Failed to analyze byte array with error: %s", e.getMessage());
 
@@ -530,7 +515,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
         }
 
         @Override
-        protected void onPostExecute(AsyncTaskResult<List<Classifier.Classification>, DragonflyClassificationException> result) {
+        protected void onPostExecute(AsyncTaskResult<Map<String, List<Classifier.Classification>>, DragonflyClassificationException> result) {
             if (result.hasError()) {
                 DragonflyLogger.debug(LOG_TAG, String.format("AnalyzeYUVN21WithDecaymentTask.onPostExecute() - error | exception: %s", result.getError()));
 

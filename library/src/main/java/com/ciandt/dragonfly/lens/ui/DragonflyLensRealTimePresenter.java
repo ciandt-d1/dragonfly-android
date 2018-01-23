@@ -1,7 +1,5 @@
 package com.ciandt.dragonfly.lens.ui;
 
-import android.net.Uri;
-
 import com.ciandt.dragonfly.base.ui.AbstractPresenter;
 import com.ciandt.dragonfly.base.ui.ClassificatorInteractor;
 import com.ciandt.dragonfly.data.model.Model;
@@ -13,7 +11,12 @@ import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
+import android.net.Uri;
+import android.support.v4.util.Pair;
+
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by iluz on 5/26/17.
@@ -117,7 +120,7 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
     }
 
     @Override
-    public void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Classification> classifications) {
+    public void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, Map<String, List<Classifier.Classification>> classifications) {
         if (!hasViewAttached()) {
             return;
         }
@@ -135,31 +138,34 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
     }
 
     @Override
-    public void onYuvNv21Analyzed(List<Classifier.Classification> classifications) {
+    public void onYuvNv21Analyzed(Map<String, List<Classifier.Classification>> classifications) {
         if (!hasViewAttached()) {
             return;
         }
 
         view.setLastClassifications(classifications);
 
-        if (classifications == null || classifications.size() == 0) {
-            view.setLabel("");
-            return;
+        LinkedList<Pair<String, Integer>> labels = new LinkedList<>();
+
+        for (Map.Entry<String, List<Classifier.Classification>> entry : classifications.entrySet()) {
+
+            List<Classifier.Classification> list = entry.getValue();
+            if (list == null || list.size() == 0) {
+                labels.add(Pair.create("", 0));
+                continue;
+            }
+
+            Classifier.Classification mainResult = list.get(0);
+
+            if (!mainResult.hasTitle()) {
+                labels.add(Pair.create("", 0));
+                continue;
+            }
+
+            labels.add(Pair.create(mainResult.getTitle(), formatConfidence(mainResult.getConfidence())));
         }
 
-        Classifier.Classification mainResult = classifications.get(0);
-
-        if (!mainResult.hasTitle()) {
-            view.setLabel("");
-            return;
-        }
-
-        if (mainResult.isRelevant(confidenceThreshold)) {
-            view.setLabel(mainResult.getTitle(), formatConfidence(mainResult.getConfidence()));
-            return;
-        }
-
-        view.setLabel(mainResult.getTitle());
+        view.setLabels(labels);
     }
 
     @Override

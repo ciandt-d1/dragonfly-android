@@ -5,8 +5,8 @@
 
     <dimen name="dragonfly_lens_snapshot_loading_margin_bottom">28dp</dimen>
 
-    <dimen name="dragonfly_lens_label_margin_top">-210dp</dimen>
-    <dimen name="dragonfly_lens_label_vertical_padding">8dp</dimen>
+    <dimen name="dragonfly_lens_label_vertical_padding">2dp</dimen>
     <dimen name="dragonfly_lens_label_horizontal_padding">8dp</dimen>
-    <dimen name="dragonfly_lens_label_text_size">24sp</dimen>
+    <dimen name="dragonfly_lens_label_text_size">18sp</dimen>
+    <dimen name="dragonfly_lens_label_between_space">4dp</dimen>
 </resources>
