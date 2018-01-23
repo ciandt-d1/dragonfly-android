@@ -1,5 +1,6 @@
 package com.ciandt.dragonfly.example.features.feedback
 
+import android.support.v4.util.Pair
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.config.Tenant
@@ -42,6 +43,25 @@ class FeedbackPresenter(
     override fun setClassifications(classifications: LinkedHashMap<String, ArrayList<Classifier.Classification>>) {
         results.clear()
         results.putAll(classifications)
+
+        var labels: ArrayList<Pair<String, Int>> = ArrayList()
+
+        classifications.entries.forEach { entry ->
+
+            val list = entry.value
+            if (list.isEmpty()) {
+                return
+            }
+
+            if (!list[0].hasTitle()) {
+                return
+            }
+
+            labels.add(Pair.create(list[0].title, formatConfidence(list[0].confidence)))
+        }
+
+        view?.showMainClassifications(labels)
+
 
         oldResults.clearAndAddAll(classifications.entries.first().value)
 
@@ -125,6 +145,10 @@ class FeedbackPresenter(
         view?.setUserFeedback(feedback)
 
         feedbackSaverInteractor.saveFeedback(feedback)
+    }
+
+    private fun formatConfidence(confidence: Float): Int {
+        return Math.round(confidence * 100)
     }
 
     companion object {

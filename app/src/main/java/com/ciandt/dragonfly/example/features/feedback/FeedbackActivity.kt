@@ -269,6 +269,10 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         }
     }
 
+    override fun showMainClassifications(labels: List<android.support.v4.util.Pair<String, Int>>) {
+        dragonFlyLensFeedbackView.setLabels(labels)
+    }
+
     override fun showNoClassifications() {
         showSnackbar(R.string.feedback_no_classifications_found)
     }

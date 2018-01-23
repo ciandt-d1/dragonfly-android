@@ -1,6 +1,7 @@
 package com.ciandt.dragonfly.example.features.feedback
 
 import android.support.annotation.StringRes
+import android.support.v4.util.Pair
 import com.ciandt.dragonfly.example.features.feedback.model.BenchmarkResult
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.shared.BasePresenterContract
@@ -12,6 +13,8 @@ import com.ciandt.dragonfly.tensorflow.Classifier
 interface FeedbackContract {
 
     interface View {
+
+        fun showMainClassifications(labels: List<Pair<String, Int>>)
 
         fun showNoClassifications()
 
