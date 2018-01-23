@@ -393,6 +393,8 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
     private fun expandResults() {
 
+        dragonFlyLensFeedbackView.hideLabels(HIDE_SHOW_ANIMATION_DURATION)
+
         toggleButton.isClickable = false
         toggleButton.animate()
                 .alpha(0.0f)
@@ -456,6 +458,8 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                                             super.onAnimationEnd(animation)
 
                                             toggleButton.isClickable = true
+
+                                            dragonFlyLensFeedbackView.showLabels(HIDE_SHOW_ANIMATION_DURATION)
                                         }
                                     })
                         }

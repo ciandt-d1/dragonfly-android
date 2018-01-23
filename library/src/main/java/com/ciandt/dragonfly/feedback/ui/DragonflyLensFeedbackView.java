@@ -135,6 +135,14 @@ public class DragonflyLensFeedbackView extends RelativeLayout {
         labelsContainer.setVisibility(VISIBLE);
     }
 
+    public void showLabels(long duration) {
+        labelsContainer.animate().alpha(1.0f).setDuration(duration);
+    }
+
+    public void hideLabels(long duration) {
+        labelsContainer.animate().alpha(0.0f).setDuration(duration);
+    }
+
     @Override
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
