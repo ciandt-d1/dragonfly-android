@@ -62,7 +62,7 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
 
     private boolean isAnalyzingFromUri = false;
 
-    private final Map<String, Classifier.Classification> classifications = new HashMap<>();
+    private final Map<String, Map<String, Classifier.Classification>> classifications = new HashMap<>();
 
     private CountDownLatch modelLoadingCountDown;
 
@@ -452,13 +452,13 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
     private static class AnalyzeYUVN21WithDecaymentTask extends AsyncTask<AnalyzeYUVN21WithDecaymentTask.TaskParams, Void, AsyncTaskResult<Map<String, List<Classifier.Classification>>, DragonflyClassificationException>> {
 
         private final DragonflyLensClassificatorInteractor interactor;
-        private final Map<String, Classifier.Classification> classifications;
+        private final Map<String, Map<String, Classifier.Classification>> classifications;
 
         private final float DECAY_VALUE;
         private final float UPDATE_VALUE;
         private final float MINIMUM_THRESHOLD;
 
-        public AnalyzeYUVN21WithDecaymentTask(DragonflyLensClassificatorInteractor interactor, Map<String, Classifier.Classification> classifications) {
+        public AnalyzeYUVN21WithDecaymentTask(DragonflyLensClassificatorInteractor interactor, Map<String, Map<String, Classifier.Classification>> classifications) {
             this.interactor = interactor;
             this.classifications = classifications;
 
@@ -487,11 +487,8 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                 Map<String, List<Classifier.Classification>> results = interactor.classifier.classifyImage(croppedBitmap);
                 timings.addSplit("Classify image");
 
-
-                for (Map.Entry<String, List<Classifier.Classification>> entry : results.entrySet()) {
-                    results.put(entry.getKey(), optimizeClassifications(entry.getValue()));
-                    timings.addSplit("Optimize classifications");
-                }
+                results.putAll(optimizeClassifications(results));
+                timings.addSplit("Optimize classifications");
 
                 timings.dumpToLog();
 
@@ -527,45 +524,59 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
             }
         }
 
-        private List<Classifier.Classification> optimizeClassifications(List<Classifier.Classification> newClassifications) {
+        private Map<String, List<Classifier.Classification>> optimizeClassifications(Map<String, List<Classifier.Classification>> newClassifications) {
 
-            Map<String, Classifier.Classification> decayedClassifications = new HashMap<>();
+            Map<String, List<Classifier.Classification>> results = new HashMap<>();
 
-            for (String key : classifications.keySet()) {
+            for (Map.Entry<String, List<Classifier.Classification>> entry : newClassifications.entrySet()) {
 
-                Classifier.Classification oldClassification = classifications.get(key);
+                String category = entry.getKey();
 
-                float decayedConfidence = oldClassification.getConfidence() * DECAY_VALUE;
-                if (decayedConfidence > MINIMUM_THRESHOLD) {
-                    decayedClassifications.put(key, oldClassification.clone(decayedConfidence));
+                Map<String, Classifier.Classification> decayedClassifications = new HashMap<>();
+
+                Map<String, Classifier.Classification> categoryClassifications = classifications.get(category);
+                if (categoryClassifications == null) {
+                    categoryClassifications = new HashMap<>();
                 }
+
+                for (String key : categoryClassifications.keySet()) {
+
+                    Classifier.Classification oldClassification = categoryClassifications.get(key);
+
+                    float decayedConfidence = oldClassification.getConfidence() * DECAY_VALUE;
+                    if (decayedConfidence > MINIMUM_THRESHOLD) {
+                        decayedClassifications.put(key, oldClassification.clone(decayedConfidence));
+                    }
+                }
+
+                categoryClassifications.clear();
+                categoryClassifications.putAll(decayedClassifications);
+
+                for (Classifier.Classification newClassification : entry.getValue()) {
+
+                    float oldConfidence = 0.0f;
+                    Classifier.Classification oldClassification = categoryClassifications.get(newClassification.getId());
+                    if (oldClassification != null) {
+                        oldConfidence = oldClassification.getConfidence();
+                    }
+
+                    float updatedConfidence = oldConfidence + (newClassification.getConfidence() * UPDATE_VALUE);
+                    categoryClassifications.put(newClassification.getId(), newClassification.clone(updatedConfidence));
+                }
+
+                this.classifications.put(category, categoryClassifications);
+
+                List<Classifier.Classification> categoryResults = new ArrayList<>(categoryClassifications.values());
+                Collections.sort(categoryResults, new Comparator<Classifier.Classification>() {
+
+                    @Override
+                    public int compare(Classifier.Classification c1, Classifier.Classification c2) {
+                        return Float.compare(c2.getConfidence(), c1.getConfidence());
+                    }
+                });
+
+                results.put(category, categoryResults);
             }
-
-            classifications.clear();
-            classifications.putAll(decayedClassifications);
-
-
-            for (Classifier.Classification newClassification : newClassifications) {
-
-                float oldConfidence = 0.0f;
-                Classifier.Classification oldClassification = classifications.get(newClassification.getId());
-                if (oldClassification != null) {
-                    oldConfidence = oldClassification.getConfidence();
-                }
-
-                float updatedConfidence = oldConfidence + (newClassification.getConfidence() * UPDATE_VALUE);
-                classifications.put(newClassification.getId(), newClassification.clone(updatedConfidence));
-            }
-
-
-            List<Classifier.Classification> results = new ArrayList<>(classifications.values());
-            Collections.sort(results, new Comparator<Classifier.Classification>() {
-
-                @Override
-                public int compare(Classifier.Classification c1, Classifier.Classification c2) {
-                    return Float.compare(c2.getConfidence(), c1.getConfidence());
-                }
-            });
 
             return results;
         }
