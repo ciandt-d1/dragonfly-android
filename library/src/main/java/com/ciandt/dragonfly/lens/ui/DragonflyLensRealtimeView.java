@@ -1,24 +1,5 @@
 package com.ciandt.dragonfly.lens.ui;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
-import android.media.MediaActionSound;
-import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.text.TextUtils;
-import android.util.AttributeSet;
-import android.util.SparseArray;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.ciandt.dragonfly.CameraView;
 import com.ciandt.dragonfly.R;
 import com.ciandt.dragonfly.base.ui.ImageScaleTypes;
@@ -36,20 +17,40 @@ import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.media.MediaActionSound;
+import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.v4.util.Pair;
+import android.util.AttributeSet;
+import android.util.SparseArray;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by iluz on 5/22/17.
  */
 
-public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyLensRealTimeContract.LensRealTimeView, CameraView.LensViewCallback {
+public class DragonflyLensRealtimeView extends RelativeLayout implements DragonflyLensRealTimeContract.LensRealTimeView, CameraView.LensViewCallback {
 
     private static final String LOG_TAG = DragonflyLensRealtimeView.class.getSimpleName();
 
     @Orientation.Mode
     private int orientation;
 
-    private TextView labelView;
+    private LinearLayout labelsContainer;
     private CameraView cameraView;
     private ImageView ornamentView;
     private ImageButton btnSnapshot;
@@ -64,7 +65,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     private PermissionsCallback permissionsCallback;
     private UriAnalysisCallbacks uriAnalysisCallbacks;
 
-    private List<Classifier.Classification> lastClassifications;
+    private Map<String, List<Classifier.Classification>> lastClassifications;
 
     public DragonflyLensRealtimeView(Context context) {
         super(context);
@@ -94,7 +95,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.dragonfly_lens_realtime_view, this);
 
-        labelView = (TextView) this.findViewById(R.id.dragonflyLensLabelView);
+        labelsContainer = (LinearLayout) this.findViewById(R.id.dragonflyLensLabelsContainer);
 
         cameraView = (CameraView) this.findViewById(R.id.dragonflyLensCameraView);
         cameraView.setOrientation(orientation);
@@ -174,12 +175,12 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     }
 
     @Override
-    public List<Classifier.Classification> getLastClassifications() {
+    public Map<String, List<Classifier.Classification>> getLastClassifications() {
         return lastClassifications;
     }
 
     @Override
-    public void setLastClassifications(List<Classifier.Classification> classifications) {
+    public void setLastClassifications(Map<String, List<Classifier.Classification>> classifications) {
         lastClassifications = classifications;
     }
 
@@ -189,26 +190,28 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     }
 
     @Override
-    public void setLabel(String label) {
-        labelView.setVisibility(TextUtils.isEmpty(label) ? GONE : VISIBLE);
+    public void setLabels(List<Pair<String, Integer>> labels) {
 
-        String formattedLabel = getContext().getString(R.string.label_without_confidence, label);
+        for (int i = 0; i < labels.size(); i++) {
+            DragonflyLabelView labelView = (DragonflyLabelView) labelsContainer.getChildAt(i);
+            if (labelView == null) {
+                labelView = new DragonflyLabelView(getContext());
+                labelsContainer.addView(labelView);
+            }
 
-        labelView.setText(formattedLabel);
+            Pair<String, Integer> info = labels.get(i);
+            labelView.setInfo(info.first, getContext().getString(R.string.percentage_label, info.second));
+        }
+
+        for (int i = labels.size(); i < labelsContainer.getChildCount(); i++) {
+            labelsContainer.removeViewAt(i);
+        }
+
+        labelsContainer.setVisibility(VISIBLE);
     }
-
-    @Override
-    public void setLabel(String label, int confidence) {
-        labelView.setVisibility(TextUtils.isEmpty(label) ? GONE : VISIBLE);
-
-        String formattedLabel = getContext().getString(R.string.label_with_confidence, label, confidence);
-
-        labelView.setText(formattedLabel);
-    }
-
 
     private void hideLabel() {
-        labelView.setVisibility(GONE);
+        labelsContainer.setVisibility(GONE);
     }
 
     private void hideControls() {
@@ -271,7 +274,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
     }
 
     @Override
-    public void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Classification> classifications) {
+    public void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, Map<String, List<Classifier.Classification>> classifications) {
         if (uriAnalysisCallbacks != null) {
             uriAnalysisCallbacks.onUriAnalysisFinished(uri, classificationInput, classifications);
         }
@@ -540,7 +543,7 @@ public class DragonflyLensRealtimeView extends FrameLayout implements DragonflyL
 
     public interface UriAnalysisCallbacks {
 
-        void onUriAnalysisFinished(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Classification> classifications);
+        void onUriAnalysisFinished(Uri uri, DragonflyClassificationInput classificationInput, Map<String, List<Classifier.Classification>> classifications);
 
         void onUriAnalysisFailed(DragonflyClassificationException e);
     }

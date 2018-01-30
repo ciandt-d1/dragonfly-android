@@ -2,42 +2,44 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
        xmlns:tools="http://schemas.android.com/tools"
        android:layout_width="match_parent"
-       android:layout_height="match_parent">
+       android:layout_height="match_parent"
+       tools:parentTag="android.widget.RelativeLayout">
 
     <com.ciandt.dragonfly.CameraView
         android:id="@+id/dragonflyLensCameraView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <ImageView android:id="@+id/dragonflyLensOrnamentView"
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:layout_centerInParent="true"
-               android:importantForAccessibility="no"
-               android:scaleType="center"
-               android:visibility="gone"
-               tools:src="@android:drawable/ic_menu_camera"
-               tools:tint="@android:color/white"
-               tools:visibility="visible"/>
+    <ImageView
+        android:id="@+id/dragonflyLensOrnamentView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:importantForAccessibility="no"
+        android:scaleType="center"
+        android:visibility="gone"
+        tools:src="@android:drawable/ic_menu_camera"
+        tools:tint="@android:color/white"
+        tools:visibility="visible"/>
 
-    <TextView android:id="@+id/dragonflyLensLabelView"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              style="@style/Dragonfly.Lens.Label"
-              android:background="@drawable/dragonfly_label_background"
-              android:layout_gravity="center"
-              android:visibility="gone"
-              tools:text="Hammer 25%"
-              tools:visibility="visible"/>
+    <LinearLayout
+        android:id="@+id/dragonflyLensLabelsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:orientation="vertical"/>
 
     <com.ciandt.dragonfly.lens.ui.TakePhotoButton
         android:id="@+id/dragonflyLensBtnSnapshot"
         android:layout_width="@dimen/dragonfly_lens_snapshot_button_size"
         android:layout_height="@dimen/dragonfly_lens_snapshot_button_size"
         android:layout_marginBottom="@dimen/dragonfly_lens_snapshot_button_margin_bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:background="@drawable/circle_frame_background"
         android:clickable="false"
-        android:layout_gravity="bottom|center_horizontal"
         android:src="@drawable/take_photo_button"
         android:visibility="invisible"/>
 </merge>

@@ -8,6 +8,8 @@ import java.util.Map;
 
 public class Model implements Parcelable {
 
+    private static final String SEPARATOR = ",";
+
     private String id = "";
     private int version = 0;
 
@@ -51,8 +53,8 @@ public class Model implements Parcelable {
         return this;
     }
 
-    public String getLabelsPath() {
-        return labelsPath;
+    public String[] getLabelsPath() {
+        return labelsPath.split(SEPARATOR);
     }
 
     public Model setLabelsPath(String labelsPath) {
@@ -105,8 +107,8 @@ public class Model implements Parcelable {
         return this;
     }
 
-    public String getOutputName() {
-        return outputName;
+    public String[] getOutputName() {
+        return outputName.split(SEPARATOR);
     }
 
     public Model setOutputName(String outputName) {

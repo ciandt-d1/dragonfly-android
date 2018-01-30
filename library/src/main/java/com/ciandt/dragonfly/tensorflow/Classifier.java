@@ -21,6 +21,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Generic interface for interacting with different classification engines.
@@ -150,7 +151,7 @@ public interface Classifier {
         }
     }
 
-    List<Classification> classifyImage(Bitmap bitmap);
+    Map<String, List<Classification>> classifyImage(Bitmap bitmap);
 
     void close();
 }
