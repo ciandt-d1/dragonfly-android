@@ -55,4 +55,8 @@ class ClassificationsView : LinearLayout {
     fun setChips(chips: List<Chip>) {
         chipsView.setChips(chips)
     }
+
+    fun select(chip: Chip) {
+        chipsView.select(chip)
+    }
 }

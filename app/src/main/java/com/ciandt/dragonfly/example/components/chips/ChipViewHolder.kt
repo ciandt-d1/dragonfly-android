@@ -14,13 +14,13 @@ class ChipViewHolder(
     fun bind(chip: Chip, selected: Boolean = false) = with(itemView.findViewById<Button>(R.id.chipButton)) {
 
         text = chip.getText()
-        isActivated = if (selectable) selected else false
+        isActivated = selected
 
-        setOnClickListener {
-            if (selectable) {
+        if (selectable) {
+            setOnClickListener {
                 isActivated = !isActivated
+                onClick(chip, isActivated)
             }
-            onClick(chip, isActivated)
         }
     }
 }
