@@ -15,6 +15,7 @@ class VersionToVersionEntityMapper(val version: Version) : Mapper<VersionEntity>
                 imageStd,
                 inputName,
                 outputNames,
+                outputDisplayNames,
                 downloadUrl,
                 createdAt,
                 modelPath,

@@ -21,7 +21,7 @@ import com.ciandt.dragonfly.example.data.local.entities.VersionEntity
                 PendingFeedbackEntitiy::class,
                 PendingFeedbackLabelEntitiy::class
         ),
-        version = 3
+        version = 4
 )
 abstract class AppDatabase : RoomDatabase() {
 

@@ -37,6 +37,9 @@ data class VersionEntity(
         @ColumnInfo(name = "output_names")
         var outputNames: String = "",
 
+        @ColumnInfo(name = "output_display_names")
+        var outputDisplayNames: String = "",
+
         @ColumnInfo(name = "download_url")
         var downloadUrl: String = "",
 
