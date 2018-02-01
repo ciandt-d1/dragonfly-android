@@ -1,10 +1,8 @@
 package com.ciandt.dragonfly.data.model;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Model implements Parcelable {
 
@@ -25,8 +23,7 @@ public class Model implements Parcelable {
     private String outputNames = "";
     private String outputDisplayNames = "";
 
-    private Map<String, Parcelable> others = new HashMap<>();
-
+    private Bundle others = new Bundle();
 
     public Model(String id) {
         this.id = id;
@@ -126,11 +123,11 @@ public class Model implements Parcelable {
         return this;
     }
 
-    public Map<String, Parcelable> getOthers() {
+    public Bundle getOthers() {
         return others;
     }
 
-    public Model setOthers(Map<String, Parcelable> others) {
+    public Model setOthers(Bundle others) {
         this.others = others;
         return this;
     }
@@ -196,6 +193,7 @@ public class Model implements Parcelable {
                 '}';
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -214,11 +212,7 @@ public class Model implements Parcelable {
         dest.writeString(this.inputName);
         dest.writeString(this.outputNames);
         dest.writeString(this.outputDisplayNames);
-        dest.writeInt(this.others.size());
-        for (Map.Entry<String, Parcelable> entry : this.others.entrySet()) {
-            dest.writeString(entry.getKey());
-            dest.writeParcelable(entry.getValue(), flags);
-        }
+        dest.writeBundle(this.others);
     }
 
     protected Model(Parcel in) {
@@ -233,13 +227,7 @@ public class Model implements Parcelable {
         this.inputName = in.readString();
         this.outputNames = in.readString();
         this.outputDisplayNames = in.readString();
-        int othersSize = in.readInt();
-        this.others = new HashMap<>(othersSize);
-        for (int i = 0; i < othersSize; i++) {
-            String key = in.readString();
-            Parcelable value = in.readParcelable(Parcelable.class.getClassLoader());
-            this.others.put(key, value);
-        }
+        this.others = in.readBundle();
     }
 
     public static final Creator<Model> CREATOR = new Creator<Model>() {

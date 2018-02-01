@@ -21,7 +21,8 @@ class ProjectEntityToProjectMapper(val entity: ProjectEntity) : Mapper<Project>(
                 name,
                 description,
                 colors.split(","),
-                versionsMapped
+                versionsMapped,
+                showBenchmark
         )
     }
 }

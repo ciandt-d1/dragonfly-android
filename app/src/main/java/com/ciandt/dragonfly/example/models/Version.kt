@@ -1,7 +1,7 @@
 package com.ciandt.dragonfly.example.models
 
+import android.os.Bundle
 import android.os.Parcel
-import android.os.Parcelable
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.shared.KParcelable
 import com.ciandt.dragonfly.example.shared.parcelableCreator
@@ -35,7 +35,7 @@ data class Version(
         return status == STATUS_DOWNLOADED
     }
 
-    fun toLibraryModel(others: Map<String, Parcelable> = emptyMap()): Model {
+    fun toLibraryModel(others: Bundle = Bundle()): Model {
         val model = Model("$project/$version")
         model.version = version
         model.modelPath = modelPath

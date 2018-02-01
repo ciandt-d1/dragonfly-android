@@ -1,5 +1,6 @@
 package com.ciandt.dragonfly.example.features.projectselection
 
+import android.os.Bundle
 import com.ciandt.dragonfly.example.infrastructure.extensions.replace
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.models.Version
@@ -67,7 +68,9 @@ class ProjectSelectionPresenter(private val interactor: ProjectSelectionContract
         if (project.hasDownloadedVersion()) {
             val version = project.getLastDownloadedVersion()!!
 
-            view?.run(version.toLibraryModel(), project.name)
+            val others = Bundle()
+            others.putBoolean("benchmark", project.showBenchmark)
+            view?.run(version.toLibraryModel(others), project.name)
         }
     }
 
