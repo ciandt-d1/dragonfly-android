@@ -213,12 +213,12 @@ public class DragonflyLensClassificatorInteractor implements ClassificatorIntera
                 interactor.classifier = TensorFlowImageClassifier.create(
                         interactor.context.getAssets(),
                         model.getModelPath(),
-                        model.getLabelsPath(),
+                        model.getLabelFilesPaths(),
                         model.getInputSize(),
                         model.getImageMean(),
                         model.getImageStd(),
                         model.getInputName(),
-                        model.getOutputName()
+                        model.getOutputNames()
                 );
 
                 return new AsyncTaskResult<>(model, null);

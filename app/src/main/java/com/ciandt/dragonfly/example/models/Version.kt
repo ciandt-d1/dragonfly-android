@@ -14,11 +14,11 @@ data class Version(
         var imageMean: Int = 0,
         var imageStd: Float = 0.0f,
         var inputName: String = "",
-        var outputName: String = "",
+        var outputNames: String = "",
         var downloadUrl: String = "",
         var createdAt: Long = 0L,
         var modelPath: String = "",
-        var labelsPath: String = "",
+        var labelFilesPaths: String = "",
         var status: Int = STATUS_NOT_DOWNLOADED
 ) : KParcelable {
 
@@ -38,13 +38,13 @@ data class Version(
         val model = Model("$project/$version")
         model.version = version
         model.modelPath = modelPath
-        model.setLabelsPath(labelsPath)
+        model.setLabelFilesPaths(labelFilesPaths)
         model.sizeInBytes = size
         model.inputSize = inputSize
         model.imageMean = imageMean
         model.imageStd = imageStd
         model.inputName = inputName
-        model.setOutputName(outputName)
+        model.setOutputNames(outputNames)
         model.others = others
         return model
     }
@@ -73,11 +73,11 @@ data class Version(
         writeInt(imageMean)
         writeFloat(imageStd)
         writeString(inputName)
-        writeString(outputName)
+        writeString(outputNames)
         writeString(downloadUrl)
         writeLong(createdAt)
         writeString(modelPath)
-        writeString(labelsPath)
+        writeString(labelFilesPaths)
         writeInt(status)
     }
 

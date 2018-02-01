@@ -151,14 +151,12 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
 
             List<Classifier.Classification> list = entry.getValue();
             if (list == null || list.size() == 0) {
-                labels.add(Pair.create("", 0));
                 continue;
             }
 
             Classifier.Classification mainResult = list.get(0);
 
             if (!mainResult.hasTitle()) {
-                labels.add(Pair.create("", 0));
                 continue;
             }
 

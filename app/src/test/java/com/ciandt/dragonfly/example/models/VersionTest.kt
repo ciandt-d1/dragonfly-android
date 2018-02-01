@@ -43,9 +43,9 @@ class VersionTest {
                 .setImageMean(128)
                 .setImageStd(128f)
                 .setInputName("Mul")
-                .setOutputName("final_result")
+                .setOutputNames("final_result")
                 .setModelPath("project-id/1/model.pb")
-                .setLabelsPath("project-id/1/model.txt")
+                .setLabelFilesPaths("project-id/1/model.txt")
 
         version.toLibraryModel().shouldEqual(model)
     }

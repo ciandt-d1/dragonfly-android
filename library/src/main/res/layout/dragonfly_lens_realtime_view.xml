@@ -26,9 +26,9 @@
         android:id="@+id/dragonflyLensLabelsContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginTop="@dimen/dragonfly_lens_labels_container_margin_top"
+        android:layout_marginLeft="@dimen/dragonfly_lens_labels_container_horizontal_margin"
+        android:layout_marginRight="@dimen/dragonfly_lens_labels_container_horizontal_margin"
         android:orientation="vertical"/>
 
     <com.ciandt.dragonfly.lens.ui.TakePhotoButton

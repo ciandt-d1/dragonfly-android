@@ -8,13 +8,13 @@ import java.util.Map;
 
 public class Model implements Parcelable {
 
-    private static final String SEPARATOR = ",";
+    public static final String SEPARATOR = ",";
 
     private String id = "";
     private int version = 0;
 
     private String modelPath = "";
-    private String labelsPath = "";
+    private String labelFilesPaths = "";
 
     private long sizeInBytes = 0;
 
@@ -22,7 +22,7 @@ public class Model implements Parcelable {
     private int imageMean = 0;
     private float imageStd = 0f;
     private String inputName = "";
-    private String outputName = "";
+    private String outputNames = "";
 
     private Map<String, Parcelable> others = new HashMap<>();
 
@@ -53,12 +53,12 @@ public class Model implements Parcelable {
         return this;
     }
 
-    public String[] getLabelsPath() {
-        return labelsPath.split(SEPARATOR);
+    public String[] getLabelFilesPaths() {
+        return labelFilesPaths.split(SEPARATOR);
     }
 
-    public Model setLabelsPath(String labelsPath) {
-        this.labelsPath = labelsPath;
+    public Model setLabelFilesPaths(String labelFilesPaths) {
+        this.labelFilesPaths = labelFilesPaths;
         return this;
     }
 
@@ -107,12 +107,12 @@ public class Model implements Parcelable {
         return this;
     }
 
-    public String[] getOutputName() {
-        return outputName.split(SEPARATOR);
+    public String[] getOutputNames() {
+        return outputNames.split(SEPARATOR);
     }
 
-    public Model setOutputName(String outputName) {
-        this.outputName = outputName;
+    public Model setOutputNames(String outputNames) {
+        this.outputNames = outputNames;
         return this;
     }
 
@@ -140,11 +140,11 @@ public class Model implements Parcelable {
         if (id != null ? !id.equals(model.id) : model.id != null) return false;
         if (modelPath != null ? !modelPath.equals(model.modelPath) : model.modelPath != null)
             return false;
-        if (labelsPath != null ? !labelsPath.equals(model.labelsPath) : model.labelsPath != null)
+        if (labelFilesPaths != null ? !labelFilesPaths.equals(model.labelFilesPaths) : model.labelFilesPaths != null)
             return false;
         if (inputName != null ? !inputName.equals(model.inputName) : model.inputName != null)
             return false;
-        if (outputName != null ? !outputName.equals(model.outputName) : model.outputName != null)
+        if (outputNames != null ? !outputNames.equals(model.outputNames) : model.outputNames != null)
             return false;
         return others != null ? others.equals(model.others) : model.others == null;
     }
@@ -154,13 +154,13 @@ public class Model implements Parcelable {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + version;
         result = 31 * result + (modelPath != null ? modelPath.hashCode() : 0);
-        result = 31 * result + (labelsPath != null ? labelsPath.hashCode() : 0);
+        result = 31 * result + (labelFilesPaths != null ? labelFilesPaths.hashCode() : 0);
         result = 31 * result + Long.valueOf(sizeInBytes).hashCode();
         result = 31 * result + inputSize;
         result = 31 * result + imageMean;
         result = 31 * result + (imageStd != +0.0f ? Float.floatToIntBits(imageStd) : 0);
         result = 31 * result + (inputName != null ? inputName.hashCode() : 0);
-        result = 31 * result + (outputName != null ? outputName.hashCode() : 0);
+        result = 31 * result + (outputNames != null ? outputNames.hashCode() : 0);
         result = 31 * result + (others != null ? others.hashCode() : 0);
         return result;
     }
@@ -171,13 +171,13 @@ public class Model implements Parcelable {
                 "id='" + id + '\'' +
                 ", version=" + version +
                 ", modelPath='" + modelPath + '\'' +
-                ", labelsPath='" + labelsPath + '\'' +
+                ", labelFilesPaths='" + labelFilesPaths + '\'' +
                 ", sizeInBytes=" + sizeInBytes +
                 ", inputSize=" + inputSize +
                 ", imageMean=" + imageMean +
                 ", imageStd=" + imageStd +
                 ", inputName='" + inputName + '\'' +
-                ", outputName='" + outputName + '\'' +
+                ", outputNames='" + outputNames + '\'' +
                 ", others='" + others + '\'' +
                 '}';
     }
@@ -192,13 +192,13 @@ public class Model implements Parcelable {
         dest.writeString(this.id);
         dest.writeInt(this.version);
         dest.writeString(this.modelPath);
-        dest.writeString(this.labelsPath);
+        dest.writeString(this.labelFilesPaths);
         dest.writeLong(this.sizeInBytes);
         dest.writeInt(this.inputSize);
         dest.writeInt(this.imageMean);
         dest.writeFloat(this.imageStd);
         dest.writeString(this.inputName);
-        dest.writeString(this.outputName);
+        dest.writeString(this.outputNames);
         dest.writeInt(this.others.size());
         for (Map.Entry<String, Parcelable> entry : this.others.entrySet()) {
             dest.writeString(entry.getKey());
@@ -210,13 +210,13 @@ public class Model implements Parcelable {
         this.id = in.readString();
         this.version = in.readInt();
         this.modelPath = in.readString();
-        this.labelsPath = in.readString();
+        this.labelFilesPaths = in.readString();
         this.sizeInBytes = in.readLong();
         this.inputSize = in.readInt();
         this.imageMean = in.readInt();
         this.imageStd = in.readFloat();
         this.inputName = in.readString();
-        this.outputName = in.readString();
+        this.outputNames = in.readString();
         int othersSize = in.readInt();
         this.others = new HashMap<>(othersSize);
         for (int i = 0; i < othersSize; i++) {
