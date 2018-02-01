@@ -23,7 +23,7 @@ sonarqube() {
          * should be removed. Same applies for libraries where parent classes
          * are required to understand how a class works and is used.
          */
-        def libraries = project.android.sdkDirectory.getPath() + "/platforms/android-25/android.jar,"
+        def libraries = project.android.sdkDirectory.getPath() + "/platforms/android-26/android.jar,"
 
         property "sonar.projectName", SONAR_PROJECT_NAME
         property "sonar.projectKey", SONAR_PROJECT_KEY
