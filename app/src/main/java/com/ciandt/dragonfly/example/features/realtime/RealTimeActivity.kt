@@ -334,10 +334,7 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
     override fun onSnapshotTaken(snapshot: DragonflyClassificationInput) {
         DragonflyLogger.debug(LOG_TAG, "onSnapshotTaken($snapshot)")
 
-        // FIXME: Temporary code to be able to use the app without full refactor
-        val fixMe = dragonFlyLens.lastClassifications.entries.first().value
-
-        intent = FeedbackActivity.newIntent(this, model, snapshot, true, fixMe)
+        intent = FeedbackActivity.newIntent(this, model, snapshot, true, dragonFlyLens.lastClassifications)
         startActivity(intent)
     }
 
@@ -351,10 +348,7 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
 
         DragonflyLogger.debug(LOG_TAG, "onUriAnalysisFinished($classifications)")
 
-        // FIXME: Temporary code to be able to use the app without full refactor
-        val fixMe = classifications.entries.first().value
-
-        intent = FeedbackActivity.newIntent(this, model, classificationInput, false, fixMe)
+        intent = FeedbackActivity.newIntent(this, model, classificationInput, false, classifications)
         startActivity(intent)
 
         showActionButtons()

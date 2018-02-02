@@ -13,4 +13,7 @@
     <dimen name="dragonfly_lens_labels_container_horizontal_margin">8dp</dimen>
     
     <dimen name="dragonfly_lens_label_percentage_min_width">64dp</dimen>
+
+    <dimen name="dragonfly_lens_feedback_labels_container_margin_top">16dp</dimen>
+    <dimen name="dragonfly_lens_feedback_labels_container_horizontal_margin">8dp</dimen>
 </resources>

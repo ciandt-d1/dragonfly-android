@@ -1,5 +1,6 @@
 package com.ciandt.dragonfly.example.features.feedback
 
+import android.support.v4.util.Pair
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.config.Tenant
@@ -20,7 +21,8 @@ class FeedbackPresenter(
         val saveImageToGalleryInteractor: SaveImageToGalleryContract.Interactor,
         val benchmarkInteractor: BenchmarkContract.Interactor
 ) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
-    private val results = ArrayList<Classifier.Classification>()
+    private val results = LinkedHashMap<String, ArrayList<Classifier.Classification>>()
+    private val oldResults = ArrayList<Classifier.Classification>()
     private var userFeedback: Feedback? = null
 
     init {
@@ -37,40 +39,62 @@ class FeedbackPresenter(
         }
     }
 
-    override fun setClassifications(classifications: List<Classifier.Classification>) {
 
-        results.clearAndAddAll(classifications)
+    override fun setClassifications(classifications: LinkedHashMap<String, ArrayList<Classifier.Classification>>) {
+        results.clear()
+        results.putAll(classifications)
 
-        if (results.isEmpty()) {
+        var labels: ArrayList<Pair<String, Int>> = ArrayList()
+
+        classifications.entries.forEach { entry ->
+
+            val list = entry.value
+            if (list.isEmpty()) {
+                return
+            }
+
+            if (!list[0].hasTitle()) {
+                return
+            }
+
+            labels.add(Pair.create(list[0].title, formatConfidence(list[0].confidence)))
+        }
+
+        view?.showMainClassifications(labels)
+
+
+        oldResults.clearAndAddAll(classifications.entries.first().value)
+
+        if (oldResults.isEmpty()) {
             view?.showNoClassifications()
             return
         }
 
         if (userFeedback == null) {
-            view?.showClassifications(results.head().title, results.tail())
+            view?.showClassifications(oldResults.head().title, oldResults.tail())
         } else {
             userFeedback!!.let {
                 if (it.isPositive()) {
-                    view?.showPositiveClassification(it.actualLabel, results.tail(), false)
+                    view?.showPositiveClassification(it.actualLabel, oldResults.tail(), false)
                 } else {
-                    view?.showNegativeClassification(it.actualLabel, results.tail())
+                    view?.showNegativeClassification(it.actualLabel, oldResults.tail())
                 }
             }
         }
     }
 
     override fun markAsPositive() {
-        view?.showPositiveClassification(results.head().title, results.tail())
+        view?.showPositiveClassification(oldResults.head().title, oldResults.tail())
 
-        saveFeedback(results.head().title, Feedback.POSITIVE)
+        saveFeedback(oldResults.head().title, Feedback.POSITIVE)
     }
 
     override fun markAsNegative() {
-        view?.showNegativeForm(results.tail())
+        view?.showNegativeForm(oldResults.tail())
     }
 
     override fun submitNegative(label: String) {
-        view?.showNegativeClassification(label, results.tail())
+        view?.showNegativeClassification(label, oldResults.tail())
 
         saveFeedback(label, Feedback.NEGATIVE)
     }
@@ -103,7 +127,7 @@ class FeedbackPresenter(
 
     private fun saveFeedback(label: String, value: Int) {
         val identifiedLabels = HashMap<String, Float>()
-        for (classification in results) {
+        for (classification in oldResults) {
             identifiedLabels.put(classification.title, classification.confidence)
         }
 
@@ -121,6 +145,10 @@ class FeedbackPresenter(
         view?.setUserFeedback(feedback)
 
         feedbackSaverInteractor.saveFeedback(feedback)
+    }
+
+    private fun formatConfidence(confidence: Float): Int {
+        return Math.round(confidence * 100)
     }
 
     companion object {
