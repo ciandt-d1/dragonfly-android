@@ -1,7 +1,5 @@
 package com.ciandt.dragonfly.lens.ui;
 
-import android.net.Uri;
-
 import com.ciandt.dragonfly.base.ui.BaseInteractorContract;
 import com.ciandt.dragonfly.base.ui.BasePresenterContract;
 import com.ciandt.dragonfly.base.ui.BaseViewContract;
@@ -14,7 +12,11 @@ import com.ciandt.dragonfly.lens.exception.DragonflyModelException;
 import com.ciandt.dragonfly.lens.exception.DragonflySnapshotException;
 import com.ciandt.dragonfly.tensorflow.Classifier;
 
+import android.net.Uri;
+import android.support.v4.util.Pair;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by iluz on 5/22/17.
@@ -32,15 +34,13 @@ public interface DragonflyLensRealTimeContract {
 
         void unloadModel();
 
-        List<Classifier.Classification> getLastClassifications();
+        Map<String, List<Classifier.Classification>> getLastClassifications();
 
-        void setLastClassifications(List<Classifier.Classification> classifications);
+        void setLastClassifications(Map<String, List<Classifier.Classification>> classifications);
 
         void setClassificationConfig(ClassificationConfig classificationConfig);
 
-        void setLabel(String label);
-
-        void setLabel(String label, int confidence);
+        void setLabels(List<Pair<String, Integer>> labels);
 
         void setOrientation(@Orientation.Mode int orientation);
 
@@ -50,7 +50,7 @@ public interface DragonflyLensRealTimeContract {
 
         void onModelLoadFailure(DragonflyModelException e);
 
-        void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, List<Classifier.Classification> classifications);
+        void onUriAnalyzed(Uri uri, DragonflyClassificationInput classificationInput, Map<String, List<Classifier.Classification>> classifications);
 
         void onUriAnalysisFailed(Uri uri, DragonflyClassificationException e);
 

@@ -198,12 +198,19 @@
         <item name="android:textSize">@dimen/dragonfly_lens_label_text_size</item>
         <item name="android:minLines">1</item>
         <item name="android:maxLines">1</item>
-        <item name="android:textAlignment">center</item>
+        <item name="android:gravity">center_vertical</item>
         <item name="android:paddingTop">@dimen/dragonfly_lens_label_vertical_padding</item>
         <item name="android:paddingBottom">@dimen/dragonfly_lens_label_vertical_padding</item>
         <item name="android:paddingLeft">@dimen/dragonfly_lens_label_horizontal_padding</item>
         <item name="android:paddingRight">@dimen/dragonfly_lens_label_horizontal_padding</item>
-        <item name="android:layout_marginTop">@dimen/dragonfly_lens_label_margin_top</item>
+        <item name="android:layout_marginRight">@dimen/dragonfly_lens_label_between_space</item>
+        <item name="android:layout_marginBottom">@dimen/dragonfly_lens_label_between_space</item>
+    </style>
+
+    <style name="Dragonfly.Lens.Label.Percentage" parent="Dragonfly.Lens.Label">
+        <item name="android:gravity">center_vertical|end</item>
+        <item name="android:minWidth">@dimen/dragonfly_lens_label_percentage_min_width</item>
+        <item name="android:layout_marginRight">0dp</item>
     </style>
 
     <style name="ChipView.Text" parent="TextAppearance.AppCompat">
