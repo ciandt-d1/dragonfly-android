@@ -95,6 +95,14 @@ class ChipAdapter(
         return items
     }
 
+    fun select(chip: Chip) {
+        val position = list.indexOf(chip)
+        if (position >= 0) {
+            selectedPositions.add(position)
+            notifyItemChanged(position)
+        }
+    }
+
     companion object {
         private val UNINITIALIZED_LAYOUT_RESOURCE = -1
     }

@@ -288,6 +288,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             val classificationsView = ClassificationsView(this)
             classificationsView.setTitle(entry.key)
             classificationsView.setChips(chips)
+            classificationsView.select(chips.first())
 
             otherPredictionsContainer.addView(classificationsView)
         }

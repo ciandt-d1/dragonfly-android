@@ -148,6 +148,10 @@ class ChipsView : RelativeLayout {
         return adapter.getSelectedItems()
     }
 
+    fun select(chip: Chip) {
+        adapter.select(chip)
+    }
+
     companion object {
         private val INVALID_RESOURCE = -1
         private val DEFAULT_EDGES_WIDTH = 16.toPx()
