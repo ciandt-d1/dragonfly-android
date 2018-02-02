@@ -7,11 +7,12 @@ import com.ciandt.dragonfly.example.R
 
 class ChipViewHolder(
         itemView: View,
-        val selectable: Boolean,
-        val onClick: (chip: Chip, activated: Boolean) -> Unit
+        private val onClick: (chip: Chip, activated: Boolean) -> Unit
 ) : RecyclerView.ViewHolder(itemView) {
 
-    fun bind(chip: Chip, selected: Boolean = false) = with(itemView.findViewById<Button>(R.id.chipButton)) {
+    fun bind(chip: Chip, selectable: Boolean = false, selected: Boolean = false) = with(itemView.findViewById<Button>(R.id.chipButton)) {
+
+        isClickable =  selectable
 
         text = chip.getText()
         isActivated = selected
@@ -21,6 +22,8 @@ class ChipViewHolder(
                 isActivated = !isActivated
                 onClick(chip, isActivated)
             }
+        } else {
+            setOnClickListener(null)
         }
     }
 }
