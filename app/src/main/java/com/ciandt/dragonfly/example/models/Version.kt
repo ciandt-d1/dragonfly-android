@@ -15,6 +15,7 @@ data class Version(
         var imageStd: Float = 0.0f,
         var inputName: String = "",
         var outputNames: String = "",
+        var outputDisplayNames: String = "",
         var downloadUrl: String = "",
         var createdAt: Long = 0L,
         var modelPath: String = "",
@@ -45,6 +46,7 @@ data class Version(
         model.imageStd = imageStd
         model.inputName = inputName
         model.setOutputNames(outputNames)
+        model.setOutputDisplayNames(outputDisplayNames)
         model.others = others
         return model
     }
@@ -56,6 +58,7 @@ data class Version(
             p.readInt(),
             p.readInt(),
             p.readFloat(),
+            p.readString(),
             p.readString(),
             p.readString(),
             p.readString(),
@@ -74,6 +77,7 @@ data class Version(
         writeFloat(imageStd)
         writeString(inputName)
         writeString(outputNames)
+        writeString(outputDisplayNames)
         writeString(downloadUrl)
         writeLong(createdAt)
         writeString(modelPath)

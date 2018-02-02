@@ -18,7 +18,7 @@ interface FeedbackContract {
 
         fun showNoClassifications()
 
-        fun showClassifications(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>)
+        fun showClassifications(classifications: Map<String, List<Classifier.Classification>>)
 
         fun showPositiveClassification(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>, collapseResults: Boolean = true)
 

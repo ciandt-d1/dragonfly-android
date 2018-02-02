@@ -277,26 +277,22 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         showSnackbar(R.string.feedback_no_classifications_found)
     }
 
-    override fun showClassifications(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>) {
-        showOtherClassifications(otherClassifications)
-        showFeedbackView()
-    }
+    override fun showClassifications(classifications: Map<String, List<Classifier.Classification>>) {
 
-    private fun showOtherClassifications(otherClassifications: List<Classifier.Classification>) {
-        if (otherClassifications.isEmpty()) {
-            otherPredictionsSeparator.visibility = View.GONE
-            otherPredictions.visibility = View.GONE
-        } else {
-            otherPredictionsSeparator.visibility = View.VISIBLE
-            otherPredictions.visibility = View.VISIBLE
+        otherPredictionsContainer.removeAllViews()
+        classifications.entries.forEach { entry ->
 
             val chips = ArrayList<FeedbackChip>()
-            otherClassifications.forEach {
-                chips.add(FeedbackChip(it))
-            }
+            entry.value.mapTo(chips, { FeedbackChip(it) })
 
-            otherPredictions.setChips(chips)
+            val classificationsView = ClassificationsView(this)
+            classificationsView.setTitle(entry.key)
+            classificationsView.setChips(chips)
+
+            otherPredictionsContainer.addView(classificationsView)
         }
+
+        showFeedbackView()
     }
 
     override fun showPositiveClassification(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>, collapseResults: Boolean) {
@@ -313,7 +309,6 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     override fun showNegativeClassification(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>) {
-        showOtherClassifications(otherClassifications)
         hideNegativeForm()
         showUnderRevision()
 

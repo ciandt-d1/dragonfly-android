@@ -23,6 +23,7 @@ public class Model implements Parcelable {
     private float imageStd = 0f;
     private String inputName = "";
     private String outputNames = "";
+    private String outputDisplayNames = "";
 
     private Map<String, Parcelable> others = new HashMap<>();
 
@@ -116,6 +117,15 @@ public class Model implements Parcelable {
         return this;
     }
 
+    public String[] getOutputDisplayNames() {
+        return outputDisplayNames.split(SEPARATOR);
+    }
+
+    public Model setOutputDisplayNames(String outputDisplayNames) {
+        this.outputDisplayNames = outputDisplayNames;
+        return this;
+    }
+
     public Map<String, Parcelable> getOthers() {
         return others;
     }
@@ -146,6 +156,8 @@ public class Model implements Parcelable {
             return false;
         if (outputNames != null ? !outputNames.equals(model.outputNames) : model.outputNames != null)
             return false;
+        if (outputDisplayNames != null ? !outputDisplayNames.equals(model.outputDisplayNames) : model.outputDisplayNames != null)
+            return false;
         return others != null ? others.equals(model.others) : model.others == null;
     }
 
@@ -161,6 +173,7 @@ public class Model implements Parcelable {
         result = 31 * result + (imageStd != +0.0f ? Float.floatToIntBits(imageStd) : 0);
         result = 31 * result + (inputName != null ? inputName.hashCode() : 0);
         result = 31 * result + (outputNames != null ? outputNames.hashCode() : 0);
+        result = 31 * result + (outputDisplayNames != null ? outputDisplayNames.hashCode() : 0);
         result = 31 * result + (others != null ? others.hashCode() : 0);
         return result;
     }
@@ -178,6 +191,7 @@ public class Model implements Parcelable {
                 ", imageStd=" + imageStd +
                 ", inputName='" + inputName + '\'' +
                 ", outputNames='" + outputNames + '\'' +
+                ", outputDisplayNames='" + outputDisplayNames + '\'' +
                 ", others='" + others + '\'' +
                 '}';
     }
@@ -199,6 +213,7 @@ public class Model implements Parcelable {
         dest.writeFloat(this.imageStd);
         dest.writeString(this.inputName);
         dest.writeString(this.outputNames);
+        dest.writeString(this.outputDisplayNames);
         dest.writeInt(this.others.size());
         for (Map.Entry<String, Parcelable> entry : this.others.entrySet()) {
             dest.writeString(entry.getKey());
@@ -217,6 +232,7 @@ public class Model implements Parcelable {
         this.imageStd = in.readFloat();
         this.inputName = in.readString();
         this.outputNames = in.readString();
+        this.outputDisplayNames = in.readString();
         int othersSize = in.readInt();
         this.others = new HashMap<>(othersSize);
         for (int i = 0; i < othersSize; i++) {

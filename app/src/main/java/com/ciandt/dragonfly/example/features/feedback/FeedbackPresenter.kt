@@ -71,7 +71,19 @@ class FeedbackPresenter(
         }
 
         if (userFeedback == null) {
-            view?.showClassifications(oldResults.head().title, oldResults.tail())
+
+            val displayResults = LinkedHashMap<String, ArrayList<Classifier.Classification>>()
+            results.forEach { (key, value) ->
+                val index = results.keys.indexOf(key)
+                val title = if (index >= 0) {
+                    model.outputDisplayNames[index]
+                } else {
+                    key
+                }
+                displayResults.put(title, value)
+            }
+
+            view?.showClassifications(displayResults)
         } else {
             userFeedback!!.let {
                 if (it.isPositive()) {

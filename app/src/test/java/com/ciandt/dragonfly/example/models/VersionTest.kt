@@ -30,6 +30,7 @@ class VersionTest {
                 128f,
                 "Mul",
                 "final_result",
+                "Display Name",
                 "gs://v1/projects/project-id/1.zip",
                 1489327402,
                 "project-id/1/model.pb",
@@ -44,6 +45,7 @@ class VersionTest {
                 .setImageStd(128f)
                 .setInputName("Mul")
                 .setOutputNames("final_result")
+                .setOutputDisplayNames("Display Name")
                 .setModelPath("project-id/1/model.pb")
                 .setLabelFilesPaths("project-id/1/model.txt")
 
