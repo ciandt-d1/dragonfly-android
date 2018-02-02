@@ -97,20 +97,22 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"/>
 
-            <View
-                android:id="@+id/servicesSeparator"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/feedback_result_line_height"
-                android:layout_marginLeft="@dimen/feedback_result_line_horizontal_margin"
-                android:layout_marginRight="@dimen/feedback_result_line_horizontal_margin"
-                android:background="@color/feedback_result_line"/>
-
             <LinearLayout
                 android:id="@+id/benchmarkContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="@dimen/feedback_benchmark_container_minimum_height"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <View
+                    android:id="@+id/servicesSeparator"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/feedback_result_line_height"
+                    android:layout_marginLeft="@dimen/feedback_result_line_horizontal_margin"
+                    android:layout_marginRight="@dimen/feedback_result_line_horizontal_margin"
+                    android:background="@color/feedback_result_line"/>
 
                 <Button
                     android:id="@+id/benchmarkButton"

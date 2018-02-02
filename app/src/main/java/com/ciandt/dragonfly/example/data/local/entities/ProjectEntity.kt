@@ -1,6 +1,10 @@
 package com.ciandt.dragonfly.example.data.local.entities
 
-import android.arch.persistence.room.*
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
+import android.arch.persistence.room.Index
+import android.arch.persistence.room.PrimaryKey
 
 @Entity(
         tableName = "projects",
@@ -22,5 +26,8 @@ data class ProjectEntity(
         @Ignore var versions: List<VersionEntity> = emptyList(),
 
         @ColumnInfo(name = "created_at")
-        var createdAt: Long = 0
+        var createdAt: Long = 0,
+
+        @ColumnInfo(name = "show_benchmark")
+        var showBenchmark: Boolean = false
 )

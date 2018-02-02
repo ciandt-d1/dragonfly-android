@@ -3,13 +3,16 @@ package com.ciandt.dragonfly.example.models
 import android.os.Parcel
 import com.ciandt.dragonfly.example.shared.KParcelable
 import com.ciandt.dragonfly.example.shared.parcelableCreator
+import com.ciandt.dragonfly.example.shared.readBoolean
+import com.ciandt.dragonfly.example.shared.writeBoolean
 
 data class Project(
         var id: String = "",
         var name: String = "",
         var description: String = "",
         var colors: List<String> = emptyList(),
-        var versions: MutableList<Version> = mutableListOf()
+        var versions: MutableList<Version> = mutableListOf(),
+        var showBenchmark: Boolean = false
 ) : KParcelable {
 
     fun hasAnyVersion(): Boolean {
@@ -61,7 +64,8 @@ data class Project(
             p.readString(),
             p.readString(),
             p.createStringArrayList(),
-            ArrayList<Version>().apply { p.readList(this, Version::class.java.classLoader) }
+            ArrayList<Version>().apply { p.readList(this, Version::class.java.classLoader) },
+            p.readBoolean()
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
@@ -70,6 +74,7 @@ data class Project(
         dest.writeString(description)
         dest.writeStringList(colors)
         dest.writeList(versions)
+        dest.writeBoolean(showBenchmark)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -83,6 +88,7 @@ data class Project(
 
     companion object {
 
-        @JvmField val CREATOR = parcelableCreator(::Project)
+        @JvmField
+        val CREATOR = parcelableCreator(::Project)
     }
 }
