@@ -71,4 +71,12 @@ class ClassificationsView : LinearLayout {
     fun setSelectable(selectable: Boolean) {
         chipsView.setSelectable(selectable)
     }
+
+    fun setSelectCallback(callback: ((Chip) -> Unit)?) {
+        chipsView.setSelectCallback(callback)
+    }
+
+    fun setDeselectCallback(callback: ((Chip) -> Unit)?) {
+        chipsView.setDeselectCallback(callback)
+    }
 }

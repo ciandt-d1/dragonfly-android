@@ -6,9 +6,6 @@ import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.config.Tenant
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
-import com.ciandt.dragonfly.example.infrastructure.extensions.clearAndAddAll
-import com.ciandt.dragonfly.example.infrastructure.extensions.head
-import com.ciandt.dragonfly.example.infrastructure.extensions.tail
 import com.ciandt.dragonfly.example.shared.BasePresenter
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.tensorflow.Classifier
@@ -62,14 +59,6 @@ class FeedbackPresenter(
 
         view?.showMainClassifications(labels)
 
-
-        oldResults.clearAndAddAll(classifications.entries.first().value)
-
-        if (oldResults.isEmpty()) {
-            view?.showNoClassifications()
-            return
-        }
-
         if (userFeedback == null) {
 
             val displayResults = LinkedHashMap<String, ArrayList<Classifier.Classification>>()
@@ -87,28 +76,28 @@ class FeedbackPresenter(
         } else {
             userFeedback!!.let {
                 if (it.isPositive()) {
-                    view?.showPositiveClassification(it.actualLabel, oldResults.tail(), false)
+                    view?.showPositiveClassification(false)
                 } else {
-                    view?.showNegativeClassification(it.actualLabel, oldResults.tail())
+                    view?.showNegativeClassification()
                 }
             }
         }
     }
 
     override fun markAsPositive() {
-        view?.showPositiveClassification(oldResults.head().title, oldResults.tail())
+        view?.showPositiveClassification()
 
-        saveFeedback(oldResults.head().title, Feedback.POSITIVE)
+//        saveFeedback(oldResults.head().title, Feedback.POSITIVE)
     }
 
     override fun markAsNegative() {
-        view?.showNegativeForm(oldResults.tail())
+        view?.showNegativeForm()
     }
 
-    override fun submitNegative(label: String) {
-        view?.showNegativeClassification(label, oldResults.tail())
+    override fun submitNegative(labels: List<String>) {
+        view?.showNegativeClassification()
 
-        saveFeedback(label, Feedback.NEGATIVE)
+//        saveFeedback(labels, Feedback.NEGATIVE)
     }
 
     override fun setUserFeedback(userFeedback: Feedback?) {

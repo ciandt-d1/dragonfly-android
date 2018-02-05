@@ -25,7 +25,6 @@
             android:layout_marginBottom="@dimen/feedback_result_text_vertical_margin"
             android:paddingStart="@dimen/feedback_result_text_padding_left"
             style="@style/Feedback.Result.Title"
-            android:text="@string/feedback_classification"
         />
 
         <ImageButton
@@ -176,29 +175,67 @@
             android:background="@color/feedback_result_line"
         />
 
-        <ImageView
-            android:id="@+id/arrow"
-            android:layout_width="@dimen/feedback_result_more_info_height"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/toggleButton"
-            android:layout_alignBottom="@+id/toggleButton"
-            android:layout_alignParentEnd="true"
-            android:contentDescription="@null"
-            android:scaleType="center"
-            android:src="@drawable/ic_arrow_up"
-        />
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/toggleButton"
+        <RelativeLayout
+            android:id="@+id/toggleContainer"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/feedback_result_more_info_height"
-            android:minHeight="@dimen/touchable_area_minimum_dimension"
-            android:paddingStart="@dimen/feedback_result_more_info_padding_left"
+            android:layout_height="wrap_content"
             android:layout_below="@id/moreInfoSeparator"
-            style="@style/Feedback.Result.MoreInfo"
-            android:gravity="center_vertical"
-            android:text="@string/feedback_more_info"
-        />
+            tools:visibility="gone">
+
+            <ImageView
+                android:id="@+id/arrow"
+                android:layout_width="@dimen/feedback_result_more_info_height"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/toggleButton"
+                android:layout_alignBottom="@+id/toggleButton"
+                android:layout_alignParentEnd="true"
+                android:contentDescription="@null"
+                android:scaleType="center"
+                android:src="@drawable/ic_arrow_up"
+            />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/toggleButton"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/feedback_result_more_info_height"
+                android:minHeight="@dimen/touchable_area_minimum_dimension"
+                android:paddingStart="@dimen/feedback_result_more_info_padding_left"
+                style="@style/Feedback.Result.MoreInfo"
+                android:gravity="center_vertical"
+                android:text="@string/feedback_more_info"
+            />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/negativeFormButtonsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/moreInfoSeparator"
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <Button
+                android:id="@+id/negativeFormCancelButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/touchable_area_minimum_dimension"
+                android:layout_marginEnd="@dimen/feedback_form_buttons_margin_right"
+                style="@style/Feedback.Form.CancelButton"
+                android:text="@string/feedback_form_button_cancel"
+            />
+
+            <Button
+                android:id="@+id/negativeFormConfirmButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/touchable_area_minimum_dimension"
+                android:layout_marginEnd="@dimen/feedback_form_buttons_margin_right"
+                style="@style/Feedback.Form.ConfirmButton"
+                android:enabled="false"
+                android:text="@string/feedback_form_button_confirm"
+            />
+
+        </LinearLayout>
 
     </RelativeLayout>
 
