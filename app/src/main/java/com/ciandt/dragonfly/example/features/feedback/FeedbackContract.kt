@@ -22,11 +22,11 @@ interface FeedbackContract {
 
         fun showPositiveClassification(collapseResults: Boolean = true)
 
-        fun showNegativeClassification()
+        fun showNegativeClassification(classifications: List<String>)
 
         fun showNegativeForm()
 
-        fun setUserFeedback(feedback: Feedback)
+        fun setUserFeedbackList(feedbackList: List<Feedback>)
 
         fun showSaveImageSuccessMessage(@StringRes message: Int)
 
@@ -51,7 +51,7 @@ interface FeedbackContract {
 
         fun submitNegative(labels: List<String>)
 
-        fun setUserFeedback(userFeedback: Feedback?)
+        fun setUserFeedbackList(userFeedbackList: List<Feedback>)
 
         fun saveImageToGallery()
 

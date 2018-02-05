@@ -18,6 +18,7 @@ class PendingFeedbackEntityToFeedbackMapper(val entity: PendingFeedbackEntitiy) 
                 project = entity.project,
                 userId = entity.userId,
                 modelVersion = entity.modelVersion,
+                modelOutputName = entity.modelOutputName,
                 value = entity.modelVersion,
                 actualLabel = entity.actualLabel,
                 identifiedLabels = scoreByLabelMap,

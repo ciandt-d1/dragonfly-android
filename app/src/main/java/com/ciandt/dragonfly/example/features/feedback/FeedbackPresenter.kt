@@ -6,6 +6,7 @@ import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.config.Tenant
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.infrastructure.DragonflyLogger
+import com.ciandt.dragonfly.example.infrastructure.extensions.clearAndAddAll
 import com.ciandt.dragonfly.example.shared.BasePresenter
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput
 import com.ciandt.dragonfly.tensorflow.Classifier
@@ -19,12 +20,11 @@ class FeedbackPresenter(
         val benchmarkInteractor: BenchmarkContract.Interactor
 ) : BasePresenter<FeedbackContract.View>(), FeedbackContract.Presenter {
     private val results = LinkedHashMap<String, ArrayList<Classifier.Classification>>()
-    private val oldResults = ArrayList<Classifier.Classification>()
-    private var userFeedback: Feedback? = null
+    private var userFeedbacks = ArrayList<Feedback>()
 
     init {
         feedbackSaverInteractor.setOnFeedbackSavedCallback { feedback ->
-            DragonflyLogger.debug(LOG_TAG, "setUserFeedback(${feedback})")
+            DragonflyLogger.debug(LOG_TAG, "setUserFeedbackList(${feedback})")
         }
 
         saveImageToGalleryInteractor.setOnSaveImageSuccessCallback {
@@ -59,35 +59,41 @@ class FeedbackPresenter(
 
         view?.showMainClassifications(labels)
 
-        if (userFeedback == null) {
-
-            val displayResults = LinkedHashMap<String, ArrayList<Classifier.Classification>>()
-            results.forEach { (key, value) ->
-                val index = results.keys.indexOf(key)
-                val title = if (index >= 0) {
-                    model.outputDisplayNames[index]
-                } else {
-                    key
-                }
-                displayResults.put(title, value)
-            }
-
-            view?.showClassifications(displayResults)
-        } else {
-            userFeedback!!.let {
-                if (it.isPositive()) {
-                    view?.showPositiveClassification(false)
-                } else {
-                    view?.showNegativeClassification()
-                }
+        if (userFeedbacks.isNotEmpty()) {
+            if (userFeedbacks.none { it.isNegative() }) {
+                view?.showPositiveClassification(false)
+            } else {
+                view?.showNegativeClassification(userFeedbacks.map { it.actualLabel })
             }
         }
+
+        showClassifications()
+    }
+
+    private fun showClassifications() {
+        val displayResults = LinkedHashMap<String, ArrayList<Classifier.Classification>>()
+        results.forEach { (key, value) ->
+            val index = results.keys.indexOf(key)
+            val title = if (index >= 0) {
+                model.outputDisplayNames[index]
+            } else {
+                key
+            }
+            displayResults.put(title, value)
+        }
+
+        view?.showClassifications(displayResults)
     }
 
     override fun markAsPositive() {
         view?.showPositiveClassification()
 
-//        saveFeedback(oldResults.head().title, Feedback.POSITIVE)
+        val labels = ArrayList<String>()
+        results.forEach { (_, classifications) ->
+            labels.add(classifications.first().title)
+        }
+
+        saveFeedback(labels)
     }
 
     override fun markAsNegative() {
@@ -95,13 +101,13 @@ class FeedbackPresenter(
     }
 
     override fun submitNegative(labels: List<String>) {
-        view?.showNegativeClassification()
+        view?.showNegativeClassification(labels)
 
-//        saveFeedback(labels, Feedback.NEGATIVE)
+        saveFeedback(labels)
     }
 
-    override fun setUserFeedback(userFeedback: Feedback?) {
-        this.userFeedback = userFeedback
+    override fun setUserFeedbackList(userFeedbackList: List<Feedback>) {
+        this.userFeedbacks.clearAndAddAll(userFeedbackList)
     }
 
     override fun saveImageToGallery() {
@@ -126,26 +132,38 @@ class FeedbackPresenter(
         )
     }
 
-    private fun saveFeedback(label: String, value: Int) {
-        val identifiedLabels = HashMap<String, Float>()
-        for (classification in oldResults) {
-            identifiedLabels.put(classification.title, classification.confidence)
+    private fun saveFeedback(labels: List<String>) {
+
+        val feedbackList = ArrayList<Feedback>()
+
+        results.forEach { (outputName, classifications) ->
+            val identifiedLabels = LinkedHashMap<String, Float>()
+            for (classification in classifications) {
+                identifiedLabels.put(classification.title, classification.confidence)
+            }
+
+            val index = results.keys.indexOf(outputName)
+            val actualLabel = labels[index]
+            val positive = if (classifications.first().title == actualLabel) 1 else 0
+
+            val feedback = Feedback(
+                    tenant = Tenant.ID,
+                    project = model.id,
+                    userId = userId,
+                    modelVersion = model.version,
+                    modelOutputName = outputName,
+                    value = positive,
+                    actualLabel = actualLabel,
+                    identifiedLabels = identifiedLabels,
+                    imageLocalPath = classificationInput.imagePath
+            )
+
+            feedbackList.add(feedback)
+            feedbackSaverInteractor.saveFeedback(feedback)
         }
 
-        val feedback = Feedback(
-                tenant = Tenant.ID,
-                project = model.id,
-                userId = userId,
-                modelVersion = model.version,
-                value = value,
-                actualLabel = label,
-                identifiedLabels = identifiedLabels,
-                imageLocalPath = classificationInput.imagePath
-        )
-
-        view?.setUserFeedback(feedback)
-
-        feedbackSaverInteractor.saveFeedback(feedback)
+        view?.setUserFeedbackList(feedbackList)
+        showClassifications()
     }
 
     private fun formatConfidence(confidence: Float): Int {

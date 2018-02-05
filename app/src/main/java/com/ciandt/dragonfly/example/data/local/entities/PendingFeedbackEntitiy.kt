@@ -1,6 +1,10 @@
 package com.ciandt.dragonfly.example.data.local.entities
 
-import android.arch.persistence.room.*
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
+import android.arch.persistence.room.Index
+import android.arch.persistence.room.PrimaryKey
 
 @Entity(
         tableName = "pending_feedback",
@@ -21,6 +25,9 @@ data class PendingFeedbackEntitiy(
 
         @ColumnInfo(name = "model_version")
         var modelVersion: Int = 0,
+
+        @ColumnInfo(name = "model_output_name")
+        var modelOutputName: String = "",
 
         @ColumnInfo(name = "value")
         var value: Int = 0,

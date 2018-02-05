@@ -22,6 +22,7 @@ class FeedbackToPendingFeedbackEntityMapper(val feedback: Feedback) : Mapper<Pen
                 project = feedback.project,
                 userId = feedback.userId,
                 modelVersion = feedback.modelVersion,
+                modelOutputName = feedback.modelOutputName,
                 value = feedback.value,
                 actualLabel = feedback.actualLabel,
                 identifiedLabels = identifiedLabels,
