@@ -31,6 +31,7 @@ class VersionTest {
                 "Mul",
                 "final_result",
                 "Display Name",
+                "false",
                 "gs://v1/projects/project-id/1.zip",
                 1489327402,
                 "project-id/1/model.pb",
@@ -46,6 +47,7 @@ class VersionTest {
                 .setInputName("Mul")
                 .setOutputNames("final_result")
                 .setOutputDisplayNames("Display Name")
+                .setClosedSet("false")
                 .setModelPath("project-id/1/model.pb")
                 .setLabelFilesPaths("project-id/1/model.txt")
 
