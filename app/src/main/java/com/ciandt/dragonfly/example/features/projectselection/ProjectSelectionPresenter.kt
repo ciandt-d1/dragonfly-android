@@ -1,10 +1,10 @@
 package com.ciandt.dragonfly.example.features.projectselection
 
-import android.os.Bundle
 import com.ciandt.dragonfly.example.infrastructure.extensions.replace
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.models.Version
 import com.ciandt.dragonfly.example.shared.BasePresenter
+import java.io.Serializable
 
 class ProjectSelectionPresenter(private val interactor: ProjectSelectionContract.Interactor) : BasePresenter<ProjectSelectionContract.View>(), ProjectSelectionContract.Presenter {
 
@@ -68,8 +68,8 @@ class ProjectSelectionPresenter(private val interactor: ProjectSelectionContract
         if (project.hasDownloadedVersion()) {
             val version = project.getLastDownloadedVersion()!!
 
-            val others = Bundle()
-            others.putBoolean("benchmark", project.showBenchmark)
+            val others = HashMap<String, Serializable>()
+            others.put("benchmark", project.showBenchmark)
             view?.run(version.toLibraryModel(others), project.name)
         }
     }

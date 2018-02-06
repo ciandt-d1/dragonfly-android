@@ -175,7 +175,11 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     private fun setupBenchmarkButtons() {
-        val showBenchmark = model.others.getBoolean("benchmark", false)
+        val showBenchmark = if (model.others.contains("benchmark")) {
+            model.others["benchmark"] as Boolean
+        } else {
+            false
+        }
         benchmarkContainer.visibility = if (showBenchmark) View.VISIBLE else View.GONE
 
         benchmarkButton.setOnClickListener {
