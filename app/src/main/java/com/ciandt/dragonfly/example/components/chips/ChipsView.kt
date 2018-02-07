@@ -133,6 +133,26 @@ class ChipsView : RelativeLayout {
         adapter.notifyDataSetChanged()
     }
 
+    fun addChip(index: Int, chip: Chip) {
+        chips.add(index, chip)
+        adapter.notifyItemInserted(index)
+    }
+
+    fun removeChip(index: Int) {
+        chips.removeAt(index)
+        adapter.notifyItemRemoved(index)
+    }
+
+    fun removeChip(chip: Chip) {
+        val index = chips.indexOf(chip)
+        chips.remove(chip)
+        adapter.notifyItemRemoved(index)
+    }
+
+    fun getChips(): ArrayList<Chip> {
+        return ArrayList(chips)
+    }
+
     fun setSelectCallback(callback: ((Chip) -> Unit)?) {
         selectCallback = callback
     }

@@ -279,10 +279,10 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         otherPredictionsContainer.removeAllViews()
         classifications.entries.forEach { entry ->
 
+            val index = classifications.entries.indexOf(entry)
+
             val chips = ArrayList<FeedbackChip>()
             entry.value.mapTo(chips, { FeedbackChip(it) })
-
-            val index = classifications.entries.indexOf(entry)
 
             val classificationsView = ClassificationsView(this)
             classificationsView.tag = index
@@ -328,20 +328,32 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         (0 until otherPredictionsContainer.childCount)
                 .map { otherPredictionsContainer.getChildAt(it) as? ClassificationsView }
                 .forEach { classificationView ->
-                    classificationView?.setSelectable(true)
+                    if (classificationView == null) {
+                        return@forEach
+                    }
 
-                    classificationView?.setSelectCallback {
+                    classificationView.setSelectable(true)
+
+                    if (model.closedSet[classificationView.tag as Int].toBoolean()) {
+                        classificationView.addChip(classificationView.getChips().size, FeedbackChip.createOther("jean"))
+                    }
+
+                    classificationView.setSelectCallback {
                         currentClassifications.put(classificationView.tag as Int, it)
                         if (currentClassifications != initialClassifications && currentClassifications.size == initialClassifications.size) {
                             enableNegativeFormConfirm()
                         } else {
                             disableNegativeFormConfirm()
                         }
+
+                        println("currentClassifications = $currentClassifications")
                     }
 
-                    classificationView?.setDeselectCallback {
-                        currentClassifications.remove(classificationView.tag)
+                    classificationView.setDeselectCallback {
+                        currentClassifications.remove(classificationView.tag as Int)
                         disableNegativeFormConfirm()
+
+                        println("currentClassifications = $currentClassifications")
                     }
                 }
 
@@ -369,6 +381,12 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                     it?.setSelectable(false)
                     it?.deselectAll()
                     it?.select(0)
+
+                    if (model.closedSet[it?.tag as Int].toBoolean()) {
+                        it.removeChip(it.getChips().size - 1)
+                    }
+
+                    currentClassifications.put(it.tag as Int, it.getChips().first())
                 }
 
         disableNegativeFormConfirm()
