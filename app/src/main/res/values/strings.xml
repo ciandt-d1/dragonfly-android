@@ -82,7 +82,7 @@
     <string name="feedback_under_revision">Under Revision</string>
     <string name="feedback_is_something_wrong">Help us improve</string>
     <string name="feedback_choose_option">Choose a more accurate prediction for this image:</string>
-    <string name="feedback_form_hint_or">or type a new one in here</string>
+    <string name="feedback_form_hint_or">Type a new one in here</string>
     <string name="feedback_form_hint">Type here your prediction</string>
     <string name="feedback_form_button_cancel">CANCEL</string>
     <string name="feedback_form_button_confirm">SUBMIT</string>

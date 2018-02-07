@@ -305,6 +305,19 @@
         <item name="android:textColor">@drawable/confirm_button_selector</item>
     </style>
 
+    <style name="Feedback.Form.NegativeFormCancelButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/feedback_negative_form_cancel</item>
+        <item name="android:paddingLeft">@dimen/feedback_form_buttons_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/feedback_form_buttons_horizontal_padding</item>
+    </style>
+
+    <style name="Feedback.Form.NegativeFormConfirmButton" parent="Feedback.Form.CancelButton">
+        <item name="android:textColor">@drawable/negative_form_confirm_button_selector</item>
+    </style>
+
     <style name="Feedback.Benchmark.Button" parent="AppTheme.Button"/>
     <style name="Feedback.Benchmark.ButtonRetry" parent="AppTheme.Button"/>
 

@@ -93,12 +93,12 @@
 
     <dimen name="feedback_form_chips_margin_top">8dp</dimen>
 
-    <dimen name="feedback_form_input_margin_top">24dp</dimen>
+    <dimen name="feedback_form_input_margin_top">12dp</dimen>
     <dimen name="feedback_form_input_horizontal_margin">16dp</dimen>
     <dimen name="feedback_form_input_text_margin_top">28dp</dimen>
     <dimen name="feedback_form_input_text_margin_bottom">4dp</dimen>
 
-    <dimen name="feedback_form_buttons_margin_top">24dp</dimen>
+    <dimen name="feedback_form_buttons_margin_top">12dp</dimen>
     <dimen name="feedback_form_buttons_margin_right">4dp</dimen>
     <dimen name="feedback_form_buttons_horizontal_padding">16dp</dimen>
 

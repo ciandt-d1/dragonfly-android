@@ -9,7 +9,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.annotation.StringRes
 import android.support.v4.content.ContextCompat
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.ViewTarget
@@ -227,11 +231,11 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
     private fun setupNegativeFeedbackView() {
         negativeFormCancelButton.setOnClickListener {
-            hideNegativeForm()
+            hideNegativeForm(true)
         }
 
         negativeFormConfirmButton.setOnClickListener {
-            hideNegativeForm()
+            hideNegativeForm(false)
             val selectedItems = ArrayList<String>()
             currentClassifications.forEach { (_, chip) ->
                 if (chip is FeedbackChip) {
@@ -240,6 +244,32 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             }
             presenter.submitNegative(selectedItems)
             collapseResults()
+        }
+
+        input.setText("")
+        input.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                getRootView().hideSoftInputView()
+                return@OnEditorActionListener true
+            }
+            false
+        })
+
+        input.setOnTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (s?.isBlank() ?: true) {
+                    disableConfirm()
+                } else {
+                    enableConfirm()
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+        cancelButton.setOnClickListener {
+            hideNegativeFormInput()
         }
     }
 
@@ -334,26 +364,29 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
                     classificationView.setSelectable(true)
 
-                    if (model.closedSet[classificationView.tag as Int].toBoolean()) {
-                        classificationView.addChip(classificationView.getChips().size, FeedbackChip.createOther("jean"))
+                    val index = classificationView.tag as Int
+
+                    if (model.closedSet[index].toBoolean()) {
+                        classificationView.addChip(classificationView.getChips().size, FeedbackChip.createOther(OTHER_TITLE))
                     }
 
                     classificationView.setSelectCallback {
-                        currentClassifications.put(classificationView.tag as Int, it)
+
+                        if ((it as FeedbackChip).isOther()) {
+                            showNegativeFormInput(index, it, classificationView)
+                        }
+
+                        currentClassifications.put(index, it)
                         if (currentClassifications != initialClassifications && currentClassifications.size == initialClassifications.size) {
                             enableNegativeFormConfirm()
                         } else {
                             disableNegativeFormConfirm()
                         }
-
-                        println("currentClassifications = $currentClassifications")
                     }
 
                     classificationView.setDeselectCallback {
                         currentClassifications.remove(classificationView.tag as Int)
                         disableNegativeFormConfirm()
-
-                        println("currentClassifications = $currentClassifications")
                     }
                 }
 
@@ -371,7 +404,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         negativeFormConfirmButton.isEnabled = false
     }
 
-    private fun hideNegativeForm() {
+    private fun hideNegativeForm(reset: Boolean = true) {
         positiveButton.visibility = View.VISIBLE
         negativeButton.isEnabled = true
 
@@ -379,14 +412,16 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                 .map { otherPredictionsContainer.getChildAt(it) as? ClassificationsView }
                 .forEach {
                     it?.setSelectable(false)
-                    it?.deselectAll()
-                    it?.select(0)
+                    if (reset) {
+                        it?.deselectAll()
+                        it?.select(0)
 
-                    if (model.closedSet[it?.tag as Int].toBoolean()) {
-                        it.removeChip(it.getChips().size - 1)
+                        if (model.closedSet[it?.tag as Int].toBoolean()) {
+                            it.removeChip(it.getChips().size - 1)
+                        }
+
+                        currentClassifications.put(it.tag as Int, it.getChips().first())
                     }
-
-                    currentClassifications.put(it.tag as Int, it.getChips().first())
                 }
 
         disableNegativeFormConfirm()
@@ -420,6 +455,25 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
     private fun disableConfirm() {
         confirmButton.isEnabled = false
+    }
+
+    private fun showNegativeFormInput(index: Int, chip: FeedbackChip, view: ClassificationsView) {
+        input.setText(if (chip.getText() != OTHER_TITLE) {
+            chip.getText()
+        } else {
+            ""
+        })
+        feedbackView.visibility = View.GONE
+        feedbackFormView.visibility = View.VISIBLE
+
+        confirmButton.setOnClickListener {
+            val newChip = FeedbackChip.createOther(input.getText())
+            view.removeChip(chip)
+            view.addChip(view.getChips().size, newChip)
+
+            currentClassifications.put(index, newChip)
+            hideNegativeFormInput()
+        }
     }
 
     private fun hideNegativeFormInput() {
@@ -553,6 +607,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         private val CLASSIFICATIONS_BUNDLE = String.format("%s.classifications", BuildConfig.APPLICATION_ID)
         private val USER_FEEDBACK_LIST = String.format("%s.user_feedback_list", BuildConfig.APPLICATION_ID)
 
+        private val OTHER_TITLE = "other"
         fun newIntent(context: Context, model: Model, classificationInput: DragonflyClassificationInput, allowSavingToGallery: Boolean, classifications: Map<String, List<Classifier.Classification>>): Intent {
             val intent = Intent(context, FeedbackActivity::class.java)
             intent.putExtra(MODEL_BUNDLE, model)
