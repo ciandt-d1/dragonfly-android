@@ -88,7 +88,7 @@
     <string name="feedback_form_button_confirm">SUBMIT</string>
     <string name="feedback_negative_form_button_confirm">SEND FEEDBACK</string>
     <string name="feedback_no_classifications_found">No classifications found.</string>
-
+    <string name="feedback_thanks">Thank you for your submission</string>
     <string name="feedback_save_image_success">Photo saved successfully.</string>
     <string name="feedback_save_image_error">Something was wrong. Please try again.</string>
 

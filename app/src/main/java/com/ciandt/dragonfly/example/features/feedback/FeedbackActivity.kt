@@ -296,7 +296,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     override fun showMainClassifications(labels: List<android.support.v4.util.Pair<String, Int>>) {
-        result.text = resources.getQuantityString(R.plurals.feedback_classification, labels.size)
+        showDefaultMessage()
         dragonFlyLensFeedbackView.setLabels(labels)
     }
 
@@ -340,6 +340,8 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         positiveButton.isActivated = true
         negativeButton.isActivated = false
 
+        showThanksMessage()
+
         if (collapseResults) {
             collapseResults()
         }
@@ -349,12 +351,14 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         negativeClassifications.clearAndAddAll(classifications)
         hideNegativeFormInput()
         showUnderRevision()
+        showThanksMessage()
     }
 
     override fun showNegativeForm() {
         positiveButton.visibility = View.GONE
         negativeButton.isEnabled = false
         negativeButton.isActivated = true
+        showDefaultMessage()
 
         (0 until otherPredictionsContainer.childCount)
                 .map { otherPredictionsContainer.getChildAt(it) as? ClassificationsView }
@@ -409,6 +413,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         positiveButton.visibility = View.VISIBLE
         negativeButton.isEnabled = true
         negativeButton.isActivated = false
+        showDefaultMessage()
 
         (0 until otherPredictionsContainer.childCount)
                 .map { otherPredictionsContainer.getChildAt(it) as? ClassificationsView }
@@ -597,6 +602,14 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                         feedbackView.isClickable = true
                     }
                 })
+    }
+
+    private fun showThanksMessage() {
+        result.text = getString(R.string.feedback_thanks)
+    }
+
+    private fun showDefaultMessage() {
+        result.text = resources.getQuantityString(R.plurals.feedback_classification, classifications.size)
     }
 
     companion object {
