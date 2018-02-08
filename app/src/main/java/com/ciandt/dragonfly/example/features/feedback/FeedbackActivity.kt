@@ -319,17 +319,17 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             classificationsView.setTitle(entry.key)
             classificationsView.setChips(chips)
 
-            var select: FeedbackChip = chips.first()
+            var toSelect: FeedbackChip = chips.first()
             chips.forEach {
                 if (negativeClassifications.size == classifications.size && it.classification.title == negativeClassifications[index]) {
-                    select = it
+                    toSelect = it
                 }
             }
-            classificationsView.select(select)
+            classificationsView.select(toSelect)
 
             otherPredictionsContainer.addView(classificationsView)
 
-            currentClassifications.put(index, select)
+            currentClassifications.put(index, toSelect)
         }
 
         showFeedbackView()
