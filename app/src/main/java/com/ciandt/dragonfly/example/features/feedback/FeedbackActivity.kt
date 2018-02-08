@@ -354,6 +354,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     override fun showNegativeForm() {
         positiveButton.visibility = View.GONE
         negativeButton.isEnabled = false
+        negativeButton.isActivated = true
 
         (0 until otherPredictionsContainer.childCount)
                 .map { otherPredictionsContainer.getChildAt(it) as? ClassificationsView }
@@ -407,6 +408,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     private fun hideNegativeForm(reset: Boolean = true) {
         positiveButton.visibility = View.VISIBLE
         negativeButton.isEnabled = true
+        negativeButton.isActivated = false
 
         (0 until otherPredictionsContainer.childCount)
                 .map { otherPredictionsContainer.getChildAt(it) as? ClassificationsView }
