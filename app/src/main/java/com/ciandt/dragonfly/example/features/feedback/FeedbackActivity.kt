@@ -366,7 +366,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
                     val index = classificationView.tag as Int
 
-                    if (model.closedSet[index].toBoolean()) {
+                    if (!model.closedSet[index].toBoolean()) {
                         classificationView.addChip(classificationView.getChips().size, FeedbackChip.createOther(OTHER_TITLE))
                     }
 
@@ -416,7 +416,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                         it?.deselectAll()
                         it?.select(0)
 
-                        if (model.closedSet[it?.tag as Int].toBoolean()) {
+                        if (!model.closedSet[it?.tag as Int].toBoolean()) {
                             it.removeChip(it.getChips().size - 1)
                         }
 
