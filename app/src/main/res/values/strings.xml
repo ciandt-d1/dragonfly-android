@@ -86,6 +86,7 @@
     <string name="feedback_form_hint">Type here your prediction</string>
     <string name="feedback_form_button_cancel">CANCEL</string>
     <string name="feedback_form_button_confirm">SUBMIT</string>
+    <string name="feedback_negative_form_button_confirm">SEND FEEDBACK</string>
     <string name="feedback_no_classifications_found">No classifications found.</string>
 
     <string name="feedback_save_image_success">Photo saved successfully.</string>
