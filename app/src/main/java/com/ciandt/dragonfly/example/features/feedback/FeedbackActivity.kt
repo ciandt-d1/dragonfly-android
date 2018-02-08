@@ -385,29 +385,32 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
                         currentClassifications.put(index, it)
                         if (currentClassifications != initialClassifications && currentClassifications.size == initialClassifications.size) {
-                            enableNegativeFormConfirm()
+                            enableNegativeFormConfirmButton()
                         } else {
-                            disableNegativeFormConfirm()
+                            disableNegativeFormConfirmButton()
                         }
                     }
 
                     classificationView.setDeselectCallback {
                         currentClassifications.remove(classificationView.tag as Int)
-                        disableNegativeFormConfirm()
+                        disableNegativeFormConfirmButton()
                     }
                 }
 
-        toggleContainer.visibility = View.GONE
+        toggleButton.visibility = View.GONE
+        arrow.visibility = View.GONE
         negativeFormButtonsContainer.visibility = View.VISIBLE
 
-        expandResults()
+        if (chipsContainer.visibility != View.VISIBLE) {
+            expandResults()
+        }
     }
 
-    private fun enableNegativeFormConfirm() {
+    private fun enableNegativeFormConfirmButton() {
         negativeFormConfirmButton.isEnabled = true
     }
 
-    private fun disableNegativeFormConfirm() {
+    private fun disableNegativeFormConfirmButton() {
         negativeFormConfirmButton.isEnabled = false
     }
 
@@ -434,9 +437,10 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                     }
                 }
 
-        disableNegativeFormConfirm()
+        disableNegativeFormConfirmButton()
         negativeFormButtonsContainer.visibility = View.GONE
-        toggleContainer.visibility = View.VISIBLE
+        toggleButton.visibility = View.VISIBLE
+        arrow.visibility = View.VISIBLE
     }
 
     override fun setUserFeedbackList(feedbackList: List<Feedback>) {
