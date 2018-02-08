@@ -355,7 +355,9 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     override fun showNegativeForm() {
-        positiveButton.visibility = View.GONE
+        positiveButton.isEnabled = false
+        positiveButton.isActivated = false
+        positiveButton.alpha = 0.5f
         negativeButton.isEnabled = false
         negativeButton.isActivated = true
         showDefaultMessage()
@@ -410,7 +412,8 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     private fun hideNegativeForm(reset: Boolean = true) {
-        positiveButton.visibility = View.VISIBLE
+        positiveButton.isEnabled = true
+        positiveButton.alpha = 1f
         negativeButton.isEnabled = true
         negativeButton.isActivated = false
         showDefaultMessage()
