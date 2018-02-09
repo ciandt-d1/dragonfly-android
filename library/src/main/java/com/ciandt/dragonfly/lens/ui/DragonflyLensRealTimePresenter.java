@@ -193,7 +193,9 @@ public class DragonflyLensRealTimePresenter extends AbstractPresenter<DragonflyL
 
     @Override
     public void takeSnapshot() {
-        view.captureCameraFrame();
+        if (hasViewAttached()) {
+            view.captureCameraFrame();
+        }
     }
 
     @Override
