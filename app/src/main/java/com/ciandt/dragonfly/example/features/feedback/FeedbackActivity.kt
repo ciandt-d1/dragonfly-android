@@ -23,6 +23,7 @@ import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.components.chips.Chip
 import com.ciandt.dragonfly.example.components.classifications.ClassificationsView
+import com.ciandt.dragonfly.example.config.Benchmark
 import com.ciandt.dragonfly.example.config.PermissionsMapping
 import com.ciandt.dragonfly.example.data.DatabaseManager
 import com.ciandt.dragonfly.example.data.PendingFeedbackRepository
@@ -187,8 +188,8 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     private fun setupBenchmarkButtons() {
-        val showBenchmark = if (model.others.contains("benchmark")) {
-            model.others["benchmark"] as Boolean
+        val showBenchmark = if (model.others.contains(Benchmark.SHOW_BENCHMARK)) {
+            model.others[Benchmark.SHOW_BENCHMARK] as Boolean
         } else {
             false
         }
@@ -321,7 +322,8 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
             var toSelect: FeedbackChip = chips.first()
             chips.forEach {
-                if (negativeClassifications.size == classifications.size && it.classification.title == negativeClassifications[index]) {
+                val isSelected = negativeClassifications.size == classifications.size && it.classification.title == negativeClassifications[index]
+                if (isSelected) {
                     toSelect = it
                 }
             }

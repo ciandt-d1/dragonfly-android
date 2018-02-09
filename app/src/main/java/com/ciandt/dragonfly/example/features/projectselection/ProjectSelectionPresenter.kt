@@ -1,5 +1,6 @@
 package com.ciandt.dragonfly.example.features.projectselection
 
+import com.ciandt.dragonfly.example.config.Benchmark
 import com.ciandt.dragonfly.example.infrastructure.extensions.replace
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.models.Version
@@ -69,7 +70,7 @@ class ProjectSelectionPresenter(private val interactor: ProjectSelectionContract
             val version = project.getLastDownloadedVersion()!!
 
             val others = HashMap<String, Serializable>()
-            others.put("benchmark", project.showBenchmark)
+            others.put(Benchmark.SHOW_BENCHMARK, project.showBenchmark)
             view?.run(version.toLibraryModel(others), project.name)
         }
     }
