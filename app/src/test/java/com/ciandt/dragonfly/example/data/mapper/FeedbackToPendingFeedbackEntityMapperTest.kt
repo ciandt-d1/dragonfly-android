@@ -17,6 +17,7 @@ class FeedbackToPendingFeedbackEntityMapperTest {
                 project = "flowers",
                 userId = "567",
                 modelVersion = 1,
+                modelOutputName = "output",
                 value = 1,
                 actualLabel = "keyboard",
                 identifiedLabels = mapOf(
@@ -38,6 +39,7 @@ class FeedbackToPendingFeedbackEntityMapperTest {
             feedback.project.shouldEqualTo(it.project)
             feedback.userId.shouldEqualTo(it.userId)
             feedback.modelVersion.shouldEqualTo(it.modelVersion)
+            feedback.modelOutputName.shouldEqualTo(it.modelOutputName)
             feedback.value.shouldEqualTo(it.value)
             feedback.actualLabel.shouldEqualTo(it.actualLabel)
             feedback.imageLocalPath.shouldEqualTo(it.imageLocalPath)

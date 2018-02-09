@@ -9,11 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.annotation.StringRes
 import android.support.v4.content.ContextCompat
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.ViewTarget
@@ -21,12 +17,14 @@ import com.bumptech.glide.request.transition.Transition
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.BuildConfig
 import com.ciandt.dragonfly.example.R
+import com.ciandt.dragonfly.example.components.chips.Chip
 import com.ciandt.dragonfly.example.components.classifications.ClassificationsView
 import com.ciandt.dragonfly.example.config.PermissionsMapping
 import com.ciandt.dragonfly.example.data.DatabaseManager
 import com.ciandt.dragonfly.example.data.PendingFeedbackRepository
 import com.ciandt.dragonfly.example.features.feedback.model.BenchmarkResult
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
+import com.ciandt.dragonfly.example.infrastructure.extensions.clearAndAddAll
 import com.ciandt.dragonfly.example.infrastructure.extensions.getRootView
 import com.ciandt.dragonfly.example.infrastructure.extensions.hideSoftInputView
 import com.ciandt.dragonfly.example.infrastructure.extensions.showSnackbar
@@ -51,15 +49,22 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     private lateinit var classificationInput: DragonflyClassificationInput
     private lateinit var model: Model
     private var allowSaveToGallery: Boolean = false
-    private var userFeedback: Feedback? = null
+    private val userFeedbackList = ArrayList<Feedback>()
 
     private val classifications: LinkedHashMap<String, ArrayList<Classifier.Classification>> = LinkedHashMap()
+
+    private val initialClassifications: LinkedHashMap<Int, Chip> = LinkedHashMap()
+    private val currentClassifications: LinkedHashMap<Int, Chip> = LinkedHashMap()
+    private val negativeClassifications: ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feedback)
 
-        userFeedback = savedInstanceState?.getParcelable(USER_FEEDBACK)
+        val feedbackList: ArrayList<Feedback>? = savedInstanceState?.getParcelableArrayList(USER_FEEDBACK_LIST)
+        feedbackList?.let {
+            userFeedbackList.clearAndAddAll(it)
+        }
 
         model = intent.extras.getParcelable(MODEL_BUNDLE)
         classificationInput = intent.extras.getParcelable(CLASSIFICATION_INPUT_BUNDLE)
@@ -69,6 +74,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         model.outputNames.forEach { key ->
             values[key]?.let { value ->
                 classifications.put(key, value)
+                initialClassifications.put(model.outputNames.indexOf(key), FeedbackChip(value.first()))
             }
         }
 
@@ -81,9 +87,11 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                 saveImageToGalleryInteractor,
                 benchmarkInteractor)
 
-        presenter.attachView(this)
-        presenter.setUserFeedback(userFeedback)
-        presenter.setClassifications(classifications)
+        presenter.apply {
+            attachView(this@FeedbackActivity)
+            setUserFeedbackList(userFeedbackList)
+            setClassifications(classifications)
+        }
 
         setupBackButton()
         setupBenchmarkButtons()
@@ -175,7 +183,11 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     private fun setupBenchmarkButtons() {
-        val showBenchmark = model.others.getBoolean("benchmark", false)
+        val showBenchmark = if (model.others.contains("benchmark")) {
+            model.others["benchmark"] as Boolean
+        } else {
+            false
+        }
         benchmarkContainer.visibility = if (showBenchmark) View.VISIBLE else View.GONE
 
         benchmarkButton.setOnClickListener {
@@ -214,39 +226,20 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     private fun setupNegativeFeedbackView() {
-        input.setText("")
-        input.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                getRootView().hideSoftInputView()
-                return@OnEditorActionListener true
-            }
-            false
-        })
-
-        input.setOnTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.isBlank() ?: true) {
-                    disableConfirm()
-                } else {
-                    enableConfirm()
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
-
-        cancelButton.setOnClickListener {
+        negativeFormCancelButton.setOnClickListener {
             hideNegativeForm()
         }
 
-        confirmButton.setOnClickListener {
-            val selected = formChipsViews.getSelectedItems().firstOrNull()
-            if (selected != null && selected is FeedbackChip) {
-                presenter.submitNegative(selected.classification.title)
-            } else {
-                presenter.submitNegative(input.getText())
+        negativeFormConfirmButton.setOnClickListener {
+            hideNegativeForm()
+            val selectedItems = ArrayList<String>()
+            currentClassifications.forEach { (_, chip) ->
+                if (chip is FeedbackChip) {
+                    selectedItems.add(chip.classification.title)
+                }
             }
+            presenter.submitNegative(selectedItems)
+            collapseResults()
         }
     }
 
@@ -254,7 +247,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         super.onResume()
         presenter.apply {
             attachView(this@FeedbackActivity)
-            setUserFeedback(userFeedback)
+            setUserFeedbackList(userFeedbackList)
             setClassifications(classifications)
         }
     }
@@ -268,11 +261,12 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         super.onSaveInstanceState(outState)
 
         outState?.apply {
-            putParcelable(USER_FEEDBACK, userFeedback)
+            putParcelableArrayList(USER_FEEDBACK_LIST, userFeedbackList)
         }
     }
 
     override fun showMainClassifications(labels: List<android.support.v4.util.Pair<String, Int>>) {
+        result.text = resources.getQuantityString(R.plurals.feedback_classification, labels.size)
         dragonFlyLensFeedbackView.setLabels(labels)
     }
 
@@ -288,72 +282,102 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
             val chips = ArrayList<FeedbackChip>()
             entry.value.mapTo(chips, { FeedbackChip(it) })
 
+            val index = classifications.entries.indexOf(entry)
+
             val classificationsView = ClassificationsView(this)
+            classificationsView.tag = index
             classificationsView.setTitle(entry.key)
             classificationsView.setChips(chips)
-            classificationsView.select(chips.first())
+
+            var select: FeedbackChip = chips.first()
+            chips.forEach {
+                if (negativeClassifications.size == classifications.size && it.classification.title == negativeClassifications[index]) {
+                    select = it
+                }
+            }
+            classificationsView.select(select)
 
             otherPredictionsContainer.addView(classificationsView)
+
+            currentClassifications.put(index, select)
         }
 
         showFeedbackView()
     }
 
-    override fun showPositiveClassification(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>, collapseResults: Boolean) {
+    override fun showPositiveClassification(collapseResults: Boolean) {
         positiveButton.isEnabled = false
         positiveButton.isActivated = true
         negativeButton.isActivated = false
-
-        result.text = mainClassificationLabel
-        result.setTextColor(ContextCompat.getColor(this, R.color.feedback_submitted))
 
         if (collapseResults) {
             collapseResults()
         }
     }
 
-    override fun showNegativeClassification(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>) {
-        hideNegativeForm()
+    override fun showNegativeClassification(classifications: List<String>) {
+        negativeClassifications.clearAndAddAll(classifications)
+        hideNegativeFormInput()
         showUnderRevision()
-
-        result.text = mainClassificationLabel
-        result.setTextColor(ContextCompat.getColor(this, R.color.feedback_submitted))
     }
 
-    override fun showNegativeForm(otherClassifications: List<Classifier.Classification>) {
+    override fun showNegativeForm() {
+        positiveButton.visibility = View.GONE
+        negativeButton.isEnabled = false
 
-        val chips = ArrayList<FeedbackChip>()
-        otherClassifications.forEach {
-            chips.add(FeedbackChip(it))
-        }
+        (0 until otherPredictionsContainer.childCount)
+                .map { otherPredictionsContainer.getChildAt(it) as? ClassificationsView }
+                .forEach { classificationView ->
+                    classificationView?.setSelectable(true)
 
-        if (chips.isEmpty()) {
+                    classificationView?.setSelectCallback {
+                        currentClassifications.put(classificationView.tag as Int, it)
+                        if (currentClassifications != initialClassifications && currentClassifications.size == initialClassifications.size) {
+                            enableNegativeFormConfirm()
+                        } else {
+                            disableNegativeFormConfirm()
+                        }
+                    }
 
-            formChipsLabel.visibility = View.GONE
-            formChipsViews.visibility = View.GONE
-            input.setHint(getString(R.string.feedback_form_hint))
+                    classificationView?.setDeselectCallback {
+                        currentClassifications.remove(classificationView.tag)
+                        disableNegativeFormConfirm()
+                    }
+                }
 
-        } else {
+        toggleContainer.visibility = View.GONE
+        negativeFormButtonsContainer.visibility = View.VISIBLE
 
-            formChipsViews.setChips(chips)
-
-            formChipsViews.setSelectCallback { _ ->
-                disableInput()
-                enableConfirm()
-            }
-
-            formChipsViews.setDeselectCallback { _ ->
-                enableInput()
-                disableConfirm()
-            }
-        }
-
-        feedbackView.visibility = View.GONE
-        feedbackFormView.visibility = View.VISIBLE
+        expandResults()
     }
 
-    override fun setUserFeedback(feedback: Feedback) {
-        userFeedback = feedback
+    private fun enableNegativeFormConfirm() {
+        negativeFormConfirmButton.isEnabled = true
+    }
+
+    private fun disableNegativeFormConfirm() {
+        negativeFormConfirmButton.isEnabled = false
+    }
+
+    private fun hideNegativeForm() {
+        positiveButton.visibility = View.VISIBLE
+        negativeButton.isEnabled = true
+
+        (0 until otherPredictionsContainer.childCount)
+                .map { otherPredictionsContainer.getChildAt(it) as? ClassificationsView }
+                .forEach {
+                    it?.setSelectable(false)
+                    it?.deselectAll()
+                    it?.select(0)
+                }
+
+        disableNegativeFormConfirm()
+        negativeFormButtonsContainer.visibility = View.GONE
+        toggleContainer.visibility = View.VISIBLE
+    }
+
+    override fun setUserFeedbackList(feedbackList: List<Feedback>) {
+        userFeedbackList.clearAndAddAll(feedbackList)
     }
 
     private fun showUnderRevision() {
@@ -380,7 +404,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         confirmButton.isEnabled = false
     }
 
-    private fun hideNegativeForm() {
+    private fun hideNegativeFormInput() {
         getRootView().hideSoftInputView()
 
         // wait for the keyboard to disappear to show the view, otherwise a flicking occurs.
@@ -509,7 +533,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         private val CLASSIFICATION_INPUT_BUNDLE = String.format("%s.classification_input", BuildConfig.APPLICATION_ID)
         private val ALLOW_SAVE_TO_GALLERY_BUNDLE = String.format("%s.allow_save_to_gallery", BuildConfig.APPLICATION_ID)
         private val CLASSIFICATIONS_BUNDLE = String.format("%s.classifications", BuildConfig.APPLICATION_ID)
-        private val USER_FEEDBACK = String.format("%s.user_feedback", BuildConfig.APPLICATION_ID)
+        private val USER_FEEDBACK_LIST = String.format("%s.user_feedback_list", BuildConfig.APPLICATION_ID)
 
         fun newIntent(context: Context, model: Model, classificationInput: DragonflyClassificationInput, allowSavingToGallery: Boolean, classifications: Map<String, List<Classifier.Classification>>): Intent {
             val intent = Intent(context, FeedbackActivity::class.java)

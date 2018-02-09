@@ -37,7 +37,7 @@ class ChipsView : RelativeLayout {
         initializeAttributes(attrs)
     }
 
-    fun initializeViews(context: Context) {
+    private fun initializeViews(context: Context) {
 
         val inflater = context.getLayoutInflaterService()
         inflater.inflate(R.layout.component_chips_view, this)
@@ -58,7 +58,7 @@ class ChipsView : RelativeLayout {
         recyclerView.hasFixedSize()
     }
 
-    fun initializeAttributes(attrs: AttributeSet) {
+    private fun initializeAttributes(attrs: AttributeSet) {
 
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ChipsView, 0, 0)
         try {
@@ -120,6 +120,7 @@ class ChipsView : RelativeLayout {
 
     fun setSelectable(selectable: Boolean) {
         adapter.setSelectable(selectable)
+        adapter.notifyDataSetChanged()
     }
 
     fun setMultipleSelection(multipleSelection: Boolean) {
@@ -150,6 +151,14 @@ class ChipsView : RelativeLayout {
 
     fun select(chip: Chip) {
         adapter.select(chip)
+    }
+
+    fun select(position: Int) {
+        adapter.select(position)
+    }
+
+    fun deselectAll() {
+        adapter.deselectAll()
     }
 
     companion object {

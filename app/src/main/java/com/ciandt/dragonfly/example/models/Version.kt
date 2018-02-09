@@ -1,10 +1,10 @@
 package com.ciandt.dragonfly.example.models
 
-import android.os.Bundle
 import android.os.Parcel
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.shared.KParcelable
 import com.ciandt.dragonfly.example.shared.parcelableCreator
+import java.io.Serializable
 
 data class Version(
         var project: String = "",
@@ -35,7 +35,7 @@ data class Version(
         return status == STATUS_DOWNLOADED
     }
 
-    fun toLibraryModel(others: Bundle = Bundle()): Model {
+    fun toLibraryModel(others: HashMap<String, Serializable> = HashMap()): Model {
         val model = Model("$project/$version")
         model.version = version
         model.modelPath = modelPath
@@ -100,6 +100,7 @@ data class Version(
         val STATUS_DOWNLOADING = 1
         val STATUS_DOWNLOADED = 2
 
-        @JvmField val CREATOR = parcelableCreator(::Version)
+        @JvmField
+        val CREATOR = parcelableCreator(::Version)
     }
 }

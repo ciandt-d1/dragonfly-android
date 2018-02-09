@@ -200,6 +200,7 @@ class ProjectSelectionPresenterTest {
         }
 
         val libraryModel = Model("downloaded/0")
+        libraryModel.others.put("benchmark", project.showBenchmark)
 
         presenter.run(project)
 

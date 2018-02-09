@@ -1,8 +1,10 @@
 package com.ciandt.dragonfly.data.model;
 
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.io.Serializable;
+import java.util.HashMap;
 
 public class Model implements Parcelable {
 
@@ -23,7 +25,8 @@ public class Model implements Parcelable {
     private String outputNames = "";
     private String outputDisplayNames = "";
 
-    private Bundle others = new Bundle();
+    private HashMap<String, Serializable> others = new HashMap<>();
+
 
     public Model(String id) {
         this.id = id;
@@ -123,11 +126,11 @@ public class Model implements Parcelable {
         return this;
     }
 
-    public Bundle getOthers() {
+    public HashMap<String, Serializable> getOthers() {
         return others;
     }
 
-    public Model setOthers(Bundle others) {
+    public Model setOthers(HashMap<String, Serializable> others) {
         this.others = others;
         return this;
     }
@@ -212,7 +215,7 @@ public class Model implements Parcelable {
         dest.writeString(this.inputName);
         dest.writeString(this.outputNames);
         dest.writeString(this.outputDisplayNames);
-        dest.writeBundle(this.others);
+        dest.writeSerializable(this.others);
     }
 
     protected Model(Parcel in) {
@@ -227,7 +230,7 @@ public class Model implements Parcelable {
         this.inputName = in.readString();
         this.outputNames = in.readString();
         this.outputDisplayNames = in.readString();
-        this.others = in.readBundle();
+        this.others = (HashMap<String, Serializable>) in.readSerializable();
     }
 
     public static final Creator<Model> CREATOR = new Creator<Model>() {
