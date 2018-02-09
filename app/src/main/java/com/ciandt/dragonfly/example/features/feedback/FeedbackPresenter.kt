@@ -146,6 +146,11 @@ class FeedbackPresenter(
             val actualLabel = labels[index]
             val positive = if (classifications.first().title == actualLabel) 1 else 0
 
+            val isOther = classifications.none { it.title == actualLabel }
+            if (isOther) {
+                results[outputName]?.add(createOtherClassification(actualLabel))
+            }
+
             val feedback = Feedback(
                     tenant = Tenant.ID,
                     project = model.id,
@@ -164,6 +169,10 @@ class FeedbackPresenter(
 
         view?.setUserFeedbackList(feedbackList)
         showClassifications()
+    }
+
+    private fun createOtherClassification(actualLabel: String): Classifier.Classification {
+        return FeedbackChip.createOtherClassification(actualLabel)
     }
 
     private fun formatConfidence(confidence: Float): Int {

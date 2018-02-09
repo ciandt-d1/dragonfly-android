@@ -221,7 +221,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/touchable_area_minimum_dimension"
                 android:layout_marginEnd="@dimen/feedback_form_buttons_margin_right"
-                style="@style/Feedback.Form.CancelButton"
+                style="@style/Feedback.Form.NegativeFormCancelButton"
                 android:text="@string/feedback_form_button_cancel"
             />
 
@@ -230,7 +230,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/touchable_area_minimum_dimension"
                 android:layout_marginEnd="@dimen/feedback_form_buttons_margin_right"
-                style="@style/Feedback.Form.ConfirmButton"
+                style="@style/Feedback.Form.NegativeFormConfirmButton"
                 android:enabled="false"
                 android:text="@string/feedback_form_button_confirm"
             />

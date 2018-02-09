@@ -40,6 +40,9 @@ data class VersionEntity(
         @ColumnInfo(name = "output_display_names")
         var outputDisplayNames: String = "",
 
+        @ColumnInfo(name = "closed_set")
+        var closedSet: String = "",
+
         @ColumnInfo(name = "download_url")
         var downloadUrl: String = "",
 

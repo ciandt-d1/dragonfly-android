@@ -56,6 +56,22 @@ class ClassificationsView : LinearLayout {
         chipsView.setChips(chips)
     }
 
+    fun addChip(index: Int, chip: Chip) {
+        chipsView.addChip(index, chip)
+    }
+
+    fun removeChip(index: Int) {
+        chipsView.removeChip(index)
+    }
+
+    fun removeChip(chip: Chip) {
+        chipsView.removeChip(chip)
+    }
+
+    fun getChips(): List<Chip> {
+        return chipsView.getChips()
+    }
+
     fun select(chip: Chip) {
         chipsView.select(chip)
     }

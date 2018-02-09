@@ -24,6 +24,7 @@ public class Model implements Parcelable {
     private String inputName = "";
     private String outputNames = "";
     private String outputDisplayNames = "";
+    private String closedSet = "";
 
     private HashMap<String, Serializable> others = new HashMap<>();
 
@@ -126,6 +127,15 @@ public class Model implements Parcelable {
         return this;
     }
 
+    public String[] getClosedSet() {
+        return closedSet.split(SEPARATOR);
+    }
+
+    public Model setClosedSet(String closedSet) {
+        this.closedSet = closedSet;
+        return this;
+    }
+
     public HashMap<String, Serializable> getOthers() {
         return others;
     }
@@ -158,6 +168,8 @@ public class Model implements Parcelable {
             return false;
         if (outputDisplayNames != null ? !outputDisplayNames.equals(model.outputDisplayNames) : model.outputDisplayNames != null)
             return false;
+        if (closedSet != null ? !closedSet.equals(model.closedSet) : model.closedSet != null)
+            return false;
         return others != null ? others.equals(model.others) : model.others == null;
     }
 
@@ -174,6 +186,7 @@ public class Model implements Parcelable {
         result = 31 * result + (inputName != null ? inputName.hashCode() : 0);
         result = 31 * result + (outputNames != null ? outputNames.hashCode() : 0);
         result = 31 * result + (outputDisplayNames != null ? outputDisplayNames.hashCode() : 0);
+        result = 31 * result + (closedSet != null ? closedSet.hashCode() : 0);
         result = 31 * result + (others != null ? others.hashCode() : 0);
         return result;
     }
@@ -192,6 +205,7 @@ public class Model implements Parcelable {
                 ", inputName='" + inputName + '\'' +
                 ", outputNames='" + outputNames + '\'' +
                 ", outputDisplayNames='" + outputDisplayNames + '\'' +
+                ", closedSet='" + closedSet + '\'' +
                 ", others='" + others + '\'' +
                 '}';
     }
@@ -215,6 +229,7 @@ public class Model implements Parcelable {
         dest.writeString(this.inputName);
         dest.writeString(this.outputNames);
         dest.writeString(this.outputDisplayNames);
+        dest.writeString(this.closedSet);
         dest.writeSerializable(this.others);
     }
 
@@ -230,6 +245,7 @@ public class Model implements Parcelable {
         this.inputName = in.readString();
         this.outputNames = in.readString();
         this.outputDisplayNames = in.readString();
+        this.closedSet = in.readString();
         this.others = (HashMap<String, Serializable>) in.readSerializable();
     }
 

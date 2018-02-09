@@ -16,6 +16,7 @@ data class Version(
         var inputName: String = "",
         var outputNames: String = "",
         var outputDisplayNames: String = "",
+        var closedSet: String = "",
         var downloadUrl: String = "",
         var createdAt: Long = 0L,
         var modelPath: String = "",
@@ -47,6 +48,7 @@ data class Version(
         model.inputName = inputName
         model.setOutputNames(outputNames)
         model.setOutputDisplayNames(outputDisplayNames)
+        model.setClosedSet(closedSet)
         model.others = others
         return model
     }
@@ -58,6 +60,7 @@ data class Version(
             p.readInt(),
             p.readInt(),
             p.readFloat(),
+            p.readString(),
             p.readString(),
             p.readString(),
             p.readString(),
@@ -78,6 +81,7 @@ data class Version(
         writeString(inputName)
         writeString(outputNames)
         writeString(outputDisplayNames)
+        writeString(closedSet)
         writeString(downloadUrl)
         writeLong(createdAt)
         writeString(modelPath)
