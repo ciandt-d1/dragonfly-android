@@ -232,7 +232,7 @@
                 android:layout_marginEnd="@dimen/feedback_form_buttons_margin_right"
                 style="@style/Feedback.Form.NegativeFormConfirmButton"
                 android:enabled="false"
-                android:text="@string/feedback_form_button_confirm"
+                android:text="@string/feedback_negative_form_button_confirm"
             />
 
         </LinearLayout>

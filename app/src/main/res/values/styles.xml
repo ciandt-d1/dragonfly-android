@@ -237,7 +237,7 @@
     <style name="Feedback.Result.Title" parent="TextAppearance.AppCompat">
         <item name="fontPath">fonts/Roboto-Medium.ttf</item>
         <item name="android:textColor">@color/feedback_result_title</item>
-        <item name="android:textSize">17sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="Feedback.Result.UnderRevision" parent="TextAppearance.AppCompat">

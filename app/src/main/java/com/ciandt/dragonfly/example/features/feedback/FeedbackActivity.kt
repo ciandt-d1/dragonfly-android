@@ -297,7 +297,7 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
     }
 
     override fun showMainClassifications(labels: List<android.support.v4.util.Pair<String, Int>>) {
-        result.text = resources.getQuantityString(R.plurals.feedback_classification, labels.size)
+        showDefaultMessage()
         dragonFlyLensFeedbackView.setLabels(labels)
     }
 
@@ -342,6 +342,8 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         positiveButton.isActivated = true
         negativeButton.isActivated = false
 
+        showThanksMessage()
+
         if (collapseResults) {
             collapseResults()
         }
@@ -351,11 +353,16 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
         negativeClassifications.clearAndAddAll(classifications)
         hideNegativeFormInput()
         showUnderRevision()
+        showThanksMessage()
     }
 
     override fun showNegativeForm() {
-        positiveButton.visibility = View.GONE
+        positiveButton.isEnabled = false
+        positiveButton.isActivated = false
+        positiveButton.alpha = 0.5f
         negativeButton.isEnabled = false
+        negativeButton.isActivated = true
+        showDefaultMessage()
 
         (0 until otherPredictionsContainer.childCount)
                 .map { otherPredictionsContainer.getChildAt(it) as? ClassificationsView }
@@ -380,35 +387,41 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
 
                         currentClassifications.put(index, it)
                         if (currentClassifications != initialClassifications && currentClassifications.size == initialClassifications.size) {
-                            enableNegativeFormConfirm()
+                            enableNegativeFormConfirmButton()
                         } else {
-                            disableNegativeFormConfirm()
+                            disableNegativeFormConfirmButton()
                         }
                     }
 
                     classificationView.setDeselectCallback {
                         currentClassifications.remove(classificationView.tag as Int)
-                        disableNegativeFormConfirm()
+                        disableNegativeFormConfirmButton()
                     }
                 }
 
-        toggleContainer.visibility = View.GONE
+        toggleButton.visibility = View.GONE
+        arrow.visibility = View.GONE
         negativeFormButtonsContainer.visibility = View.VISIBLE
 
-        expandResults()
+        if (chipsContainer.visibility != View.VISIBLE) {
+            expandResults()
+        }
     }
 
-    private fun enableNegativeFormConfirm() {
+    private fun enableNegativeFormConfirmButton() {
         negativeFormConfirmButton.isEnabled = true
     }
 
-    private fun disableNegativeFormConfirm() {
+    private fun disableNegativeFormConfirmButton() {
         negativeFormConfirmButton.isEnabled = false
     }
 
     private fun hideNegativeForm(reset: Boolean = true) {
-        positiveButton.visibility = View.VISIBLE
+        positiveButton.isEnabled = true
+        positiveButton.alpha = 1f
         negativeButton.isEnabled = true
+        negativeButton.isActivated = false
+        showDefaultMessage()
 
         (0 until otherPredictionsContainer.childCount)
                 .map { otherPredictionsContainer.getChildAt(it) as? ClassificationsView }
@@ -426,9 +439,10 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                     }
                 }
 
-        disableNegativeFormConfirm()
+        disableNegativeFormConfirmButton()
         negativeFormButtonsContainer.visibility = View.GONE
-        toggleContainer.visibility = View.VISIBLE
+        toggleButton.visibility = View.VISIBLE
+        arrow.visibility = View.VISIBLE
     }
 
     override fun setUserFeedbackList(feedbackList: List<Feedback>) {
@@ -597,6 +611,14 @@ class FeedbackActivity : BaseActivity(), FeedbackContract.View {
                         feedbackView.isClickable = true
                     }
                 })
+    }
+
+    private fun showThanksMessage() {
+        result.text = getString(R.string.feedback_thanks)
+    }
+
+    private fun showDefaultMessage() {
+        result.text = resources.getQuantityString(R.plurals.feedback_classification, classifications.size)
     }
 
     companion object {
