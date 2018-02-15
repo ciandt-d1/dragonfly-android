@@ -2,7 +2,8 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
        xmlns:tools="http://schemas.android.com/tools"
        android:layout_width="match_parent"
-       android:layout_height="match_parent">
+       android:layout_height="match_parent"
+       tools:parentTag="android.widget.RelativeLayout">
 
     <ImageView android:id="@+id/previewImageView"
                android:layout_width="match_parent"
@@ -21,13 +22,12 @@
                tools:tint="@android:color/white"
                tools:visibility="visible"/>
 
-    <TextView android:id="@+id/dragonflyLensLabelView"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              style="@style/Dragonfly.Lens.Label"
-              android:background="@drawable/dragonfly_label_background"
-              android:layout_gravity="center"
-              android:visibility="gone"
-              tools:text="Hammer 25%"
-              tools:visibility="visible"/>
+    <LinearLayout
+        android:id="@+id/dragonflyLensLabelsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dragonfly_lens_feedback_labels_container_margin_top"
+        android:layout_marginLeft="@dimen/dragonfly_lens_feedback_labels_container_horizontal_margin"
+        android:layout_marginRight="@dimen/dragonfly_lens_feedback_labels_container_horizontal_margin"
+        android:orientation="vertical"/>
 </merge>

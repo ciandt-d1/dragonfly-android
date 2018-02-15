@@ -4,6 +4,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.R
 import com.ciandt.dragonfly.example.data.DatabaseManager
 import com.ciandt.dragonfly.example.data.ProjectRepository
@@ -65,15 +66,17 @@ object DownloadHelper {
         ZipHelper.unzip(inputStream, path,
                 onSuccess = { files ->
 
-                    val labelsPath = files.filter { it.contains(".txt", true) }.firstOrNull()
-                    val modelPath = files.filter { it.contains(".pb", true) }.firstOrNull()
+                    val outputs = version.outputNames.split(",")
 
-                    if (labelsPath == null || modelPath == null) {
-                        onFailure(RuntimeException("Downloaded version does not contain .txt file or .pb file"))
+                    val labelFilesPaths = outputs.mapNotNull { version -> files.firstOrNull { it.contains("$version.txt", ignoreCase = true) } }
+                    val modelPath = files.firstOrNull { it.contains(".pb", true) }
+
+                    if (labelFilesPaths.size != outputs.size || modelPath == null) {
+                        onFailure(RuntimeException("Downloaded version does not contain all .txt file or .pb file"))
                         return@unzip
                     }
 
-                    version.labelsPath = labelsPath
+                    version.labelFilesPaths = labelFilesPaths.joinToString(Model.SEPARATOR)
                     version.modelPath = modelPath
                     version.status = Version.STATUS_DOWNLOADED
 

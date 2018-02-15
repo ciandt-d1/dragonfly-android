@@ -34,8 +34,14 @@ data class VersionEntity(
         @ColumnInfo(name = "input_name")
         var inputName: String = "",
 
-        @ColumnInfo(name = "output_name")
-        var outputName: String = "",
+        @ColumnInfo(name = "output_names")
+        var outputNames: String = "",
+
+        @ColumnInfo(name = "output_display_names")
+        var outputDisplayNames: String = "",
+
+        @ColumnInfo(name = "closed_set")
+        var closedSet: String = "",
 
         @ColumnInfo(name = "download_url")
         var downloadUrl: String = "",
@@ -46,8 +52,8 @@ data class VersionEntity(
         @ColumnInfo(name = "model_path")
         var modelPath: String = "",
 
-        @ColumnInfo(name = "labels_path")
-        var labelsPath: String = "",
+        @ColumnInfo(name = "labels_files_paths")
+        var labelFilesPaths: String = "",
 
         @ColumnInfo(name = "status")
         var status: Int = 0

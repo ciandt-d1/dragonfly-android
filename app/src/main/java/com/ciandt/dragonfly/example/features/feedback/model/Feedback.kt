@@ -17,6 +17,7 @@ data class Feedback(
         var project: String = "",
         var userId: String = "",
         var modelVersion: Int = 0,
+        var modelOutputName: String = "",
         var value: Int = 0,
         var actualLabel: String = "",
         var identifiedLabels: Map<String, Float> = mapOf(),
@@ -35,7 +36,7 @@ data class Feedback(
     fun isNegative() = value == NEGATIVE
 
     override fun toString(): String {
-        return "Feedback(key=${key} tenant='$tenant', project='$project', userId='$userId', modelVersion=$modelVersion, value=$value, actualLabel='$actualLabel', identifiedLabels=$identifiedLabels, imageLocalPath='$imageLocalPath', imageGcsPath=$imageGcsPath, uploadToGcsFinished=$uploadToGcsFinished, createdAt=$createdAt, tenantUserProject=$tenantUserProject), userAgent=${userAgent}"
+        return "Feedback(key=$key, tenant='$tenant', project='$project', userId='$userId', modelVersion=$modelVersion, modelOutputName='$modelOutputName', value=$value, actualLabel='$actualLabel', identifiedLabels=$identifiedLabels, imageLocalPath='$imageLocalPath', imageGcsPath=$imageGcsPath, uploadToGcsFinished=$uploadToGcsFinished, createdAt=$createdAt, tenantUserProject=$tenantUserProject, userAgent='$userAgent')"
     }
 
     companion object {
@@ -43,7 +44,8 @@ data class Feedback(
 
         val NEGATIVE = 0
 
-        @JvmField val CREATOR: Parcelable.Creator<Feedback> = object : Parcelable.Creator<Feedback> {
+        @JvmField
+        val CREATOR: Parcelable.Creator<Feedback> = object : Parcelable.Creator<Feedback> {
             override fun createFromParcel(source: Parcel): Feedback = Feedback(source)
             override fun newArray(size: Int): Array<Feedback?> = arrayOfNulls(size)
         }
@@ -65,6 +67,7 @@ data class Feedback(
             source.readString(),
             source.readString(),
             source.readInt(),
+            source.readString(),
             source.readInt(),
             source.readString(),
             identifiedLabelsBundleToMap(source.readBundle()),
@@ -84,6 +87,7 @@ data class Feedback(
         dest.writeString(project)
         dest.writeString(userId)
         dest.writeInt(modelVersion)
+        dest.writeString(modelOutputName)
         dest.writeInt(value)
         dest.writeString(actualLabel)
 

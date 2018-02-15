@@ -1,9 +1,11 @@
 package com.ciandt.dragonfly.example.features.projectselection
 
+import com.ciandt.dragonfly.example.config.Benchmark
 import com.ciandt.dragonfly.example.infrastructure.extensions.replace
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.models.Version
 import com.ciandt.dragonfly.example.shared.BasePresenter
+import java.io.Serializable
 
 class ProjectSelectionPresenter(private val interactor: ProjectSelectionContract.Interactor) : BasePresenter<ProjectSelectionContract.View>(), ProjectSelectionContract.Presenter {
 
@@ -67,7 +69,9 @@ class ProjectSelectionPresenter(private val interactor: ProjectSelectionContract
         if (project.hasDownloadedVersion()) {
             val version = project.getLastDownloadedVersion()!!
 
-            view?.run(version.toLibraryModel(), project.name)
+            val others = HashMap<String, Serializable>()
+            others.put(Benchmark.SHOW_BENCHMARK, project.showBenchmark)
+            view?.run(version.toLibraryModel(others), project.name)
         }
     }
 

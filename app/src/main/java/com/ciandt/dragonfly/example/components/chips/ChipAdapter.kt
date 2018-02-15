@@ -30,7 +30,7 @@ class ChipAdapter(
         view.findViewById<Button?>(R.id.chipButton) ?:
                 throw IllegalArgumentException("Layout for item should contain a Button with id = R.id.chipButton")
 
-        return ChipViewHolder(view, selectable) { chip, activated ->
+        return ChipViewHolder(view) { chip, activated ->
 
             val index = list.indexOf(chip)
 
@@ -60,7 +60,7 @@ class ChipAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
-        (holder as ChipViewHolder).bind(list[position], selectedPositions.contains(position))
+        (holder as ChipViewHolder).bind(list[position], selectable, selectedPositions.contains(position))
     }
 
     override fun getItemCount(): Int {
@@ -93,6 +93,23 @@ class ChipAdapter(
             items.add(list[it])
         }
         return items
+    }
+
+    fun select(chip: Chip) {
+        select(list.indexOf(chip))
+    }
+
+    fun select(position: Int) {
+        if (position < 0 || position >= list.size) {
+            return
+        }
+        selectedPositions.add(position)
+        notifyItemChanged(position)
+    }
+
+    fun deselectAll() {
+        selectedPositions.clear()
+        notifyDataSetChanged()
     }
 
     companion object {

@@ -9,7 +9,7 @@ class DataSnapshotToProjectEntityMapper(val dataSnapshot: DataSnapshot) : Mapper
 
     override fun map(): ProjectEntity? {
 
-        listOf("name", "description", "colors", "createdAt").forEach {
+        listOf("name", "description", "colors", "createdAt", "showBenchmark").forEach {
             if (!dataSnapshot.hasChild(it)) {
                 DragonflyLogger.error(LOG_TAG, IllegalArgumentException("child '$it' not found"))
                 return null
@@ -35,7 +35,8 @@ class DataSnapshotToProjectEntityMapper(val dataSnapshot: DataSnapshot) : Mapper
                     description = dataSnapshot.child("description").getValue(String::class.java)!!,
                     createdAt = dataSnapshot.child("createdAt").getValue(Long::class.java)!!,
                     colors = colors.joinToString(","),
-                    versions = versions
+                    versions = versions,
+                    showBenchmark = dataSnapshot.child("showBenchmark").value as Boolean
             )
 
         } catch (e: Exception) {

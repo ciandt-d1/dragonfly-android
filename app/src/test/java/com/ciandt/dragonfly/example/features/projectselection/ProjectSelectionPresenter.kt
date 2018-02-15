@@ -1,6 +1,7 @@
 package com.ciandt.dragonfly.example.features.projectselection
 
 import com.ciandt.dragonfly.data.model.Model
+import com.ciandt.dragonfly.example.config.Benchmark
 import com.ciandt.dragonfly.example.models.Project
 import com.ciandt.dragonfly.example.models.Version
 import com.nhaarman.mockito_kotlin.argumentCaptor
@@ -200,6 +201,7 @@ class ProjectSelectionPresenterTest {
         }
 
         val libraryModel = Model("downloaded/0")
+        libraryModel.others.put(Benchmark.SHOW_BENCHMARK, project.showBenchmark)
 
         presenter.run(project)
 

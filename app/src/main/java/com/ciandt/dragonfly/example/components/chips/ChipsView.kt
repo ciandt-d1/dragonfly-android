@@ -37,7 +37,7 @@ class ChipsView : RelativeLayout {
         initializeAttributes(attrs)
     }
 
-    fun initializeViews(context: Context) {
+    private fun initializeViews(context: Context) {
 
         val inflater = context.getLayoutInflaterService()
         inflater.inflate(R.layout.component_chips_view, this)
@@ -58,7 +58,7 @@ class ChipsView : RelativeLayout {
         recyclerView.hasFixedSize()
     }
 
-    fun initializeAttributes(attrs: AttributeSet) {
+    private fun initializeAttributes(attrs: AttributeSet) {
 
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ChipsView, 0, 0)
         try {
@@ -120,6 +120,7 @@ class ChipsView : RelativeLayout {
 
     fun setSelectable(selectable: Boolean) {
         adapter.setSelectable(selectable)
+        adapter.notifyDataSetChanged()
     }
 
     fun setMultipleSelection(multipleSelection: Boolean) {
@@ -130,6 +131,26 @@ class ChipsView : RelativeLayout {
         this.chips.clear()
         this.chips.addAll(chips)
         adapter.notifyDataSetChanged()
+    }
+
+    fun addChip(index: Int, chip: Chip) {
+        chips.add(index, chip)
+        adapter.notifyItemInserted(index)
+    }
+
+    fun removeChip(index: Int) {
+        chips.removeAt(index)
+        adapter.notifyItemRemoved(index)
+    }
+
+    fun removeChip(chip: Chip) {
+        val index = chips.indexOf(chip)
+        chips.remove(chip)
+        adapter.notifyItemRemoved(index)
+    }
+
+    fun getChips(): ArrayList<Chip> {
+        return ArrayList(chips)
     }
 
     fun setSelectCallback(callback: ((Chip) -> Unit)?) {
@@ -146,6 +167,18 @@ class ChipsView : RelativeLayout {
 
     fun getSelectedItems(): List<Chip> {
         return adapter.getSelectedItems()
+    }
+
+    fun select(chip: Chip) {
+        adapter.select(chip)
+    }
+
+    fun select(position: Int) {
+        adapter.select(position)
+    }
+
+    fun deselectAll() {
+        adapter.deselectAll()
     }
 
     companion object {

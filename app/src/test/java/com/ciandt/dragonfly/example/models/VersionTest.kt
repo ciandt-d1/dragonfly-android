@@ -30,6 +30,8 @@ class VersionTest {
                 128f,
                 "Mul",
                 "final_result",
+                "Display Name",
+                "false",
                 "gs://v1/projects/project-id/1.zip",
                 1489327402,
                 "project-id/1/model.pb",
@@ -43,9 +45,11 @@ class VersionTest {
                 .setImageMean(128)
                 .setImageStd(128f)
                 .setInputName("Mul")
-                .setOutputName("final_result")
+                .setOutputNames("final_result")
+                .setOutputDisplayNames("Display Name")
+                .setClosedSet("false")
                 .setModelPath("project-id/1/model.pb")
-                .setLabelsPath("project-id/1/model.txt")
+                .setLabelFilesPaths("project-id/1/model.txt")
 
         version.toLibraryModel().shouldEqual(model)
     }

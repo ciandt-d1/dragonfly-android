@@ -1,6 +1,7 @@
 package com.ciandt.dragonfly.example.features.feedback
 
 import android.support.annotation.StringRes
+import android.support.v4.util.Pair
 import com.ciandt.dragonfly.example.features.feedback.model.BenchmarkResult
 import com.ciandt.dragonfly.example.features.feedback.model.Feedback
 import com.ciandt.dragonfly.example.shared.BasePresenterContract
@@ -13,17 +14,19 @@ interface FeedbackContract {
 
     interface View {
 
+        fun showMainClassifications(labels: List<Pair<String, Int>>)
+
         fun showNoClassifications()
 
-        fun showClassifications(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>)
+        fun showClassifications(classifications: Map<String, List<Classifier.Classification>>)
 
-        fun showPositiveClassification(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>, collapseResults: Boolean = true)
+        fun showPositiveClassification(collapseResults: Boolean = true)
 
-        fun showNegativeClassification(mainClassificationLabel: String, otherClassifications: List<Classifier.Classification>)
+        fun showNegativeClassification(classifications: List<String>)
 
-        fun showNegativeForm(otherClassifications: List<Classifier.Classification>)
+        fun showNegativeForm()
 
-        fun setUserFeedback(feedback: Feedback)
+        fun setUserFeedbackList(feedbackList: List<Feedback>)
 
         fun showSaveImageSuccessMessage(@StringRes message: Int)
 
@@ -40,15 +43,15 @@ interface FeedbackContract {
 
     interface Presenter : BasePresenterContract<View> {
 
-        fun setClassifications(classifications: List<Classifier.Classification>)
+        fun setClassifications(classifications: LinkedHashMap<String, ArrayList<Classifier.Classification>>)
 
         fun markAsPositive()
 
         fun markAsNegative()
 
-        fun submitNegative(label: String)
+        fun submitNegative(labels: List<String>)
 
-        fun setUserFeedback(userFeedback: Feedback?)
+        fun setUserFeedbackList(userFeedbackList: List<Feedback>)
 
         fun saveImageToGallery()
 

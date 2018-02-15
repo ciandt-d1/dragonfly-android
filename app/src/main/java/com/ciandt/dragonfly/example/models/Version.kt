@@ -1,10 +1,10 @@
 package com.ciandt.dragonfly.example.models
 
 import android.os.Parcel
-import android.os.Parcelable
 import com.ciandt.dragonfly.data.model.Model
 import com.ciandt.dragonfly.example.shared.KParcelable
 import com.ciandt.dragonfly.example.shared.parcelableCreator
+import java.io.Serializable
 
 data class Version(
         var project: String = "",
@@ -14,11 +14,13 @@ data class Version(
         var imageMean: Int = 0,
         var imageStd: Float = 0.0f,
         var inputName: String = "",
-        var outputName: String = "",
+        var outputNames: String = "",
+        var outputDisplayNames: String = "",
+        var closedSet: String = "",
         var downloadUrl: String = "",
         var createdAt: Long = 0L,
         var modelPath: String = "",
-        var labelsPath: String = "",
+        var labelFilesPaths: String = "",
         var status: Int = STATUS_NOT_DOWNLOADED
 ) : KParcelable {
 
@@ -34,19 +36,19 @@ data class Version(
         return status == STATUS_DOWNLOADED
     }
 
-    fun toLibraryModel(others: Map<String, Parcelable> = emptyMap()): Model {
+    fun toLibraryModel(others: HashMap<String, Serializable> = HashMap()): Model {
         val model = Model("$project/$version")
         model.version = version
         model.modelPath = modelPath
-        model.labelsPath = labelsPath
+        model.setLabelFilesPaths(labelFilesPaths)
         model.sizeInBytes = size
         model.inputSize = inputSize
         model.imageMean = imageMean
         model.imageStd = imageStd
         model.inputName = inputName
-        model.outputName = outputName
-        model.modelPath = modelPath
-        model.labelsPath = labelsPath
+        model.setOutputNames(outputNames)
+        model.setOutputDisplayNames(outputDisplayNames)
+        model.setClosedSet(closedSet)
         model.others = others
         return model
     }
@@ -58,6 +60,8 @@ data class Version(
             p.readInt(),
             p.readInt(),
             p.readFloat(),
+            p.readString(),
+            p.readString(),
             p.readString(),
             p.readString(),
             p.readString(),
@@ -75,11 +79,13 @@ data class Version(
         writeInt(imageMean)
         writeFloat(imageStd)
         writeString(inputName)
-        writeString(outputName)
+        writeString(outputNames)
+        writeString(outputDisplayNames)
+        writeString(closedSet)
         writeString(downloadUrl)
         writeLong(createdAt)
         writeString(modelPath)
-        writeString(labelsPath)
+        writeString(labelFilesPaths)
         writeInt(status)
     }
 
@@ -98,6 +104,7 @@ data class Version(
         val STATUS_DOWNLOADING = 1
         val STATUS_DOWNLOADED = 2
 
-        @JvmField val CREATOR = parcelableCreator(::Version)
+        @JvmField
+        val CREATOR = parcelableCreator(::Version)
     }
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:classificationsView="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:id="@+id/feedbackResultContainer"
               android:layout_width="match_parent"
@@ -26,7 +25,6 @@
             android:layout_marginBottom="@dimen/feedback_result_text_vertical_margin"
             android:paddingStart="@dimen/feedback_result_text_padding_left"
             style="@style/Feedback.Result.Title"
-            android:text="@string/feedback_classification"
         />
 
         <ImageButton
@@ -92,26 +90,28 @@
                 android:background="@color/feedback_result_line"
             />
 
-            <com.ciandt.dragonfly.example.components.classifications.ClassificationsView
-                android:id="@+id/otherPredictions"
+            <LinearLayout
+                android:id="@+id/otherPredictionsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                classificationsView:title="@string/feedback_also_identify"/>
-
-            <View
-                android:id="@+id/servicesSeparator"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/feedback_result_line_height"
-                android:layout_marginLeft="@dimen/feedback_result_line_horizontal_margin"
-                android:layout_marginRight="@dimen/feedback_result_line_horizontal_margin"
-                android:background="@color/feedback_result_line"/>
+                android:orientation="vertical"/>
 
             <LinearLayout
                 android:id="@+id/benchmarkContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="@dimen/feedback_benchmark_container_minimum_height"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <View
+                    android:id="@+id/servicesSeparator"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/feedback_result_line_height"
+                    android:layout_marginLeft="@dimen/feedback_result_line_horizontal_margin"
+                    android:layout_marginRight="@dimen/feedback_result_line_horizontal_margin"
+                    android:background="@color/feedback_result_line"/>
 
                 <Button
                     android:id="@+id/benchmarkButton"
@@ -175,29 +175,67 @@
             android:background="@color/feedback_result_line"
         />
 
-        <ImageView
-            android:id="@+id/arrow"
-            android:layout_width="@dimen/feedback_result_more_info_height"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/toggleButton"
-            android:layout_alignBottom="@+id/toggleButton"
-            android:layout_alignParentEnd="true"
-            android:contentDescription="@null"
-            android:scaleType="center"
-            android:src="@drawable/ic_arrow_up"
-        />
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/toggleButton"
+        <RelativeLayout
+            android:id="@+id/toggleContainer"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/feedback_result_more_info_height"
-            android:minHeight="@dimen/touchable_area_minimum_dimension"
-            android:paddingStart="@dimen/feedback_result_more_info_padding_left"
+            android:layout_height="wrap_content"
             android:layout_below="@id/moreInfoSeparator"
-            style="@style/Feedback.Result.MoreInfo"
-            android:gravity="center_vertical"
-            android:text="@string/feedback_more_info"
-        />
+            tools:visibility="gone">
+
+            <ImageView
+                android:id="@+id/arrow"
+                android:layout_width="@dimen/feedback_result_more_info_height"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/toggleButton"
+                android:layout_alignBottom="@+id/toggleButton"
+                android:layout_alignParentEnd="true"
+                android:contentDescription="@null"
+                android:scaleType="center"
+                android:src="@drawable/ic_arrow_up"
+            />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/toggleButton"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/feedback_result_more_info_height"
+                android:minHeight="@dimen/touchable_area_minimum_dimension"
+                android:paddingStart="@dimen/feedback_result_more_info_padding_left"
+                style="@style/Feedback.Result.MoreInfo"
+                android:gravity="center_vertical"
+                android:text="@string/feedback_more_info"
+            />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/negativeFormButtonsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/moreInfoSeparator"
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <Button
+                android:id="@+id/negativeFormCancelButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/touchable_area_minimum_dimension"
+                android:layout_marginEnd="@dimen/feedback_form_buttons_margin_right"
+                style="@style/Feedback.Form.NegativeFormCancelButton"
+                android:text="@string/feedback_form_button_cancel"
+            />
+
+            <Button
+                android:id="@+id/negativeFormConfirmButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/touchable_area_minimum_dimension"
+                android:layout_marginEnd="@dimen/feedback_form_buttons_margin_right"
+                style="@style/Feedback.Form.NegativeFormConfirmButton"
+                android:enabled="false"
+                android:text="@string/feedback_negative_form_button_confirm"
+            />
+
+        </LinearLayout>
 
     </RelativeLayout>
 

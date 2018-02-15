@@ -71,7 +71,10 @@
     <string name="feedback_save_content_description">Save Photo</string>
     <string name="feedback_back_content_description">Back to Live Lens</string>
     <string name="feedback_also_identify">Other predictions</string>
-    <string name="feedback_classification">Is the prediction correct?</string>
+    <plurals name="feedback_classification">
+        <item quantity="one">Is the prediction correct?</item>
+        <item quantity="other">Are the predictions correct?</item>
+    </plurals>
     <string name="feedback_more_info">MORE INFO</string>
     <string name="feedback_close">COLLAPSE</string>
     <string name="feedback_positive_button_content_description">Positive</string>
@@ -79,12 +82,13 @@
     <string name="feedback_under_revision">Under Revision</string>
     <string name="feedback_is_something_wrong">Help us improve</string>
     <string name="feedback_choose_option">Choose a more accurate prediction for this image:</string>
-    <string name="feedback_form_hint_or">or type a new one in here</string>
+    <string name="feedback_form_hint_or">Type a new one in here</string>
     <string name="feedback_form_hint">Type here your prediction</string>
     <string name="feedback_form_button_cancel">CANCEL</string>
     <string name="feedback_form_button_confirm">SUBMIT</string>
+    <string name="feedback_negative_form_button_confirm">SEND FEEDBACK</string>
     <string name="feedback_no_classifications_found">No classifications found.</string>
-
+    <string name="feedback_thanks">Thank you for your submission</string>
     <string name="feedback_save_image_success">Photo saved successfully.</string>
     <string name="feedback_save_image_error">Something was wrong. Please try again.</string>
 

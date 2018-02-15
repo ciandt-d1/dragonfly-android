@@ -2,8 +2,16 @@ package com.ciandt.dragonfly.example.data.local
 
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
-import com.ciandt.dragonfly.example.data.local.dao.*
-import com.ciandt.dragonfly.example.data.local.entities.*
+import com.ciandt.dragonfly.example.data.local.dao.DownloadDao
+import com.ciandt.dragonfly.example.data.local.dao.PendingFeedbackDao
+import com.ciandt.dragonfly.example.data.local.dao.PendingFeedbackLabelDao
+import com.ciandt.dragonfly.example.data.local.dao.ProjectDao
+import com.ciandt.dragonfly.example.data.local.dao.VersionDao
+import com.ciandt.dragonfly.example.data.local.entities.DownloadEntity
+import com.ciandt.dragonfly.example.data.local.entities.PendingFeedbackEntitiy
+import com.ciandt.dragonfly.example.data.local.entities.PendingFeedbackLabelEntitiy
+import com.ciandt.dragonfly.example.data.local.entities.ProjectEntity
+import com.ciandt.dragonfly.example.data.local.entities.VersionEntity
 
 @Database(
         entities = arrayOf(
@@ -13,7 +21,7 @@ import com.ciandt.dragonfly.example.data.local.entities.*
                 PendingFeedbackEntitiy::class,
                 PendingFeedbackLabelEntitiy::class
         ),
-        version = 2
+        version = 7
 )
 abstract class AppDatabase : RoomDatabase() {
 

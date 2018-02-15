@@ -14,11 +14,13 @@ class VersionToVersionEntityMapper(val version: Version) : Mapper<VersionEntity>
                 imageMean,
                 imageStd,
                 inputName,
-                outputName,
+                outputNames,
+                outputDisplayNames,
+                closedSet,
                 downloadUrl,
                 createdAt,
                 modelPath,
-                labelsPath,
+                labelFilesPaths,
                 status
         )
     }

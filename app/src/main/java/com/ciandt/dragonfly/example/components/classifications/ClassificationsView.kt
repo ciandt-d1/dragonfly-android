@@ -28,7 +28,7 @@ class ClassificationsView : LinearLayout {
         initializeAttributes(attrs)
     }
 
-    fun initializeViews(context: Context) {
+    private fun initializeViews(context: Context) {
         orientation = VERTICAL
 
         val inflater = context.getLayoutInflaterService()
@@ -54,5 +54,45 @@ class ClassificationsView : LinearLayout {
 
     fun setChips(chips: List<Chip>) {
         chipsView.setChips(chips)
+    }
+
+    fun addChip(index: Int, chip: Chip) {
+        chipsView.addChip(index, chip)
+    }
+
+    fun removeChip(index: Int) {
+        chipsView.removeChip(index)
+    }
+
+    fun removeChip(chip: Chip) {
+        chipsView.removeChip(chip)
+    }
+
+    fun getChips(): List<Chip> {
+        return chipsView.getChips()
+    }
+
+    fun select(chip: Chip) {
+        chipsView.select(chip)
+    }
+
+    fun select(position: Int) {
+        chipsView.select(position)
+    }
+
+    fun deselectAll() {
+        chipsView.deselectAll()
+    }
+
+    fun setSelectable(selectable: Boolean) {
+        chipsView.setSelectable(selectable)
+    }
+
+    fun setSelectCallback(callback: ((Chip) -> Unit)?) {
+        chipsView.setSelectCallback(callback)
+    }
+
+    fun setDeselectCallback(callback: ((Chip) -> Unit)?) {
+        chipsView.setDeselectCallback(callback)
     }
 }

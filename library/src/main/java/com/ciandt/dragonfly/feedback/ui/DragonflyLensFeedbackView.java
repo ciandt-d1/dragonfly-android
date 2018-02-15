@@ -5,6 +5,7 @@ import com.ciandt.dragonfly.base.ui.ImageScaleTypes;
 import com.ciandt.dragonfly.image_processing.ImageUtils;
 import com.ciandt.dragonfly.infrastructure.DragonflyLogger;
 import com.ciandt.dragonfly.lens.data.DragonflyClassificationInput;
+import com.ciandt.dragonfly.lens.ui.DragonflyLabelView;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -12,23 +13,26 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+
+import java.util.List;
 
 /**
  * Created by iluz on 6/9/17.
  */
 
-public class DragonflyLensFeedbackView extends FrameLayout {
+public class DragonflyLensFeedbackView extends RelativeLayout {
 
     private static final String LOG_TAG = DragonflyLensFeedbackView.class.getSimpleName();
 
-    private TextView labelView;
+    private LinearLayout labelsContainer;
     private ImageView previewView;
     private ImageView ornamentView;
 
@@ -68,7 +72,7 @@ public class DragonflyLensFeedbackView extends FrameLayout {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.dragonfly_lens_feedback_view, this);
 
-        labelView = (TextView) this.findViewById(R.id.dragonflyLensLabelView);
+        labelsContainer = (LinearLayout) this.findViewById(R.id.dragonflyLensLabelsContainer);
 
         previewView = (ImageView) this.findViewById(R.id.previewImageView);
         ornamentView = (ImageView) this.findViewById(R.id.dragonflyLensOrnamentView);
@@ -111,20 +115,32 @@ public class DragonflyLensFeedbackView extends FrameLayout {
         ornamentView.setScaleType(scaleType);
     }
 
-    public void setLabel(String label) {
-        labelView.setVisibility(TextUtils.isEmpty(label) ? GONE : VISIBLE);
+    public void setLabels(List<Pair<String, Integer>> labels) {
 
-        String formattedLabel = getContext().getString(R.string.label_without_confidence, label);
+        for (int i = 0; i < labels.size(); i++) {
+            DragonflyLabelView labelView = (DragonflyLabelView) labelsContainer.getChildAt(i);
+            if (labelView == null) {
+                labelView = new DragonflyLabelView(getContext());
+                labelsContainer.addView(labelView);
+            }
 
-        labelView.setText(formattedLabel);
+            Pair<String, Integer> info = labels.get(i);
+            labelView.setInfo(info.first, getContext().getString(R.string.percentage_label, info.second));
+        }
+
+        for (int i = labels.size(); i < labelsContainer.getChildCount(); i++) {
+            labelsContainer.removeViewAt(i);
+        }
+
+        labelsContainer.setVisibility(VISIBLE);
     }
 
-    public void setLabel(String label, int confidence) {
-        labelView.setVisibility(TextUtils.isEmpty(label) ? GONE : VISIBLE);
+    public void showLabels(long duration) {
+        labelsContainer.animate().alpha(1.0f).setDuration(duration);
+    }
 
-        String formattedLabel = getContext().getString(R.string.label_with_confidence, label, confidence);
-
-        labelView.setText(formattedLabel);
+    public void hideLabels(long duration) {
+        labelsContainer.animate().alpha(0.0f).setDuration(duration);
     }
 
     @Override

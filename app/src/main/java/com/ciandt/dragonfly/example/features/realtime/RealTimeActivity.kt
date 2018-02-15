@@ -75,7 +75,7 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
                 lastAnalyzedUri = getParcelable(LAST_ANALYZED_IMAGE_URI_BUNDLE)
             }
         } else {
-            model = intent.extras.getParcelable<Model>(MODEL_BUNDLE)
+            model = intent.extras.getParcelable(MODEL_BUNDLE)
             modelName = intent.extras.getString(MODEL_NAME_BUNDLE)
             uriUnderAnalysis = null
         }
@@ -103,7 +103,7 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
 
         val classificationAlgorithm = RealTimeConfig.CLASSIFICATION_ATENUATION_ALGORITHM
         val classificationConfigBuilder = ClassificationConfig.newBuilder().withClassificationAtenuationAlgorithm(classificationAlgorithm)
-        if (classificationAlgorithm.equals(ClassificationConfig.CLASSIFICATION_ATENUATION_ALGORITHM_DECAY)) {
+        if (classificationAlgorithm == ClassificationConfig.CLASSIFICATION_ATENUATION_ALGORITHM_DECAY) {
             classificationConfigBuilder.apply {
                 withDecayAtenuationDecayValue(RealTimeConfig.CLASSIFICATION_ATENUATION_ALGORITHM_DECAY__DECAY_VALUE)
                 withDecayAtenuationUpdateValue(RealTimeConfig.CLASSIFICATION_ATENUATION_ALGORITHM_DECAY__UPDATE_VALUE)
@@ -136,8 +136,7 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
     }
 
     private fun setupDragonflyLensPermissionsCallback() {
-        dragonFlyLens.setPermissionsCallback(DragonflyLensRealtimeView.PermissionsCallback {
-            permissions ->
+        dragonFlyLens.setPermissionsCallback(DragonflyLensRealtimeView.PermissionsCallback { permissions ->
 
             if (permissions == null || permissions.size == 0) {
                 throw IllegalArgumentException("Empty permissions list provided.")
@@ -220,10 +219,10 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
             REQUEST_CODE_SELECT_IMAGE -> {
                 hideActionButtons()
 
-                DragonflyLogger.debug(LOG_TAG, "requestCode: ${requestCode}")
+                DragonflyLogger.debug(LOG_TAG, "requestCode: $requestCode")
 
-                val fileUri = data.getData()
-                val takeFlags = data.getFlags() and
+                val fileUri = data.data
+                val takeFlags = data.flags and
                         (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
                 contentResolver.takePersistableUriPermission(fileUri, takeFlags)
@@ -233,7 +232,7 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
                 uriUnderAnalysis = fileUri
                 lastAnalyzedUri = fileUri
 
-                DragonflyLogger.debug(LOG_TAG, "imageUri: ${fileUri}")
+                DragonflyLogger.debug(LOG_TAG, "imageUri: $fileUri")
             }
         }
     }
@@ -243,7 +242,7 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
                 .withPermission(PermissionsMapping.REAL_TIME)
                 .withListener(CameraPermissionListener(presenter))
                 .withErrorListener { error ->
-                    DragonflyLogger.debug(LOG_TAG, "Dexter error: ${error}")
+                    DragonflyLogger.debug(LOG_TAG, "Dexter error: $error")
                 }
                 .check()
     }
@@ -274,7 +273,7 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
 
                 })
                 .withErrorListener { error ->
-                    DragonflyLogger.debug("tag", "Dexter error: ${error}")
+                    DragonflyLogger.debug("tag", "Dexter error: $error")
                 }
                 .check()
     }
@@ -288,16 +287,14 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
                 .setTitle(title)
                 .setMessage(message)
                 .setCancelable(false)
-                .setNegativeButton(android.R.string.cancel, {
-                    dialog, _ ->
+                .setNegativeButton(android.R.string.cancel, { dialog, _ ->
                     if (finishActivityOnCancel) {
                         finish()
                     } else {
                         dialog.dismiss()
                     }
                 })
-                .setPositiveButton(R.string.permissions_open_settings, {
-                    dialog, _ ->
+                .setPositiveButton(R.string.permissions_open_settings, { dialog, _ ->
                     dialog.dismiss()
 
                     // https://stackoverflow.com/a/27575063/1120207
@@ -335,21 +332,21 @@ class RealTimeActivity : InvisibleToolbarActivity(), RealTimeContract.View, Drag
     }
 
     override fun onSnapshotTaken(snapshot: DragonflyClassificationInput) {
-        DragonflyLogger.debug(LOG_TAG, "onSnapshotTaken(${snapshot})")
+        DragonflyLogger.debug(LOG_TAG, "onSnapshotTaken($snapshot)")
 
         intent = FeedbackActivity.newIntent(this, model, snapshot, true, dragonFlyLens.lastClassifications)
         startActivity(intent)
     }
 
     override fun onSnapshotError(e: DragonflySnapshotException) {
-        DragonflyLogger.debug(LOG_TAG, "onSnapshotError(${e})")
+        DragonflyLogger.debug(LOG_TAG, "onSnapshotError($e)")
     }
 
-    override fun onUriAnalysisFinished(uri: Uri, classificationInput: DragonflyClassificationInput, classifications: List<Classifier.Classification>) {
+    override fun onUriAnalysisFinished(uri: Uri, classificationInput: DragonflyClassificationInput, classifications: Map<String, List<Classifier.Classification>>) {
         uriUnderAnalysis = null
         lastAnalyzedUri = null
 
-        DragonflyLogger.debug(LOG_TAG, "onUriAnalysisFinished(${classifications})")
+        DragonflyLogger.debug(LOG_TAG, "onUriAnalysisFinished($classifications)")
 
         intent = FeedbackActivity.newIntent(this, model, classificationInput, false, classifications)
         startActivity(intent)
