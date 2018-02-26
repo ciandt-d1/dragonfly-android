@@ -39,7 +39,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="@drawable/circle_frame_background"
-        android:clickable="false"
         android:src="@drawable/take_photo_button"
         android:visibility="invisible"/>
 </merge>
